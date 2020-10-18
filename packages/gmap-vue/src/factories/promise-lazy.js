@@ -1,4 +1,4 @@
-import lazy from '../utils/lazy-value';
+import { lazyValue } from '../utils/helpers';
 
 export default function promiseLazy(loadGmapApi, GmapApi) {
   return function promiseLazyCreator(options) {
@@ -11,7 +11,7 @@ export default function promiseLazy(loadGmapApi, GmapApi) {
 
     if (options.load) {
       // If library should load the API
-      return lazy(() => {
+      return lazyValue(() => {
         // Load the
         // This will only be evaluated once
         if (typeof window === 'undefined') {
@@ -41,6 +41,6 @@ export default function promiseLazy(loadGmapApi, GmapApi) {
       window.vueGoogleMapsInit = resolve;
     }).then(onApiLoaded);
 
-    return lazy(() => promise);
+    return lazyValue(() => promise);
   };
 }
