@@ -79,7 +79,6 @@ module.exports = [
   {
     ...base,
     entry: [
-      '@babel/polyfill',
       './src/main.js'
     ],
     output: {
@@ -90,7 +89,6 @@ module.exports = [
   {
     ...base,
     entry: [
-      '@babel/polyfill',
       './src/autoapi.js'
     ],
     output: {
@@ -100,7 +98,7 @@ module.exports = [
   },
   {
     ...base,
-    entry: './src/ExamplesMain.js',
+    entry: ['./src/ExamplesMain.js'],
     output: {
       ...base.output,
       filename: 'build-examples.js'
