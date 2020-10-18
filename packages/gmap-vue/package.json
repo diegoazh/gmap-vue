@@ -30,16 +30,17 @@
   },
   "homepage": "https://github.com/diegoazh/gmap-vue#readme",
   "dependencies": {
-    "@google/markerclustererplus": "^5.1.3"
+    "@google/markerclustererplus": "^5.1.3",
+    "core-js": "^3.6.5",
+    "regenerator-runtime": "^0.13.7"
   },
   "peerDependencies": {
     "vue": "^2.6.11"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/polyfill": "^7.8.7",
-    "@babel/preset-env": "^7.9.5",
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
     "@hapi/lab": "^22.0.4",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
