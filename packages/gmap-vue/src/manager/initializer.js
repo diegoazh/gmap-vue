@@ -10,50 +10,48 @@ export default (() => {
   let isApiSetUp = false;
 
   return (options, loadCn) => {
+    // Allow options to be an object.
+    // This is to support more esoteric means of loading Google Maps,
+    // such as Google for business
+    // https://developers.google.com/maps/documentation/javascript/get-api-key#premium-auth
+    if (typeof options !== 'object') {
+      throw new Error('options should  be an object');
+    }
+
+    // Do nothing if run from server-side
     if (typeof document === 'undefined') {
-      // Do nothing if run from server-side
       return;
     }
 
+    const finalOptions = { ...options };
+    const { libraries } = finalOptions;
+
     if (!isApiSetUp) {
       isApiSetUp = true;
+      const baseUrl =
+        typeof loadCn === 'boolean' && loadCn
+          ? 'https://maps.google.cn'
+          : 'https://maps.googleapis.com';
 
       const googleMapScript = document.createElement('SCRIPT');
 
-      // Allow options to be an object.
-      // This is to support more esoteric means of loading Google Maps,
-      // such as Google for business
-      // https://developers.google.com/maps/documentation/javascript/get-api-key#premium-auth
-      if (typeof options !== 'object') {
-        throw new Error('options should  be an object');
-      }
-
       // libraries
-      if (
-        Object.prototype.isPrototypeOf.call(Array.prototype, options.libraries)
-      ) {
-        // TODO: all eslint disabled rules in this file should be analyzed
-        // eslint-disable-next-line no-param-reassign -- old style should be analyzed
-        options.libraries = options.libraries.join(',');
+      if (Array.isArray(libraries)) {
+        finalOptions.libraries = libraries.join(',');
       }
 
-      // eslint-disable-next-line no-param-reassign -- old style should be analyzed
-      options.callback = 'vueGoogleMapsInit';
+      finalOptions.callback = 'vueGoogleMapsInit';
 
-      let baseUrl = 'https://maps.googleapis.com/';
-
-      if (typeof loadCn === 'boolean' && loadCn === true) {
-        baseUrl = 'https://maps.google.cn/';
-      }
-
-      const query = Object.keys(options)
+      const query = Object.keys(finalOptions)
         .map(
           (key) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              finalOptions[key]
+            )}`
         )
         .join('&');
 
-      const url = `${baseUrl}maps/api/js?${query}`;
+      const url = `${baseUrl}/maps/api/js?${query}`;
 
       googleMapScript.setAttribute('src', url);
       googleMapScript.setAttribute('async', '');
