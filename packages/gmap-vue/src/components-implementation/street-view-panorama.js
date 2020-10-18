@@ -1,10 +1,12 @@
-import bindEvents from '../utils/bind-events';
-import { bindProps, getPropsValues } from '../utils/bind-props';
 import mountableMixin from '../mixins/mountable';
-
-import twoWayBindingWrapper from '../utils/two-way-binding-wrapper';
-import watchPrimitiveProperties from '../utils/watch-primitive-properties';
-import mappedPropsToVueProps from '../utils/mapped-props-to-vue-props';
+import {
+  bindEvents,
+  bindProps,
+  getPropsValues,
+  mappedPropsToVueProps,
+  twoWayBindingWrapper,
+  watchPrimitiveProperties,
+} from '../utils/helpers';
 
 const props = {
   zoom: {

@@ -1,7 +1,10 @@
-import bindEvents from '../utils/bind-events';
-import { bindProps, getPropsValues } from '../utils/bind-props';
 import MapElementMixin from '../mixins/map-element';
-import mappedPropsToVueProps from '../utils/mapped-props-to-vue-props';
+import {
+  bindEvents,
+  bindProps,
+  getPropsValues,
+  mappedPropsToVueProps,
+} from '../utils/helpers';
 
 /**
  *

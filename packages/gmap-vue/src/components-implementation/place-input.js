@@ -1,5 +1,8 @@
-import { bindProps, getPropsValues } from '../utils/bind-props';
-import downArrowSimulator from '../utils/simulate-arrow-down';
+import {
+  bindProps,
+  downArrowSimulator,
+  getPropsValues,
+} from '../utils/helpers';
 
 const props = {
   bounds: {
