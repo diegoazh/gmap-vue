@@ -4,8 +4,7 @@ export default function promiseLazy(loadGmapApi, GmapApi) {
   return function promiseLazyCreator(options) {
     // Things to do once the API is loaded
     function onApiLoaded() {
-      // TODO: All disabled eslint rules should be analyzed
-      // eslint-disable-next-line no-param-reassign -- old style this should be analyzed;
+      // eslint-disable-next-line no-param-reassign -- required
       GmapApi.gmapApi = {};
       return window.google;
     }
@@ -19,6 +18,7 @@ export default function promiseLazy(loadGmapApi, GmapApi) {
           // server side -- never resolve this promise
           return new Promise(() => {}).then(onApiLoaded);
         }
+
         return new Promise((resolve, reject) => {
           try {
             window.vueGoogleMapsInit = resolve;
@@ -28,7 +28,9 @@ export default function promiseLazy(loadGmapApi, GmapApi) {
           }
         }).then(onApiLoaded);
       });
-    } // If library should not handle API, provide
+    }
+
+    // If library should not handle API, provide
     // end-users with the global `vueGoogleMapsInit: () => undefined`
     // when the Google Maps API has been loaded
     const promise = new Promise((resolve) => {
