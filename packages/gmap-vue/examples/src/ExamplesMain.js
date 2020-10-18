@@ -1,23 +1,26 @@
-import ExamplesApp from './ExamplesApp.vue'
-import ExamplePageDefault from './ExamplePageDefault.vue'
-import ExamplePage from './ExamplePage.vue'
-import Examples from '../examples-index'
-import Vue from 'vue'
-import * as GmapVue from '../../dist/main.js'
-import VueRouter from 'vue-router'
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import Vue from 'vue';
+// eslint-disable-next-line import/no-extraneous-dependencies -- should be analyzed later
+import VueRouter from 'vue-router';
+import * as GmapVue from '../../dist/main';
+import Examples from '../examples-index';
+import ExamplePage from './ExamplePage.vue';
+import ExamplePageDefault from './ExamplePageDefault.vue';
+import ExamplesApp from './ExamplesApp.vue';
 
-Vue.config.optionMergeStrategies.description = (a, b) => a || b
+Vue.config.optionMergeStrategies.description = (a, b) => a || b;
 
 Vue.use(GmapVue, {
   load: {
     key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-    libraries: 'places'
-  }
-})
-Vue.use(VueRouter)
+    libraries: 'places',
+  },
+});
+Vue.use(VueRouter);
 
 const router = new VueRouter({
-  routes: Examples.map(e => ({
+  routes: Examples.map((e) => ({
     path: `/${e.name}`,
     component: ExamplePage,
     name: e.name,
@@ -25,15 +28,11 @@ const router = new VueRouter({
       name: e.name,
       description: e.description,
       source: e.source,
-      component: e.module
-    }
-  }))
-    .concat([
-      { path: '/', component: ExamplePageDefault }
-    ])
-})
+      component: e.module,
+    },
+  })).concat([{ path: '/', component: ExamplePageDefault }]),
+});
 
 document.addEventListener('DOMContentLoaded', () => {
-  new (Vue.extend(ExamplesApp))({ router })
-    .$mount('#app')
-})
+  new (Vue.extend(ExamplesApp))({ router }).$mount('#app');
+});

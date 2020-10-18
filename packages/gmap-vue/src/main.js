@@ -1,24 +1,22 @@
-import loadGmapApi from './manager/initializer';
-import promiseLazyFactory from './factories/promise-lazy';
-
-import KmlLayer from './components/kml-layer';
-import HeatmapLayer from './components/heatmap-layer';
-import Marker from './components/marker';
-import Polyline from './components/polyline';
-import Polygon from './components/polygon';
-import Circle from './components/circle';
-import Rectangle from './components/rectangle';
-import DrawingManager from './components/drawing-manager.vue';
-
-// Vue component imports
-import InfoWindow from './components/info-window.vue';
-import Map from './components/map.vue';
-import StreetViewPanorama from './components/street-view-panorama.vue';
-import PlaceInput from './components/place-input.vue';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import Autocomplete from './components/autocomplete.vue';
-
-import MapElementMixin from './mixins/map-element';
+import Circle from './components/circle';
+import DrawingManager from './components/drawing-manager.vue';
+import HeatmapLayer from './components/heatmap-layer';
+import InfoWindow from './components/info-window.vue';
+import KmlLayer from './components/kml-layer';
+import Map from './components/map.vue';
+import Marker from './components/marker';
+import PlaceInput from './components/place-input.vue';
+import Polygon from './components/polygon';
+import Polyline from './components/polyline';
+import Rectangle from './components/rectangle';
+import StreetViewPanorama from './components/street-view-panorama.vue';
 import MapElementFactory from './factories/map-element';
+import promiseLazyFactory from './factories/promise-lazy';
+import loadGmapApi from './manager/initializer';
+import MapElementMixin from './mixins/map-element';
 import MountableMixin from './mixins/mountable';
 
 // HACK: Cluster should be loaded conditionally
@@ -59,9 +57,7 @@ export {
 
 export function install(Vue, options) {
   // Set defaults
-  // TODO: All disabled eslint rules should be analyzed
-  // eslint-disable-next-line no-param-reassign -- this should be analyzed;
-  options = {
+  const finalOptions = {
     installComponents: true,
     autobindAllEvents: false,
     ...options,
@@ -79,22 +75,24 @@ export function install(Vue, options) {
   // Use a lazy to only load the API when
   // a VGM component is loaded
   const promiseLazyCreator = promiseLazyFactory(loadGmapApi, GmapApi);
-  const gmapApiPromiseLazy = promiseLazyCreator(options);
+  const gmapApiPromiseLazy = promiseLazyCreator(finalOptions);
 
+  // Instance properties
   Vue.mixin({
     created() {
       this.$gmapDefaultResizeBus = defaultResizeBus;
-      this.$gmapOptions = options;
+      this.$gmapOptions = finalOptions;
       this.$gmapApiPromiseLazy = gmapApiPromiseLazy;
     },
   });
 
-  // eslint-disable-next-line no-param-reassign -- old style this should be analyzed;
+  // Static properties
+  /* eslint-disable no-param-reassign -- required */
   Vue.$gmapDefaultResizeBus = defaultResizeBus;
-  // eslint-disable-next-line no-param-reassign -- old style this should be analyzed;
   Vue.$gmapApiPromiseLazy = gmapApiPromiseLazy;
+  /* eslint-enable no-param-reassign */
 
-  if (options.installComponents) {
+  if (finalOptions.installComponents) {
     Vue.component('GmapMap', Map);
     Vue.component('GmapMarker', Marker);
     Vue.component('GmapInfoWindow', InfoWindow);
