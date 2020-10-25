@@ -1,6 +1,6 @@
 import Puppeteer from 'puppeteer'
-import CompileStandalone from './compile-standalone'
 import path from 'path'
+import CompileStandalone from './compile-standalone'
 
 const puppeteerPromise = CompileStandalone.then(() => {
   const options = {}
@@ -19,5 +19,5 @@ export function getPage (p) {
 }
 
 export async function loadFile (page, relpath, options) {
-  return page.goto('file:///' + path.join(__dirname, '../', relpath), options)
+  return page.goto(`file:///${path.join(__dirname, '../', relpath)}`, options)
 }
