@@ -9,7 +9,7 @@ internals.transform = (content, filename) => {
   }
 
   const { code } = Babel.transform(content, {
-    filename: filename,
+    filename,
     sourceMap: 'inline',
     sourceFileName: filename,
     auxiliaryCommentBefore: '$lab:coverage:off$',
@@ -22,7 +22,7 @@ internals.transform = (content, filename) => {
 
 internals.extensions = ['js', 'jsx', 'es', 'es6']
 internals.methods = []
-for (var i = 0, il = internals.extensions.length; i < il; ++i) {
+for (let i = 0, il = internals.extensions.length; i < il; ++i) {
   internals.methods.push({
     ext: internals.extensions[i],
     transform: internals.transform
