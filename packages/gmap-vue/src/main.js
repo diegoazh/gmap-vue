@@ -1,7 +1,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import Autocomplete from './components/autocomplete.vue';
-import Circle from './components/circle';
+import Circle from './components/circle.vue';
 import DrawingManager from './components/drawing-manager.vue';
 import HeatmapLayer from './components/heatmap-layer';
 import InfoWindow from './components/info-window.vue';
