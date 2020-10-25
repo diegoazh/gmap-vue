@@ -12,7 +12,7 @@ export default {
     $mapPromise: { default: 'abcdef' },
   },
 
-  provide() {
+  async provide() {
     // Note: although this mixin is not "providing" anything,
     // components' expect the `$map` property to be present on the component.
     // In order for that to happen, this mixin must intercept the $mapPromise
@@ -22,10 +22,8 @@ export default {
     // component, putting this code in provide() ensures that the $map is
     // already set by the time the
     // component's provide() is called.
-    this.$mapPromise.then((map) => {
-      this.$map = map;
-    });
 
+    this.$map = await this.$mapPromise;
     return {};
   },
 };
