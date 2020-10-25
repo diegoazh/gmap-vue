@@ -1,6 +1,8 @@
 import assert from 'assert'
 import { getPage, loadFile } from './test-setup/test-common'
+
 const Lab = require('@hapi/lab')
+
 const lab = (exports.lab = Lab.script())
 
 lab.experiment(
