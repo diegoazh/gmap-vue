@@ -16,7 +16,7 @@
  * for those properties that are not extraneous to Vue.
  */
 
-export const autocompleteProps = {
+export const autocompleteMappedProps = {
   bounds: {
     type: Object,
   },
@@ -34,6 +34,31 @@ export const autocompleteProps = {
   },
 };
 
+export const circleMappedProps = {
+  center: {
+    type: Object,
+    twoWay: true,
+    required: true,
+  },
+  radius: {
+    type: Number,
+    twoWay: true,
+  },
+  draggable: {
+    type: Boolean,
+    default: false,
+  },
+  editable: {
+    type: Boolean,
+    default: false,
+  },
+  options: {
+    type: Object,
+    twoWay: false,
+  },
+};
+
 export default {
-  autocompleteProps,
+  autocompleteMappedProps,
+  circleMappedProps,
 };

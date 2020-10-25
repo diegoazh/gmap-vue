@@ -21,7 +21,7 @@ import {
   getPropsValues,
   bindProps,
 } from '../utils/helpers';
-import { autocompleteProps } from '../utils/mapped-props-by-map-element';
+import { autocompleteMappedProps } from '../utils/mapped-props-by-map-element';
 
 export default {
   props: {
@@ -93,7 +93,7 @@ export default {
     }
 
     const autocompleteOptions = {
-      ...getPropsValues(this, autocompleteProps),
+      ...getPropsValues(this, autocompleteMappedProps),
       ...this.options,
     };
 
@@ -102,7 +102,7 @@ export default {
       autocompleteOptions
     );
 
-    bindProps(this, this.$autocomplete, autocompleteProps);
+    bindProps(this, this.$autocomplete, autocompleteMappedProps);
 
     // IMPORTANT: To avoid paying for data that you don't need,
     // be sure to use Autocomplete.setFields() to specify only the place data that you will use.
