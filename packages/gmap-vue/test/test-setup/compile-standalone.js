@@ -1,25 +1,25 @@
-import webpack from 'webpack'
-import * as shell from 'shelljs'
-import path from 'path'
+import webpack from 'webpack';
+import * as shell from 'shelljs';
+import path from 'path';
+
+const webpackConfig = require('../../webpack.config.js')[0];
 
 export default new Promise((resolve, reject) => {
-  const webpackConfig = require('../../webpack.config.js')[0]
-
   webpack(
     {
       ...webpackConfig,
-      mode: 'development'
+      mode: 'development',
     },
-    (err, status) => {
+    (err) => {
       if (!err) {
         shell.cp(
           path.resolve(__dirname, '../../dist/gmap-vue.js'),
           path.resolve(__dirname, '../../examples/gmap-vue.js')
-        )
-        resolve()
+        );
+        resolve();
       } else {
-        reject(err)
+        reject(err);
       }
     }
-  )
-})
+  );
+});

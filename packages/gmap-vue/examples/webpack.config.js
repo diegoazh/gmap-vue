@@ -1,36 +1,43 @@
-const path = require('path')
-const fs = require('fs')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const path = require('path');
+const fs = require('fs');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 // Write out the list of examples to the examples index
-const examplesDir = path.resolve(__dirname, 'components')
-const examplesIndex = fs.readdirSync(examplesDir)
-  .filter(f => f.endsWith('.vue'))
-  .map(f => {
-    const baseFileName = path.basename(f, '.vue')
+const examplesDir = path.resolve(__dirname, 'components');
+const examplesIndex = fs
+  .readdirSync(examplesDir)
+  .filter((f) => f.endsWith('.vue'))
+  .map((f) => {
+    const baseFileName = path.basename(f, '.vue');
 
     return `
-      import E${baseFileName}_Source from ${JSON.stringify(`!!raw-loader!${examplesDir}/${f}`)}
-      import E${baseFileName}_Module from ${JSON.stringify(`${examplesDir}/${f}`)}
+      import E${baseFileName}_Source from ${JSON.stringify(
+      `!!raw-loader!${examplesDir}/${f}`
+    )}
+      import E${baseFileName}_Module from ${JSON.stringify(
+      `${examplesDir}/${f}`
+    )}
 
       examples.push({
         name: ${JSON.stringify(baseFileName)},
         module: E${baseFileName}_Module,
         source: E${baseFileName}_Source,
         description: E${baseFileName}_Module.description,
-      })`
-  })
+      })`;
+  });
 
-  fs.writeFileSync(path.resolve(__dirname, 'examples-index.js'),
-    `const examples = []
+fs.writeFileSync(
+  path.resolve(__dirname, 'examples-index.js'),
+  `const examples = []
     ${examplesIndex.join('\n')}
-    export default examples`)
+    export default examples`
+);
 
 const base = {
   output: {
     path: path.resolve('./dist'),
     publicPath: 'dist/',
-    filename: 'build.js'
+    filename: 'build.js',
   },
   module: {
     rules: [
@@ -39,13 +46,13 @@ const base = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            js: 'babel-loader'
-          }
-        }
+            js: 'babel-loader',
+          },
+        },
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.js$/,
@@ -53,55 +60,49 @@ const base = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+            presets: ['@babel/preset-env'],
+          },
+        },
       },
       {
         test: /\.yml$/,
         exclude: /node_modules/,
-        loader: 'json-loader!yaml-loader'
+        loader: 'json-loader!yaml-loader',
       },
       {
         // edit this for additional asset file types
         test: /\.(png|jpg|gif)$/,
-        loader: 'file-loader?name=[name].[ext]?[hash]'
-      }
-    ]
+        loader: 'file-loader?name=[name].[ext]?[hash]',
+      },
+    ],
   },
-  plugins: [
-    new VueLoaderPlugin()
-  ],
-  mode: process.env.NODE_ENV || 'development'
-}
+  plugins: [new VueLoaderPlugin()],
+  mode: process.env.NODE_ENV || 'development',
+};
 
 module.exports = [
   {
     ...base,
-    entry: [
-      './src/main.js'
-    ],
+    entry: ['./src/main.js'],
     output: {
       ...base.output,
-      filename: 'build.js'
-    }
+      filename: 'build.js',
+    },
   },
   {
     ...base,
-    entry: [
-      './src/autoapi.js'
-    ],
+    entry: ['./src/autoapi.js'],
     output: {
       ...base.output,
-      filename: 'autoapi.js'
-    }
+      filename: 'autoapi.js',
+    },
   },
   {
     ...base,
     entry: ['./src/ExamplesMain.js'],
     output: {
       ...base.output,
-      filename: 'build-examples.js'
-    }
-  }
-]
+      filename: 'build-examples.js',
+    },
+  },
+];

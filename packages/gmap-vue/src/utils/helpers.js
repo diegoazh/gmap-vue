@@ -93,9 +93,7 @@ export function downArrowSimulator(input) {
     _addEventListener.apply(input, [type, listener]);
   }
 
-  // eslint-disable-next-line no-param-reassign -- Is old style this should be analyzed[]
   input.addEventListener = addEventListenerWrapper;
-  // eslint-disable-next-line no-param-reassign -- Is old style this should be analyzed[]
   input.attachEvent = addEventListenerWrapper;
 }
 

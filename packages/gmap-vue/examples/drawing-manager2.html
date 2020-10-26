@@ -1,10 +1,10 @@
 <body>
   <div id="root">
     <h1>Drawing Manager Example</h1>
-    <div style="width:100%; display: flex; justify-content: center;">
-      <span style="width:auto" />
+    <div style="width: 100%; display: flex; justify-content: center;">
+      <span style="width: auto;" />
       {{ mapMode }}
-      <span style="width:auto" />
+      <span style="width: auto;" />
       <button @click="mapMode='edit'">Edit</button>
     </div>
     <br />
@@ -13,7 +13,13 @@
       :center="mapCenter"
       :zoom="7"
       map-type-id="roadmap"
-      style="width: 100%; height: 800px; display:flex; justify-content: center; align-items: flex-start;"
+      style="
+        width: 100%;
+        height: 800px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      "
       :options="{
           zoomControl: true,
           mapTypeControl: true,
@@ -57,24 +63,24 @@
       "  <div><button @click=\"$emit('drawingmode_changed', 'circle')\">Circle</button></div>" +
       "  <div><button @click=\"$emit('drawingmode_changed', 'polyline')\">Line</button></div>" +
       "  <div><button @click=\"$emit('drawingmode_changed', 'polygon')\">Polygon</button></div>" +
-      "  <div><button @click=\"$emit('delete_selection')\">Delete</button></div>" +
-      "  <div><button @click=\"$emit('save')\">Save</button></div>" +
-      "</div>";
+      '  <div><button @click="$emit(\'delete_selection\')">Delete</button></div>' +
+      '  <div><button @click="$emit(\'save\')">Save</button></div>' +
+      '</div>';
 
     Vue.use(GmapVue, {
       load: {
         key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-        libraries: 'places,drawing'
-      }
+        libraries: 'places,drawing',
+      },
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       new Vue({
         el: '#root',
         components: {
           drawingToolbar: {
-            template: toolbarTemplate
-          }
+            template: toolbarTemplate,
+          },
         },
         data: {
           mapCenter: { lat: 4.5, lng: 99 },
@@ -89,7 +95,7 @@
             strokeColor: '#999',
             draggable: false,
             editable: false,
-            clickable: true
+            clickable: true,
           },
           circleOptions: {
             fillColor: '#777',
@@ -98,7 +104,7 @@
             strokeColor: '#999',
             draggable: false,
             editable: false,
-            clickable: true
+            clickable: true,
           },
           polylineOptions: {
             fillColor: '#777',
@@ -107,7 +113,7 @@
             strokeColor: '#999',
             draggable: false,
             editable: false,
-            clickable: true
+            clickable: true,
           },
           polygonOptions: {
             fillColor: '#777',
@@ -116,8 +122,8 @@
             strokeColor: '#999',
             draggable: false,
             editable: false,
-            clickable: true
-          }
+            clickable: true,
+          },
         },
         watch: {
           mapMode(newMode, oldMode) {
@@ -133,11 +139,11 @@
               this.mapDraggable = false;
               this.mapCursor = 'default';
             }
-          }
+          },
         },
         mounted() {
           this.mapMode = 'ready';
-        }
+        },
       });
     });
   </script>

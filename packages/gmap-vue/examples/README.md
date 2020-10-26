@@ -9,5 +9,3 @@ open `all-components.html` in your browser.
 
 If you need to write your own plugin for other Google Map components (e.g. overlays, heat maps)
 refer to `overlay.html` for reference.
-
-

@@ -3,19 +3,16 @@
     <h1>Resize Bus</h1>
 
     <p>
-      The first map is displayed correctly after clicking
-      the button.
-
-      The second and third are not (not bound to default resize bus).
-      <button @click=updateStyle>
+      The first map is displayed correctly after clicking the button. The second
+      and third are not (not bound to default resize bus).
+      <button @click="updateStyle">
         Click me first
       </button>
     </p>
     <p>
-      However, the third map responds to the second button
-      (custom resize bus)
+      However, the third map responds to the second button (custom resize bus)
 
-      <button @click=updateBus>
+      <button @click="updateBus">
         Click me second
       </button>
     </p>
@@ -23,60 +20,60 @@
     <gmap-map
       :style="currentStyle"
       :center="{lat: 1.38, lng: 103.8}"
-      :zoom=12>
+      :zoom="12"
+    >
     </gmap-map>
 
     <gmap-map
       :style="currentStyle"
       :center="{lat: 1.38, lng: 103.8}"
-      :zoom=12
-      :resize-bus="null">
+      :zoom="12"
+      :resize-bus="null"
+    >
     </gmap-map>
 
     <gmap-map
       :style="currentStyle"
       :center="{lat: 1.38, lng: 103.8}"
-      :zoom=12
-      :resize-bus="customBus">
+      :zoom="12"
+      :resize-bus="customBus"
+    >
     </gmap-map>
   </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
-<script src="gmap-vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
+  <script src="gmap-vue.js"></script>
 
-<script>
-
-Vue.use(GmapVue, {
-  load: {
-    key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-  },
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  new Vue({
-    el: '#root',
-    data: {
-      currentStyle: {
-        display: 'none'
+  <script>
+    Vue.use(GmapVue, {
+      load: {
+        key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
       },
-      customBus: new Vue(),
-    },
-    methods: {
-      updateStyle() {
-        this.currentStyle = {
-          display: 'inline-block',
-          width: '200px',
-          height: '200px',
-        };
-        Vue.$gmapDefaultResizeBus.$emit('resize');
-      },
-      updateBus() {
-        this.customBus.$emit('resize');
-      }
-    }
-  });
-});
+    });
 
-</script>
-
+    document.addEventListener('DOMContentLoaded', function () {
+      new Vue({
+        el: '#root',
+        data: {
+          currentStyle: {
+            display: 'none',
+          },
+          customBus: new Vue(),
+        },
+        methods: {
+          updateStyle() {
+            this.currentStyle = {
+              display: 'inline-block',
+              width: '200px',
+              height: '200px',
+            };
+            Vue.$gmapDefaultResizeBus.$emit('resize');
+          },
+          updateBus() {
+            this.customBus.$emit('resize');
+          },
+        },
+      });
+    });
+  </script>
 </body>

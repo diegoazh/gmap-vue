@@ -1,10 +1,10 @@
 <template>
-  <pre class="source-code-viewer">{{source}}</pre>
+  <pre class="source-code-viewer">{{ source }}</pre>
 </template>
 
 <style>
 .source-code-viewer {
-  background-color: #CCC;
+  background-color: #ccc;
   overflow: auto;
   font-family: monospace;
 }
@@ -12,6 +12,6 @@
 
 <script>
 export default {
-  props: ['source']
-}
+  props: ['source'],
+};
 </script>

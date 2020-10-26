@@ -4,7 +4,6 @@ export default function promiseLazy(loadGmapApi, GmapApi) {
   return function promiseLazyCreator(options) {
     // Things to do once the API is loaded
     function onApiLoaded() {
-      // eslint-disable-next-line no-param-reassign -- required
       GmapApi.gmapApi = {};
       return window.google;
     }
