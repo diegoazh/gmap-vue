@@ -1,12 +1,20 @@
 <body>
   <div id="root">
-    <google-map :center="{lat: 1.38, lng: 103.8}" :zoom="12" style="width: 100%; height: 500px">
-      <ground-overlay source="./overlay.png" :bounds="{
+    <google-map
+      :center="{lat: 1.38, lng: 103.8}"
+      :zoom="12"
+      style="width: 100%; height: 500px;"
+    >
+      <ground-overlay
+        source="./overlay.png"
+        :bounds="{
             north: 1.502,
             south: 1.185,
             east: 104.0262,
             west: 103.5998,
-        }" :opacity="0.5">
+        }"
+        :opacity="0.5"
+      >
       </ground-overlay>
     </google-map>
   </div>
@@ -24,21 +32,24 @@
       installComponents: false,
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       Vue.component('google-map', GmapVue.Map);
-      Vue.component('ground-overlay', GmapVue.MapElementFactory({
-        mappedProps: {
-          'opacity': {}
-        },
-        props: {
-          'source': {type: String},
-          'bounds': {type: Object},
-        },
-        events: ['click', 'dblclick'],
-        name: 'groundOverlay',
-        ctr: () => google.maps.GroundOverlay,
-        ctrArgs: (options, {source, bounds}) => [source, bounds, options],
-      }));
+      Vue.component(
+        'ground-overlay',
+        GmapVue.MapElementFactory({
+          mappedProps: {
+            opacity: {},
+          },
+          props: {
+            source: { type: String },
+            bounds: { type: Object },
+          },
+          events: ['click', 'dblclick'],
+          name: 'groundOverlay',
+          ctr: () => google.maps.GroundOverlay,
+          ctrArgs: (options, { source, bounds }) => [source, bounds, options],
+        })
+      );
 
       new Vue({
         el: '#root',
@@ -48,5 +59,4 @@
       });
     });
   </script>
-
 </body>

@@ -64,15 +64,13 @@ export default mapElementFactory({
         ? google.maps.ControlPosition[this.position]
         : google.maps.ControlPosition.TOP_LEFT;
 
-    // TODO: should be analyzed after this PR
-    /* eslint-disable no-param-reassign -- needed to add options */
     options.drawingMode = null;
     options.drawingControl = !this.$scopedSlots.default;
     options.drawingControlOptions = {
       drawingModes,
       position,
     };
-    /* eslint-enable no-param-reassign */
+
     return options;
   },
   afterCreate() {
@@ -150,8 +148,6 @@ export default mapElementFactory({
       this.shapes.forEach((shape) => {
         const shapeDrawing = new shapeType[shape.type](shape.overlay);
         shapeDrawing.setMap(this.$map);
-        // TODO: analyze if exists a better way to do the below assignment
-        // eslint-disable-next-line no-param-reassign -- we need to assign properties to this shape
         shape.overlay = shapeDrawing;
         google.maps.event.addListener(shapeDrawing, 'click', () => {
           self.setSelection(shape);

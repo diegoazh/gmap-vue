@@ -1,11 +1,16 @@
 <body>
   <div id="root">
-    <h1>Test</h1> "Singapore" should appear in the text box on page load. No errors in console.
-    <gmap-autocomplete placeholder="This is a placeholder text" @place_changed="setPlace">
+    <h1>Test</h1>
+    "Singapore" should appear in the text box on page load. No errors in
+    console.
+    <gmap-autocomplete
+      placeholder="This is a placeholder text"
+      @place_changed="setPlace"
+    >
     </gmap-autocomplete>
-    <br/>
-    <strong>lat:</strong> {{place && place.lat}}
-    <strong>lng:</strong> {{place && place.lng}}
+    <br />
+    <strong>lat:</strong> {{place && place.lat}} <strong>lng:</strong> {{place
+    && place.lng}}
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
@@ -16,17 +21,17 @@
     Vue.use(GmapVue, {
       load: {
         key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-        libraries: 'places'
+        libraries: 'places',
       },
       // Demonstrating how we can customize the name of the components
       installComponents: true,
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       new Vue({
         el: '#root',
         data: {
-          place: null
+          place: null,
         },
         methods: {
           setPlace(place) {
@@ -34,10 +39,9 @@
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             };
-          }
-        }
+          },
+        },
       });
     });
   </script>
-
 </body>

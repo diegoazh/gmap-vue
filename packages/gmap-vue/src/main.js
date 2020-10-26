@@ -87,10 +87,8 @@ export function install(Vue, options) {
   });
 
   // Static properties
-  /* eslint-disable no-param-reassign -- required */
   Vue.$gmapDefaultResizeBus = defaultResizeBus;
   Vue.$gmapApiPromiseLazy = gmapApiPromiseLazy;
-  /* eslint-enable no-param-reassign */
 
   if (finalOptions.installComponents) {
     Vue.component('GmapMap', Map);

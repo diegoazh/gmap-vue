@@ -1,23 +1,23 @@
-import Puppeteer from 'puppeteer'
-import path from 'path'
-import CompileStandalone from './compile-standalone'
+import Puppeteer from 'puppeteer';
+import path from 'path';
+import CompileStandalone from './compile-standalone';
 
 const puppeteerPromise = CompileStandalone.then(() => {
-  const options = {}
+  const options = {};
 
   if (process.env.THIS_IS_ON_TRAVIS_AND_SANDBOX_IS_NOT_ALLOWED === 'true') {
-    options.args = ['--no-sandbox', '--disable-setuid-sandbox']
+    options.args = ['--no-sandbox', '--disable-setuid-sandbox'];
   }
 
-  return Puppeteer.launch(options)
-})
+  return Puppeteer.launch(options);
+});
 
-export function getPage (p) {
+export function getPage(p) {
   return async () => {
-    p(await puppeteerPromise.then((browser) => browser.newPage()))
-  }
+    p(await puppeteerPromise.then((browser) => browser.newPage()));
+  };
 }
 
-export async function loadFile (page, relpath, options) {
-  return page.goto(`file:///${path.join(__dirname, '../', relpath)}`, options)
+export async function loadFile(page, relpath, options) {
+  return page.goto(`file:///${path.join(__dirname, '../', relpath)}`, options);
 }

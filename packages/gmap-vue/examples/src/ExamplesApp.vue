@@ -3,10 +3,14 @@
     <div class="sidebar">
       <h3>List of Examples</h3>
       <ul>
-        <li v-for="(example, index) in examples" :key="index" @click="loadExample(example.name)"
-            :title="example.description">
-          <router-link :to="{name: example.name}">
-            {{example.friendlyName}}
+        <li
+          v-for="(example, index) in examples"
+          :key="index"
+          @click="loadExample(example.name)"
+          :title="example.description"
+        >
+          <router-link :to="{ name: example.name }">
+            {{ example.friendlyName }}
           </router-link>
         </li>
       </ul>
@@ -33,7 +37,7 @@
 .examples-app .sidebar ul {
   padding: 0;
   margin: 0;
-  background-color: #DDE;
+  background-color: #dde;
 }
 .examples-app .sidebar ul li {
   cursor: pointer;
@@ -42,7 +46,7 @@
   margin: 0;
 }
 .examples-app .sidebar ul li:hover {
-  background-color: #EDC;
+  background-color: #edc;
 }
 .examples-app .sidebar ul li a {
   display: block;
@@ -56,44 +60,41 @@
 }
 </style>
 <script>
-import Examples from '../examples-index'
+import Examples from '../examples-index';
 
 /* A list of examples, and their source codes */
 const ExamplesWithoutOrdering = Examples.map((ex) => {
-  const nameWithoutOrdering = ex.name.replace(/^[0-9]*/, '')
+  const nameWithoutOrdering = ex.name.replace(/^[0-9]*/, '');
 
   return {
     ...ex,
-    friendlyName: nameWithoutOrdering
-  }
-})
+    friendlyName: nameWithoutOrdering,
+  };
+});
 
-const ExamplesByName = ExamplesWithoutOrdering.reduce(
-  (all, example) => {
-    all[example.name] = example
-    return all
-  },
-  {}
-)
+const ExamplesByName = ExamplesWithoutOrdering.reduce((all, example) => {
+  all[example.name] = example;
+  return all;
+}, {});
 
 export default {
-  data () {
+  data() {
     return {
-      loadedExample: null
-    }
+      loadedExample: null,
+    };
   },
   computed: {
-    examples () {
-      return ExamplesWithoutOrdering
+    examples() {
+      return ExamplesWithoutOrdering;
     },
-    examplesByName () {
-      return ExamplesByName
-    }
+    examplesByName() {
+      return ExamplesByName;
+    },
   },
   methods: {
-    loadExample (e) {
-      this.loadedExample = e
-    }
-  }
-}
+    loadExample(e) {
+      this.loadedExample = e;
+    },
+  },
+};
 </script>

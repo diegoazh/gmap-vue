@@ -6,23 +6,30 @@
     <button @click="setDescription('Seoul')">Set to Seoul</button><br />
     <label>
       Place:
-      <gmap-autocomplete :value="description" placeholder="This is a placeholder text" @place_changed="setPlace"
-        :select-first-on-enter="true">
+      <gmap-autocomplete
+        :value="description"
+        placeholder="This is a placeholder text"
+        @place_changed="setPlace"
+        :select-first-on-enter="true"
+      >
       </gmap-autocomplete>
     </label>
     <br />
-    {{latLng.lat}},
-    {{latLng.lng}}
+    {{latLng.lat}}, {{latLng.lng}}
 
     <div>
       <h2>Options work</h2>
       You cannot find the state of Texas in this
       <label>
         Only locations in Singapore:
-        <gmap-autocomplete :value="description" @place_changed="setPlace" :options="{
+        <gmap-autocomplete
+          :value="description"
+          @place_changed="setPlace"
+          :options="{
             bounds: {north: 1.4, south: 1.2, east: 104, west: 102},
             strictBounds: true
-          }">
+          }"
+        >
         </gmap-autocomplete>
       </label>
     </div>
@@ -33,11 +40,10 @@
   <script src="gmap-vue.js"></script>
 
   <script>
-
     Vue.use(GmapVue, {
       load: {
         key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-        libraries: 'places'
+        libraries: 'places',
       },
     });
 
@@ -46,24 +52,22 @@
         el: '#root',
         data: {
           description: 'Singapore',
-          latLng: {}
+          latLng: {},
         },
         methods: {
           setDescription(description) {
             this.description = description;
           },
           setPlace(place) {
-            if (!place) return
+            if (!place) return;
 
             this.latLng = {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             };
-          }
-        }
+          },
+        },
       });
     });
-
   </script>
-
 </body>

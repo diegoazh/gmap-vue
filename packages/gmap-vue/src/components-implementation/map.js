@@ -60,11 +60,8 @@ const events = [
 // Plain Google Maps methods exposed here for convenience
 const linkedMethods = ['panBy', 'panTo', 'panToBounds', 'fitBounds'].reduce(
   (all, methodName) => {
-    // TODO: analyze if the following anonymous function can be an arrow function or a defined name
-    // eslint-disable-next-line no-param-reassign, func-names -- false positive
-    all[methodName] = function (...args) {
+    all[methodName] = function linkMethod(...args) {
       if (this.$mapObject) {
-        // TODO: analyze behavior we replace apply with spread operator
         this.$mapObject[methodName](...args);
       }
     };

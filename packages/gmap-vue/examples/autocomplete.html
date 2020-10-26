@@ -3,18 +3,33 @@
     <h1>Autocomplete Example (#164)</h1>
     <label>
       AutoComplete
-      <gmap-autocomplete placeholder="This is a placeholder text" @place_changed="setPlace">
+      <gmap-autocomplete
+        placeholder="This is a placeholder text"
+        @place_changed="setPlace"
+      >
       </gmap-autocomplete>
       <button @click="usePlace">Add</button>
     </label>
     <br />
 
-    <Gmap-Map style="width: 600px; height: 300px;" :zoom="1" :center="{lat: 0, lng: 0}">
-      <Gmap-Marker v-for="(marker, index) in markers" :key="index" :position="marker.position"></Gmap-Marker>
-      <Gmap-Marker v-if="this.place" label="&#x2605;" :position="{
+    <Gmap-Map
+      style="width: 600px; height: 300px;"
+      :zoom="1"
+      :center="{lat: 0, lng: 0}"
+    >
+      <Gmap-Marker
+        v-for="(marker, index) in markers"
+        :key="index"
+        :position="marker.position"
+      ></Gmap-Marker>
+      <Gmap-Marker
+        v-if="this.place"
+        label="&#x2605;"
+        :position="{
           lat: this.place.geometry.location.lat(),
           lng: this.place.geometry.location.lng(),
-        }"></Gmap-Marker>
+        }"
+      ></Gmap-Marker>
     </Gmap-Map>
   </div>
 
@@ -22,11 +37,10 @@
   <script src="gmap-vue.js"></script>
 
   <script>
-
     Vue.use(GmapVue, {
       load: {
         key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-        libraries: 'places'
+        libraries: 'places',
       },
     });
 
@@ -42,7 +56,7 @@
             this.description = description;
           },
           setPlace(place) {
-            this.place = place
+            this.place = place;
           },
           usePlace(place) {
             if (this.place) {
@@ -50,15 +64,13 @@
                 position: {
                   lat: this.place.geometry.location.lat(),
                   lng: this.place.geometry.location.lng(),
-                }
-              })
+                },
+              });
               this.place = null;
             }
-          }
-        }
+          },
+        },
       });
     });
-
   </script>
-
 </body>

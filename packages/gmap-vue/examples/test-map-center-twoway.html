@@ -1,17 +1,16 @@
 <head>
   <meta charset="utf-8" />
   <style>
-  .map-container {
-    width: 400px;
-    height: 400px;
-    display: inline-block;
-  }
+    .map-container {
+      width: 400px;
+      height: 400px;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
   <script>
-  var tests = [];
-
+    var tests = [];
   </script>
 
   <div id="test1">
@@ -22,23 +21,32 @@
     </ol>
 
     <div>
-      Lat: <input type="number"
+      Lat:
+      <input
+        type="number"
         v-model.number.lazy="reportedMapCenter.lat"
         @change="sync"
-        step="0.00001" />
+        step="0.00001"
+      />
     </div>
     <div>
-      Lng: <input type="number"
+      Lng:
+      <input
+        type="number"
         v-model.number.lazy="reportedMapCenter.lng"
         @change="sync"
-        step="0.00001" />
+        step="0.00001"
+      />
     </div>
 
-    <gmap-map :center="mapCenter" :zoom="12"
+    <gmap-map
+      :center="mapCenter"
+      :zoom="12"
       ref="map"
       @center_changed="updateCenter"
       @idle="sync"
-      class="map-container">
+      class="map-container"
+    >
     </gmap-map>
 
     <gmap-street-view-panorama
@@ -46,7 +54,8 @@
       ref="pano"
       @position_changed="updateCenter"
       :pov="pov"
-      class="map-container">
+      class="map-container"
+    >
     </gmap-street-view-panorama>
   </div>
 
@@ -58,16 +67,16 @@
     Vue.use(GmapVue, {
       load: {
         key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-      }
+      },
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       new Vue({
         el: '#test1',
         data: {
           reportedMapCenter: {
             lat: 1.32,
-            lng: 103.8
+            lng: 103.8,
           },
           mapCenter: null,
           pov: {
@@ -75,22 +84,21 @@
             heading: 0,
           },
         },
-        created () {
-          this.sync()
+        created() {
+          this.sync();
         },
         methods: {
           updateCenter(latLng) {
             this.reportedMapCenter = {
               lat: latLng.lat(),
               lng: latLng.lng(),
-            }
+            };
           },
-          sync () {
-            this.mapCenter = this.reportedMapCenter
-          }
-        }
+          sync() {
+            this.mapCenter = this.reportedMapCenter;
+          },
+        },
       });
     });
   </script>
-
 </body>

@@ -1,7 +1,6 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import Vue from 'vue';
-// eslint-disable-next-line import/no-extraneous-dependencies -- should be analyzed later
 import VueRouter from 'vue-router';
 import * as GmapVue from '../../dist/main';
 import Examples from '../examples-index';
