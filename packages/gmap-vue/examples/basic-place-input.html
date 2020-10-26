@@ -1,50 +1,49 @@
 <body>
   <div id="root">
     <h1>Changing Default Place updates text box</h1>
-    <button @click="setPlaceText('Tokyo')">Set to Tokyo</button><br/>
-    <button @click="setPlaceText('Shanghai')">Set to Shanghai</button><br/>
-    <button @click="setPlaceText('Seoul')">Set to Seoul</button><br/>
-    <gmap-autocomplete placeholder="This is a placeholder text" @place_changed="setPlace">
+    <button @click="setPlaceText('Tokyo')">Set to Tokyo</button><br />
+    <button @click="setPlaceText('Shanghai')">Set to Shanghai</button><br />
+    <button @click="setPlaceText('Seoul')">Set to Seoul</button><br />
+    <gmap-autocomplete
+      placeholder="This is a placeholder text"
+      @place_changed="setPlace"
+    >
     </gmap-autocomplete>
-    <br/>
-    <strong>lat:</strong> {{latLng.lat}}
-    <strong>lng:</strong> {{latLng.lng}}
+    <br />
+    <strong>lat:</strong> {{latLng.lat}} <strong>lng:</strong> {{latLng.lng}}
   </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.js"></script>
-<script src="gmap-vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.js"></script>
+  <script src="gmap-vue.js"></script>
 
-<script>
-
-Vue.use(GmapVue, {
-  load: {
-    key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
-    libraries: 'places'
-  },
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  new Vue({
-    el: '#root',
-    data: {
-      place: 'Singapore',
-      latLng: {}
-    },
-    methods: {
-      setPlaceText(place) {
-        this.place = place;
+  <script>
+    Vue.use(GmapVue, {
+      load: {
+        key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
+        libraries: 'places',
       },
-      setPlace(place) {
-        this.latLng = {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-        };
-      }
-    }
-  });
-});
+    });
 
-</script>
-
+    document.addEventListener('DOMContentLoaded', function () {
+      new Vue({
+        el: '#root',
+        data: {
+          place: 'Singapore',
+          latLng: {},
+        },
+        methods: {
+          setPlaceText(place) {
+            this.place = place;
+          },
+          setPlace(place) {
+            this.latLng = {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+            };
+          },
+        },
+      });
+    });
+  </script>
 </body>

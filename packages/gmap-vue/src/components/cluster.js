@@ -125,8 +125,6 @@ export default mapElementFactory({
     /* Performance optimization when destroying a large number of markers */
     this.$children.forEach((marker) => {
       if (marker.$clusterObject === this.$clusterObject) {
-        // TODO: analyze if exists a better way to do this
-        // eslint-disable-next-line no-param-reassign -- needed to clean in a more optimized way
         marker.$clusterObject = null;
       }
     });

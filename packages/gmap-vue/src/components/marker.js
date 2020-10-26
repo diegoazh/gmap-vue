@@ -121,8 +121,6 @@ export default mapElementFactory({
 
   beforeCreate(options) {
     if (this.$clusterPromise) {
-      // TODO: this should be analyzed after
-      // eslint-disable-next-line no-param-reassign -- we need to set a property in null
       options.map = null;
     }
 

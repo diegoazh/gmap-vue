@@ -1,12 +1,14 @@
 <body>
   <div id="root">
-    Map type id
+    Map type id {{mapTypeId}}
 
-    {{mapTypeId}}
-
-    <gmap-map :center="center" :zoom="15" style="width: 100%; height: 500px"
-        @maptypeid_changed="updateMapType"
-        :map-type-id="mapTypeId">
+    <gmap-map
+      :center="center"
+      :zoom="15"
+      style="width: 100%; height: 500px;"
+      @maptypeid_changed="updateMapType"
+      :map-type-id="mapTypeId"
+    >
     </gmap-map>
   </div>
 
@@ -17,27 +19,26 @@
   <script>
     Vue.use(GmapVue, {
       load: {
-        key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc'
+        key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
       },
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       new Vue({
         el: '#root',
         data: {
           center: {
             lat: 47.376332,
-            lng: 8.547511
+            lng: 8.547511,
           },
-          mapTypeId: "terrain",
+          mapTypeId: 'terrain',
         },
         methods: {
-          updateMapType: function(type) {
-            this.mapTypeId = type
-          }
-        }
+          updateMapType: function (type) {
+            this.mapTypeId = type;
+          },
+        },
       });
     });
   </script>
-
 </body>

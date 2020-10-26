@@ -44,8 +44,6 @@ export default mapElementFactory({
   },
 
   beforeCreate(options) {
-    // TODO: Analyze a better way to do this
-    // eslint-disable-next-line no-param-reassign -- needed to add properties to option object
     options.content = this.$refs.flyaway;
 
     if (this.$markerPromise) {
