@@ -5,21 +5,13 @@ If you want to use a CDN it is available on unpkg and jsdelivr, the above is an 
 ```html
 <body>
   <div id="root">
-    <google-map
-      :center="{lat: 1.38, lng: 103.8}"
-      :zoom="12"
-      style="width: 100%; height: 500px;"
-    >
-      <ground-overlay
-        source="./overlay.png"
-        :bounds="{
+    <google-map :center="{lat: 1.38, lng: 103.8}" :zoom="12" style="width: 100%; height: 500px">
+      <ground-overlay source="./overlay.png" :bounds="{
             north: 1.502,
             south: 1.185,
             east: 104.0262,
             west: 103.5998,
-        }"
-        :opacity="0.5"
-      >
+        }" :opacity="0.5">
       </ground-overlay>
     </google-map>
   </div>
@@ -37,7 +29,7 @@ If you want to use a CDN it is available on unpkg and jsdelivr, the above is an 
       installComponents: false,
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
       Vue.component('google-map', GmapVue.Map);
       Vue.component('ground-overlay', GmapVue.mapElementFactory({
         mappedProps: {
