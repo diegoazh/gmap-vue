@@ -16,7 +16,7 @@
     "deploy": "npm run build:examples && gh-pages -d examples",
     "prepare": "npm run build",
     "pre-commit": "lint-staged",
-    "docs": "jsdoc -c 'jsdoc.json'"
+    "gen:api:docs": "rimraf ../documentation/docs/code && npx vuepress-jsdoc -d ../documentation/docs -t \"GmapVue API\""
   },
   "files": [
     "dist"
@@ -78,11 +78,13 @@
     "shx": "^0.3.2",
     "style-loader": "^1.1.4",
     "template-html-loader": "1.0.0",
-    "uglifyjs-webpack-plugin": "^2.2.0",
+    "terser-webpack-plugin": "4.2.3",
     "vue": "^2.6.11",
+    "vue-docgen-api": "^4.33.4",
     "vue-loader": "^15.9.1",
     "vue-router": "^3.1.6",
     "vue-template-compiler": "^2.6.11",
+    "vuepress-jsdoc": "^3.2.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "yaml-loader": "^0.6.0"
