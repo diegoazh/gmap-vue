@@ -1,19 +1,20 @@
 const path = require('path');
-// eslint-disable-next-line import/no-extraneous-dependencies -- should be analyzed later
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-// eslint-disable-next-line import/no-extraneous-dependencies -- should be analyzed later
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-// eslint-disable-next-line import/no-extraneous-dependencies -- should be analyzed later
+const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const config = {
   entry: [path.resolve('./src/main.js')],
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
+      new TerserPlugin({
         parallel: true,
-        sourceMap: true,
+        terserOptions: {
+          sourceMap: true,
+          format: {
+            comments: false,
+          },
+        },
       }),
       new OptimizeCSSAssetsPlugin({}),
     ],
