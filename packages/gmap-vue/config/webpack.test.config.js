@@ -1,5 +1,4 @@
 const path = require('path');
-// eslint-disable-next-line import/no-extraneous-dependencies -- should be analyzed later
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const config = {
