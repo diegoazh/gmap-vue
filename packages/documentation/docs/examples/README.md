@@ -1,60 +1,12 @@
-### CDN example
+## Mapped props
 
-```html
-<body>
-  <div id="root">
-    <google-map :center="{lat: 1.38, lng: 103.8}" :zoom="12" style="width: 100%; height: 500px">
-      <ground-overlay source="./overlay.png" :bounds="{
-            north: 1.502,
-            south: 1.185,
-            east: 104.0262,
-            west: 103.5998,
-        }" :opacity="0.5">
-      </ground-overlay>
-    </google-map>
-  </div>
+This are GoogleMapsOptions that we want to have like props in our Vue component.
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
-  <script src="https://unpkg.com/gmap-vue@1.2.2/dist/gmap-vue.js"></script>
+This properties are in the way that GoogleMaps accept it and with extraneous properties for the VueJs API.
+In a previous version of this plugin, to avoid repetition, we created a .js file component with a `mappedProps` key on it and used a variety of helper functions to clean it and bind it to Vue props and watch them, etc.
 
-  <script>
-    Vue.use(GmapVue, {
-      load: {
-        key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc', // use a valid key
-        v: '3.26',
-      },
-      // Demonstrating how we can customize the name of the components
-      installComponents: false,
-    });
+To day our main goal is write a more intuitive, readable and descriptive API with a better documentation of it, following this goals we move this extraneous properties to an independent file in order to consume it when is needed.
 
-    document.addEventListener('DOMContentLoaded', function() {
-      Vue.component('google-map', GmapVue.Map);
-      Vue.component('ground-overlay', GmapVue.mapElementFactory({
-        mappedProps: {
-          'opacity': {}
-        },
-        props: {
-          'source': {type: String},
-          'bounds': {type: Object},
-        },
-        events: ['click', 'dblclick'],
-        name: 'groundOverlay',
-        ctr: () => google.maps.GroundOverlay,
-        ctrArgs: (options, {source, bounds}) => [source, bounds, options],
-      }));
-
-      new Vue({
-        el: '#root',
-        data: {
-          place: '',
-        },
-      });
-    });
-  </script>
-</body>
-```
-::: tip
-You can copy and paste this example in a html file and run it, but you shouldn't miss to provide a valid gmap key
+::: tip For developers
+You need to remind that you need to create properties in the correspondent Vue component with the same names and the same values for those properties that are not extraneous to Vue.
 :::
-
-[Back to documentation](/#unpkg)
