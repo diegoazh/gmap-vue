@@ -9,12 +9,12 @@ module.exports = {
     sidebarDepth: 4,
     nav: [
       { text: 'Plugin', link: '/' },
-      { text: 'Guide', link: '/examples/' },
+      { text: 'Guide', link: '/guide/' },
       { text: 'API', link: '/code/' }
     ],
     sidebar: {
       '/code/': apiDocs['/code/'],
-      '/examples/': [
+      '/guide/': [
         {
           title: 'Guide',
           collapsable: false,
