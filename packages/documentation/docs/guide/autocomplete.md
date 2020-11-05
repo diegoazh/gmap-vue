@@ -14,6 +14,14 @@ For more information please read the [Vue.js documentation for slots](https://vu
 
 :::
 
+## Variables
+
+This component save the original autocomplete object provided by Google Maps in a property called `$autocomplete`, as the example below.
+
+```javascript
+this.$autocomplete = new google.maps.places.Autocomplete(...);
+```
+
 ## Source code
 
 :::details Click to se the source code of <code>autocomplete.vue</code> component
@@ -177,7 +185,7 @@ export const autocompleteMappedProps = {
 
 If you need to know the API of this component please read it [here](/code/components/autocomplete.html).
 
-## Html example
+## Html examples
 
 :::details Complete HTML example
 
