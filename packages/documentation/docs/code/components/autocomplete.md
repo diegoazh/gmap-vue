@@ -5,7 +5,7 @@ title: autocomplete
 Autocomplete component
 
 ::: tip Tags
-**see**: [source code](/examples/autocomplete.html#source-code)<br />
+**see**: [source code](/guide/autocomplete.html#source-code)<br />
 :::
 
 ## Table of contents

@@ -23,7 +23,7 @@ import { autocompleteMappedProps } from '../utils/mapped-props-by-map-element';
 /**
  * Autocomplete component
  * @displayName GmapAutocomplete
- * @see [source code](/examples/autocomplete.html#source-code)
+ * @see [source code](/guide/autocomplete.html#source-code)
  */
 export default {
   props: {
