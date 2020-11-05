@@ -27,12 +27,13 @@ module.exports = {
             {
               title: 'Components',
               collapsable: false,
-              path: '/guide/cdn',
+              path: '/guide/autocomplete',
               children: [
+                ['autocomplete', 'GmapAutocomplete'],
+                ['circle', 'GmapCircle'],
                 ['cdn', 'Using a CDN'],
                 ['map-center', 'Map center'],
                 ['map-center-twoway', 'Map center two way binding'],
-                ['autocomplete', 'GmapAutocomplete'],
                 ['kml-layer', 'Kml layer'],
                 ['map-functions', 'Map functions'],
                 ['marker', 'Marker'],
