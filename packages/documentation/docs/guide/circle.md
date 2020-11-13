@@ -122,6 +122,26 @@ export const circleMappedProps = {
 
 :::
 
+:::details Events bound with to way on <code>GmapCircle</code>
+
+```javascript
+const events = [
+  'click',
+  'dblclick',
+  'drag',
+  'dragend',
+  'dragstart',
+  'mousedown',
+  'mousemove',
+  'mouseout',
+  'mouseover',
+  'mouseup',
+  'rightclick',
+];
+```
+
+:::
+
 ## How to use it
 
 ```vue
