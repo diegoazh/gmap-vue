@@ -1,0 +1,153 @@
+<template>
+  <div>
+    <!-- @slot Used to set your cluster -->
+    <slot></slot>
+  </div>
+</template>
+
+<script>
+import MarkerClusterer from '@google/markerclustererplus';
+import MapElementMixin from '../mixins/map-element';
+import { clusterMappedProps } from '../utils/mapped-props-by-map-element';
+import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
+
+/**
+ * Cluster component
+ * @displayName GmapCluster
+ * @see [source code](/guide/cluster.html)
+ * @see [Marker clusterer](https://github.com/googlemaps/v3-utility-library/blob/master/markerclustererplus/src/markerclusterer.js)
+ */
+export default {
+  mixins: [MapElementMixin],
+  props: {
+    /**
+     * The max zoom of the Google Maps
+     * @see [MapOptions interface](https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions)
+     */
+    maxZoom: {
+      type: Number,
+    },
+    /**
+     * The batchSize for IE
+     * @see [issue 136](https://github.com/googlemaps/v3-utility-library/issues/136)
+     * @see [docs explanation](https://github.com/googlemaps/v3-utility-library/blob/0a707d5ce74738a9ad4fcb6c02257fb9d9e433ae/packages/markerclustererplus/src/markerclusterer.ts#L27)
+     */
+    batchSizeIE: {
+      type: Number,
+    },
+
+    calculator: {
+      type: Function,
+    },
+    enableRetinaIcons: {
+      type: Boolean,
+    },
+    gridSize: {
+      type: Number,
+    },
+    averageCenter: {
+      type: Boolean,
+    },
+    ignoreHidden: {
+      type: Boolean,
+    },
+    imageExtension: {
+      type: String,
+    },
+    imagePath: {
+      type: String,
+    },
+    imageSizes: {
+      type: Array,
+    },
+    minimumClusterSize: {
+      type: Number,
+    },
+    clusterClass: {
+      type: String,
+    },
+    styles: {
+      type: Array,
+    },
+    zoomOnClick: {
+      type: Boolean,
+    },
+  },
+  async provide() {
+    // events to bind with toWay
+    const events = [
+      'click',
+      'rightclick',
+      'dblclick',
+      'drag',
+      'dragstart',
+      'dragend',
+      'mouseup',
+      'mousedown',
+      'mouseover',
+      'mouseout',
+    ];
+
+    // Infowindow needs this to be immediately available
+    this.$map = await this.$mapPromise;
+
+    // Initialize the maps with the given options
+    const initialOptions = {
+      ...this.options,
+      map: this.$map,
+      ...getPropsValues(this, clusterMappedProps),
+    };
+    const { options: extraOptions, ...finalOptions } = initialOptions;
+
+    if (typeof MarkerClusterer === 'undefined') {
+      throw new Error(
+        'MarkerClusterer is not installed! require() it or include it from https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js'
+      );
+    }
+
+    const { map, markers, ...clusterOptions } = finalOptions;
+    this.$clusterObject = new MarkerClusterer(map, markers, ...clusterOptions);
+    bindProps(this, this.$clusterObject, clusterMappedProps);
+    bindEvents(this, this.$clusterObject, events);
+
+    Object.keys(clusterMappedProps).forEach((prop) => {
+      if (clusterMappedProps[prop].twoWay) {
+        this.$on(`${prop.toLowerCase()}_changed`, this.reinsertMarkers);
+      }
+    });
+
+    this.$clusterPromise = this.$clusterObject;
+    return { $clusterPromise: this.$clusterObject };
+  },
+  beforeDestroy() {
+    /* Performance optimization when destroying a large number of markers */
+    this.$children.forEach((marker) => {
+      if (marker.$clusterObject === this.$clusterObject) {
+        marker.$clusterObject = null;
+      }
+    });
+
+    if (this.$clusterObject) {
+      this.$clusterObject.clearMarkers();
+    }
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$clusterObject && this.$clusterObject.setMap) {
+      this.$clusterObject.setMap(null);
+    }
+  },
+  updated() {
+    if (this.$clusterObject) {
+      this.$clusterObject.repaint();
+    }
+  },
+  methods: {
+    reinsertMarkers() {
+      const oldMarkers = this.$clusterObject.getMarkers();
+      this.$clusterObject.clearMarkers();
+      this.$clusterObject.addMarkers(oldMarkers);
+    },
+  },
+};
+</script>
