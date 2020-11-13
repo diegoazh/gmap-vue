@@ -58,7 +58,67 @@ export const circleMappedProps = {
   },
 };
 
+export const clusterMappedProps = {
+  maxZoom: {
+    type: Number,
+    twoWay: false,
+  },
+  batchSizeIE: {
+    type: Number,
+    twoWay: false,
+  },
+  calculator: {
+    type: Function,
+    twoWay: false,
+  },
+  enableRetinaIcons: {
+    type: Boolean,
+    twoWay: false,
+  },
+  gridSize: {
+    type: Number,
+    twoWay: false,
+  },
+  averageCenter: {
+    type: Boolean,
+    twoWay: false,
+  },
+  ignoreHidden: {
+    type: Boolean,
+    twoWay: false,
+  },
+  imageExtension: {
+    type: String,
+    twoWay: false,
+  },
+  imagePath: {
+    type: String,
+    twoWay: false,
+  },
+  imageSizes: {
+    type: Array,
+    twoWay: false,
+  },
+  minimumClusterSize: {
+    type: Number,
+    twoWay: false,
+  },
+  clusterClass: {
+    type: String,
+    twoWay: false,
+  },
+  styles: {
+    type: Array,
+    twoWay: false,
+  },
+  zoomOnClick: {
+    type: Boolean,
+    twoWay: false,
+  },
+};
+
 export default {
   autocompleteMappedProps,
   circleMappedProps,
+  clusterMappedProps,
 };

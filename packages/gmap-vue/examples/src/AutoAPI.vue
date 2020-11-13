@@ -29,7 +29,7 @@ import {
   StreetViewPanorama,
 } from '../../src/main';
 import ManualDoc from './auto/manualDoc.yml';
-import Cluster from '../../src/components/cluster';
+import Cluster from '../../src/components/cluster.vue';
 import AutoComponent from './auto/component.vue';
 
 const COMPONENTS = Object.entries({

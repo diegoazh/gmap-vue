@@ -28,7 +28,7 @@ import MountableMixin from './mixins/mountable';
 const Cluster =
   process.env.BUILD_DEV === '1'
     ? undefined
-    : ((s) => s.default || s)(require('./components/cluster'));
+    : ((s) => s.default || s)(require('./components/cluster.vue'));
 
 // TODO: This should be checked if it must be GmapVue, Gmap.api or something else
 let GmapApi = null;
@@ -99,6 +99,7 @@ export function install(Vue, options) {
     Vue.component('GmapPolyline', Polyline);
     Vue.component('GmapPolygon', Polygon);
     Vue.component('GmapCircle', Circle);
+    Vue.component('GmapCluster', Cluster);
     Vue.component('GmapRectangle', Rectangle);
     Vue.component('GmapDrawingManager', DrawingManager);
     Vue.component('GmapAutocomplete', Autocomplete);
