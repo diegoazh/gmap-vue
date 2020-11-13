@@ -7,11 +7,12 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "lerna bootstrap",
-    "start:docs": "lerna run dev",
+    "start:docs": "lerna run gen:api:docs\n lerna run dev",
     "build": "lerna run build",
     "test": "lerna run test",
     "lint": "lerna run lint",
-    "release": "lerna version --conventional-commits --yes"
+    "release": "lerna version --conventional-commits --yes",
+    "gen:docs": "lerna run gen:api:docs"
   },
   "devDependencies": {
     "@commitlint/cli": "^9.1.1",
