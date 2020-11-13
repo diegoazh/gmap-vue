@@ -2,7 +2,7 @@
 
 This component helps you to find and select a place on Google Maps API.
 
-For more informatio read the Google Maps documentations for [autocomplete](https://developers.google.com/maps/documentation/javascript/places-autocomplete).
+For more information read the Google Maps documentations for [autocomplete](https://developers.google.com/maps/documentation/javascript/places-autocomplete).
 
 It is exported with the name `GmapAutocomplete`.
 
