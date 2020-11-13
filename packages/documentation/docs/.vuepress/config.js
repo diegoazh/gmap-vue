@@ -31,6 +31,7 @@ module.exports = {
               children: [
                 ['autocomplete', 'GmapAutocomplete'],
                 ['circle', 'GmapCircle'],
+                ['cluster', 'GmapCluster'],
                 ['cdn', 'Using a CDN'],
                 ['map-center', 'Map center'],
                 ['map-center-twoway', 'Map center two way binding'],
