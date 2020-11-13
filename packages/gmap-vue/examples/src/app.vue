@@ -256,7 +256,7 @@ gmap-map {
 
 <script>
 import _ from 'lodash';
-import GmapCluster from '../../src/components/cluster';
+import GmapCluster from '../../src/components/cluster.vue';
 
 export default {
   components: { GmapCluster },
