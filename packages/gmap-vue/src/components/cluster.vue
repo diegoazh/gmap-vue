@@ -14,7 +14,8 @@ import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
 /**
  * Cluster component
  * @displayName GmapCluster
- * @see [source code](/guide/cluster.html)
+ * @see [source code](/guide/cluster.html#source-code)
+ * @see [Official documentation](https://googlemaps.github.io/js-markerclustererplus/index.html)
  * @see [Marker clusterer](https://github.com/googlemaps/v3-utility-library/blob/master/markerclustererplus/src/markerclusterer.js)
  */
 export default {
@@ -35,40 +36,76 @@ export default {
     batchSizeIE: {
       type: Number,
     },
-
+    /**
+     * Function to calculate markers in a cluster
+     * @see [calculator docs](https://googlemaps.github.io/js-markerclustererplus/globals.html#calculator)
+     */
     calculator: {
       type: Function,
     },
+    /**
+     * Enable the retina icons on the cluster
+     */
     enableRetinaIcons: {
       type: Boolean,
     },
+    /**
+     * Set the grid size of the cluster
+     */
     gridSize: {
       type: Number,
     },
+    /**
+     * Enable de average center
+     */
     averageCenter: {
       type: Boolean,
     },
+    /**
+     * Enable to ignore hidden markers
+     */
     ignoreHidden: {
       type: Boolean,
     },
+    /**
+     * Set the image extension type
+     */
     imageExtension: {
       type: String,
     },
+    /**
+     * Set the image path
+     */
     imagePath: {
       type: String,
     },
+    /**
+     * Set the image size
+     */
     imageSizes: {
       type: Array,
     },
+    /**
+     * Set the minimum cluster size
+     */
     minimumClusterSize: {
       type: Number,
     },
+    /**
+     * Set a css class for the cluster
+     */
     clusterClass: {
       type: String,
     },
+    /**
+     * Set the styles for the cluster
+     */
     styles: {
       type: Array,
     },
+    /**
+     * Enable zoom on click
+     */
     zoomOnClick: {
       type: Boolean,
     },
