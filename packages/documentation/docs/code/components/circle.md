@@ -5,7 +5,7 @@ title: circle
 Circle component
 
 ::: tip Tags
-**see**: [source code](/guide/circle.html)<br />
+**see**: [source code](/guide/circle.html#source-code)<br />
 :::
 
 ## Table of contents
