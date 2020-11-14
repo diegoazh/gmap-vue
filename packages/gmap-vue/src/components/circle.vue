@@ -6,7 +6,7 @@ import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
 /**
  * Circle component
  * @displayName GmapCircle
- * @see [source code](/guide/circle.html)
+ * @see [source code](/guide/circle.html#source-code)
  */
 export default {
   mixins: [mapElementMixin],
