@@ -5,7 +5,7 @@ title: cluster
 Cluster component
 
 ::: tip Tags
-**see**: [source code](/guide/cluster.html)<br />**see**: [Marker clusterer](https://github.com/googlemaps/v3-utility-library/blob/master/markerclustererplus/src/markerclusterer.js)<br />
+**see**: [source code](/guide/cluster.html#source-code)<br />**see**: [Official documentation](https://googlemaps.github.io/js-markerclustererplus/index.html)<br />**see**: [Marker clusterer](https://github.com/googlemaps/v3-utility-library/blob/master/markerclustererplus/src/markerclusterer.js)<br />
 :::
 
 ## Table of contents
@@ -32,77 +32,80 @@ Cluster component
 |:-|:-|:-|:-|
 |`number`|-|The batchSize for IE|
 ### calculator (`func`)
+::: tip Tags
+**see**: [calculator docs](https://googlemaps.github.io/js-markerclustererplus/globals.html#calculator)<br />
+:::
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`func`|-|undefined|
+|`func`|-|Function to calculate markers in a cluster|
 ### enableRetinaIcons (`boolean`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`boolean`|-|undefined|
+|`boolean`|-|Enable the retina icons on the cluster|
 ### gridSize (`number`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`number`|-|undefined|
+|`number`|-|Set the grid size of the cluster|
 ### averageCenter (`boolean`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`boolean`|-|undefined|
+|`boolean`|-|Enable de average center|
 ### ignoreHidden (`boolean`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`boolean`|-|undefined|
+|`boolean`|-|Enable to ignore hidden markers|
 ### imageExtension (`string`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`string`|-|undefined|
+|`string`|-|Set the image extension type|
 ### imagePath (`string`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`string`|-|undefined|
+|`string`|-|Set the image path|
 ### imageSizes (`array`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`array`|-|undefined|
+|`array`|-|Set the image size|
 ### minimumClusterSize (`number`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`number`|-|undefined|
+|`number`|-|Set the minimum cluster size|
 ### clusterClass (`string`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`string`|-|undefined|
+|`string`|-|Set a css class for the cluster|
 ### styles (`array`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`array`|-|undefined|
+|`array`|-|Set the styles for the cluster|
 ### zoomOnClick (`boolean`)
 
 
 |type|default|description|
 |:-|:-|:-|:-|
-|`boolean`|-|undefined|
+|`boolean`|-|Enable zoom on click|
 
 
 ## Slots
