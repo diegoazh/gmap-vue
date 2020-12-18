@@ -130,6 +130,7 @@ export default {
 
     // Initialize the maps with the given options
     const initialOptions = {
+      // TODO: analyze the below line because I think it can be removed
       ...this.options,
       map: this.$map,
       ...getPropsValues(this, clusterMappedProps),
@@ -153,6 +154,7 @@ export default {
       }
     });
 
+    // TODO: analyze the efects of only returns the instance and remove completely the promise
     this.$clusterPromise = this.$clusterObject;
     return { $clusterPromise: this.$clusterObject };
   },
