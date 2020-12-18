@@ -32,6 +32,7 @@ module.exports = {
                 ['autocomplete', 'GmapAutocomplete'],
                 ['circle', 'GmapCircle'],
                 ['cluster', 'GmapCluster'],
+                ['drawing-manager', 'GmapDrawingManager'],
                 ['cdn', 'Using a CDN'],
                 ['map-center', 'Map center'],
                 ['map-center-twoway', 'Map center two way binding'],
@@ -53,7 +54,6 @@ module.exports = {
                 ['map-destroy', 'Map destroy'],
                 ['street-view-panorama', 'Street view panorama'],
                 ['heat-map-layer', 'Heat Map Layer'],
-                ['drawing-manager', 'Drawing manager'],
                 ['drawing-manager-with-slot', 'Drawing manager with slot']
               ]
             },
