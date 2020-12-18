@@ -97,6 +97,7 @@ export default {
     bindProps(this, this.$circleObject, circleMappedProps);
     bindEvents(this, this.$circleObject, events);
 
+    // TODO: analyze the efects of only returns the instance and remove completely the promise
     this.$circlePromise = this.$circleObject;
     return { $circlePromise: this.$circleObject };
   },
