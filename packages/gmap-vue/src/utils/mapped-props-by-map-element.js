@@ -117,8 +117,37 @@ export const clusterMappedProps = {
   },
 };
 
+export const drawingManagerMappedProps = {
+  circleOptions: {
+    type: Object,
+    twoWay: false,
+    noBind: true,
+  },
+  markerOptions: {
+    type: Object,
+    twoWay: false,
+    noBind: true,
+  },
+  polygonOptions: {
+    type: Object,
+    twoWay: false,
+    noBind: true,
+  },
+  polylineOptions: {
+    type: Object,
+    twoWay: false,
+    noBind: true,
+  },
+  rectangleOptions: {
+    type: Object,
+    twoWay: false,
+    noBind: true,
+  },
+};
+
 export default {
   autocompleteMappedProps,
   circleMappedProps,
   clusterMappedProps,
+  drawingManagerMappedProps,
 };
