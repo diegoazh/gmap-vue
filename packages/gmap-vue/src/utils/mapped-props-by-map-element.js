@@ -409,6 +409,17 @@ export const infoWindowMappedProps = {
   },
 };
 
+export const kmlLayerMappedProps = {
+  url: {
+    twoWay: false,
+    type: String,
+  },
+  map: {
+    twoWay: true,
+    type: Object,
+  },
+};
+
 export default {
   autocompleteMappedProps,
   circleMappedProps,
