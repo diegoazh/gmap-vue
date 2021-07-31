@@ -1,18 +1,18 @@
 /**
  * @class MapElementMixin
  *
- * Extends components to include the following fields:
+ * Add a inject object to inject $mapPromise and a provide function to the
+ * component this function save the returned Google Maps object in the $map
+ * property after the $mapPromise is resolved.
  *
- * @property $map The Google map (valid only after the promise returns)
- *
- *
- * */
+ * @property $map - The Google map (valid only after the promise returns)
+ */
 export default {
   inject: {
     $mapPromise: { default: 'abcdef' },
   },
 
-  async provide() {
+  provide() {
     // Note: although this mixin is not "providing" anything,
     // components' expect the `$map` property to be present on the component.
     // In order for that to happen, this mixin must intercept the $mapPromise
@@ -25,6 +25,7 @@ export default {
     this.$mapPromise.then((map) => {
       this.$map = map;
     });
+
     return {};
   },
 };

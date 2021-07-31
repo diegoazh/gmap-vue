@@ -1,13 +1,11 @@
 /* eslint-disable no-underscore-dangle -- old style, should be analyzed */
-/*
-Mixin for objects that are mounted by Google Maps
-Javascript API.
-
-These are objects that are sensitive to element resize
-operations so it exposes a property which accepts a bus
-
-*/
-
+/**
+ * @class MountableMixin
+ * Mixin for objects that are mounted by Google Maps Javascript API.
+ *
+ * These are objects that are sensitive to element resize  operations
+ * so it exposes a property which accepts a bus
+ */
 export default {
   props: ['resizeBus'],
 
