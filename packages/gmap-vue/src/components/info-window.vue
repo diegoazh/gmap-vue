@@ -21,55 +21,6 @@ import { bindEvents, bindProps, getPropsValues } from '../utils/helpers';
  */
 export default {
   mixins: [MapElementMixin],
-  props: {
-    /**
-     * Determines if the info-window is open or not
-     */
-    opened: {
-      type: Boolean,
-      default: true,
-    },
-    /**
-     * Extra options that you want to pass to the component
-     */
-    options: {
-      type: Object,
-      required: false,
-      default() {
-        return {};
-      },
-    },
-    /**
-     * Contains the LatLng at which this info window is anchored.
-     * Note: An InfoWindow may be attached either to a Marker object
-     * (in which case its position is based on the marker's location)
-     * or on the map itself at a specified LatLng.
-     */
-    position: {
-      type: Object,
-    },
-    /**
-     * The z-index property of the window
-     */
-    zIndex: {
-      type: Number,
-    },
-  },
-  methods: {
-    // TODO: we need to analyze the following method name
-    // eslint-disable-next-line no-underscore-dangle -- old code
-    _openInfoWindow() {
-      if (this.opened) {
-        if (this.$markerObject !== null) {
-          this.$infoWindowObject.open(this.$map, this.$markerObject);
-        } else {
-          this.$infoWindowObject.open(this.$map);
-        }
-      } else {
-        this.$infoWindowObject.close();
-      }
-    },
-  },
   inject: {
     $markerPromise: {
       default: null,
@@ -129,6 +80,40 @@ export default {
     this.$infoWindowPromise = promise;
     return { $infoWindowPromise: promise };
   },
+  props: {
+    /**
+     * Determines if the info-window is open or not
+     */
+    opened: {
+      type: Boolean,
+      default: true,
+    },
+    /**
+     * Extra options that you want to pass to the component
+     */
+    options: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
+    },
+    /**
+     * Contains the LatLng at which this info window is anchored.
+     * Note: An InfoWindow may be attached either to a Marker object
+     * (in which case its position is based on the marker's location)
+     * or on the map itself at a specified LatLng.
+     */
+    position: {
+      type: Object,
+    },
+    /**
+     * The z-index property of the window
+     */
+    zIndex: {
+      type: Number,
+    },
+  },
   mounted() {
     const el = this.$refs.flyaway;
     el.parentNode.removeChild(el);
@@ -138,6 +123,21 @@ export default {
     if (this.$infoWindowObject && this.$infoWindowObject.setMap) {
       this.$infoWindowObject.setMap(null);
     }
+  },
+  methods: {
+    // TODO: we need to analyze the following method name
+    // eslint-disable-next-line no-underscore-dangle -- old code
+    _openInfoWindow() {
+      if (this.opened) {
+        if (this.$markerObject !== null) {
+          this.$infoWindowObject.open(this.$map, this.$markerObject);
+        } else {
+          this.$infoWindowObject.open(this.$map);
+        }
+      } else {
+        this.$infoWindowObject.close();
+      }
+    },
   },
 };
 </script>

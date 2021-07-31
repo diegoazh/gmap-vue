@@ -81,7 +81,7 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/examples/#mapped-props).
+If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapHeatmapLayer</code> component
 
@@ -174,7 +174,7 @@ This component is one of the few components where you must use the Google `LatLn
 
 If you need to know the API of this component please read it [here](/code/components/heatmap-layer.html).
 
-## Html examples
+## HTML examples
 
 :::details HTML example
 

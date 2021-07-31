@@ -1,10 +1,209 @@
-## Live example
+## Description
 
-<eg-base>
-  <eg-polyline />
-</eg-base>
+This component helps you to create a polyline on Google Maps API.
+
+For more information read the Google Maps documentation for [polyline](https://developers.google.com/maps/documentation/javascript/examples/polyline-simple).
+
+It is exported with the name `GmapPolyline`.
+
+## Variables
+
+This component save the original polygon object provided by Google Maps in a property called `$polylineObject`, as the example below.
+
+```javascript
+this.$polylineObject = new google.maps.Polyline(...);
+```
 
 ## Source code
+
+:::details Click to se the source code of <code>polyline.vue</code> component
+
+```vue
+<script>
+import mapElementMixin from '../mixins/map-element';
+import { getPropsValues, bindEvents, bindProps } from '../utils/helpers';
+import { polylineMappedProps } from '../utils/mapped-props-by-map-element';
+
+export default {
+  mixins: [mapElementMixin],
+  props: {
+    deepWatch: {
+      type: Boolean,
+      default: false,
+    },
+    draggable: {
+      type: Boolean,
+    },
+    editable: {
+      type: Boolean,
+    },
+    options: {
+      type: Object,
+    },
+    path: {
+      type: Array,
+    },
+  },
+  provide() {
+    const events = [
+      'click',
+      'dblclick',
+      'drag',
+      'dragend',
+      'dragstart',
+      'mousedown',
+      'mousemove',
+      'mouseout',
+      'mouseover',
+      'mouseup',
+      'rightclick',
+    ];
+
+    const promise = this.$mapPromise
+      .then((map) => {
+        this.$map = map;
+
+        const initialOptions = {
+          ...this.options,
+          map,
+          ...getPropsValues(this, polylineMappedProps),
+        };
+        const { options: extraOptions, ...finalOptions } = initialOptions;
+
+        this.$polylineObject = new google.maps.Polyline(finalOptions);
+
+        bindProps(this, this.$circleObject, polylineMappedProps);
+        bindEvents(this, this.$circleObject, events);
+
+        let clearEvents = () => {};
+
+        this.$watch(
+          'path',
+          (path) => {
+            if (path) {
+              clearEvents();
+
+              this.$polylineObject.setPath(path);
+
+              const mvcPath = this.$polylineObject.getPath();
+              const eventListeners = [];
+
+              const updatePaths = () => {
+                this.$emit('path_changed', this.$polylineObject.getPath());
+              };
+
+              eventListeners.push([
+                mvcPath,
+                mvcPath.addListener('insert_at', updatePaths),
+              ]);
+              eventListeners.push([
+                mvcPath,
+                mvcPath.addListener('remove_at', updatePaths),
+              ]);
+              eventListeners.push([
+                mvcPath,
+                mvcPath.addListener('set_at', updatePaths),
+              ]);
+
+              clearEvents = () => {
+                eventListeners.forEach(([, listenerHandle]) => {
+                  google.maps.event.removeListener(listenerHandle);
+                });
+              };
+            }
+          },
+          {
+            deep: this.deepWatch,
+            immediate: true,
+          }
+        );
+
+        return this.$polylineObject;
+      })
+      .catch((error) => {
+        throw error;
+      });
+
+    this.$polylinePromise = promise;
+    return { $polylinePromise: promise };
+  },
+};
+</script>
+```
+
+:::
+
+If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+
+::: details Mapped Props of <code>GmapPolyline</code> component
+
+```javascript
+export const polylineMappedProps = {
+  draggable: {
+    type: Boolean,
+  },
+  editable: {
+    type: Boolean,
+  },
+  options: {
+    twoWay: false,
+    type: Object,
+  },
+  path: {
+    type: Array,
+    twoWay: true,
+  },
+};
+```
+
+:::
+
+:::details Events bound with to way on <code>GmapPolyline</code>
+
+```javascript
+const events = [
+  'click',
+  'dblclick',
+  'drag',
+  'dragend',
+  'dragstart',
+  'mousedown',
+  'mousemove',
+  'mouseout',
+  'mouseover',
+  'mouseup',
+  'rightclick',
+];
+```
+
+:::
+
+## How to use it
+
+```vue
+<template>
+  <gmap-map
+    :center="center"
+    :zoom="12"
+    style="width: 100%; height: 500px"
+    ref="map">
+    <gmap-polyline
+      v-if="path.length > 0"
+      :path="path"
+      :editable="true"
+      @path_changed="updateEdited($event)"
+      @rightclick="handleClickForDelete"
+      ref="polyline">
+    </gmap-polyline>
+  </gmap-map>
+</template>
+```
+
+If you need to know the API of this component please read it [here](/code/components/polyline.html).
+
+## HTML examples
+
+:::details Simple polyline example
 
 ```html
 <body>
@@ -115,3 +314,11 @@
   </script>
 </body>
 ```
+
+:::
+
+## Test the component
+
+<eg-base>
+  <eg-polyline />
+</eg-base>

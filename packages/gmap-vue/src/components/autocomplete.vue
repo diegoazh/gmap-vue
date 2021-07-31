@@ -6,7 +6,7 @@
         - `attrs`, it's type is `object`, it's all attributes passed to the component ([vm.$attrs](https://vuejs.org/v2/api/?#vm-attrs))<br>
         - `listeners`, it's type is `object`, it's all events passed to the component ([vm.$listeners](https://vuejs.org/v2/api/?#vm-listeners))
 			-->
-    <slot v-bind:attrs="$attrs" v-bind:listeners="$listeners">
+    <slot :attrs="$attrs" :listeners="$listeners">
       <input ref="input" v-bind="$attrs" v-on="$listeners" />
     </slot>
   </div>
@@ -107,6 +107,18 @@ export default {
       default: null,
     },
   },
+  watch: {
+    /**
+     * This watcher is incharge to update
+     * the component restrictions when is
+     * changed from the parent
+     */
+    componentRestrictions(v) {
+      if (v !== undefined) {
+        this.$autocomplete.setComponentRestrictions(v);
+      }
+    },
+  },
   async mounted() {
     await this.$gmapApiPromiseLazy();
 
@@ -119,9 +131,8 @@ export default {
         );
       }
 
-      scopedInput = this.$scopedSlots.default()[0].context.$refs[
-        this.slotRefName
-      ];
+      scopedInput =
+        this.$scopedSlots.default()[0].context.$refs[this.slotRefName];
 
       if (scopedInput && scopedInput.$refs) {
         scopedInput = scopedInput.$refs[this.childRefName];
@@ -169,18 +180,6 @@ export default {
        */
       this.$emit('place_changed', this.$autocomplete.getPlace());
     });
-  },
-  watch: {
-    /**
-     * This watcher is incharge to update
-     * the component restrictions when is
-     * changed from the parent
-     */
-    componentRestrictions(v) {
-      if (v !== undefined) {
-        this.$autocomplete.setComponentRestrictions(v);
-      }
-    },
   },
 };
 </script>

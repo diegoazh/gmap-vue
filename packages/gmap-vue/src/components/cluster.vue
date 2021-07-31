@@ -20,6 +20,68 @@ import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
  */
 export default {
   mixins: [MapElementMixin],
+  provide() {
+    // events to bind with toWay
+    const events = [
+      'click',
+      'rightclick',
+      'dblclick',
+      'drag',
+      'dragstart',
+      'dragend',
+      'mouseup',
+      'mousedown',
+      'mouseover',
+      'mouseout',
+    ];
+
+    // Infowindow needs this to be immediately available
+    const promise = this.$mapPromise
+      .then((map) => {
+        this.$map = map;
+
+        // Initialize the maps with the given options
+        const initialOptions = {
+          // TODO: analyze the below line because I think it can be removed
+          ...this.options,
+          map,
+          ...getPropsValues(this, clusterMappedProps),
+        };
+        const { options: extraOptions, ...finalOptions } = initialOptions;
+
+        if (typeof MarkerClusterer === 'undefined') {
+          throw new Error(
+            'MarkerClusterer is not installed! require() it or include it from https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js'
+          );
+        }
+
+        const { map: mapInstance, markers, ...clusterOptions } = finalOptions;
+
+        this.$clusterObject = new MarkerClusterer(
+          mapInstance,
+          markers,
+          ...clusterOptions
+        );
+
+        bindProps(this, this.$clusterObject, clusterMappedProps);
+        bindEvents(this, this.$clusterObject, events);
+
+        Object.keys(clusterMappedProps).forEach((prop) => {
+          if (clusterMappedProps[prop].twoWay) {
+            this.$on(`${prop.toLowerCase()}_changed`, this.reinsertMarkers);
+          }
+        });
+
+        return this.$clusterObject;
+      })
+      .catch((error) => {
+        throw error;
+      });
+
+    // TODO: analyze the efects of only returns the instance and remove completely the promise
+    this.$clusterPromise = promise;
+    return { $clusterPromise: promise };
+  },
   props: {
     /**
      * The max zoom of the Google Maps
@@ -109,68 +171,6 @@ export default {
     zoomOnClick: {
       type: Boolean,
     },
-  },
-  provide() {
-    // events to bind with toWay
-    const events = [
-      'click',
-      'rightclick',
-      'dblclick',
-      'drag',
-      'dragstart',
-      'dragend',
-      'mouseup',
-      'mousedown',
-      'mouseover',
-      'mouseout',
-    ];
-
-    // Infowindow needs this to be immediately available
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
-
-        // Initialize the maps with the given options
-        const initialOptions = {
-          // TODO: analyze the below line because I think it can be removed
-          ...this.options,
-          map,
-          ...getPropsValues(this, clusterMappedProps),
-        };
-        const { options: extraOptions, ...finalOptions } = initialOptions;
-
-        if (typeof MarkerClusterer === 'undefined') {
-          throw new Error(
-            'MarkerClusterer is not installed! require() it or include it from https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js'
-          );
-        }
-
-        const { map: mapInstance, markers, ...clusterOptions } = finalOptions;
-
-        this.$clusterObject = new MarkerClusterer(
-          mapInstance,
-          markers,
-          ...clusterOptions
-        );
-
-        bindProps(this, this.$clusterObject, clusterMappedProps);
-        bindEvents(this, this.$clusterObject, events);
-
-        Object.keys(clusterMappedProps).forEach((prop) => {
-          if (clusterMappedProps[prop].twoWay) {
-            this.$on(`${prop.toLowerCase()}_changed`, this.reinsertMarkers);
-          }
-        });
-
-        return this.$clusterObject;
-      })
-      .catch((error) => {
-        throw error;
-      });
-
-    // TODO: analyze the efects of only returns the instance and remove completely the promise
-    this.$clusterPromise = promise;
-    return { $clusterPromise: promise };
   },
   beforeDestroy() {
     /* Performance optimization when destroying a large number of markers */

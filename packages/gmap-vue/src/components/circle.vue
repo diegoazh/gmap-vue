@@ -10,6 +10,48 @@ import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
  */
 export default {
   mixins: [mapElementMixin],
+  provide() {
+    // events to bind with toWay
+    const events = [
+      'click',
+      'dblclick',
+      'drag',
+      'dragend',
+      'dragstart',
+      'mousedown',
+      'mousemove',
+      'mouseout',
+      'mouseover',
+      'mouseup',
+      'rightclick',
+    ];
+
+    // Infowindow needs this to be immediately available
+    const promise = this.$mapPromise
+      .then((map) => {
+        this.$map = map;
+
+        // Initialize the maps with the given options
+        const initialOptions = {
+          ...this.options,
+          map,
+          ...getPropsValues(this, circleMappedProps),
+        };
+        const { options: extraOptions, ...finalOptions } = initialOptions;
+        this.$circleObject = new google.maps.Circle(finalOptions);
+        bindProps(this, this.$circleObject, circleMappedProps);
+        bindEvents(this, this.$circleObject, events);
+
+        return this.$circleObject;
+      })
+      .catch((error) => {
+        throw error;
+      });
+
+    // TODO: analyze the efects of only returns the instance and remove completely the promise
+    this.$circlePromise = promise;
+    return { $circlePromise: promise };
+  },
   props: {
     /**
      * The center of the circle
@@ -64,56 +106,14 @@ export default {
       type: Object,
     },
   },
-  render() {
-    return '';
-  },
-  provide() {
-    // events to bind with toWay
-    const events = [
-      'click',
-      'dblclick',
-      'drag',
-      'dragend',
-      'dragstart',
-      'mousedown',
-      'mousemove',
-      'mouseout',
-      'mouseover',
-      'mouseup',
-      'rightclick',
-    ];
-
-    // Infowindow needs this to be immediately available
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
-
-        // Initialize the maps with the given options
-        const initialOptions = {
-          ...this.options,
-          map,
-          ...getPropsValues(this, circleMappedProps),
-        };
-        const { options: extraOptions, ...finalOptions } = initialOptions;
-        this.$circleObject = new google.maps.Circle(finalOptions);
-        bindProps(this, this.$circleObject, circleMappedProps);
-        bindEvents(this, this.$circleObject, events);
-
-        return this.$circleObject;
-      })
-      .catch((error) => {
-        throw error;
-      });
-
-    // TODO: analyze the efects of only returns the instance and remove completely the promise
-    this.$circlePromise = promise;
-    return { $circlePromise: promise };
-  },
   destroyed() {
     // Note: not all Google Maps components support maps
     if (this.$circleObject && this.$circleObject.setMap) {
       this.$circleObject.setMap(null);
     }
+  },
+  render() {
+    return '';
   },
 };
 </script>
