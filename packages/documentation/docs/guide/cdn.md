@@ -1,5 +1,7 @@
 ### CDN example
 
+If you want to use a CDN it is available on unpkg and jsdelivr, the above is an example using unpkg CDN
+
 ```html
 <body>
   <div id="root">
@@ -53,8 +55,7 @@
   </script>
 </body>
 ```
-::: tip
-You can copy and paste this example in a html file and run it, but you shouldn't miss to provide a valid gmap key
-:::
 
-[Back to documentation](/#unpkg)
+::: tip
+You can copy and paste this example in a html file and run it, but you shouldn't forget to provide a valid Google Map key
+:::

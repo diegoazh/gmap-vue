@@ -265,7 +265,7 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/examples/#mapped-props).
+If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapMap</code> component
 
@@ -344,7 +344,7 @@ const events = [
 
 If you need to know the API of this component please read it [here](/code/components/map.html).
 
-## Html examples
+## HTML examples
 
 :::details HTML example with center twoway
 

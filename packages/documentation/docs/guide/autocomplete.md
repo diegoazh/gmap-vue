@@ -89,7 +89,7 @@ export default {
     if (this.$scopedSlots.default) {
       if (!Object.keys(this.$scopedSlots.default()[0].context.$refs).length) {
         throw new Error(
-          'If you use the slot input you must add a ref to the element that you will use as the input, and if you use a vue component, eg: v-text-field, etc, you need to set the childRefName indicating what is the ref name of the html input elemnt behind your component.'
+          'If you use the slot input you must add a ref to the element that you will use as the input, and if you use a vue component, eg: v-text-field, etc, you need to set the childRefName indicating what is the ref name of the HTML input elemnt behind your component.'
         );
       }
 
@@ -149,7 +149,7 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/examples/#mapped-props).
+If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 ::: details Mapped Props of <code>GmapAutocomplete</code> component
 
@@ -197,7 +197,7 @@ export const autocompleteMappedProps = {
 
 If you need to know the API of this component please read it [here](/code/components/autocomplete.html).
 
-## Html examples
+## HTML examples
 
 :::details Complete HTML example
 

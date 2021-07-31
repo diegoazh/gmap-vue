@@ -7,18 +7,21 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "lerna bootstrap",
-    "start:docs": "lerna run gen:api:docs\n lerna run dev",
+    "start:docs": "lerna run gen:api:docs && lerna run dev",
     "build": "lerna run build",
     "test": "lerna run test",
     "lint": "lerna run lint",
     "release": "lerna version --conventional-commits --yes",
-    "gen:docs": "lerna run gen:api:docs"
+    "gen:docs": "lerna run gen:api:docs",
+    "clean": "rimraf ./packages/**/node_modules && rimraf ./packages/**/package-lock.json && rimraf ./package-lock.json && rimraf ./node_modules"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/config-lerna-scopes": "^12.1.4",
     "husky": "^4.3.8",
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "lint-staged": "^11.0.0",
+    "rimraf": "^3.0.2"
   }
 }

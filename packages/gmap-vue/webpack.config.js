@@ -1,9 +1,15 @@
-const path = require('path')
+const path = require('path');
 
-const env = process.env.NODE_ENV
+const env = process.env.NODE_ENV;
+global.console.info(`Build as NODE_ENV: ${env}`);
 
+global.console.info(`Loading configuration from: ./config/webpack.${env}.config`);
 // eslint-disable-next-line import/no-dynamic-require -- this will change in a near future
-const config = require(`./config/webpack.${env}.config`)
+const config = require(`./config/webpack.${env}.config`);
+
+if (!Object.keys(config).length) {
+  throw new Error(`any configuration was found on file: ./config/webpack.${env}.config`);
+}
 
 /**
  * Web config uses a global Vue and Lodash object.
