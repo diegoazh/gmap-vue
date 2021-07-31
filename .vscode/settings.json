@@ -1,7 +1,4 @@
 {
-  "files.exclude": {
-    "packages/**/dist": true
-  },
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "workbench.colorCustomizations": {
