@@ -14,7 +14,7 @@
   "dependencies": {
     "gmap-vue": "^1.5.0",
     "lodash": "^4.17.21",
-    "snyk": "^1.658.0",
+    "snyk": "^1.672.0",
     "vuepress": "^1.8.2"
   },
   "snyk": true
