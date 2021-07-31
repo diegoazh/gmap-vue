@@ -1,7 +1,7 @@
 const path = require('path');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const { VueLoaderPlugin } = require('vue-loader')
 const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const config = {
   entry: [path.resolve('./src/main.js')],
@@ -16,7 +16,7 @@ const config = {
           },
         },
       }),
-      new OptimizeCSSAssetsPlugin({}),
+      new CssMinimizerPlugin(),
     ],
   },
   module: {

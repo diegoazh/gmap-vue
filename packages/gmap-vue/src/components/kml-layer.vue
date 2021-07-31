@@ -11,22 +11,6 @@ import { kmlLayerMappedProps } from '../utils/mapped-props-by-map-element';
  */
 export default {
   mixins: [MapElementMixin],
-  props: {
-    /**
-     * The URL of the .kml file
-     * @see [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)
-     */
-    url: {
-      type: String,
-    },
-    /**
-     * Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method
-     * @see [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)
-     */
-    map: {
-      type: Object,
-    },
-  },
   provide() {
     const events = [
       'click',
@@ -66,6 +50,22 @@ export default {
 
     this.$kmlLayerPromise = promise;
     return { $kmlLayerPromise: promise };
+  },
+  props: {
+    /**
+     * The URL of the .kml file
+     * @see [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)
+     */
+    url: {
+      type: String,
+    },
+    /**
+     * Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method
+     * @see [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)
+     */
+    map: {
+      type: Object,
+    },
   },
   destroyed() {
     // Note: not all Google Maps components support maps

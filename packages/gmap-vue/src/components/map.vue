@@ -30,6 +30,15 @@ import { mapMappedProps } from '../utils/mapped-props-by-map-element';
  */
 export default {
   mixins: [mountableMixin],
+  provide() {
+    this.$mapPromise = new Promise((resolve, reject) => {
+      this.$mapPromiseDeferred = { resolve, reject };
+    });
+
+    return {
+      $mapPromise: this.$mapPromise,
+    };
+  },
   props: {
     /**
      * The initial Map center.
@@ -81,15 +90,6 @@ export default {
   data() {
     return {
       recyclePrefix: '__gmc__',
-    };
-  },
-  provide() {
-    this.$mapPromise = new Promise((resolve, reject) => {
-      this.$mapPromiseDeferred = { resolve, reject };
-    });
-
-    return {
-      $mapPromise: this.$mapPromise,
     };
   },
   computed: {

@@ -11,23 +11,6 @@ import { bindProps, getPropsValues, bindEvents } from '../utils/helpers';
  */
 export default {
   mixins: [MapElementMixin],
-  props: {
-    /**
-     * Extra options that you want to pass to the component
-     */
-    options: {
-      type: Object,
-      default: () => {},
-    },
-    /**
-     * The heat map data, is an array of `new google.maps.LatLng`,
-     * @see [heatmap options](https://developers.google.com/maps/documentation/javascript/heatmaplayer#add-a-heatmap-layer)
-     * @example `[new google.maps.LatLng(37.782, -122.447)]`
-     */
-    data: {
-      type: Array,
-    },
-  },
   provide() {
     const events = [];
 
@@ -62,6 +45,23 @@ export default {
     // TODO: analyze the efects of only returns the instance and remove completely the promise
     this.$heatmapLayerPromise = promise;
     return { $heatmapLayerPromise: promise };
+  },
+  props: {
+    /**
+     * Extra options that you want to pass to the component
+     */
+    options: {
+      type: Object,
+      default: () => {},
+    },
+    /**
+     * The heat map data, is an array of `new google.maps.LatLng`,
+     * @see [heatmap options](https://developers.google.com/maps/documentation/javascript/heatmaplayer#add-a-heatmap-layer)
+     * @example `[new google.maps.LatLng(37.782, -122.447)]`
+     */
+    data: {
+      type: Array,
+    },
   },
   destroyed() {
     // Note: not all Google Maps components support maps

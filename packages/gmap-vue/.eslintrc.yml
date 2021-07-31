@@ -4,10 +4,9 @@ env:
   es6: true
   node: true
 extends:
-  - plugin:vue/essential
+  - plugin:vue/strongly-recommended
   - airbnb-base
   - prettier
-  - prettier/vue
   - plugin:eslint-comments/recommended
 parserOptions:
   parser: babel-eslint
