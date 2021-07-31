@@ -511,6 +511,101 @@ export const markerMappedProps = {
   },
 };
 
+export const streetViewPanoramaMappedProps = {
+  zoom: {
+    twoWay: true,
+    type: Number,
+  },
+  pov: {
+    twoWay: true,
+    type: Object,
+    trackProperties: ['pitch', 'heading'],
+  },
+  position: {
+    twoWay: true,
+    type: Object,
+    noBind: true,
+  },
+  pano: {
+    twoWay: true,
+    type: String,
+  },
+  motionTracking: {
+    twoWay: false,
+    type: Boolean,
+  },
+  visible: {
+    twoWay: true,
+    type: Boolean,
+    default: true,
+  },
+  options: {
+    twoWay: false,
+    type: Object,
+    default() {
+      return {};
+    },
+  },
+};
+
+export const polygonMappedProps = {
+  draggable: {
+    type: Boolean,
+  },
+  editable: {
+    type: Boolean,
+  },
+  options: {
+    type: Object,
+  },
+  path: {
+    type: Array,
+    twoWay: true,
+    noBind: true,
+  },
+  paths: {
+    type: Array,
+    twoWay: true,
+    noBind: true,
+  },
+};
+
+export const polylineMappedProps = {
+  draggable: {
+    type: Boolean,
+  },
+  editable: {
+    type: Boolean,
+  },
+  options: {
+    twoWay: false,
+    type: Object,
+  },
+  path: {
+    type: Array,
+    twoWay: true,
+  },
+};
+
+export const rectangleMappedProps = {
+  bounds: {
+    type: Object,
+    twoWay: true,
+  },
+  draggable: {
+    type: Boolean,
+    default: false,
+  },
+  editable: {
+    type: Boolean,
+    default: false,
+  },
+  options: {
+    type: Object,
+    twoWay: false,
+  },
+};
+
 export default {
   autocompleteMappedProps,
   circleMappedProps,

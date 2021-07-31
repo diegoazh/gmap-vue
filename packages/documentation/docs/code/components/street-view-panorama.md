@@ -4,19 +4,19 @@ title: street-view-panorama
 
   # GmapStreetViewPanorama
 
-  
+
   > Street View Panorama component
-  
-  
-  
-  
-  
+
+
+
+
+
   [See]([source code](/guide/street-view-panorama.html#source-code))
 ,[See]([official docs](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanorama))
 
-  
 
-  
+
+
 ## Props
 
   | Prop name     | Description | Type      | Values      | Default     |
@@ -30,17 +30,17 @@ title: street-view-panorama
 | visible | If true, the Street View panorama is visible on load.<br/>`@value` boolean<br/>`@see` [StreetViewPanorama visible](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.visible) | boolean | - | true |
 | options | More options that you can pass to the component<br/>`@value` boolean | object | - | undefined |
 
-  
-  
-  
+
+
+
 ## Events
 
   | Event name     | Properties     | Description  |
   | -------------- |--------------- | -------------|
-  | position_changed |  | 
+  | position_changed |  |
 
-  
-  
+
+
 ## Slots
 
   | Name          | Description  | Bindings |
@@ -50,5 +50,5 @@ title: street-view-panorama
   ---
 
 
-  
-  
+
+

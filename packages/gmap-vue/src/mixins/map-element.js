@@ -22,8 +22,9 @@ export default {
     // component, putting this code in provide() ensures that the $map is
     // already set by the time the
     // component's provide() is called.
-
-    this.$map = await this.$mapPromise;
+    this.$mapPromise.then((map) => {
+      this.$map = map;
+    });
     return {};
   },
 };

@@ -12,6 +12,64 @@ import { markerMappedProps } from '../utils/mapped-props-by-map-element';
  */
 export default {
   mixins: [MapElementMixin],
+  inject: {
+    $clusterPromise: {
+      default: null,
+    },
+  },
+  provide() {
+    const events = [
+      'click',
+      'rightclick',
+      'dblclick',
+      'drag',
+      'dragstart',
+      'dragend',
+      'mouseup',
+      'mousedown',
+      'mouseover',
+      'mouseout',
+    ];
+
+    const promise = this.$mapPromise
+      .then((map) => {
+        this.$map = map;
+
+        // Initialize the maps with the given options
+        const initialOptions = {
+          // TODO: analyze the below line because I think it can be removed
+          ...this.options,
+          map,
+          ...getPropsValues(this, markerMappedProps),
+        };
+
+        const { options: extraOptions, ...finalOptions } = initialOptions;
+
+        if (this.$clusterPromise) {
+          finalOptions.map = null;
+        }
+
+        this.$markerObject = new google.maps.Marker(finalOptions);
+
+        bindProps(this, this.$infoWindowObject, markerMappedProps);
+        bindEvents(this, this.$infoWindowObject, events);
+
+        if (this.$clusterPromise) {
+          this.$clusterPromise.then((clusterObject) => {
+            clusterObject.addMarker(this.$markerObject);
+            this.$clusterObject = clusterObject;
+          });
+        }
+
+        return this.$markerObject;
+      })
+      .catch((error) => {
+        throw error;
+      });
+
+    this.$markerPromise = promise;
+    return { $markerPromise: promise };
+  },
   props: {
     /**
      * Which animation to play when marker is added to a map.
@@ -126,6 +184,18 @@ export default {
       type: Number,
     },
   },
+  destroyed() {
+    if (!this.$markerObject) {
+      return;
+    }
+
+    if (this.$clusterObject) {
+      // Repaint will be performed in `updated()` of cluster
+      this.$clusterObject.removeMarker(this.$markerObject, true);
+    } else if (this.$markerObject && this.$markerObject.setMap) {
+      this.$markerObject.setMap(null);
+    }
+  },
   render(h) {
     if (!this.$slots.default || this.$slots.default.length === 0) {
       return '';
@@ -139,76 +209,6 @@ export default {
      * @slot Default slot of the component.
      */
     return h('div', this.$slots.default);
-  },
-  destroyed() {
-    if (!this.$markerObject) {
-      return;
-    }
-
-    if (this.$clusterObject) {
-      // Repaint will be performed in `updated()` of cluster
-      this.$clusterObject.removeMarker(this.$markerObject, true);
-    } else if (this.$markerObject && this.$markerObject.setMap) {
-      this.$markerObject.setMap(null);
-    }
-  },
-  inject: {
-    $clusterPromise: {
-      default: null,
-    },
-  },
-  provide() {
-    const events = [
-      'click',
-      'rightclick',
-      'dblclick',
-      'drag',
-      'dragstart',
-      'dragend',
-      'mouseup',
-      'mousedown',
-      'mouseover',
-      'mouseout',
-    ];
-
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
-
-        // Initialize the maps with the given options
-        const initialOptions = {
-          // TODO: analyze the below line because I think it can be removed
-          ...this.options,
-          map,
-          ...getPropsValues(this, markerMappedProps),
-        };
-
-        const { options: extraOptions, ...finalOptions } = initialOptions;
-
-        if (this.$clusterPromise) {
-          finalOptions.map = null;
-        }
-
-        this.$markerObject = new google.maps.Marker(finalOptions);
-
-        bindProps(this, this.$infoWindowObject, markerMappedProps);
-        bindEvents(this, this.$infoWindowObject, events);
-
-        if (this.$clusterPromise) {
-          this.$clusterPromise.then((clusterObject) => {
-            clusterObject.addMarker(this.$markerObject);
-            this.$clusterObject = clusterObject;
-          });
-        }
-
-        return this.$markerObject;
-      })
-      .catch((error) => {
-        throw error;
-      });
-
-    this.$markerPromise = promise;
-    return { $markerPromise: promise };
   },
 };
 </script>
