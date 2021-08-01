@@ -33,16 +33,16 @@ import it anyway (but we don't have to register it)
 Therefore we use babel-plugin-transform-inline-environment-variables to
 set BUILD_DEV to truthy / falsy
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="components"></a>
 
 ## components
 Export all components and mixins
 
-**Kind**: global constant  
+**Kind**: global constant
 <a name="helpers"></a>
 
 ## helpers
 Export all helpers
 
-**Kind**: global constant  
+**Kind**: global constant
