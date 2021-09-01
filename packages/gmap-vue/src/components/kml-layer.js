@@ -9,6 +9,16 @@ const props = {
     twoWay: true,
     type: Object,
   },
+  suppressInfoWindows: {
+    twoWay: false,
+    type: Boolean,
+    noBind: true
+  },
+  preserveViewport: {
+    twoWay: false,
+    type: Boolean,
+    noBind: true
+  },
 };
 
 const events = [
