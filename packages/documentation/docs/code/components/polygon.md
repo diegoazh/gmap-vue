@@ -1,89 +1,47 @@
 ---
 title: polygon
 ---
-# GmapPolygon
-Polygon component
 
-::: tip Tags
-**see**: [source code](/guide/polygon.html#source-code)<br />**see**: [official docs](https://developers.google.com/maps/documentation/javascript/examples/polygon-arrays?hl=es)<br />
-:::
+  # GmapPolygon
 
-## Table of contents
-[[toc]]
+  
+  > Polygon component
+  
+  
+  
+  
+  
+  [See]([source code](/guide/polygon.html#source-code))
+,[See]([official docs](https://developers.google.com/maps/documentation/javascript/examples/polygon-arrays?hl=es))
 
+  
+
+  
 ## Props
 
-### deepWatch (`boolean`)
-::: tip Tags
-**value**: boolean<br />
-:::
+  | Prop name     | Description | Type      | Values      | Default     |
+  | ------------- | ----------- | --------- | ----------- | ----------- |
+  | deepWatch | If set true the object will be deep watched<br/>`@value` boolean | boolean | - | false |
+| draggable | Indicates if the polygon is draggable<br/>`@value` true, false<br/>`@see` [Polygon dragable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.draggable) | boolean | - |  |
+| editable | Indicates if the polygon is editable<br/>`@value` true, false<br/>`@see` [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.editable) | boolean | - |  |
+| options | More options that you can pass to the component<br/>`@value` boolean | object | - |  |
+| path | Indicates if the polygon is editable<br/>`@value` Array<br/>`@see` [Polygon path](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.path) | array | - |  |
+| paths | Indicates if the polygon is editable<br/>`@value` Array<br/>`@see` [Polygon paths](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.paths) | array | - |  |
 
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`boolean`|false|If set true the object will be deep watched|
-### draggable (`boolean`)
-::: tip Tags
-**value**: true, false<br />**see**: [Polygon dragable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.draggable)<br />
-:::
-
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`boolean`|-|Indicates if the polygon is draggable|
-### editable (`boolean`)
-::: tip Tags
-**value**: true, false<br />**see**: [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.editable)<br />
-:::
-
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`boolean`|-|Indicates if the polygon is editable|
-### options (`object`)
-::: tip Tags
-**value**: boolean<br />
-:::
-
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`object`|-|More options that you can pass to the component|
-### path (`array`)
-::: tip Tags
-**value**: Array<br />**see**: [Polygon path](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.path)<br />
-:::
-
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`array`|-|Indicates if the polygon is editable|
-### paths (`array`)
-::: tip Tags
-**value**: Array<br />**see**: [Polygon paths](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.paths)<br />
-:::
-
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`array`|-|Indicates if the polygon is editable|
-
-
+  
+  
+  
 ## Events
 
-### paths_changed (undefined)
+  | Event name     | Properties     | Description  |
+  | -------------- |--------------- | -------------|
+  | paths_changed | **paths** `array` - `this.$polygonObject.getPaths()` \| | An event to detect when a paths changes
+| path_changed | **path** `array` - `this.$polygonObject.getPath()` | ### path_changed (undefined)<br><br>An event to detect when a path change
 
-An event to detect when a paths changes
-#### Properties
-| name | type | description
-|:-|:-|:-|
-|paths|`array`|`this.$polygonObject.getPaths()` |### path_changed (undefined)
+  
+  
+  ---
 
-### path_changed (undefined)
 
-An event to detect when a path change
-#### Properties
-| name | type | description
-|:-|:-|:-|
-|path|`array`|`this.$polygonObject.getPath()`
-
+  
+  
