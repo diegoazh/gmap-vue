@@ -17,6 +17,9 @@ title: info-window
 
 
 
+
+
+
 ## Props
 
   | Prop name     | Description | Type      | Values      | Default     |
@@ -30,6 +33,10 @@ title: info-window
 
 
 
+
+
+
+
 ## Slots
 
   | Name          | Description  | Bindings |
@@ -38,6 +45,10 @@ title: info-window
 
   ---
 
+
+
+
+  ---
 
 
 

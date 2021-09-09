@@ -17,6 +17,9 @@ title: drawing-manager
 
 
 
+
+
+
 ## Props
 
   | Prop name     | Description | Type      | Values      | Default     |
@@ -80,36 +83,50 @@ title: drawing-manager
 
 
 
+
+
 ## Methods
 
-### setDrawingMode (mode: `string`) -> `void`
- The setDrawingMode method is binded into the default component slot
 
-::: tip Tags
-**method**: setDrawingMode<br />**param**: mode - Possible values 'marker', 'circle', 'polygon', 'polyline', 'rectangle', null<br />**returns**: undefined<br />**access**: public<br />
-:::
+### setDrawingMode
+  > The setDrawingMode method is binded into the default component slot
+
 
 #### Params
-| name | type | description
-|:-|:-|:-|
-|mode|`string`|mode - Possible values 'marker', 'circle', 'polygon', 'polyline', 'rectangle', null
 
-#### returns (void)
- undefined
-### deleteSelection (undefined: `mixed`) -> `void`
- The deleteSelection method is binded into the default component slot
+  | Param name     | Type        | Description  |
+  | ------------- |------------- | -------------|
+  | mode | string | mode - Possible values 'marker', 'circle', 'polygon', 'polyline', 'rectangle', null |
 
-::: tip Tags
-**method**: deleteSelection<br />**param**: It doesn't requires any parameter<br />**returns**: undefined<br />**access**: public<br />
-:::
+
+#### Return
+
+  | Type        | Description  |
+  | ------------- | -------------|
+  | void |  |
+
+
+### deleteSelection
+  > The deleteSelection method is binded into the default component slot
+
 
 #### Params
-| name | type | description
-|:-|:-|:-|
-|undefined|`mixed`|It doesn't requires any parameter
 
-#### returns (void)
- undefined
+  | Param name     | Type        | Description  |
+  | ------------- |------------- | -------------|
+  |  | mixed | It doesn't requires any parameter |
+
+
+#### Return
+
+  | Type        | Description  |
+  | ------------- | -------------|
+  | void |  |
+
+
+
+
+
 ## Slots
 
   | Name          | Description  | Bindings |
@@ -118,6 +135,10 @@ title: drawing-manager
 
   ---
 
+
+
+
+  ---
 
 
 

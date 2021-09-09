@@ -17,6 +17,9 @@ title: street-view-panorama
 
 
 
+
+
+
 ## Props
 
   | Prop name     | Description | Type      | Values      | Default     |
@@ -29,6 +32,9 @@ title: street-view-panorama
 | motionTracking | Whether motion tracking is on or off. Enabled by default when the motion tracking control is present, so that the POV (point of view) follows the orientation of the device. This is primarily applicable to mobile devices. If motionTracking is set to false while motionTrackingControl is enabled, the motion tracking control appears but tracking is off. The user can tap the motion tracking control to toggle this option.<br/>`@value` boolean<br/>`@see` [StreetViewPanorama motionTracking](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTracking) | boolean | - |  |
 | visible | If true, the Street View panorama is visible on load.<br/>`@value` boolean<br/>`@see` [StreetViewPanorama visible](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.visible) | boolean | - | true |
 | options | More options that you can pass to the component<br/>`@value` boolean | object | - | undefined |
+
+
+
 
 
 
@@ -48,6 +54,7 @@ title: street-view-panorama
   | default | A default slot to render the street view panorama |  |
 
   ---
+
 
 
 
