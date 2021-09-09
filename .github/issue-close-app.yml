@@ -5,12 +5,12 @@ issueConfigs:
 - content:
 # Example 1: bug report
   - "Describe the bug"
-  - "To Reproduce"
+  - "To reproduce"
   - "Expected behavior"
-  - "Current Behavior"
+  - "Current behavior"
   - "Screenshots"
-  - "Desktop (please complete the following information):"
-  - "Smartphone (please complete the following information):"
+  - "Desktop (please complete the following information)"
+  - "Smartphone (please complete the following information)"
   - "Additional context"
   - "Versions"
   - "Package manager"
