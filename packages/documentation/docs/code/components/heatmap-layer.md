@@ -1,31 +1,35 @@
 ---
 title: heatmap-layer
 ---
-# HeatmapLayer
-HeatmapLayer component
 
-::: tip Tags
-**see**: [source code](/guide/heatmap-layer.html#source-code)<br />**see**: [Official documentation](https://developers.google.com/maps/documentation/javascript/heatmaplayer)<br />
-:::
+  # HeatmapLayer
 
-## Table of contents
-[[toc]]
+  
+  > HeatmapLayer component
+  
+  
+  
+  
+  
+  [See]([source code](/guide/heatmap-layer.html#source-code))
+,[See]([Official documentation](https://developers.google.com/maps/documentation/javascript/heatmaplayer))
 
+  
+
+  
 ## Props
 
-### options (`object`)
+  | Prop name     | Description | Type      | Values      | Default     |
+  | ------------- | ----------- | --------- | ----------- | ----------- |
+  | options | Extra options that you want to pass to the component | object | - | () => {} |
+| data | The heat map data, is an array of `new google.maps.LatLng`,<br/>`@see` [heatmap options](https://developers.google.com/maps/documentation/javascript/heatmaplayer#add-a-heatmap-layer)<br/>`@example` `[new google.maps.LatLng(37.782, -122.447)]` | array | - |  |
+
+  
+  
+  
+  
+  ---
 
 
-|type|default|description|
-|:-|:-|:-|:-|
-|`object`|() => {}|Extra options that you want to pass to the component|
-### data (`array`)
-::: tip Tags
-**see**: [heatmap options](https://developers.google.com/maps/documentation/javascript/heatmaplayer#add-a-heatmap-layer)<br />**example**: `[new google.maps.LatLng(37.782, -122.447)]`<br />
-:::
-
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`array`|-|The heat map data, is an array of `new google.maps.LatLng`,|
-
+  
+  
