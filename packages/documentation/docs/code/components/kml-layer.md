@@ -1,34 +1,35 @@
 ---
 title: kml-layer
 ---
-# Kml-Layer
-KmlLayer component
 
-::: tip Tags
-**see**: [source code](/guide/kml-layer.html#source-code)<br />**see**: [Official documentation](https://developers.google.com/maps/documentation/javascript/kmllayer)<br />
-:::
+  # Kml-Layer
 
-## Table of contents
-[[toc]]
+  
+  > KmlLayer component
+  
+  
+  
+  
+  
+  [See]([source code](/guide/kml-layer.html#source-code))
+,[See]([Official documentation](https://developers.google.com/maps/documentation/javascript/kmllayer))
 
+  
+
+  
 ## Props
 
-### url (`string`)
-::: tip Tags
-**see**: [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)<br />
-:::
+  | Prop name     | Description | Type      | Values      | Default     |
+  | ------------- | ----------- | --------- | ----------- | ----------- |
+  | url | The URL of the .kml file<br/>`@see` [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options) | string | - |  |
+| map | Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method<br/>`@see` [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options) | object | - |  |
+
+  
+  
+  
+  
+  ---
 
 
-|type|default|description|
-|:-|:-|:-|:-|
-|`string`|-|The URL of the .kml file|
-### map (`object`)
-::: tip Tags
-**see**: [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)<br />
-:::
-
-
-|type|default|description|
-|:-|:-|:-|:-|
-|`object`|-|Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method|
-
+  
+  
