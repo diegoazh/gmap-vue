@@ -53,9 +53,7 @@ export default {
     },
     types: {
       type: Array,
-      default() {
-        return [];
-      },
+      default: undefined
     },
     selectFirstOnEnter: {
       required: false,
@@ -195,7 +193,7 @@ export const autocompleteMappedProps = {
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/autocomplete.html).
+If you need to know the **API of this component** please read it [here](/code/components/autocomplete-input.html).
 
 ## HTML examples
 

@@ -62,9 +62,7 @@ export default {
     },
     options: {
       type: Object,
-      default() {
-        return {};
-      },
+      default: undefined,
     },
   },
   data() {
@@ -147,7 +145,7 @@ export default {
           this.$mapObject = window[recycleKey].map;
           this.$mapObject.setOptions(options);
         } else {
-          // console.warn('[vue2-google-maps] New google map created')
+          // console.warn('[gmap-vue] New google map created')
           this.$mapObject = new google.maps.Map(element, options);
           window[recycleKey] = { map: this.$mapObject };
         }
@@ -236,7 +234,7 @@ export default {
       }
     },
     getRecycleKey() {
-      return this.options.recycle
+      return this?.options?.recycle
         ? this.recyclePrefix + this.options.recycle
         : this.recyclePrefix;
     },
@@ -342,7 +340,7 @@ const events = [
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/map.html).
+If you need to know the **API of this component** please read it [here](/code/components/map-layer.html).
 
 ## HTML examples
 
@@ -849,7 +847,7 @@ If you need to know the API of this component please read it [here](/code/compon
 
 ## Test the component
 
-:::details Click to see the HTML example with center twoway in action
+:::details Click to see the HTML example with center two-way in action
 
 <eg-base>
   <eg-map-center-twoway />

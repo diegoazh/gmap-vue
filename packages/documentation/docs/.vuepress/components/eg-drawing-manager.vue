@@ -44,6 +44,7 @@
           :circle-options="circleOptions"
           :polyline-options="polylineOptions"
           :shapes="shapes"
+          @update:shapes="shapes = $event"
         />
       </template>
     </gmap-map>

@@ -2,36 +2,34 @@
   <div>
     <gmap-map
       :center="center"
-      :zoom="11"
+      :zoom="4"
       style="width: 100%; height: 500px"
       ref="map"
     >
-      <gmap-rectangle
+      <gmap-circle
+        v-if="radius"
         :editable="editable"
         :draggable="draggable"
-        :bounds="bounds"
+        :radius="radius"
+        :center="circleCenter"
         :options="options"
-        ref="rectangle"
+        ref="circle"
       >
-      </gmap-rectangle>
+      </gmap-circle>
     </gmap-map>
   </div>
 </template>
 
 <script>
 export default {
-  name: "eg-rectangle",
+  name: "eg-circle",
   data() {
     return {
-      center: { lat: 33.678, lng: -116.243 },
+      center: { lat: 40.714, lng: -74.005 },
       editable: true,
       draggable: true,
-      bounds: {
-        north: 33.685,
-        south: 33.671,
-        east: -116.234,
-        west: -116.251,
-      },
+      population: 8405837,
+      circleCenter: { lat: 40.714, lng: -74.005 },
       options: {
         strokeColor: "#FF0000",
         strokeOpacity: 0.8,
@@ -40,6 +38,11 @@ export default {
         fillOpacity: 0.35,
       },
     };
+  },
+  computed: {
+    radius() {
+      return Math.sqrt(this.population) * 100;
+    },
   },
 };
 </script>

@@ -355,7 +355,7 @@ export const drawingManagerMappedProps = {
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/cluster.html).
+If you need to know the **API of this component** please read it [here](/code/components/cluster-icon.html).
 
 ## HTML examples
 

@@ -147,6 +147,18 @@ You can add add an overlay image over the map to mark a zone.
 
 ## Resize Bus
 
+:::danger
+
+This functionality is no longer supported by Google Maps, please read the following answers in StackOverflow:
+
+- [answer 1](https://stackoverflow.com/a/743280/5302733)
+- [answer 2](https://stackoverflow.com/a/2590049/5302733)
+
+and also check the [official documentation of the Map class](https://developers.google.com/maps/documentation/javascript/reference/map?hl=en) and you will note that this property is no longer
+supported as a property of the Map class.
+
+:::
+
 You can modify the size of the bus if want check the above example to see it in action
 
 ## HTML resize bus example

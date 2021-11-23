@@ -172,7 +172,7 @@ You also can use a computed property like below
 This component is one of the few components where you must use the Google `LatLng` object to create the markers, you can't use a generic object like `{ lat: 0, lng: 0 }` to generate them.
 :::
 
-If you need to know the API of this component please read it [here](/code/components/heatmap-layer.html).
+If you need to know the **API of this component** please read it [here](/code/components/heatmap-layer.html).
 
 ## HTML examples
 
