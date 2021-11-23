@@ -2,11 +2,11 @@
   <div>
     <h3>For live examples set a valid gmap api key</h3>
     <label for="gmap_key">
-      gmap api key <input type="text" name="gmap_key" id="gmap_key" v-model="options.key">
+      gmap api key <input type="text" name="gmap_key" id="gmap_key" v-model="options.key" @keypress.enter="setValidKey">
     </label>
     <br><br>
     <label for="libraries">
-      libraries <input type="text" name="libraries" id="libraries" v-model="options.libraries">
+      libraries <input type="text" name="libraries" id="libraries" v-model="options.libraries" @keypress.enter="setValidKey">
       <br>
       <small>Eg: places,routes,drawing,visualization depending on your requirements</small>
     </label>

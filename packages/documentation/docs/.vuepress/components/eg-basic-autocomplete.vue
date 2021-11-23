@@ -59,8 +59,6 @@ export default {
     setPlace(place) {
       if (!place) return
 
-      console.log(place)
-
       this.latLng = {
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng(),

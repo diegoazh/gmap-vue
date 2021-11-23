@@ -60,9 +60,7 @@ export default {
     },
     types: {
       type: Array,
-      default() {
-        return [];
-      },
+      default: undefined
     },
     placeholder: {
       required: false,
@@ -157,7 +155,7 @@ This component does not has mapped props.
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/place-input.html).
+If you need to know the **API of this component** please read it [here](/code/components/place-input.html).
 
 
 ## HTML examples

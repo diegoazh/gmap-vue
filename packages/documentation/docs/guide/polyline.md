@@ -72,8 +72,8 @@ export default {
 
         this.$polylineObject = new google.maps.Polyline(finalOptions);
 
-        bindProps(this, this.$circleObject, polylineMappedProps);
-        bindEvents(this, this.$circleObject, events);
+        bindProps(this, this.$polylineObject, polylineMappedProps);
+        bindEvents(this, this.$polylineObject, events);
 
         let clearEvents = () => {};
 
@@ -199,7 +199,7 @@ const events = [
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/polyline.html).
+If you need to know the **API of this component** please read it [here](/code/components/polyline-shape.html).
 
 ## HTML examples
 

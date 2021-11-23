@@ -4,7 +4,52 @@ This component helps you to create a cluster of markers on Google Maps API.
 
 For more information read the Google Maps documentation for [clustering](https://developers.google.com/maps/documentation/javascript/marker-clustering).
 
-It is exported with the name `GmapCluster`.
+::: warning
+
+This component **must be manually imported**
+
+```javascript
+// import globally use the Vue instance
+import { components } from 'gmap-vue';
+
+Vue.component('gmap-cluster', components.Cluster);
+```
+
+```javascript
+// import locally inside your component
+import { components } from "gmap-vue";
+
+export default {
+  name: "MyCoolComponent",
+  data() {
+    return {
+      center: {
+        lat: 10.0,
+        lng: 10.0
+      },
+      markers: [
+        {
+          position: {
+            lat: 10.0,
+            lng: 10.0
+          }
+        },
+        {
+          position: {
+            lat: 11.0,
+            lng: 11.0
+          }
+        }
+      ]
+    };
+  },
+  components: {
+    "gmap-cluster": components.Cluster
+  }
+};
+```
+
+:::
 
 ## Variables
 
@@ -21,65 +66,19 @@ this.$clusterObject = new MarkerClusterer(...);
 ```vue
 <template>
   <div>
-    <!-- @slot Used to set your cluster -->
     <slot></slot>
   </div>
 </template>
 
 <script>
-import MarkerClusterer from '@google/markerclustererplus';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import MapElementMixin from '../mixins/map-element';
-import { clusterMappedProps } from '../utils/mapped-props-by-map-element';
 import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
 
 export default {
+  name: 'cluster',
   mixins: [MapElementMixin],
-  props: {
-    maxZoom: {
-      type: Number,
-    },
-    batchSizeIE: {
-      type: Number,
-    },
-    calculator: {
-      type: Function,
-    },
-    enableRetinaIcons: {
-      type: Boolean,
-    },
-    gridSize: {
-      type: Number,
-    },
-    averageCenter: {
-      type: Boolean,
-    },
-    ignoreHidden: {
-      type: Boolean,
-    },
-    imageExtension: {
-      type: String,
-    },
-    imagePath: {
-      type: String,
-    },
-    imageSizes: {
-      type: Array,
-    },
-    minimumClusterSize: {
-      type: Number,
-    },
-    clusterClass: {
-      type: String,
-    },
-    styles: {
-      type: Array,
-    },
-    zoomOnClick: {
-      type: Boolean,
-    },
-  },
-  async provide() {
-    // events to bind with toWay
+  provide() {
     const events = [
       'click',
       'rightclick',
@@ -93,16 +92,14 @@ export default {
       'mouseout',
     ];
 
-    // Infowindow needs this to be immediately available
-    const promise = await this.$mapPromise
+    const promise = this.$mapPromise
       .then((map) => {
         this.$map = map;
 
-        // Initialize the maps with the given options
         const initialOptions = {
           ...this.options,
           map,
-          ...getPropsValues(this, clusterMappedProps),
+          ...getPropsValues(this, {}),
         };
         const { options: extraOptions, ...finalOptions } = initialOptions;
 
@@ -114,17 +111,16 @@ export default {
 
         const { map: mapInstance, markers, ...clusterOptions } = finalOptions;
 
-        this.$clusterObject = new MarkerClusterer(
-          mapInstance,
+        this.$clusterObject = new MarkerClusterer({
+          map: mapInstance,
           markers,
-          ...clusterOptions
-        );
+        });
 
-        bindProps(this, this.$clusterObject, clusterMappedProps);
+        bindProps(this, this.$clusterObject, {});
         bindEvents(this, this.$clusterObject, events);
 
-        Object.keys(clusterMappedProps).forEach((prop) => {
-          if (clusterMappedProps[prop].twoWay) {
+        Object.keys({}).forEach((prop) => {
+          if ({}[prop].twoWay) {
             this.$on(`${prop.toLowerCase()}_changed`, this.reinsertMarkers);
           }
         });
@@ -138,8 +134,15 @@ export default {
     this.$clusterPromise = promise;
     return { $clusterPromise: promise };
   },
+  props: {
+    algorithm: {
+      type: Object,
+      default() {
+        return null;
+      },
+    },
+  },
   beforeDestroy() {
-    /* Performance optimization when destroying a large number of markers */
     this.$children.forEach((marker) => {
       if (marker.$clusterObject === this.$clusterObject) {
         marker.$clusterObject = null;
@@ -151,7 +154,6 @@ export default {
     }
   },
   destroyed() {
-    // Note: not all Google Maps components support maps
     if (this.$clusterObject && this.$clusterObject.setMap) {
       this.$clusterObject.setMap(null);
     }
@@ -180,64 +182,7 @@ If you need to know what are `mappedProps` please read the general concepts of t
 ::: details Mapped Props of <code>GmapCluster</code> component
 
 ```javascript
-export const clusterMappedProps = {
-  maxZoom: {
-    type: Number,
-    twoWay: false,
-  },
-  batchSizeIE: {
-    type: Number,
-    twoWay: false,
-  },
-  calculator: {
-    type: Function,
-    twoWay: false,
-  },
-  enableRetinaIcons: {
-    type: Boolean,
-    twoWay: false,
-  },
-  gridSize: {
-    type: Number,
-    twoWay: false,
-  },
-  averageCenter: {
-    type: Boolean,
-    twoWay: false,
-  },
-  ignoreHidden: {
-    type: Boolean,
-    twoWay: false,
-  },
-  imageExtension: {
-    type: String,
-    twoWay: false,
-  },
-  imagePath: {
-    type: String,
-    twoWay: false,
-  },
-  imageSizes: {
-    type: Array,
-    twoWay: false,
-  },
-  minimumClusterSize: {
-    type: Number,
-    twoWay: false,
-  },
-  clusterClass: {
-    type: String,
-    twoWay: false,
-  },
-  styles: {
-    type: Array,
-    twoWay: false,
-  },
-  zoomOnClick: {
-    type: Boolean,
-    twoWay: false,
-  },
-};
+// it doesn't has mapped properties
 ```
 
 :::
@@ -276,7 +221,7 @@ const events = [
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/cluster.html).
+If you need to know the **API of this component** please read it [here](/code/components/cluster-icon.html).
 
 ## HTML examples
 
@@ -296,7 +241,7 @@ If you need to know the API of this component please read it [here](/code/compon
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
-  <script src="https://unpkg.com/@google/markerclustererplus@5.1.0/dist/markerclustererplus.min.js"></script>
+  <script src="https://unpkg.com/@googlemaps/markerclusterer@1.0.13/dist/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gmap-vue@1.2.2/dist/gmap-vue.min.js"></script>
 
   <script>
@@ -305,6 +250,8 @@ If you need to know the API of this component please read it [here](/code/compon
         key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc'
       },
     });
+
+    Vue.component('gmap-cluster', GmapVue.components.Cluster);
 
     document.addEventListener('DOMContentLoaded', function() {
       new Vue({

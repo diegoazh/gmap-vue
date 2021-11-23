@@ -70,8 +70,8 @@ export default {
 
         this.$rectangleObject = new google.maps.Rectangle(finalOptions);
 
-        bindProps(this, this.$circleObject, rectangleMappedProps);
-        bindEvents(this, this.$circleObject, events);
+        bindProps(this, this.$rectangleObject, rectangleMappedProps);
+        bindEvents(this, this.$rectangleObject, events);
 
         return this.$rectangleObject;
       })
@@ -159,20 +159,23 @@ const events = [
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/rectangle.html).
+If you need to know the **API of this component** please read it [here](/code/components/rectangle-shape.html).
 
 ## HTML examples
 
 :::details Simple rectangle example
 
+We use the following [example](https://developers.google.com/maps/documentation/javascript/examples/rectangle-simple?hl=en) of the google documentation.
+
 ```html
 <body>
   <div id="root">
-    <gmap-map :center="center" :zoom="12" style="width: 100%; height: 500px" ref="map">
+    <gmap-map :center="center" :zoom="11" style="width: 100%; height: 500px" ref="map">
       <gmap-rectangle
         :editable="editable"
         :draggable="draggable"
         :bounds="bounds"
+        :options="options"
         ref="rectangle">
       </gmap-rectangle>
     </gmap-map>
@@ -194,7 +197,7 @@ If you need to know the API of this component please read it [here](/code/compon
       window.rectangleExample = new Vue({
         el: '#root',
         data: {
-          center: {lat: 1.38, lng: 103.8},
+          center: { lat: 33.678, lng: -116.243 },
           editable: true,
           draggable: true,
           bounds: {
@@ -202,6 +205,13 @@ If you need to know the API of this component please read it [here](/code/compon
             south: 33.671,
             east: -116.234,
             west: -116.251,
+          },
+          options: {
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35,
           },
         },
       });

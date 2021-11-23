@@ -44,9 +44,7 @@ export default {
     options: {
       type: Object,
       required: false,
-      default() {
-        return {};
-      },
+      default: undefined,
     },
     position: {
       type: Object,
@@ -205,7 +203,7 @@ const events = ['domready', 'closeclick', 'content_changed'];
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/info-window.html).
+If you need to know the **API of this component** please read it [here](/code/components/info-window.html).
 
 ## HTML examples
 

@@ -138,8 +138,8 @@ export default {
 
         this.$markerObject = new google.maps.Marker(finalOptions);
 
-        bindProps(this, this.$infoWindowObject, markerMappedProps);
-        bindEvents(this, this.$infoWindowObject, events);
+        bindProps(this, this.$markerObject, markerMappedProps);
+        bindEvents(this, this.$markerObject, events);
 
         if (this.$clusterPromise) {
           this.$clusterPromise.then((clusterObject) => {
@@ -281,7 +281,7 @@ export default {
 </script>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/marker.html).
+If you need to know the **API of this component** please read it [here](/code/components/marker-icon.html).
 
 ## HTML examples
 

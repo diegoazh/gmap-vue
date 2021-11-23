@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>Please move the map in order to see the limits of the overlay image</p>
-    <gmap-map :center="{lat: 1.38, lng: 103.8}" :zoom="12" style="width: 100%; height: 500px">
+    <gmap-map :center="{lat: 1.38, lng: 103.8}" :zoom="11" style="width: 100%; height: 500px">
       <ground-overlay
         source="/images/overlay.png"
         :bounds="{

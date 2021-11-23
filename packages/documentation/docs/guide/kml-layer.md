@@ -61,8 +61,8 @@ export default {
 
         this.$kmlLayerObject = new google.maps.KmlLayer(finalOptions);
 
-        bindProps(this, this.$infoWindowObject, kmlLayerMappedProps);
-        bindEvents(this, this.$infoWindowObject, events);
+        bindProps(this, this.$kmlLayerObject, kmlLayerMappedProps);
+        bindEvents(this, this.$kmlLayerObject, events);
 
         return this.$kmlLayerObject;
       })
@@ -151,7 +151,7 @@ export default {
 </script>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/kml-layer.html).
+If you need to know the **API of this component** please read it [here](/code/components/kml-layer.html).
 
 ## HTML examples
 

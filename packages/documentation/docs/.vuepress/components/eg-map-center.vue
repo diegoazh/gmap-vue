@@ -4,7 +4,9 @@
       <h2>Test 1</h2>
       <small><strong>Passes if:</strong> You can pan around this map without it being snapped back to the center</small>
       <br><br>
-      <gmap-map :center="{lat: 1.38, lng: 103.8}" :zoom="12"
+      <gmap-map
+        :center="{lat: 1.38, lng: 103.8}"
+        :zoom="12"
         class="map-container">
       </gmap-map>
     </div>
