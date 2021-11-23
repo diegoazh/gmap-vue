@@ -10,8 +10,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install pnpm
+        run: curl -fsSL https://get.pnpm.io/install.sh | sh -
       - name: Install dependencies
-        run: npm install && npx lerna bootstrap
+        run: pnpm install
       - name: Build monorepo
         run: npm run build
       - name: GitHub Pages
