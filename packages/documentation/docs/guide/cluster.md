@@ -95,7 +95,6 @@ this.$clusterObject = new MarkerClusterer(...);
 ```vue
 <template>
   <div>
-    <!-- @slot Used to set your cluster -->
     <slot></slot>
   </div>
 </template>
@@ -173,7 +172,6 @@ export default {
     },
   },
   beforeDestroy() {
-    /* Performance optimization when destroying a large number of markers */
     this.$children.forEach((marker) => {
       if (marker.$clusterObject === this.$clusterObject) {
         marker.$clusterObject = null;
@@ -185,7 +183,6 @@ export default {
     }
   },
   destroyed() {
-    // Note: not all Google Maps components support maps
     if (this.$clusterObject && this.$clusterObject.setMap) {
       this.$clusterObject.setMap(null);
     }
