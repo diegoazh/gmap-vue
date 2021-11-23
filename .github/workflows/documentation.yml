@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install pnpm
-        run: curl -fsSL https://get.pnpm.io/install.sh | sh -
+        run: curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
       - name: Install dependencies
         run: pnpm install
       - name: Build monorepo
