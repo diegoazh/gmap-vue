@@ -12,8 +12,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
+      - name: Install pnpm
+        run: curl -fsSL https://get.pnpm.io/install.sh | sh -
       - name: Install dependencies
-        run: npm install && npx lerna bootstrap
+        run: pnpm install
       - name: Run tests
         run: npm run test
       - name: Build monorepo
