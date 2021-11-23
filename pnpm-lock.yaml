@@ -22,12 +22,12 @@ importers:
 
   packages/documentation:
     specifiers:
-      gmap-vue: workspace:../gmap-vue
+      gmap-vue: ^1.5.0
       lodash: ^4.17.21
       snyk: ^1.763.0
       vuepress: ^1.8.2
     dependencies:
-      gmap-vue: link:../gmap-vue
+      gmap-vue: 1.5.0
       lodash: 4.17.21
       snyk: 1.763.0
       vuepress: 1.8.2
@@ -1439,6 +1439,11 @@ packages:
   /@gar/promisify/1.1.2:
     resolution: {integrity: sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==}
     dev: true
+
+  /@google/markerclustererplus/5.1.3:
+    resolution: {integrity: sha512-2wQGO6GGbKPC2tNmTz8ei1zBa64zV3QBBvgLHiPvYqUA63230qNqfQpN+nzsrl1RM40NJtty4Y1CEQKxq6MBGg==}
+    deprecated: This package has moved to @googlemaps/markerclustererplus and the source is now at https://github.com/googlemaps/js-markerclustererplus.
+    dev: false
 
   /@googlemaps/markerclusterer/1.0.13:
     resolution: {integrity: sha512-jNGSzcq5dmbisHdNS8oRj/Pq9mvP7fUARRQWq8HaaqZWksdbNl9uSUSyj9kzl1C1SsFwXOEUVbq3vCWstTGU4A==}
@@ -7047,6 +7052,14 @@ packages:
       ignore: 4.0.6
       pify: 4.0.1
       slash: 2.0.0
+    dev: false
+
+  /gmap-vue/1.5.0:
+    resolution: {integrity: sha512-WE0VnSM1EsaTFVsnq53WGnre9cP1Q9DPCr0IiPmaoqsQioAKtTNBNyomrEvg0NIsVuxrdC2qvbgZPXCa8v/mBA==}
+    peerDependencies:
+      vue: ^2.6.11
+    dependencies:
+      '@google/markerclustererplus': 5.1.3
     dev: false
 
   /got/9.6.0:
