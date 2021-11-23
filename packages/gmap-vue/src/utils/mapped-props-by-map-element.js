@@ -606,6 +606,44 @@ export const rectangleMappedProps = {
   },
 };
 
+export const placeInputMappedProps = {
+  bounds: {
+    type: Object,
+  },
+  defaultPlace: {
+    type: String,
+    default: '',
+  },
+  componentRestrictions: {
+    type: Object,
+    default: null,
+  },
+  types: {
+    type: Array,
+    default() {
+      return [];
+    },
+  },
+  placeholder: {
+    required: false,
+    type: String,
+  },
+  className: {
+    required: false,
+    type: String,
+  },
+  label: {
+    required: false,
+    type: String,
+    default: null,
+  },
+  selectFirstOnEnter: {
+    require: false,
+    type: Boolean,
+    default: false,
+  },
+};
+
 export default {
   autocompleteMappedProps,
   circleMappedProps,
