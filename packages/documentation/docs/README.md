@@ -289,15 +289,15 @@ in their source code.
 ### Adding your own components
 
 It should be relatively easy to add your own components (e.g. Heatmap, GroundOverlay). please refer to the
-[source code for `mapElementFactory`](https://github.com/diegoazh/gmap-vue/blob/vue2/src/factories/map-element.js).
+[source code for `MapElementFactory`](https://github.com/diegoazh/gmap-vue/blob/vue2/src/factories/map-element.js).
 
 Example for [DirectionsRenderer](https://developers.google.com/maps/documentation/javascript/reference/3/#DirectionsRenderer):
 
 ```js
 // DirectionsRenderer.js
-import { mapElementFactory } from 'gmap-vue'
+import { MapElementFactory } from 'gmap-vue'
 
-export default mapElementFactory({
+export default MapElementFactory({
   name: 'directionsRenderer',
   ctr: () => google.maps.DirectionsRenderer,
   //// The following is optional, but necessary if the constructor takes multiple arguments
