@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lerna run lint-staged --stream --concurrency 1
+pnpm run lint-staged --recursive
