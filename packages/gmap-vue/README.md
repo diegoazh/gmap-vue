@@ -15,7 +15,7 @@ Please follow next link to our [documentation](https://diegoazh.github.io/gmap-v
 
 ## Vue-2 port of vue-google-maps
 
-This is a fork of the popuplar vue2-google-maps. As the author of the library no longer commit to maintain the project, we forked it to develop and maintain the project. 
+This is a fork of the popular vue2-google-maps. As the author of the library no longer commit to maintain the project, we forked it to develop and maintain the project.
 
 ## CONTRIBUTORS NEEDED!
 
@@ -135,7 +135,7 @@ If you need to gain access to the `google` object:
     :position="google && new google.maps.LatLng(1.38, 103.8)" />
 </template>
 <script>
-import {gmapApi} from 'vue2-google-maps'
+import {gmapApi} from 'gmap-vue'
 
 export default {
   computed: {

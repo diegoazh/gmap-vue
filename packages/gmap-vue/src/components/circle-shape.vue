@@ -9,7 +9,11 @@ import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
  * @see [source code](/guide/circle.html#source-code)
  */
 export default {
+  name: 'CircleShape',
   mixins: [mapElementMixin],
+  render() {
+    return '';
+  },
   provide() {
     // events to bind with toWay
     const events = [
@@ -37,8 +41,11 @@ export default {
           map,
           ...getPropsValues(this, circleMappedProps),
         };
+
         const { options: extraOptions, ...finalOptions } = initialOptions;
+
         this.$circleObject = new google.maps.Circle(finalOptions);
+
         bindProps(this, this.$circleObject, circleMappedProps);
         bindEvents(this, this.$circleObject, events);
 
@@ -69,6 +76,7 @@ export default {
      */
     radius: {
       type: Number,
+      default: 10,
     },
     /**
      * Indicates if the circle is draggable
@@ -104,6 +112,7 @@ export default {
      */
     options: {
       type: Object,
+      default: undefined,
     },
   },
   destroyed() {
@@ -111,9 +120,6 @@ export default {
     if (this.$circleObject && this.$circleObject.setMap) {
       this.$circleObject.setMap(null);
     }
-  },
-  render() {
-    return '';
   },
 };
 </script>

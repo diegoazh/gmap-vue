@@ -10,7 +10,11 @@ import { polygonMappedProps } from '../utils/mapped-props-by-map-element';
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/examples/polygon-arrays?hl=es)
  */
 export default {
+  name: 'PolygonShape',
   mixins: [MapElementMixin],
+  render() {
+    return '';
+  },
   provide() {
     const events = [
       'click',
@@ -26,7 +30,7 @@ export default {
       'rightclick',
     ];
 
-    const promise = this.$mapPromise
+    const $polygonPromise = this.$mapPromise
       .then((map) => {
         this.$map = map;
 
@@ -70,6 +74,7 @@ export default {
               const eventListeners = [];
 
               const mvcArray = this.$polygonObject.getPaths();
+
               for (let i = 0; i < mvcArray.getLength(); i += 1) {
                 const mvcPath = mvcArray.getAt(i);
                 eventListeners.push([
@@ -85,6 +90,7 @@ export default {
                   mvcPath.addListener('set_at', updatePaths),
                 ]);
               }
+
               eventListeners.push([
                 mvcArray,
                 mvcArray.addListener('insert_at', updatePaths),
@@ -166,8 +172,8 @@ export default {
         throw error;
       });
 
-    this.$polygonPromise = promise;
-    return { $polygonPromise: promise };
+    this.$polygonPromise = $polygonPromise;
+    return { $polygonPromise };
   },
   props: {
     /**
@@ -185,6 +191,7 @@ export default {
      */
     draggable: {
       type: Boolean,
+      default: false,
     },
     /**
      * Indicates if the polygon is editable
@@ -193,6 +200,7 @@ export default {
      */
     editable: {
       type: Boolean,
+      default: false,
     },
     /**
      * More options that you can pass to the component
@@ -200,6 +208,7 @@ export default {
      */
     options: {
       type: Object,
+      default: undefined,
     },
     /**
      * Indicates if the polygon is editable
@@ -209,6 +218,7 @@ export default {
     path: {
       type: Array,
       noBind: true,
+      default: undefined,
     },
     /**
      * Indicates if the polygon is editable
@@ -218,7 +228,14 @@ export default {
     paths: {
       type: Array,
       noBind: true,
+      default: undefined,
     },
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$polygonObject && this.$polygonObject.setMap) {
+      this.$polygonObject.setMap(null);
+    }
   },
 };
 </script>

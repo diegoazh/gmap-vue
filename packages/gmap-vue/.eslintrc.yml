@@ -9,8 +9,9 @@ extends:
   - prettier
   - plugin:eslint-comments/recommended
 parserOptions:
-  parser: babel-eslint
-  ecmaVersion: 6
+  parser: "@babel/eslint-parser"
+  ecmaVersion: 8
+  requireConfigFile: false
   sourceType: module
   ecmaFeatures:
     modules: true

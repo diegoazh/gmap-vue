@@ -10,7 +10,11 @@ import { kmlLayerMappedProps } from '../utils/mapped-props-by-map-element';
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/kmllayer)
  */
 export default {
+  name: 'KmlLayer',
   mixins: [MapElementMixin],
+  render() {
+    return '';
+  },
   provide() {
     const events = [
       'click',
@@ -39,8 +43,8 @@ export default {
 
         this.$kmlLayerObject = new google.maps.KmlLayer(finalOptions);
 
-        bindProps(this, this.$infoWindowObject, kmlLayerMappedProps);
-        bindEvents(this, this.$infoWindowObject, events);
+        bindProps(this, this.$kmlLayerObject, kmlLayerMappedProps);
+        bindEvents(this, this.$kmlLayerObject, events);
 
         return this.$kmlLayerObject;
       })
@@ -58,6 +62,7 @@ export default {
      */
     url: {
       type: String,
+      default: '',
     },
     /**
      * Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method
@@ -65,6 +70,7 @@ export default {
      */
     map: {
       type: Object,
+      default: undefined,
     },
   },
   destroyed() {

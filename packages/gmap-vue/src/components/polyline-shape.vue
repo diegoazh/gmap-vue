@@ -10,7 +10,11 @@ import { polylineMappedProps } from '../utils/mapped-props-by-map-element';
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline)
  */
 export default {
+  name: 'PolylineShape',
   mixins: [mapElementMixin],
+  render() {
+    return '';
+  },
   provide() {
     const events = [
       'click',
@@ -40,8 +44,8 @@ export default {
 
         this.$polylineObject = new google.maps.Polyline(finalOptions);
 
-        bindProps(this, this.$circleObject, polylineMappedProps);
-        bindEvents(this, this.$circleObject, events);
+        bindProps(this, this.$polylineObject, polylineMappedProps);
+        bindEvents(this, this.$polylineObject, events);
 
         let clearEvents = () => {};
 
@@ -132,6 +136,7 @@ export default {
      */
     options: {
       type: Object,
+      default: undefined,
     },
     /**
      * Indicates if the polygon is editable
@@ -140,7 +145,14 @@ export default {
      */
     path: {
       type: Array,
+      default: undefined,
     },
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$polylineObject && this.$polylineObject.setMap) {
+      this.$polylineObject.setMap(null);
+    }
   },
 };
 </script>

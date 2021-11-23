@@ -11,6 +11,7 @@ import { markerMappedProps } from '../utils/mapped-props-by-map-element';
  * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/marker)
  */
 export default {
+  name: 'MarkerIcon',
   mixins: [MapElementMixin],
   inject: {
     $clusterPromise: {
@@ -51,8 +52,8 @@ export default {
 
         this.$markerObject = new google.maps.Marker(finalOptions);
 
-        bindProps(this, this.$infoWindowObject, markerMappedProps);
-        bindEvents(this, this.$infoWindowObject, events);
+        bindProps(this, this.$markerObject, markerMappedProps);
+        bindEvents(this, this.$markerObject, events);
 
         if (this.$clusterPromise) {
           this.$clusterPromise.then((clusterObject) => {
@@ -77,6 +78,7 @@ export default {
      */
     animation: {
       type: Number,
+      default: undefined,
     },
     /**
      * This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component.
@@ -84,6 +86,7 @@ export default {
      */
     attribution: {
       type: Object,
+      default: undefined,
     },
     /**
      * If true, the marker receives mouse and touch events. Default value is true.
@@ -99,6 +102,7 @@ export default {
      */
     cursor: {
       type: String,
+      default: undefined,
     },
     /**
      * If true, the marker can be dragged. Default value is false.
@@ -117,6 +121,7 @@ export default {
      */
     icon: {
       type: [String, Object],
+      default: undefined,
     },
     /**
      * Adds a label to the marker. A marker label is a letter or number that appears inside a marker. The label can either be a string, or a MarkerLabel object. If provided and MarkerOptions.title is not provided, an accessibility text (e.g. for use with screen readers) will be added to the marker with the provided label's text. Please note that the label is currently only used for accessibility text for non-optimized markers.
@@ -124,6 +129,7 @@ export default {
      */
     label: {
       type: [String, Object],
+      default: undefined,
     },
     /**
      * A number between 0.0, transparent, and 1.0, opaque.
@@ -138,6 +144,7 @@ export default {
      */
     options: {
       type: Object,
+      default: undefined,
     },
     /**
      * This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component.
@@ -145,6 +152,7 @@ export default {
      */
     place: {
       type: Object,
+      default: undefined,
     },
     /**
      * Marker position. The position is required to display the marker and can be provided with Marker.setPosition if not provided at marker construction.
@@ -152,6 +160,7 @@ export default {
      */
     position: {
       type: Object,
+      default: undefined,
     },
     /**
      * Image map region definition used for drag/click.
@@ -160,6 +169,7 @@ export default {
      */
     shape: {
       type: Object,
+      default: undefined,
     },
     /**
      * Rollover text. If provided, an accessibility text (e.g. for use with screen readers) will be added to the marker with the provided value. Please note that the title is currently only used for accessibility text for non-optimized markers.
@@ -167,6 +177,7 @@ export default {
      */
     title: {
       type: String,
+      default: undefined,
     },
     /**
      * If true, the marker is visible.
@@ -182,6 +193,7 @@ export default {
      */
     zIndex: {
       type: Number,
+      default: undefined,
     },
   },
   destroyed() {

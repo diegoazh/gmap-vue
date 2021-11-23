@@ -6,19 +6,19 @@
 </template>
 
 <script>
-import MarkerClusterer from '@google/markerclustererplus';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import MapElementMixin from '../mixins/map-element';
-import { clusterMappedProps } from '../utils/mapped-props-by-map-element';
 import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
 
 /**
  * Cluster component
  * @displayName GmapCluster
  * @see [source code](/guide/cluster.html#source-code)
- * @see [Official documentation](https://googlemaps.github.io/js-markerclustererplus/index.html)
- * @see [Marker clusterer](https://github.com/googlemaps/v3-utility-library/blob/master/markerclustererplus/src/markerclusterer.js)
+ * @see [Official documentation](https://googlemaps.github.io/js-markerclusterer/modules.html)
+ * @see [Marker clusterer](https://developers.google.com/maps/documentation/javascript/marker-clustering#maps_marker_clustering-javascript)
  */
 export default {
+  name: 'ClusterIcon',
   mixins: [MapElementMixin],
   provide() {
     // events to bind with toWay
@@ -45,7 +45,7 @@ export default {
           // TODO: analyze the below line because I think it can be removed
           ...this.options,
           map,
-          ...getPropsValues(this, clusterMappedProps),
+          ...getPropsValues(this, {}),
         };
         const { options: extraOptions, ...finalOptions } = initialOptions;
 
@@ -55,19 +55,18 @@ export default {
           );
         }
 
-        const { map: mapInstance, markers, ...clusterOptions } = finalOptions;
+        const { map: mapInstance, markers } = finalOptions;
 
-        this.$clusterObject = new MarkerClusterer(
-          mapInstance,
+        this.$clusterObject = new MarkerClusterer({
+          map: mapInstance,
           markers,
-          ...clusterOptions
-        );
+        });
 
-        bindProps(this, this.$clusterObject, clusterMappedProps);
+        bindProps(this, this.$clusterObject, {});
         bindEvents(this, this.$clusterObject, events);
 
-        Object.keys(clusterMappedProps).forEach((prop) => {
-          if (clusterMappedProps[prop].twoWay) {
+        Object.keys({}).forEach((prop) => {
+          if ({}[prop].twoWay) {
             this.$on(`${prop.toLowerCase()}_changed`, this.reinsertMarkers);
           }
         });
@@ -83,93 +82,11 @@ export default {
     return { $clusterPromise: promise };
   },
   props: {
-    /**
-     * The max zoom of the Google Maps
-     * @see [MapOptions interface](https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions)
-     */
-    maxZoom: {
-      type: Number,
-    },
-    /**
-     * The batchSize for IE
-     * @see [issue 136](https://github.com/googlemaps/v3-utility-library/issues/136)
-     * @see [docs explanation](https://github.com/googlemaps/v3-utility-library/blob/0a707d5ce74738a9ad4fcb6c02257fb9d9e433ae/packages/markerclustererplus/src/markerclusterer.ts#L27)
-     */
-    batchSizeIE: {
-      type: Number,
-    },
-    /**
-     * Function to calculate markers in a cluster
-     * @see [calculator docs](https://googlemaps.github.io/js-markerclustererplus/globals.html#calculator)
-     */
-    calculator: {
-      type: Function,
-    },
-    /**
-     * Enable the retina icons on the cluster
-     */
-    enableRetinaIcons: {
-      type: Boolean,
-    },
-    /**
-     * Set the grid size of the cluster
-     */
-    gridSize: {
-      type: Number,
-    },
-    /**
-     * Enable de average center
-     */
-    averageCenter: {
-      type: Boolean,
-    },
-    /**
-     * Enable to ignore hidden markers
-     */
-    ignoreHidden: {
-      type: Boolean,
-    },
-    /**
-     * Set the image extension type
-     */
-    imageExtension: {
-      type: String,
-    },
-    /**
-     * Set the image path
-     */
-    imagePath: {
-      type: String,
-    },
-    /**
-     * Set the image size
-     */
-    imageSizes: {
-      type: Array,
-    },
-    /**
-     * Set the minimum cluster size
-     */
-    minimumClusterSize: {
-      type: Number,
-    },
-    /**
-     * Set a css class for the cluster
-     */
-    clusterClass: {
-      type: String,
-    },
-    /**
-     * Set the styles for the cluster
-     */
-    styles: {
-      type: Array,
-    },
-    /**
-     * Enable zoom on click
-     */
-    zoomOnClick: {
-      type: Boolean,
+    algorithm: {
+      type: Object,
+      default() {
+        return null;
+      },
     },
   },
   beforeDestroy() {
