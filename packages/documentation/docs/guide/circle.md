@@ -175,4 +175,80 @@ const events = [
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/circle.html).
+If you need to know the **API of this component** please read it [here](/code/components/circle-shape.html).
+
+## HTML examples
+
+:::details Simple circle example
+
+We use the following [example](https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=en) of the google documentation.
+
+```html
+<body>
+  <div id="root">
+    <gmap-map
+      :center="center"
+      :zoom="4"
+      style="width: 100%; height: 500px"
+      ref="map"
+    >
+      <gmap-circle
+        v-if="radius"
+        :editable="editable"
+        :draggable="draggable"
+        :radius="radius"
+        :center="circleCenter"
+        :options="options"
+        ref="circle"
+      >
+      </gmap-circle>
+    </gmap-map>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gmap-vue@1.2.2/dist/gmap-vue.min.js"></script>
+
+  <script>
+    Vue.use(GmapVue, {
+      load: {
+        key: 'AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc',
+        libraries: 'places',
+      },
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      window.rectangleExample = new Vue({
+        el: '#root',
+        data: {
+          center: { lat: 40.714, lng: -74.005 },
+          editable: true,
+          draggable: true,
+          population: 8405837,
+          circleCenter: { lat: 40.714, lng: -74.005 },
+          options: {
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35,
+          },
+        },
+        computed: {
+          radius() {
+            return Math.sqrt(this.population) * 100;
+          },
+        },
+      });
+    });
+  </script>
+</body>
+```
+
+:::
+
+## Test the component
+
+<eg-base>
+  <eg-circle />
+</eg-base>

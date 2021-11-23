@@ -23,7 +23,9 @@
 
     <div class="flex-container">
       <div>
-        <gmap-map :center="mapCenter" :zoom="12"
+        <gmap-map
+          :center="mapCenter"
+          :zoom="12"
           ref="map"
           @center_changed="updateCenter"
           @idle="sync"
@@ -49,8 +51,8 @@ export default {
   data() {
     return {
       reportedMapCenter: {
-        lat: 1.32,
-        lng: 103.8,
+        lat: 52.201272,
+        lng: 0.118720
       },
       mapCenter: null,
       pov: {
@@ -59,8 +61,9 @@ export default {
       },
     }
   },
-  created() {
+  async created() {
     this.sync()
+    await this.$gmapApiPromiseLazy();
   },
   methods: {
     updateCenter(latLng) {

@@ -27,7 +27,7 @@ this.$panoObject = new google.maps.StreetViewPanorama(element, options);
 </template>
 
 <script>
-import MapElementMixin from '../mixins/map-element';
+import MountableMixin from '../mixins/mountable';
 import {
   bindEvents,
   bindProps,
@@ -35,9 +35,10 @@ import {
   twoWayBindingWrapper,
   watchPrimitiveProperties,
 } from '../utils/helpers';
+import { streetViewPanoramaMappedProps } from '../utils/mapped-props-by-map-element';
 
 export default {
-  mixins: [MapElementMixin],
+  mixins: [MountableMixin],
   props: {
     zoom: {
       type: Number,
@@ -60,9 +61,7 @@ export default {
     },
     options: {
       type: Object,
-      default() {
-        return {};
-      },
+      default: undefined,
     },
   },
   replace: false,
@@ -107,13 +106,13 @@ export default {
 
         const options = {
           ...this.options,
-          ...getPropsValues(this, this.props),
+          ...getPropsValues(this, streetViewPanoramaMappedProps),
         };
         delete options.options;
 
         this.$panoObject = new google.maps.StreetViewPanorama(element, options);
 
-        bindProps(this, this.$panoObject, this.props);
+        bindProps(this, this.$panoObject, streetViewPanoramaMappedProps);
         bindEvents(this, this.$panoObject, events);
 
         twoWayBindingWrapper((increment, decrement, shouldUpdate) => {
@@ -214,7 +213,7 @@ const events = ['closeclick', 'status_changed'];
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/street-view-panorama.html).
+If you need to know the **API of this component** please read it [here](/code/components/street-view-panorama.html).
 
 ## HTML examples
 

@@ -38,6 +38,7 @@
           :polyline-options="polylineOptions"
           :polygon-options="polygonOptions"
           :shapes="shapes"
+          @update:shapes="shapes = $event"
         >
           <template v-slot="on">
             <eg-custom-drawing-toolbar

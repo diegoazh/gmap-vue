@@ -265,7 +265,7 @@ const events = [
 </template>
 ```
 
-If you need to know the API of this component please read it [here](/code/components/polygon.html).
+If you need to know the **API of this component** please read it [here](/code/components/polygon-shape.html).
 
 ## HTML examples
 

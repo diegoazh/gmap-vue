@@ -6,15 +6,15 @@
   "author": "Diego A. Zapata Hantsch",
   "license": "MIT",
   "scripts": {
-    "dev": "npx vuepress dev docs",
-    "build": "npx vuepress build docs",
+    "dev": "pnpx vuepress dev docs",
+    "build": "pnpx vuepress build docs",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "pnpm run snyk-protect"
   },
   "dependencies": {
     "gmap-vue": "^1.5.0",
     "lodash": "^4.17.21",
-    "snyk": "^1.684.0",
+    "snyk": "^1.763.0",
     "vuepress": "^1.8.2"
   },
   "snyk": true
