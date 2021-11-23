@@ -10,7 +10,11 @@ import { rectangleMappedProps } from '../utils/mapped-props-by-map-element';
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Rectangle)
  */
 export default {
+  name: 'RectangleShape',
   mixins: [MapElementMixin],
+  render() {
+    return '';
+  },
   provide() {
     const events = [
       'click',
@@ -26,7 +30,7 @@ export default {
       'rightclick',
     ];
 
-    const promise = this.$mapPromise
+    const $rectanglePromise = this.$mapPromise
       .then((map) => {
         this.$map = map;
 
@@ -40,8 +44,8 @@ export default {
 
         this.$rectangleObject = new google.maps.Rectangle(finalOptions);
 
-        bindProps(this, this.$circleObject, rectangleMappedProps);
-        bindEvents(this, this.$circleObject, events);
+        bindProps(this, this.$rectangleObject, rectangleMappedProps);
+        bindEvents(this, this.$rectangleObject, events);
 
         return this.$rectangleObject;
       })
@@ -49,8 +53,8 @@ export default {
         throw error;
       });
 
-    this.$rectanglePromise = promise;
-    return { $rectanglePromise: promise };
+    this.$rectanglePromise = $rectanglePromise;
+    return { $rectanglePromise };
   },
   props: {
     /**
@@ -61,6 +65,7 @@ export default {
      */
     bounds: {
       type: Object,
+      default: undefined,
     },
     /**
      * If set to true, the user can drag this rectangle over the map. Defaults to false.
@@ -86,7 +91,14 @@ export default {
      */
     options: {
       type: Object,
+      default: undefined,
     },
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$rectangleObject && this.$rectangleObject.setMap) {
+      this.$rectangleObject.setMap(null);
+    }
   },
 };
 </script>

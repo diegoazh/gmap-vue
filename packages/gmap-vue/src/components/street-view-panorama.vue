@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import MapElementMixin from '../mixins/map-element';
+import MountableMixin from '../mixins/mountable';
 import {
   bindEvents,
   bindProps,
@@ -15,6 +15,7 @@ import {
   twoWayBindingWrapper,
   watchPrimitiveProperties,
 } from '../utils/helpers';
+import { streetViewPanoramaMappedProps } from '../utils/mapped-props-by-map-element';
 
 /**
  * Street View Panorama component
@@ -23,14 +24,15 @@ import {
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanorama)
  */
 export default {
-  mixins: [MapElementMixin],
+  name: 'StreetViewPanorama',
+  mixins: [MountableMixin],
   provide() {
-    const promise = new Promise((resolve, reject) => {
+    this.$panoPromise = new Promise((resolve, reject) => {
       this.$panoPromiseDeferred = { resolve, reject };
     });
     return {
-      $panoPromise: promise,
-      $mapPromise: promise, // so that we can use it with markers
+      $panoPromise: this.$panoPromise,
+      $mapPromise: this.$panoPromise, // so that we can use it with markers
     };
   },
   props: {
@@ -41,6 +43,7 @@ export default {
      */
     zoom: {
       type: Number,
+      default: undefined,
     },
     /**
      * The camera orientation, specified as heading and pitch, for the panorama.
@@ -50,6 +53,7 @@ export default {
      */
     pov: {
       type: Object,
+      default: undefined,
     },
     /**
      * The LatLng position of the Street View panorama.
@@ -59,6 +63,7 @@ export default {
      */
     position: {
       type: Object,
+      default: undefined,
     },
     /**
      * The panorama ID, which should be set when specifying a custom panorama.
@@ -67,6 +72,7 @@ export default {
      */
     pano: {
       type: String,
+      default: undefined,
     },
     /**
      * Whether motion tracking is on or off. Enabled by default when the motion tracking control is present, so that the POV (point of view) follows the orientation of the device. This is primarily applicable to mobile devices. If motionTracking is set to false while motionTrackingControl is enabled, the motion tracking control appears but tracking is off. The user can tap the motion tracking control to toggle this option.
@@ -91,9 +97,7 @@ export default {
      */
     options: {
       type: Object,
-      default() {
-        return {};
-      },
+      default: undefined,
     },
   },
   replace: false, // necessary for css styles
@@ -133,14 +137,18 @@ export default {
         // creating the map
         const options = {
           ...this.options,
-          ...getPropsValues(this, this.props),
+          ...getPropsValues(this, streetViewPanoramaMappedProps),
         };
-        delete options.options;
 
-        this.$panoObject = new google.maps.StreetViewPanorama(element, options);
+        const { options: extraOptions, ...finalOptions } = options;
+
+        this.$panoObject = new google.maps.StreetViewPanorama(
+          element,
+          finalOptions
+        );
 
         // binding properties (two and one way)
-        bindProps(this, this.$panoObject, this.props);
+        bindProps(this, this.$panoObject, streetViewPanoramaMappedProps);
         // binding events
         bindEvents(this, this.$panoObject, events);
 
@@ -182,6 +190,12 @@ export default {
         google.maps.event.trigger(this.$panoObject, 'resize');
       }
     },
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$panoObject && this.$panoObject.setMap) {
+      this.$panoObject.setMap(null);
+    }
   },
 };
 </script>

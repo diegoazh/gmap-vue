@@ -83,10 +83,7 @@ export default function mapElement(providedOptions) {
   const promiseName = `$${name}Promise`;
   const instanceName = `$${name}Object`;
 
-  _assert(
-    !(rest.props instanceof Array),
-    '`props` should be an object, not Array'
-  );
+  _assert(!(props instanceof Array), '`props` should be an object, not Array');
 
   return {
     ...(typeof GENERATE_DOC !== 'undefined'

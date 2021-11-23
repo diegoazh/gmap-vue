@@ -58,65 +58,6 @@ export const circleMappedProps = {
   },
 };
 
-export const clusterMappedProps = {
-  maxZoom: {
-    type: Number,
-    twoWay: false,
-  },
-  batchSizeIE: {
-    type: Number,
-    twoWay: false,
-  },
-  calculator: {
-    type: Function,
-    twoWay: false,
-  },
-  enableRetinaIcons: {
-    type: Boolean,
-    twoWay: false,
-  },
-  gridSize: {
-    type: Number,
-    twoWay: false,
-  },
-  averageCenter: {
-    type: Boolean,
-    twoWay: false,
-  },
-  ignoreHidden: {
-    type: Boolean,
-    twoWay: false,
-  },
-  imageExtension: {
-    type: String,
-    twoWay: false,
-  },
-  imagePath: {
-    type: String,
-    twoWay: false,
-  },
-  imageSizes: {
-    type: Array,
-    twoWay: false,
-  },
-  minimumClusterSize: {
-    type: Number,
-    twoWay: false,
-  },
-  clusterClass: {
-    type: String,
-    twoWay: false,
-  },
-  styles: {
-    type: Array,
-    twoWay: false,
-  },
-  zoomOnClick: {
-    type: Boolean,
-    twoWay: false,
-  },
-};
-
 export const drawingManagerMappedProps = {
   circleOptions: {
     type: Object,
@@ -372,10 +313,47 @@ export const rectangleMappedProps = {
   },
 };
 
+export const placeInputMappedProps = {
+  bounds: {
+    type: Object,
+  },
+  defaultPlace: {
+    type: String,
+    default: '',
+  },
+  componentRestrictions: {
+    type: Object,
+    default: null,
+  },
+  types: {
+    type: Array,
+    default() {
+      return [];
+    },
+  },
+  placeholder: {
+    required: false,
+    type: String,
+  },
+  className: {
+    required: false,
+    type: String,
+  },
+  label: {
+    required: false,
+    type: String,
+    default: null,
+  },
+  selectFirstOnEnter: {
+    require: false,
+    type: Boolean,
+    default: false,
+  },
+};
+
 export default {
   autocompleteMappedProps,
   circleMappedProps,
-  clusterMappedProps,
   drawingManagerMappedProps,
   heatMapLayerMappedProps,
   infoWindowMappedProps,
@@ -386,4 +364,5 @@ export default {
   polygonMappedProps,
   polylineMappedProps,
   rectangleMappedProps,
+  placeInputMappedProps,
 };
