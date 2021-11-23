@@ -20,6 +20,7 @@ import { bindEvents, bindProps, getPropsValues } from '../utils/helpers';
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/infowindows)
  */
 export default {
+  name: 'InfoWindow',
   mixins: [MapElementMixin],
   inject: {
     $markerPromise: {
@@ -94,9 +95,7 @@ export default {
     options: {
       type: Object,
       required: false,
-      default() {
-        return {};
-      },
+      default: undefined,
     },
     /**
      * Contains the LatLng at which this info window is anchored.
@@ -106,12 +105,14 @@ export default {
      */
     position: {
       type: Object,
+      default: undefined,
     },
     /**
      * The z-index property of the window
      */
     zIndex: {
       type: Number,
+      default: 0,
     },
   },
   mounted() {

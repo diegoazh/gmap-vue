@@ -29,6 +29,7 @@ import { mapMappedProps } from '../utils/mapped-props-by-map-element';
  * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
  */
 export default {
+  name: 'MapLayer',
   mixins: [mountableMixin],
   provide() {
     this.$mapPromise = new Promise((resolve, reject) => {
@@ -55,6 +56,7 @@ export default {
     zoom: {
       type: Number,
       required: false,
+      default: undefined,
     },
     /**
      * The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
@@ -62,6 +64,7 @@ export default {
      */
     heading: {
       type: Number,
+      default: undefined,
     },
     /**
      * The initial Map mapTypeId. Defaults to ROADMAP.
@@ -69,6 +72,7 @@ export default {
      */
     mapTypeId: {
       type: String,
+      default: 'roadmap',
     },
     /**
      * For vector maps, sets the angle of incidence of the map. The allowed values are restricted depending on the zoom level of the map. For raster maps, controls the automatic switching behavior for the angle of incidence of the map. The only allowed values are 0 and 45. The value 0 causes the map to always use a 0° overhead view regardless of the zoom level and viewport. The value 45 causes the tilt angle to automatically switch to 45 whenever 45° imagery is available for the current zoom level and viewport, and switch back to 0 whenever 45° imagery is not available (this is the default behavior). 45° imagery is only available for satellite and hybrid map types, within some locations, and at some zoom levels. Note: getTilt returns the current tilt angle, not the value specified by this option. Because getTilt and this option refer to different things, do not bind() the tilt property; doing so may yield unpredictable effects.
@@ -76,15 +80,14 @@ export default {
      */
     tilt: {
       type: Number,
+      default: undefined,
     },
     /**
      * Extra options that you want pass to the component
      */
     options: {
       type: Object,
-      default() {
-        return {};
-      },
+      default: undefined,
     },
   },
   data() {
@@ -153,12 +156,12 @@ export default {
         const options = finalOptions;
 
         const recycleKey = this.getRecycleKey();
-        if (this.options.recycle && window[recycleKey]) {
+        if (this?.options?.recycle && window[recycleKey]) {
           element.appendChild(window[recycleKey].div);
           this.$mapObject = window[recycleKey].map;
           this.$mapObject.setOptions(options);
         } else {
-          // console.warn('[vue2-google-maps] New google map created')
+          // console.warn('[gmap-vue] New google map created')
           this.$mapObject = new google.maps.Map(element, options);
           window[recycleKey] = { map: this.$mapObject };
         }
@@ -319,10 +322,16 @@ Note: When the map is set to display: none, the fitBounds function reads the map
      * @public
      */
     getRecycleKey() {
-      return this.options.recycle
+      return this?.options?.recycle
         ? this.recyclePrefix + this.options.recycle
         : this.recyclePrefix;
     },
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$mapObject && this.$mapObject.setMap) {
+      this.$mapObject.setMap(null);
+    }
   },
 };
 </script>

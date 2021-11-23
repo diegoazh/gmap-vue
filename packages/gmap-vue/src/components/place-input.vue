@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import MapElementMixin from '../mixins/map-element';
 import {
   bindProps,
   downArrowSimulator,
   getPropsValues,
 } from '../utils/helpers';
+import { placeInputMappedProps } from '../utils/mapped-props-by-map-element';
 
 /**
  * PlaceInput component
@@ -26,7 +26,7 @@ import {
  * @see [Map Bounds](https://developers.google.com/maps/documentation/javascript/places-autocomplete#set-the-bounds-on-creation-of-the-autocomplete-object)
  */
 export default {
-  mixins: [MapElementMixin],
+  name: 'PlaceInput',
   props: {
     /**
      * Map bounds this is an LatLngBounds
@@ -36,6 +36,7 @@ export default {
      */
     bounds: {
       type: Object,
+      default: undefined,
     },
     /**
      * A default value for the html input
@@ -61,9 +62,7 @@ export default {
      */
     types: {
       type: Array,
-      default() {
-        return [];
-      },
+      default: undefined,
     },
     /**
      * A placeholder for the html input
@@ -72,6 +71,7 @@ export default {
     placeholder: {
       required: false,
       type: String,
+      default: undefined,
     },
     /**
      * A html class name for the html input
@@ -80,6 +80,7 @@ export default {
     className: {
       required: false,
       type: String,
+      default: undefined,
     },
     /**
      * A label for the html input
@@ -117,7 +118,7 @@ export default {
     });
 
     this.$gmapApiPromiseLazy().then(() => {
-      const options = getPropsValues(this, this.props);
+      const options = getPropsValues(this, placeInputMappedProps);
 
       if (this.selectFirstOnEnter) {
         downArrowSimulator(this.$refs.input);
@@ -129,7 +130,7 @@ export default {
         );
       }
 
-      this.autoCompleter = new google.maps.places.Autocomplete(
+      this.$autoCompleter = new google.maps.places.Autocomplete(
         this.$refs.input,
         options
       );
@@ -142,20 +143,26 @@ export default {
         label,
         selectFirstOnEnter,
         ...rest
-      } = this.props;
+      } = placeInputMappedProps;
 
-      bindProps(this, this.autoCompleter, rest);
+      bindProps(this, this.$autoCompleter, rest);
 
-      this.autoCompleter.addListener('place_changed', () => {
+      this.$autoCompleter.addListener('place_changed', () => {
         /**
          * Place change event
          * @event place_changed
          * @property {object} place `this.$autocomplete.getPlace()`
          * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
          */
-        this.$emit('place_changed', this.autoCompleter.getPlace());
+        this.$emit('place_changed', this.$autoCompleter.getPlace());
       });
     });
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$autoCompleter && this.$autoCompleter.setMap) {
+      this.$autoCompleter.setMap(null);
+    }
   },
 };
 </script>

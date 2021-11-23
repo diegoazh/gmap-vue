@@ -17,6 +17,7 @@ import { bindProps, getPropsValues } from '../utils/helpers';
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/drawinglayer)
  */
 export default {
+  name: 'DrawingManager',
   mixins: [MapElementMixin],
   provide() {
     // Infowindow needs this to be immediately available
@@ -69,7 +70,7 @@ export default {
 
         this.$map.addListener('click', this.clearSelection);
 
-        if (this.finalshapes.length) {
+        if (this?.finalShapes?.length) {
           this.drawAll();
         }
 
@@ -90,6 +91,7 @@ export default {
      */
     circleOptions: {
       type: Object,
+      default: undefined,
     },
     /**
      * The marker options
@@ -97,6 +99,7 @@ export default {
      */
     markerOptions: {
       type: Object,
+      default: undefined,
     },
     /**
      * The polygon options
@@ -104,6 +107,7 @@ export default {
      */
     polygonOptions: {
       type: Object,
+      default: undefined,
     },
     /**
      * The polyline options
@@ -111,6 +115,7 @@ export default {
      */
     polylineOptions: {
       type: Object,
+      default: undefined,
     },
     /**
      * The rectangle options
@@ -118,6 +123,7 @@ export default {
      */
     rectangleOptions: {
       type: Object,
+      default: undefined,
     },
     /**
      * The position of the toolbar
@@ -126,6 +132,7 @@ export default {
      */
     position: {
       type: String,
+      default: '',
     },
     /**
      * An array of shapes that you can set to render in the map and saves on it the new shapes that you add.
@@ -219,7 +226,7 @@ export default {
       };
 
       const self = this;
-      this.finalshapes.forEach((shape) => {
+      this.finalShapes.forEach((shape) => {
         const shapeDrawing = new shapeType[shape.type](shape.overlay);
         shapeDrawing.setMap(this.$map);
         shape.overlay = shapeDrawing;
@@ -230,7 +237,7 @@ export default {
     },
     clearAll() {
       this.clearSelection();
-      this.finalshapes.forEach((shape) => {
+      this.finalShapes.forEach((shape) => {
         shape.overlay.setMap(null);
       });
     },
@@ -262,15 +269,23 @@ export default {
     deleteSelection() {
       if (this.selectedShape) {
         this.selectedShape.overlay.setMap(null);
-        const index = this.finalshapes.indexOf(this.selectedShape);
+        const index = this.finalShapes.indexOf(this.selectedShape);
         if (index > -1) {
-          this.finalshapes.splice(index, 1);
+          this.finalShapes.splice(index, 1);
         }
       }
     },
     addShape(shape) {
       this.setDrawingMode(null);
-      this.finalshapes.push(shape);
+      this.finalShapes.push(shape);
+
+      /**
+       * update:shapes event
+       * @event update:shapes
+       * @property {array} place `this.finalShapes`
+       */
+      this.$emit('update:shapes', [...this.finalShapes]);
+
       const self = this;
       google.maps.event.addListener(shape.overlay, 'click', () => {
         self.setSelection(shape);

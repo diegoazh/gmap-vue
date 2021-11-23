@@ -26,6 +26,7 @@ import { autocompleteMappedProps } from '../utils/mapped-props-by-map-element';
  * @see [source code](/guide/autocomplete.html#source-code)
  */
 export default {
+  name: 'AutocompleteInput',
   props: {
     /**
      * Map bounds this is an LatLngBounds
@@ -35,6 +36,7 @@ export default {
      */
     bounds: {
       type: Object,
+      default: undefined,
     },
     /**
      * Restrict the search to a specific country
@@ -43,6 +45,7 @@ export default {
      */
     componentRestrictions: {
       type: Object,
+      default: undefined,
     },
     /**
      * Map types this is an array of strings
@@ -51,9 +54,7 @@ export default {
      */
     types: {
       type: Array,
-      default() {
-        return [];
-      },
+      default: undefined,
     },
     /**
      * Select the first result in the list when press enter keyboard
@@ -91,6 +92,7 @@ export default {
      */
     options: {
       type: Object,
+      default: undefined,
     },
     /**
      * To avoid paying for data that you don't need,
@@ -180,6 +182,12 @@ export default {
        */
       this.$emit('place_changed', this.$autocomplete.getPlace());
     });
+  },
+  destroyed() {
+    // Note: not all Google Maps components support maps
+    if (this.$$autocomplete && this.$$autocomplete.setMap) {
+      this.$$autocomplete.setMap(null);
+    }
   },
 };
 </script>

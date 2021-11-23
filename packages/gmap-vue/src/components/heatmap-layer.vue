@@ -10,7 +10,11 @@ import { bindProps, getPropsValues, bindEvents } from '../utils/helpers';
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/heatmaplayer)
  */
 export default {
+  name: 'HeatmapLayer',
   mixins: [MapElementMixin],
+  render() {
+    return '';
+  },
   provide() {
     const events = [];
 
@@ -61,6 +65,7 @@ export default {
      */
     data: {
       type: Array,
+      default: undefined,
     },
   },
   destroyed() {
