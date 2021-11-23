@@ -74,7 +74,7 @@
     "vue-router": "^3.5.3",
     "vue-template-compiler": "^2.6.14",
     "vuepress-jsdoc": "4.0.4",
-    "webpack": "^5.64.1",
+    "webpack": "^5.64.2",
     "webpack-cli": "^4.9.1",
     "yaml-loader": "^0.6.0"
   },
