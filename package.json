@@ -6,7 +6,6 @@
   "author": "\"Daniel Sim, Guillaume Leclerc\",",
   "license": "MIT",
   "scripts": {
-    "postinstall": "lerna bootstrap",
     "start:docs": "lerna run gen:api:docs && lerna run dev",
     "build": "lerna run build",
     "test": "lerna run test",
