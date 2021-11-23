@@ -12,7 +12,7 @@
       "allowBranch": ["master"]
     }
   },
-  "npmClient": "npm",
+  "npmClient": "pnpm",
   "packages": [
     "packages/*"
   ],

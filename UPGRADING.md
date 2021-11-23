@@ -12,14 +12,14 @@ hackery was needed to avoid endless update loops.
 
 # Important changes
 
-1. (v0.4.0) The installation method for vue2-google-maps has changed.
+1. (v0.4.0) The installation method for gmap-vue has changed.
 You use the library by calling:
 
 ```js
 // If you use Webpack + vue-loader
-var VueGoogleMaps = require('vue2-google-maps')
+var VueGoogleMaps = require('gmap-vue')
 // If you are not using Webpack
-var VueGoogleMaps = require('vue2-google-maps/dist/vue-google-maps')
+var VueGoogleMaps = require('gmap-vue/dist/gmap-vue')
 
 Vue.use(VueGoogleMaps, {
   load: { /* load options */ }
@@ -34,9 +34,9 @@ the library. However there is be no functional difference
 between the two include syntaxes if you are using Webpack:
 ```js
 // Option A: If you use Webpack + vue-loader
-var VueGoogleMaps = require('vue2-google-maps')
+var VueGoogleMaps = require('gmap-vue')
 // Option B: If you are not using Webpack
-var VueGoogleMaps = require('vue2-google-maps/dist/vue2-google-maps')
+var VueGoogleMaps = require('gmap-vue/dist/gmap-vue')
 ```
 
 The only difference is that Option A probably saves you a several
