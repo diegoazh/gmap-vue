@@ -46,8 +46,6 @@ jobs:
         run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Build plugin
-        run: pnpm run build --recursive
       - name: Configure git credentials
         uses: OleksiyRudenko/gha-git-credentials@v2-latest
         with:
