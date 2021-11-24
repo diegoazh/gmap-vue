@@ -13,7 +13,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x]
+        node-version: [12.x, 14.x, 16.x]
         os: [ubuntu-latest, window-latest]
         
     steps:
@@ -33,6 +33,7 @@ jobs:
   
     name: npm publish
     runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master'}}
     needs: [build]
     
     steps:
