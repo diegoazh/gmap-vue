@@ -60,9 +60,8 @@ jobs:
         run: |
           git remote set-url origin "https://${{ secrets.GH_TOKEN_LERNA }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
           git checkout master
-      - name: Move to gmap-vue package
-        run: cd ./packages/gmap-vue
       - name: Semantic Release
+        working-directory: ./packages/gmap-vue
         run: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
