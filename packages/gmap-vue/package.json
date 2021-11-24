@@ -13,7 +13,7 @@
     "prepare": "pnpm run build",
     "lint-staged": "lint-staged",
     "gen:api:docs": "rimraf ../documentation/docs/code && npx vuepress-jsdoc -d ../documentation/docs -t \"GmapVue API\" -r ./README.md",
-    "release": "semantic-release -e semantic-release-monorepo",
+    "release": "cp package.json ./dist && cp README.md ./dist && cp CHANGELOG.md ./dist && cp LICENSE.md ./dist && cp .npmignore ./dist && cd ./dist && semantic-release",
     "semantic-release": "semantic-release"
   },
   "files": [
@@ -70,7 +70,6 @@
     "rimraf": "^3.0.2",
     "semantic-release": "^18.0.0",
     "semantic-release-cli": "^5.4.4",
-    "semantic-release-monorepo": "^7.0.5",
     "shelljs": "^0.8.4",
     "shx": "^0.3.3",
     "style-loader": "^3.3.1",

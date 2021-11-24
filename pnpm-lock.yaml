@@ -69,7 +69,6 @@ importers:
       rimraf: ^3.0.2
       semantic-release: ^18.0.0
       semantic-release-cli: ^5.4.4
-      semantic-release-monorepo: ^7.0.5
       shelljs: ^0.8.4
       shx: ^0.3.3
       style-loader: ^3.3.1
@@ -123,7 +122,6 @@ importers:
       rimraf: 3.0.2
       semantic-release: 18.0.0
       semantic-release-cli: 5.4.4
-      semantic-release-monorepo: 7.0.5_semantic-release@18.0.0
       shelljs: 0.8.4
       shx: 0.3.3
       style-loader: 3.3.1_webpack@5.64.2
@@ -6519,19 +6517,6 @@ packages:
       strip-eof: 1.0.0
     dev: true
 
-  /execa/0.8.0:
-    resolution: {integrity: sha1-2NdrvBtVIX7RkP1t1J08d07PyNo=}
-    engines: {node: '>=4'}
-    dependencies:
-      cross-spawn: 5.1.0
-      get-stream: 3.0.0
-      is-stream: 1.1.0
-      npm-run-path: 2.0.2
-      p-finally: 1.0.0
-      signal-exit: 3.0.5
-      strip-eof: 1.0.0
-    dev: true
-
   /execa/1.0.0:
     resolution: {integrity: sha512-adbxcyWV46qiHyvSp50TKt05tB4tK3HcmF7/nxfAdhnox83seTDbwnaqKO4sXRy7roHAIFqJP/Rw/AuEbX61LA==}
     engines: {node: '>=6'}
@@ -10841,13 +10826,6 @@ packages:
     dependencies:
       find-up: 4.1.0
 
-  /pkg-up/2.0.0:
-    resolution: {integrity: sha1-yBmscoBZpGHKscOImivjxJoATX8=}
-    engines: {node: '>=4'}
-    dependencies:
-      find-up: 2.1.0
-    dev: true
-
   /portfinder/1.0.28:
     resolution: {integrity: sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA==}
     engines: {node: '>= 0.12.0'}
@@ -11934,10 +11912,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ramda/0.25.0:
-    resolution: {integrity: sha512-GXpfrYVPwx3K7RQ6aYT8KPS8XViSXUVJT1ONhoKPE9VAleW42YE+U+8VEyGWt41EnEQW7gwecYJriTI0pKoecQ==}
-    dev: true
-
   /randombytes/2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
     dependencies:
@@ -12786,29 +12760,6 @@ packages:
       update-notifier: 3.0.1
       user-home: 2.0.0
       validator: 12.2.0
-    dev: true
-
-  /semantic-release-monorepo/7.0.5_semantic-release@18.0.0:
-    resolution: {integrity: sha512-riOYD8eZ5PIST7o97Ltc01l8VQW7q01NmPDRPOBycaeZczJowyKkzkBfo92kTIWDFWbdO3G8A695JrrYjoTaiw==}
-    peerDependencies:
-      semantic-release: '>=15.11.x'
-    dependencies:
-      debug: 3.2.7
-      execa: 0.8.0
-      p-limit: 1.3.0
-      pkg-up: 2.0.0
-      ramda: 0.25.0
-      read-pkg: 5.2.0
-      semantic-release: 18.0.0
-      semantic-release-plugin-decorators: 3.0.1_semantic-release@18.0.0
-    dev: true
-
-  /semantic-release-plugin-decorators/3.0.1_semantic-release@18.0.0:
-    resolution: {integrity: sha512-f5Qjvv/AJYByvkaj11a+05gQwfPwgQKo5OIhj8YVM2Dhf2rOPEOLD83jGrTdM7Nuf//sZYw77/cGUSVygUG9Kg==}
-    peerDependencies:
-      semantic-release: '>=11'
-    dependencies:
-      semantic-release: 18.0.0
     dev: true
 
   /semantic-release/18.0.0:
