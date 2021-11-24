@@ -6,12 +6,12 @@
   "author": "\"Daniel Sim, Guillaume Leclerc\",",
   "license": "MIT",
   "scripts": {
-    "start:docs": "lerna run gen:api:docs && lerna run dev",
-    "build": "lerna run build",
-    "test": "lerna run test",
-    "lint": "lerna run lint",
-    "release": "lerna version --conventional-commits --yes",
-    "gen:docs": "lerna run gen:api:docs",
+    "start:docs": "pnpm run gen:api:docs -r && pnpm run dev -r",
+    "build": "pnpm run build -r",
+    "test": "pnpm run test -r",
+    "lint": "pnpm run lint -r",
+    "release": "pnpm run release -r",
+    "gen:docs": "pnpm run gen:api:docs -r",
     "clean": "rimraf ./packages/**/node_modules && rimraf ./packages/**/package-lock.json && rimraf ./package-lock.json && rimraf ./node_modules",
     "prepare": "husky install"
   },

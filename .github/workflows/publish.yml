@@ -17,9 +17,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
       - name: Build monorepo
-        run: npm run build
+        run: pnpm run build
       - name: Configure git credentials
         uses: OleksiyRudenko/gha-git-credentials@v1
         with:
@@ -31,8 +31,11 @@ jobs:
         run: |
           git remote set-url origin "https://${{ secrets.GH_TOKEN_LERNA }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
           git checkout master
-      - name: Run lerna version
-        run: npm run release
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Publish new version to npm
         uses: JS-DevTools/npm-publish@v1
         with:
