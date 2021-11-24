@@ -22,9 +22,8 @@ jobs:
         run: rm -rf pnpm-lock.yaml
       - name: Fresh install dependencies
         run: pnpm install
-      - name: Move to documentation package
-        run: cd ./packages/documentation
       - name: Build docs
+        working-directory: ./packages/documentation
         run: pnpm run build:docs
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2.1.2
