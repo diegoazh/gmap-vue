@@ -1,15 +1,9 @@
-const {utils: {getPackages}} = require('@commitlint/config-lerna-scopes');
-
 module.exports = {
-  extends: [
-    '@commitlint/config-lerna-scopes',
-  ],
   rules: {
     'type-enum': [2, 'always', ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert']],
     'type-case': [2, 'always', 'lowerCase'],
     'type-empty': [2, 'never'],
-    'scope-enum': async ctx =>
-        [2, 'always', [...(await getPackages(ctx)), 'root', 'all']],
+    'scope-enum': [2, 'always', ['gmap-vue', 'docs', 'root', 'all']],
     'scope-case': [2, 'always', 'lowerCase'],
     'scope-empty': [2, 'never'],
     'subject-case': [2, 'always', 'lowerCase'],
