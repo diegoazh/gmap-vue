@@ -1,6 +1,6 @@
 {
   "name": "gmap-vue",
-  "version": "1.4.1",
+  "version": "0.0.0-development",
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
   "main": "dist/main.js",
   "scripts": {
@@ -12,14 +12,16 @@
     "test": "echo 'not implemented yet'",
     "prepare": "pnpm run build",
     "lint-staged": "lint-staged",
-    "gen:api:docs": "rimraf ../documentation/docs/code && npx vuepress-jsdoc -d ../documentation/docs -t \"GmapVue API\" -r ./README.md"
+    "gen:api:docs": "rimraf ../documentation/docs/code && npx vuepress-jsdoc -d ../documentation/docs -t \"GmapVue API\" -r ./README.md",
+    "release": "semantic-release -e semantic-release-monorepo",
+    "semantic-release": "semantic-release"
   },
   "files": [
     "dist"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/diegoazh/gmap-vue.git"
+    "url": "https://github.com/diegoazh/gmap-vue.git"
   },
   "bugs": {
     "url": "https://github.com/diegoazh/gmap-vue/issues"
@@ -36,8 +38,10 @@
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.4",
     "@babel/eslint-parser": "^7.16.3",
+    "@babel/preset-env": "^7.16.4",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
     "babel-loader": "^8.2.3",
     "babel-plugin-minify-dead-code-elimination": "^0.5.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
@@ -45,6 +49,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.1.4",
+    "documentation": "^13.2.5",
     "eslint": "^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.3.0",
@@ -63,6 +68,9 @@
     "prettier": "^2.4.1",
     "raw-loader": "^4.0.2",
     "rimraf": "^3.0.2",
+    "semantic-release": "^18.0.0",
+    "semantic-release-cli": "^5.4.4",
+    "semantic-release-monorepo": "^7.0.5",
     "shelljs": "^0.8.4",
     "shx": "^0.3.3",
     "style-loader": "^3.3.1",
