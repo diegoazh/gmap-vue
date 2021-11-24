@@ -21,8 +21,9 @@ jobs:
       - name: Build plugin
         run: pnpm run build --recursive
       - name: Configure git credentials
-        uses: OleksiyRudenko/gha-git-credentials@v1
+        uses: OleksiyRudenko/gha-git-credentials@v2-latest
         with:
+          global: true
           name: '${{ secrets.GH_USER }}'
           email: '${{ secrets.GH_EMAIL }}'
           actor: '${{ secrets.GH_FULL_NAME }}'
