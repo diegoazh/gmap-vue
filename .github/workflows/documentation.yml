@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build monorepo
-        run: npm run build
+        run: pnpm run build
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2.1.2
         with:
