@@ -3,13 +3,13 @@ on:
   push:
     branches:
       - master
-      
+
 jobs:
   publish:
-  
+
     name: github pages
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 16
@@ -22,8 +22,10 @@ jobs:
         run: rm -rf pnpm-lock.yaml
       - name: Fresh install dependencies
         run: pnpm install
+      - name: Move to documentation package
+        run: cd ./packages/documentation
       - name: Build docs
-        run: pnpm run build:docs --recursive
+        run: pnpm run build:docs
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2.1.2
         with:

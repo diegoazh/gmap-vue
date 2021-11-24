@@ -16,7 +16,7 @@
     "lodash": "^4.17.21",
     "snyk": "^1.769.0",
     "vuepress": "^1.8.2",
-    "webpack": "4.0.0"
+    "webpack": "^4.26.0"
   },
   "snyk": true
 }
