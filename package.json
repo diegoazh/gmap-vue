@@ -7,20 +7,18 @@
   "license": "MIT",
   "scripts": {
     "start:docs": "pnpm run gen:api:docs -r && pnpm run dev -r",
-    "build": "pnpm run build -r",
+    "build": "pnpm run build -r && pnpm run build:docs -r",
     "test": "pnpm run test -r",
     "lint": "pnpm run lint -r",
     "release": "pnpm run release -r",
     "gen:docs": "pnpm run gen:api:docs -r",
-    "clean": "rimraf ./packages/**/node_modules && rimraf ./packages/**/package-lock.json && rimraf ./package-lock.json && rimraf ./node_modules",
+    "clean": "rimraf ./packages/**/node_modules && rimraf ./packages/**/package-lock.json && rimraf ./pnpm-lock.yaml && rimraf ./node_modules",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
-    "@commitlint/config-lerna-scopes": "^15.0.0",
     "husky": "^7.0.4",
-    "lerna": "^4.0.0",
     "lint-staged": "^12.1.2",
     "rimraf": "^3.0.2"
   }

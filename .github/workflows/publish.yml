@@ -18,8 +18,8 @@ jobs:
         run: pnpm install
       - name: Run tests
         run: pnpm run test
-      - name: Build monorepo
-        run: pnpm run build
+      - name: Build plugin
+        run: pnpm run build --recursive
       - name: Configure git credentials
         uses: OleksiyRudenko/gha-git-credentials@v1
         with:
