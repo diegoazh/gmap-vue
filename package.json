@@ -10,7 +10,6 @@
     "build:all": "pnpm run build -r && pnpm run build:docs -r",
     "test": "pnpm run test -r",
     "lint": "pnpm run lint -r",
-    "release": "pnpm run release -r",
     "gen:docs": "pnpm run gen:api:docs -r",
     "clean": "rimraf ./packages/**/node_modules && rimraf ./packages/**/package-lock.json && rimraf ./pnpm-lock.yaml && rimraf ./node_modules",
     "prepare": "husky install"

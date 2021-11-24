@@ -8,14 +8,14 @@ on:
 
 jobs:
   build:
-  
+
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
         os: [ubuntu-latest, windows-latest]
-        
+
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -28,14 +28,14 @@ jobs:
         run: pnpm install
       - name: Run tests
         run: pnpm run test
-          
+
   publish:
-  
+
     name: npm publish
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/master'}}
     needs: [build]
-    
+
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -61,9 +61,7 @@ jobs:
           git remote set-url origin "https://${{ secrets.GH_TOKEN_LERNA }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
           git checkout master
       - name: Move to gmap-vue package
-        run: cd packages/gmap-vue
-      - name: Check dir
-        run: pwd
+        run: cd ./packages/gmap-vue
       - name: Semantic Release
         run: pnpm run release
         env:
