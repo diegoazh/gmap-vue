@@ -18,7 +18,9 @@ jobs:
           node-version: 16
       - name: Install pnpm
         run: npm install -g pnpm
-      - name: Install dependencies
+      - name: Remove pnpm-lock.yaml file
+        run: rm -rf pnpm-lock.yaml
+      - name: Fresh install dependencies
         run: pnpm install
       - name: Build docs
         run: pnpm run build:docs --recursive
