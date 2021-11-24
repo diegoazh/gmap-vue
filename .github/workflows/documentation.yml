@@ -23,6 +23,8 @@ jobs:
       - name: Install dependencies
         working-directory: ./packages/documentation
         run: pnpm install
+      - name: Move to documentation package
+        run: cd ./packages/documentation
       - name: Build docs
         working-directory: ./packages/documentation
         run: pnpm run build:docs
