@@ -3,21 +3,48 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches: '*'
+
 jobs:
-  publish:
-    name: npm publish
-    runs-on: ubuntu-latest
+  build:
+  
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 16.x]
+        os: [ubuntu-latest, window-latest]
+        
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm install
       - name: Run tests
         run: pnpm run test
+          
+  publish:
+  
+    name: npm publish
+    runs-on: ubuntu-latest
+    needs: [build]
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Install dependencies
+        run: pnpm install
       - name: Build plugin
         run: pnpm run build --recursive
       - name: Configure git credentials
@@ -32,13 +59,17 @@ jobs:
         run: |
           git remote set-url origin "https://${{ secrets.GH_TOKEN_LERNA }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
           git checkout master
+      - name: Move to gmap-vue package
+        run: cd packages/gmap-vue
+      - name: Check dir
+        run: pwd
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v2
+        run: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-      - name: Publish new version to npm
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_AUTH_TOKEN }}
-          package: ./packages/gmap-vue/package.json
+#       - name: Publish new version to npm
+#         uses: JS-DevTools/npm-publish@v1
+#         with:
+#           token: ${{ secrets.NPM_AUTH_TOKEN }}
+#           package: ./packages/gmap-vue/package.json
