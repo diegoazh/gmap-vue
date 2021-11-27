@@ -38,7 +38,7 @@ importers:
       '@babel/preset-env': ^7.16.4
       '@googlemaps/markerclusterer': ^1.0.13
       '@semantic-release/changelog': ^6.0.1
-      '@semantic-release/git': ^10.0.1
+      '@semantic-release/github': ^8.0.2
       babel-loader: ^8.2.3
       babel-plugin-minify-dead-code-elimination: ^0.5.1
       babel-plugin-transform-inline-environment-variables: ^0.4.3
@@ -94,7 +94,7 @@ importers:
       '@babel/eslint-parser': 7.16.3_@babel+core@7.16.0+eslint@8.3.0
       '@babel/preset-env': 7.16.4_@babel+core@7.16.0
       '@semantic-release/changelog': 6.0.1_semantic-release@18.0.1
-      '@semantic-release/git': 10.0.1_semantic-release@18.0.1
+      '@semantic-release/github': 8.0.2_semantic-release@18.0.1
       babel-loader: 8.2.3_d888b76bb52891dbb46d1b9f7384ff34
       babel-plugin-minify-dead-code-elimination: 0.5.1
       babel-plugin-transform-inline-environment-variables: 0.4.3
@@ -1679,25 +1679,6 @@ packages:
   /@semantic-release/error/3.0.0:
     resolution: {integrity: sha512-5hiM4Un+tpl4cKw3lV4UgzJj+SmfNIDCLLw0TepzQxz9ZGV5ixnqkzIVF+3tp0ZHgcMKE+VNGHJjEeyFG2dcSw==}
     engines: {node: '>=14.17'}
-    dev: true
-
-  /@semantic-release/git/10.0.1_semantic-release@18.0.1:
-    resolution: {integrity: sha512-eWrx5KguUcU2wUPaO6sfvZI0wPafUKAMNC18aXY4EnNcrZL86dEmpNVnC9uMpGZkmZJ9EfCVJBQx4pV4EMGT1w==}
-    engines: {node: '>=14.17'}
-    peerDependencies:
-      semantic-release: '>=18.0.0'
-    dependencies:
-      '@semantic-release/error': 3.0.0
-      aggregate-error: 3.1.0
-      debug: 4.3.2
-      dir-glob: 3.0.1
-      execa: 5.1.1
-      lodash: 4.17.21
-      micromatch: 4.0.4
-      p-reduce: 2.1.0
-      semantic-release: 18.0.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@semantic-release/github/8.0.2_semantic-release@18.0.1:
