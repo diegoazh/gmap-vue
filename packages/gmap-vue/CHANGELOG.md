@@ -17,7 +17,7 @@
 * **gmap-vue:** fix build errors on the plugin ([dc70306](https://github.com/diegoazh/gmap-vue/commit/dc70306a6d871abbeccec9346e73a5d21b01a035)), closes [#226](https://github.com/diegoazh/gmap-vue/issues/226)
 * **gmap-vue:** remove semantic-release-monorepo ([854ebd2](https://github.com/diegoazh/gmap-vue/commit/854ebd2bb108fc97b81a239b51d0f06fd2523e79))
 
-# [2.0.0](https://github.com/diegoazh/gmap-vue/compare/v1.2.2...v2.0.0) (2021-11-24)
+# [2.0.0](https://github.com/diegoazh/gmap-vue/compare/v1.2.2...v2.0.0) (2021-11-24) [**DEPRECATED**]
 
 
 ### Bug Fixes
