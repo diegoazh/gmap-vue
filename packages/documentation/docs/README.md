@@ -57,6 +57,48 @@ That is, instead of writing `<GmapMap>`, you need to write `<gmap-map>`.
 
 [Generating an Google Maps API key](https://developers.google.com/maps/documentation/javascript/get-api-key).
 
+### Exported utilities from the GmapVue plugin
+
+In previous version the plugin exports all without any organization, from version 2 the plugin exports a default object with the install function required for Vue.js to install this plugin and two objects, `helpers` and `components`.
+
+This two objects exports the same functions as before but in a better way, in the `main.js` file. The code below is a copy from that file.
+
+```js
+
+/**
+ * Export all components and mixins
+ */
+export const components = {
+  HeatmapLayer,
+  KmlLayer,
+  Marker,
+  Polyline,
+  Polygon,
+  Circle,
+  Cluster,
+  Rectangle,
+  DrawingManager,
+  InfoWindow,
+  MapLayer,
+  PlaceInput,
+  Autocomplete,
+  MountableMixin,
+  StreetViewPanorama,
+};
+
+/**
+ * Export all helpers
+ */
+
+export const helpers = {
+  gmapApi,
+  loadGmapApi,
+  MapElementMixin,
+  MapElementFactory,
+};
+
+```
+
 ### Quickstart (Webpack, Nuxt):
 
 If you are using Webpack and Vue file components, just add the following to your code!
@@ -83,7 +125,7 @@ In your `main.js` or inside a Nuxt plugin:
 
 ```js
 import Vue from 'vue'
-import * as GmapVue from 'gmap-vue'
+import GmapVue from 'gmap-vue'
 
 Vue.use(GmapVue, {
   load: {
@@ -250,7 +292,7 @@ There is a second slot named **"visible"** that must be used if you want to disp
 For Nuxt.js projects, please import GmapVue in the following way:
 
 ```js
-import * as GmapVue from '~/node_modules/gmap-vue'
+import GmapVue from '~/node_modules/gmap-vue'
 ```
 
 Add the following to your `nuxt.config.js`'s `build.extend()`:
@@ -258,6 +300,12 @@ Add the following to your `nuxt.config.js`'s `build.extend()`:
 ```js
 transpile: [/^gmap-vue($|\/)/]
 ```
+
+:::info
+
+Please take a look at this [example on stackblitz](https://stackblitz.com/edit/github-52grpx)
+
+:::
 
 ### Officially supported components:
 
@@ -295,7 +343,8 @@ Example for [DirectionsRenderer](https://developers.google.com/maps/documentatio
 
 ```js
 // DirectionsRenderer.js
-import { mapElementFactory } from 'gmap-vue'
+import { helpers } from 'gmap-vue'
+const { MapElementFactory } = helpers;
 
 export default mapElementFactory({
   name: 'directionsRenderer',
