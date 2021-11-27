@@ -43,6 +43,7 @@ importers:
       babel-plugin-minify-dead-code-elimination: ^0.5.1
       babel-plugin-transform-inline-environment-variables: ^0.4.3
       better-docs: ^2.3.2
+      copy-webpack-plugin: ^10.0.0
       core-js: ^3.19.1
       cross-env: ^7.0.3
       css-loader: ^6.5.1
@@ -84,7 +85,7 @@ importers:
       webpack-cli: ^4.9.1
       yaml-loader: ^0.6.0
     dependencies:
-      '@googlemaps/markerclusterer': 1.0.13
+      '@googlemaps/markerclusterer': 1.0.15
       core-js: 3.19.1
       regenerator-runtime: 0.13.9
     devDependencies:
@@ -98,6 +99,7 @@ importers:
       babel-plugin-minify-dead-code-elimination: 0.5.1
       babel-plugin-transform-inline-environment-variables: 0.4.3
       better-docs: 2.3.2
+      copy-webpack-plugin: 10.0.0_webpack@5.64.2
       cross-env: 7.0.3
       css-loader: 6.5.1_webpack@5.64.2
       css-minimizer-webpack-plugin: 3.1.4_webpack@5.64.2
@@ -1466,8 +1468,8 @@ packages:
       - supports-color
     dev: true
 
-  /@googlemaps/markerclusterer/1.0.13:
-    resolution: {integrity: sha512-jNGSzcq5dmbisHdNS8oRj/Pq9mvP7fUARRQWq8HaaqZWksdbNl9uSUSyj9kzl1C1SsFwXOEUVbq3vCWstTGU4A==}
+  /@googlemaps/markerclusterer/1.0.15:
+    resolution: {integrity: sha512-Vd5/z1U3n8adEU9eEnbTc5ebM2Ud4rUB0kuDYibGHIUHFJhJkqqbTtSF6hL9htVdcnBpX0Ko+M3V4Oi2yBqsLQ==}
     dependencies:
       '@turf/clusters-dbscan': 6.5.0
       '@turf/clusters-kmeans': 6.5.0
@@ -2960,6 +2962,11 @@ packages:
   /array-union/2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
+    dev: true
+
+  /array-union/3.0.1:
+    resolution: {integrity: sha512-1OvF9IbWwaeiM9VhzYXVQacMibxpXOMYVNIvMtKRyX9SImBXpKcFr8XvFDeEslCyuH/t6KRt7HEO94AlP8Iatw==}
+    engines: {node: '>=12'}
     dev: true
 
   /array-uniq/1.0.3:
@@ -4957,6 +4964,21 @@ packages:
   /copy-descriptor/0.1.1:
     resolution: {integrity: sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=}
     engines: {node: '>=0.10.0'}
+
+  /copy-webpack-plugin/10.0.0_webpack@5.64.2:
+    resolution: {integrity: sha512-tuCVuFMBbRsb7IH0q1CUb50/Skv+7a6c7DJ+xi4fAbOzNLTYVMUTPnf8uGvKPtmqTvzYBrfEFo7YgP4TsUWmtg==}
+    engines: {node: '>= 12.20.0'}
+    peerDependencies:
+      webpack: ^5.1.0
+    dependencies:
+      fast-glob: 3.2.7
+      glob-parent: 6.0.2
+      globby: 12.0.2
+      normalize-path: 3.0.0
+      schema-utils: 4.0.0
+      serialize-javascript: 6.0.0
+      webpack: 5.64.2_webpack-cli@4.9.1
+    dev: true
 
   /copy-webpack-plugin/5.1.2_webpack@4.46.0:
     resolution: {integrity: sha512-Uh7crJAco3AjBvgAy9Z75CjK8IG+gxaErro71THQ+vv/bl4HaQcpkexAY8KVW/T6D2W2IRr+couF/knIRkZMIQ==}
@@ -7293,6 +7315,18 @@ packages:
       ignore: 5.1.9
       merge2: 1.4.1
       slash: 3.0.0
+    dev: true
+
+  /globby/12.0.2:
+    resolution: {integrity: sha512-lAsmb/5Lww4r7MM9nCCliDZVIKbZTavrsunAsHLr9oHthrZP1qi7/gAnHOsUs9bLvEt2vKVJhHmxuL7QbDuPdQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      array-union: 3.0.1
+      dir-glob: 3.0.1
+      fast-glob: 3.2.7
+      ignore: 5.1.9
+      merge2: 1.4.1
+      slash: 4.0.0
     dev: true
 
   /globby/6.1.0:
@@ -12944,6 +12978,11 @@ packages:
   /slash/3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
+    dev: true
+
+  /slash/4.0.0:
+    resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
+    engines: {node: '>=12'}
     dev: true
 
   /slice-ansi/3.0.0:

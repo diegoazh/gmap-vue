@@ -27,71 +27,16 @@ import MountableMixin from './mixins/mountable';
  * Therefore we use babel-plugin-transform-inline-environment-variables to
  * set BUILD_DEV to truthy / falsy
  */
-const Cluster = ((s) => s.default || s)(
-  require('./components/cluster-icon.vue')
-);
+const Cluster =
+  process.env.BUILD_DEV === '1'
+    ? undefined
+    : ((s) => s.default || s)(require('./components/cluster-icon.vue'));
 
 // TODO: This should be checked if it must be GmapVue, Gmap.api or something else
 let GmapApi = null;
 
-export default function install(Vue, options) {
-  // Set defaults
-  const finalOptions = {
-    installComponents: true,
-    autobindAllEvents: false,
-    ...options,
-  };
-
-  /**
-   * Update the global `GmapApi`. This will allow
-   * components to use the `google` global reactively
-   * via:
-   *   import { gmapApi } from 'gmap-vue'
-   *   export default {  computed: { google: gmapApi }  }
-   */
-  GmapApi = new Vue({ data: { gmapApi: null } });
-
-  const defaultResizeBus = new Vue();
-
-  /**
-   * Use a lazy to only load the API when
-   * a VGM component is loaded
-   */
-  const promiseLazyCreator = promiseLazyFactory(loadGmapApi, GmapApi);
-  const gmapApiPromiseLazy = promiseLazyCreator(finalOptions);
-
-  // Instance properties
-  Vue.mixin({
-    created() {
-      this.$gmapDefaultResizeBus = defaultResizeBus;
-      this.$gmapOptions = finalOptions;
-      this.$gmapApiPromiseLazy = gmapApiPromiseLazy;
-    },
-  });
-
-  // Static properties
-  Vue.$gmapDefaultResizeBus = defaultResizeBus;
-  Vue.$gmapApiPromiseLazy = gmapApiPromiseLazy;
-
-  if (finalOptions.installComponents) {
-    Vue.component('GmapMap', MapLayer);
-    Vue.component('GmapMarker', Marker);
-    Vue.component('GmapInfoWindow', InfoWindow);
-    Vue.component('GmapHeatmapLayer', HeatmapLayer);
-    Vue.component('GmapKmlLayer', KmlLayer);
-    Vue.component('GmapPolyline', Polyline);
-    Vue.component('GmapPolygon', Polygon);
-    Vue.component('GmapCircle', Circle);
-    Vue.component('GmapRectangle', Rectangle);
-    Vue.component('GmapDrawingManager', DrawingManager);
-    Vue.component('GmapAutocomplete', Autocomplete);
-    Vue.component('GmapPlaceInput', PlaceInput);
-    Vue.component('GmapStreetViewPanorama', StreetViewPanorama);
-  }
-}
-
 // TODO: should be called googleMapsApi for next versions
-function gmapApi() {
+export function gmapApi() {
   return GmapApi.gmapApi && window.google;
 }
 
@@ -121,8 +66,65 @@ export const components = {
  */
 
 export const helpers = {
-  gmapApi,
   loadGmapApi,
   MapElementMixin,
   MapElementFactory,
+};
+
+export default {
+  install: function gmapVuePluginInstallFn(Vue, options) {
+    // Set defaults
+    const finalOptions = {
+      installComponents: true,
+      autobindAllEvents: false,
+      ...options,
+    };
+
+    /**
+     * Update the global `GmapApi`. This will allow
+     * components to use the `google` global reactively
+     * via:
+     *   import { gmapApi } from 'gmap-vue'
+     *   export default {  computed: { google: gmapApi }  }
+     */
+    GmapApi = new Vue({ data: { gmapApi: null } });
+
+    const defaultResizeBus = new Vue();
+
+    /**
+     * Use a lazy to only load the API when
+     * a VGM component is loaded
+     */
+    const promiseLazyCreator = promiseLazyFactory(loadGmapApi, GmapApi);
+    const gmapApiPromiseLazy = promiseLazyCreator(finalOptions);
+
+    // Instance properties
+    Vue.mixin({
+      created() {
+        this.$gmapDefaultResizeBus = defaultResizeBus;
+        this.$gmapOptions = finalOptions;
+        this.$gmapApiPromiseLazy = gmapApiPromiseLazy;
+      },
+    });
+
+    // Static properties
+    Vue.$gmapDefaultResizeBus = defaultResizeBus;
+    Vue.$gmapApiPromiseLazy = gmapApiPromiseLazy;
+
+    if (finalOptions.installComponents) {
+      Vue.component('GmapMap', MapLayer);
+      Vue.component('GmapMarker', Marker);
+      Vue.component('GmapInfoWindow', InfoWindow);
+      Vue.component('GmapHeatmapLayer', HeatmapLayer);
+      Vue.component('GmapKmlLayer', KmlLayer);
+      Vue.component('GmapPolyline', Polyline);
+      Vue.component('GmapPolygon', Polygon);
+      Vue.component('GmapCircle', Circle);
+      Vue.component('GmapRectangle', Rectangle);
+      Vue.component('GmapDrawingManager', DrawingManager);
+      Vue.component('GmapAutocomplete', Autocomplete);
+      Vue.component('GmapPlaceInput', PlaceInput);
+      Vue.component('GmapStreetViewPanorama', StreetViewPanorama);
+    }
+  },
 };
