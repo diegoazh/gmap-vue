@@ -301,7 +301,7 @@ Add the following to your `nuxt.config.js`'s `build.extend()`:
 transpile: [/^gmap-vue($|\/)/]
 ```
 
-:::info
+::: details
 
 Please take a look at this [example on stackblitz](https://stackblitz.com/edit/github-52grpx)
 
