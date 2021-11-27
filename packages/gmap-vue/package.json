@@ -3,18 +3,20 @@
   "version": "2.0.0",
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
   "main": "dist/main.js",
+  "engines": {
+    "node": ">=12",
+    "npm": ">6"
+  },
   "scripts": {
-    "prebuild": "rimraf ./dist && shx mkdir -p ./dist && cross-env BUILD_DEV=1 babel src -D --out-dir ./dist && echo {} > dist/.babelrc",
-    "build": "cross-env NODE_ENV=production webpack --progress",
-    "build:dev": "pnpm run prebuild && cross-env NODE_ENV=development webpack --progress",
-    "build:test": "pnpm run prebuild && cross-env NODE_ENV=test webpack --progress",
+    "clean:build": "rimraf ./dist && shx mkdir -p ./dist && cross-env BUILD_DEV=1 babel src -D --out-dir ./dist && echo {} > dist/.babelrc",
+    "build": "pnpm run clean:build && cross-env NODE_ENV=production webpack --progress",
+    "build:dev": "pnpm run clean:build && cross-env NODE_ENV=development webpack --progress",
+    "build:test": "pnpm run clean:build && cross-env NODE_ENV=test webpack --progress",
     "lint": "prettier --write ./src && eslint --fix --ext .vue,.js,.html ./src",
     "test": "echo 'not implemented yet'",
-    "prepare": "pnpm run build",
     "lint-staged": "lint-staged",
     "gen:api:docs": "rimraf ../documentation/docs/code && npx vuepress-jsdoc -d ../documentation/docs -t \"GmapVue API\" -r ./README.md",
-    "release": "cp package.json ./dist && cp README.md ./dist && cp CHANGELOG.md ./dist && cp LICENSE.md ./dist && cp .npmignore ./dist && cd ./dist && semantic-release",
-    "semantic-release": "semantic-release"
+    "release": "semantic-release"
   },
   "files": [
     "dist"
@@ -46,6 +48,7 @@
     "babel-plugin-minify-dead-code-elimination": "^0.5.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "better-docs": "^2.3.2",
+    "copy-webpack-plugin": "^10.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.1.4",
