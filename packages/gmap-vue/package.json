@@ -43,7 +43,7 @@
     "@babel/eslint-parser": "^7.16.3",
     "@babel/preset-env": "^7.16.4",
     "@semantic-release/changelog": "^6.0.1",
-    "@semantic-release/github": "^8.0.2",
+    "@semantic-release/git": "^10.0.1",
     "babel-loader": "^8.2.3",
     "babel-plugin-minify-dead-code-elimination": "^0.5.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
