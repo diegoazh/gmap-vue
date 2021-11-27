@@ -73,23 +73,23 @@ BREAKING CHANGE: This breaks the api that generate automatically all components.
 
 ## Git flow and history
 
-At this moment we have two main branches `master` and `develop` when you fork the project you must work over the develop branch and when you make a PR you should select develop branch as the target branch.
+At this moment we have one main branches `master` when you fork the project you must work on that branch.
 
-These two branches have a linear history and you should use the **rebase** strategy instead of ~~merge~~ strategy to maintain the linear history of the commits.
+This branch have a linear history and you should use the **rebase** strategy instead of ~~merge~~ strategy to maintain the linear history of the commits.
 
-After ensuring that all changes in develop branch works as expected we will merge it on the master branch and all features and fixes added to the master branch will automatically be deployed to npm and the documentation site.
+After ensuring that all changes in your branch works as expected we will merge it on the master branch and all features and fixes added to the master branch will automatically be deployed to npm and the documentation site.
 
-## PR title
+## PR title (**deprecated**)
 
-A tricky point that you need to keep in mind is because of the GitHub behaviour when you make a PR the title of the PR should be similar to an inline commit style, in this way the title validator will approve you PR and will review it and merge it.
+~~A tricky point that you need to keep in mind is because of the GitHub behaviour when you make a PR the title of the PR should be similar to an inline commit style, in this way the title validator will approve you PR and will review it and merge it.~~
 
-The regex patter that validates the title for a PR is the following
+~~The regex patter that validates the title for a PR is the following~~
 
 ```javascript
 /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\()(deps|root|all|gmap-vue|documentation)(\))(:)(\s{1}[\.\/\-\_a-z0-9\s]+)$/gm
 ```
 
-You can test this regex expression following this link [regexr.com/59fn0](regexr.com/59fn0).
+~~You can test this regex expression following this link [regexr.com/59fn0](regexr.com/59fn0).~~
 
 ## Code style
 
