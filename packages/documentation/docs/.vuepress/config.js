@@ -1,7 +1,7 @@
 const { sidebarTree } = require("../code/config");
 const apiDocs = sidebarTree("API docs");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
 
 module.exports = {
   base: "/gmap-vue/",
@@ -58,7 +58,12 @@ module.exports = {
   },
   configureWebpack: (config, isServer) => {
     configureWebpack: (config) => {
-      return { plugins: [new HtmlWebpackPlugin(), new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)] };
+      return {
+        plugins: [
+          new HtmlWebpackPlugin(),
+          new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
+        ],
+      };
     };
   },
 };
