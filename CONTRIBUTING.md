@@ -35,7 +35,7 @@ In this project the scopes are **required** this is because Lerna needs it to de
 |root|This is for changes that only affect the root monorepo managed by Lerna|
 |all|This is for changes that affect all packages and the root monorepo|
 |gmap-vue|This is for changes that affect the `gmap-vue` package (the plugin package)|
-|documentation|This is for changes that affect the `documentation` package|
+|docs|This is for changes that affect the `documentation` package|
 
 If you have changes that affect `gmap-vue` and `documentation` packages you can use the scope that contains the main changes, but this situation is very rare and **you must commit the changes in different commits** and each of one must have the corresponding scope.
 
