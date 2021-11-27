@@ -17,5 +17,9 @@
     "snyk": "^1.850.0",
     "vuepress": "^1.9.7"
   },
-  "snyk": true
+  "snyk": true,
+  "devDependencies": {
+    "html-webpack-inline-source-plugin": "^0.0.10",
+    "html-webpack-plugin": "^5.5.0"
+  }
 }
