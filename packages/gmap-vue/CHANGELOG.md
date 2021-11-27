@@ -1,3 +1,11 @@
+## [2.0.2](https://github.com/diegoazh/gmap-vue/compare/v2.0.1...v2.0.2) (2021-11-27)
+
+
+### Bug Fixes
+
+* **docs:** fix documentation issues with webpack config and build ([1dfed13](https://github.com/diegoazh/gmap-vue/commit/1dfed1377becab61e547a0586f6437ee43cad1e8))
+* **docs:** fix vuepress alert on main readme ([ad57f64](https://github.com/diegoazh/gmap-vue/commit/ad57f6422be91e0b89b5a8e08a03af23688a2e7a))
+
 # Change Log
 
 ## [2.0.1](https://github.com/diegoazh/gmap-vue/compare/v2.0.0...v2.0.1) (2021-11-27)
