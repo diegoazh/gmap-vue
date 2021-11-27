@@ -49,7 +49,9 @@ const config = {
       },
     ],
   },
-  plugins: [new VueLoaderPlugin()],
+  plugins: [
+    new VueLoaderPlugin(),
+  ],
   mode: process.env.NODE_ENV || 'development',
 };
 

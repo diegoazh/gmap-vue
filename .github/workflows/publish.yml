@@ -66,8 +66,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-#       - name: Publish new version to npm
-#         uses: JS-DevTools/npm-publish@v1
-#         with:
-#           token: ${{ secrets.NPM_AUTH_TOKEN }}
-#           package: ./packages/gmap-vue/package.json
+      - name: Publish new version to npm
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
+          package: ./packages/gmap-vue/package.json
