@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/diegoazh/gmap-vue/compare/v2.0.2...v2.0.3) (2022-02-09)
+
+
+### Bug Fixes
+
+* **gmap-vue:** fix error loading cluster ([a2cb9ba](https://github.com/diegoazh/gmap-vue/commit/a2cb9badf2e1e155b4622dd0e2273abe6d5852e3)), closes [#234](https://github.com/diegoazh/gmap-vue/issues/234)
+
 ## [2.0.2](https://github.com/diegoazh/gmap-vue/compare/v2.0.1...v2.0.2) (2021-11-27)
 
 
