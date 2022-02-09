@@ -7,8 +7,11 @@ export default ({
   siteData, // site metadata
 }) => {
   Vue.use(GmapVue, {
-    key: "AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc",
-    libraries: "places",
+    load: {
+      key: "AIzaSyDf43lPdwlF98RCBsJOFNKOkoEjkwxb5Sc",
+      libraries: "places",
+    },
+    installComponents: true,
   });
 
   Vue.component(

@@ -27,10 +27,9 @@ import MountableMixin from './mixins/mountable';
  * Therefore we use babel-plugin-transform-inline-environment-variables to
  * set BUILD_DEV to truthy / falsy
  */
-const Cluster =
-  process.env.BUILD_DEV === '1'
-    ? undefined
-    : ((s) => s.default || s)(require('./components/cluster-icon.vue'));
+const Cluster = ((s) => s.default || s)(
+  require('./components/cluster-icon.vue')
+);
 
 // TODO: This should be checked if it must be GmapVue, Gmap.api or something else
 let GmapApi = null;
