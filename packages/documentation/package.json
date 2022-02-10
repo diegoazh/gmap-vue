@@ -12,7 +12,7 @@
     "prepare": "pnpm run snyk-protect"
   },
   "dependencies": {
-    "gmap-vue": "workspace:../gmap-vue",
+    "gmap-vue": "^2.0.3",
     "lodash": "^4.17.21",
     "snyk": "^1.850.0",
     "vuepress": "^1.9.7"
