@@ -9,6 +9,13 @@
       "name": "Run npm gen:docs",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "command": "npm run build:docs",
+      "name": "Run npm build:docs",
+      "request": "launch",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/packages/documentation"
     }
   ]
 }
