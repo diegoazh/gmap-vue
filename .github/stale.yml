@@ -1,9 +1,19 @@
 # Number of days of inactivity before an issue becomes stale
-daysUntilStale: 60
+daysUntilStale: 1095
 # Number of days of inactivity before a stale issue is closed
-daysUntilClose: 7
+daysUntilClose: 183
 # Issues with these labels will never be considered stale
 exemptLabels:
+  - backlog
+  - bugs
+  - help wanted
+  - ready for reviewers
+  - recheck
+  - stand by
+  - under investigation
+  - vulnerability
+  - wip
+  # provided by default
   - pinned
   - security
 # Label to use when marking an issue as stale
@@ -14,4 +24,7 @@ markComment: >
   recent activity. It will be closed if no further activity occurs. Thank you
   for your contributions.
 # Comment to post when closing a stale issue. Set to `false` to disable
-closeComment: false
+closeComment: >
+  This issue has been closed because it has not had
+  activity after has been marked as stale. It will be locked if no further activity occurs. Thank you
+  for your contributions.
