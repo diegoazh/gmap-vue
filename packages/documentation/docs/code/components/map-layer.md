@@ -79,8 +79,8 @@ title: map-layer
 
   | Param name     | Type        | Description  |
   | ------------- |------------- | -------------|
-  | x | number | Number of pixels to move the map in the x direction. |
-| y | number | Number of pixels to move the map in the y direction. |
+  |  | number | x - Number of pixels to move the map in the x direction. |
+|  | number | y - Number of pixels to move the map in the y direction. |
 
   
 #### Return

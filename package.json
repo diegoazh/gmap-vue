@@ -6,7 +6,7 @@
   "author": "\"Daniel Sim, Guillaume Leclerc\",",
   "license": "MIT",
   "scripts": {
-    "start:docs": "pnpm run gen:api:docs -r && pnpm run dev -r",
+    "serve:docs": "pnpm run gen:api:docs -r && pnpm run serve:docs -r",
     "build:all": "pnpm run build -r && pnpm run build:docs -r",
     "test": "pnpm run test -r",
     "lint": "pnpm run lint -r",
