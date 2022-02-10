@@ -14,12 +14,12 @@
   "dependencies": {
     "gmap-vue": "workspace:../gmap-vue",
     "lodash": "^4.17.21",
-    "snyk": "^1.769.0",
-    "vuepress": "^1.8.2"
+    "snyk": "^1.850.0",
+    "vuepress": "^1.9.7"
   },
   "snyk": true,
   "devDependencies": {
-    "html-webpack-inline-source-plugin": "^0.0.10",
-    "html-webpack-plugin": "^5.5.0"
+    "html-webpack-inline-source-plugin": "1.0.0-beta.2",
+    "html-webpack-plugin": "^4.0.0"
   }
 }

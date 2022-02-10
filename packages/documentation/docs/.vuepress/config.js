@@ -56,14 +56,14 @@ module.exports = {
       "/": [["", "Getting started"]],
     },
   },
-  configureWebpack: (config, isServer) => {
-    configureWebpack: (config) => {
-      return {
-        plugins: [
-          new HtmlWebpackPlugin(),
-          new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
-        ],
-      };
-    };
-  },
+  // configureWebpack: (config, isServer) => {
+  //   // configureWebpack: (config) => {
+  //   return {
+  //     plugins: [
+  //       new HtmlWebpackPlugin(),
+  //       new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
+  //     ],
+  //   };
+  //   // };
+  // },
 };
