@@ -82,7 +82,6 @@ title: map-layer
   |  | number | x - Number of pixels to move the map in the x direction. |
 |  | number | y - Number of pixels to move the map in the y direction. |
 
-
 #### Return
 
   | Type        | Description  |
