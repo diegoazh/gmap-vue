@@ -19,6 +19,7 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install dependencies
+        working-directory: ./packages/documentation
         run: pnpm install
       - name: Build docs
         working-directory: ./packages/documentation
