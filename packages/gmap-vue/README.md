@@ -239,7 +239,7 @@ This requires vue 2.6 or higher for the new slot support.
 ### Adding your own components
 
 It should be relatively easy to add your own components (e.g. Heatmap, GroundOverlay). please refer to the
-[source code for `MapElementFactory`](https://github.com/xkjyeah/vue-google-maps/blob/vue2/src/components/mapElementFactory.js).
+[source code for `MapElementFactory`](https://github.com/diegoazh/gmap-vue/blob/master/packages/gmap-vue/src/utils/factories/map-element.js).
 
 Example for [DirectionsRenderer](https://developers.google.com/maps/documentation/javascript/reference/3/#DirectionsRenderer):
 ```js
