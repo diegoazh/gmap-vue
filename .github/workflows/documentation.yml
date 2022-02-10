@@ -18,7 +18,10 @@ jobs:
           node-version: 16
       - name: Install pnpm
         run: npm install -g pnpm
-      - name: Install dependencies (webpack 4)
+      - name: Install dependencies
+        working-directory: ./packages/documentation
+        run: pnpm install
+      - name: Install Webpack 4
         working-directory: ./packages/documentation
         run: pnpm add --save webpack@4.0.0
       - name: Build docs
