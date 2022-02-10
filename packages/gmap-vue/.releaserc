@@ -26,21 +26,14 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["./CHANGELOG.md"],
-        "message": "chore(gmap-vue): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-      }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets": ["./CHANGELOG.md"],
+        "assets": ["./package.json", "./CHANGELOG.md"],
         "message": "chore(gmap-vue): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ],
     [
       "@semantic-release/github",
       {
-        "assets": ["./CHANGELOG.md"],
+        "assets": ["./package.json", "./CHANGELOG.md"],
         "message": "chore(gmap-vue): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ]
