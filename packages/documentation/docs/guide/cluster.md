@@ -6,6 +6,18 @@ For more information read the Google Maps documentation for [clustering](https:/
 
 ::: warning
 
+To use this component you need to have installed `@googlemaps/markerclusterer`
+
+```bash
+
+npm install --save @googlemaps/markerclusterer
+
+```
+
+:::
+
+::: warning
+
 This component **must be manually imported**
 
 ```javascript
@@ -43,6 +55,23 @@ export default {
       ]
     };
   },
+  components: {
+    "gmap-cluster": components.Cluster
+  }
+};
+```
+
+:::
+
+::: tip
+
+This component is exported in the `components` object with the name `Cluster`
+
+```js
+import { components } from "gmap-vue";
+
+export default {
+  ...
   components: {
     "gmap-cluster": components.Cluster
   }
