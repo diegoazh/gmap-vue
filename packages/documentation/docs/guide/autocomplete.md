@@ -73,7 +73,7 @@ export default {
     options: {
       type: Object,
     },
-    fields: {
+    setFieldsTo: {
       required: false,
       type: Array,
       default: null,
@@ -126,8 +126,8 @@ export default {
 
     bindProps(this, this.$autocomplete, autocompleteMappedProps);
 
-    if (this.fields) {
-      this.$autocomplete.setFields(this.fields);
+    if (this.setFieldsTo) {
+      this.$autocomplete.setFields(this.setFieldsTo);
     }
 
     this.$autocomplete.addListener('place_changed', () => {

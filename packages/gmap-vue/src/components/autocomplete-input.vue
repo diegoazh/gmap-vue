@@ -103,7 +103,7 @@ export default {
      * @see [setFields](https://developers.google.com/maps/documentation/javascript/reference/places-widget#Autocomplete.setFields)
      * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
      */
-    fields: {
+    setFieldsTo: {
       required: false,
       type: Array,
       default: null,
@@ -167,8 +167,8 @@ export default {
 
     bindProps(this, this.$autocomplete, autocompleteMappedProps);
 
-    if (this.fields) {
-      this.$autocomplete.setFields(this.fields);
+    if (this.setFieldsTo) {
+      this.$autocomplete.setFields(this.setFieldsTo);
     }
 
     // Not using `bindEvents` because we also want
