@@ -97,7 +97,7 @@ Vue.use(GmapVue, {
   //// (e.g. `this.$refs.gmap.$on('zoom_changed', someFunc)`)
   //// instead of going through Vue templates (e.g. `<GmapMap @zoom_changed="someFunc">`)
   //// you might need to turn this on.
-  // autobindAllEvents: false,
+  // autoBindAllEvents: false,
 
   //// If you want to manually install components, e.g.
   //// import {GmapMarker} from 'gmap-vue/src/components/marker'

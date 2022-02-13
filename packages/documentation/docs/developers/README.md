@@ -73,7 +73,7 @@ BREAKING CHANGE: This breaks the api that generate automatically all components.
 
 ## Git flow and history
 
-At this moment we have one main branches `master` when you fork the project you must work on that branch.
+At this moment we have one main branch `master` when you fork the project you must work on that branch.
 
 This branch have a linear history and you should use the **rebase** strategy instead of ~~merge~~ strategy to maintain the linear history of the commits.
 

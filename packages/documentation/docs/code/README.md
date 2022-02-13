@@ -79,9 +79,9 @@ In your `main.js` or inside a Nuxt plugin:
 
 ```js
 import Vue from 'vue'
-import * as VueGoogleMaps from 'gmap-vue'
+import GmapVue from 'gmap-vue'
 
-Vue.use(VueGoogleMaps, {
+Vue.use(GmapVue, {
   load: {
     key: 'YOUR_API_TOKEN',
     libraries: 'places', // This is required if you use the Autocomplete plugin
@@ -97,7 +97,7 @@ Vue.use(VueGoogleMaps, {
   //// (e.g. `this.$refs.gmap.$on('zoom_changed', someFunc)`)
   //// instead of going through Vue templates (e.g. `<GmapMap @zoom_changed="someFunc">`)
   //// you might need to turn this on.
-  // autobindAllEvents: false,
+  // autoBindAllEvents: false,
 
   //// If you want to manually install components, e.g.
   //// import {GmapMarker} from 'gmap-vue/src/components/marker'
@@ -167,7 +167,7 @@ Add region and language localization:
 
 Example for [Localization](https://developers.google.com/maps/documentation/javascript/localization):
 ```vue
-Vue.use(VueGoogleMaps, {
+Vue.use(GmapVue, {
   load: {
     region: 'VI',
     language: 'vi',
@@ -177,10 +177,10 @@ Vue.use(VueGoogleMaps, {
 
 ### Nuxt.js config
 
-For Nuxt.js projects, please import VueGoogleMaps in the following manner:
+For Nuxt.js projects, please import GmapVue in the following manner:
 
 ```js
-import * as VueGoogleMaps from '~/node_modules/gmap-vue'
+import GmapVue from '~/node_modules/gmap-vue'
 ```
 
 Add the following to your `nuxt.config.js`'s `build.extend()`:
@@ -239,7 +239,7 @@ This requires vue 2.6 or higher for the new slot support.
 ### Adding your own components
 
 It should be relatively easy to add your own components (e.g. Heatmap, GroundOverlay). please refer to the
-[source code for `MapElementFactory`](https://github.com/xkjyeah/vue-google-maps/blob/vue2/src/components/mapElementFactory.js).
+[source code for `MapElementFactory`](https://github.com/diegoazh/gmap-vue/blob/master/packages/gmap-vue/src/utils/factories/map-element.js).
 
 Example for [DirectionsRenderer](https://developers.google.com/maps/documentation/javascript/reference/3/#DirectionsRenderer):
 ```js

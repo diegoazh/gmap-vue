@@ -11,7 +11,7 @@ module.exports = {
     'subject-max-length': [2, 'always', 75],
     'header-case': [2, 'always', 'lowerCase'],
     'body-leading-blank': [2, 'always'],
-    'body-max-length': [2, 'always', 300],
+    'body-max-length': [2, 'always', 1000],
     'footer-leading-blank': [2, 'always'],
     'footer-max-length': [2, 'always', 100],
   },

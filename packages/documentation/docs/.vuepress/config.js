@@ -11,6 +11,8 @@ module.exports = {
       { text: "Plugin", link: "/" },
       { text: "Guide", link: "/guide/" },
       { text: "API", link: "/code/" },
+      { text: "Developers", link: "/developers/" },
+      { text: "CHANGELOG", link: "/changelog/changelog" },
       { text: "GitHub", link: "https://github.com/diegoazh/gmap-vue" },
     ],
     sidebar: {
@@ -47,6 +49,49 @@ module.exports = {
                 ["extra-examples", "Extra examples"],
                 ["cdn", "Using a CDN"],
               ],
+            },
+            {
+              title: "Factories",
+              collapsable: false,
+              path: "/guide/map-element-factory",
+              children: [
+                ["map-element-factory", "mapElement factory"],
+                ["promise-lazy-factory", "promiseLazy factory"]
+              ],
+            },
+          ],
+        },
+      ],
+      "/developers/": [
+        {
+          title: "Developers",
+          collapsable: false,
+          children: [
+            {
+              title: "Contribution guide",
+              collapsable: false,
+              path: "/developers/",
+            },
+            {
+              title: "License",
+              collapsable: false,
+              path: "/developers/license",
+              children: [
+                ["license", "License"],
+              ],
+            },
+          ],
+        },
+      ],
+      "/changelog/": [
+        {
+          title: "CHANGELOG",
+          collapsable: false,
+          children: [
+            {
+              title: "CHANGELOG",
+              collapsable: false,
+              path: "/changelog/changelog",
             },
           ],
         },

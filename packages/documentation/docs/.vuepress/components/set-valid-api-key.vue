@@ -38,7 +38,7 @@ export default {
       this.stateProcess = 'Procesing, please wait...'
       const options = { ...this.options }
       options.libraries = options.libraries.replace(/\s/, '')
-      options.callback = 'vueGoogleMapsInit'
+      options.callback = 'GoogleMapsCallback'
       let baseUrl = 'https://maps.googleapis.com/'
 
       const query = Object.keys(options)

@@ -1,5 +1,11 @@
 ## Mapped props
 
+::: warning
+
+We are trying to remove this approach and its possible that in major releases this will disappear.
+
+:::
+
 This are GoogleMapsOptions that we want to have like props in our Vue component.
 
 This properties are in the way that GoogleMaps accept it and with extraneous properties for the VueJs API.
