@@ -55,6 +55,18 @@ export default {
         bindProps(this, this.$markerObject, markerMappedProps);
         bindEvents(this, this.$markerObject, events);
 
+        this.$markerObject.addListener('dragend', () => {
+          const newPosition = this.$markerObject.getPosition();
+          /**
+           * An event to detect when a position changes
+           * @property {Object} position Object with lat and lng values, eg: { lat: 10.0, lng: 10.0 }
+           */
+          this.$emit('update:position', {
+            lat: newPosition.lat(),
+            lng: newPosition.lng(),
+          });
+        });
+
         if (this.$clusterPromise) {
           this.$clusterPromise.then((clusterObject) => {
             clusterObject.addMarker(this.$markerObject);

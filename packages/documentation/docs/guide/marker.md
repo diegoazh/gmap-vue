@@ -69,6 +69,16 @@ export default {
         bindProps(this, this.$markerObject, markerMappedProps);
         bindEvents(this, this.$markerObject, events);
 
+        // From v3.1.0
+        this.$markerObject.addListener('dragend', () => {
+          const newPosition = this.$markerObject.getPosition();
+
+          this.$emit('update:position', {
+            lat: newPosition.lat(),
+            lng: newPosition.lng(),
+          });
+        });
+
         if (this.$clusterPromise) {
           this.$clusterPromise.then((clusterObject) => {
             clusterObject.addMarker(this.$markerObject);
@@ -261,6 +271,10 @@ const events = [
   'mouseout',
 ];
 ```
+
+### `update:position` event (from v3.1.0)
+
+From version 3.1.0 we emit the `update:position` when the Google Maps API fires the `dragend` event, it returns an object in the form `{ lat: 10, lng: 10 }`, in this way we start preparing the plugin to migrate to Vue v3 in a near future and can use **v-model** on the **position** prop.
 
 :::
 
