@@ -106,6 +106,7 @@ export const helpers = {
  *
  * @param  {Object} Vue the vue instance
  * @param  {Object|undefined} options=undefined configuration object to initialize the GmapVue plugin
+ * @param  {boolean} options.dynamicLoad=false load the Google Maps API dynamically, if you set this to `true` the plugin doesn't load the Google Maps API
  * @param  {boolean} options.installComponents=true install all components
  * @param  {boolean} options.autoBindAllEvents=false auto bind all Google Maps API events
  * @param  {Object|undefined} options.load=undefined options to configure the Google Maps API
@@ -118,6 +119,7 @@ export const helpers = {
 function gmapVuePluginInstallFn(Vue, options) {
   // see defaults
   const finalOptions = {
+    dynamicLoad: false,
     installComponents: true,
     autoBindAllEvents: false,
     load: {

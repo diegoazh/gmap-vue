@@ -79,7 +79,7 @@ Be aware that if you use this method, you cannot use TitleCase for your componen
 That is, instead of writing `<GmapMap>`, you need to write `<gmap-map>`.
 :::
 
-[Live example](/guide/).
+[Live example](https://diegoazh.github.io/gmap-vue/guide/).
 
 ## Basic usage
 
@@ -129,6 +129,9 @@ Vue.use(GmapVue, {
   // then set installComponents to 'false'.
   // If you want to automatically install all the components this property must be set to 'true':
   installComponents: true,
+
+  // Load the Google Maps API dynamically, if you set this to `true` the plugin doesn't load the Google Maps API
+  dynamicLoad: false,
 })
 ```
 
@@ -177,6 +180,27 @@ In you components or `.vue` files add the following
   />
 </GmapMap>
 ```
+
+### Dynamic load
+
+If you need to initialize the Google Maps API in a dynamic way you can use the `dynamicLoad` option of the plugin configuration, this option start the plugin but it doesn't load the Google Maps API, you need to load it manually using the `googleMapsApiInitializer` helper as we show below
+
+```vue
+import { helpers } from 'gmap-vue';
+const { googleMapsApiInitializer } = helpers;
+
+export default {
+  // ...
+  mounted() {
+    googleMapsApiInitializer({
+      key: 'ABCDEF',
+    }, false);
+  }
+  // ...
+}
+```
+
+If you want to know the **`googleMapsApiInitializer` API** please check it [here](https://diegoazh.github.io/gmap-vue/code/utils/initializer/google-maps-api-initializer.html#creategooglemapsapiinitializer-googlemapsapiinitializer-options-loadcn).
 
 ### The three main utilities
 
@@ -328,7 +352,7 @@ The default slot is wrapped in a class that sets `display: none;` so by default 
 
 This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc.
 
-There is a second slot named **"visible"** that must be used if you want to display content within the responsive wrapper for the map, hence that's why you'll see this in the [drawing manager with slot example](/examples/drawing-manager-with-slot.html). It's actually not required in the [first example](/examples/drawing-manager.html) because the default toolbox is part of the Google map object.
+There is a second slot named **"visible"** that must be used if you want to display content within the responsive wrapper for the map, hence that's why you'll see this in the [drawing manager with slot example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html). It's actually not required in the [first example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html#html-examples) because the default toolbox is part of the Google map object.
 
 > Thanks to [@davydnorris](https://github.com/davydnorris) to document this part of GmapVue.
 
@@ -408,7 +432,7 @@ The list of officially support components are:
 - Heat map
 - Drawing map: rectangle, circle, polygon, line
 
-Check our [documentation guide](/guide/) to see examples of every component.
+Check our [documentation guide](https://diegoazh.github.io/gmap-vue/guide/) to see examples of every component.
 
 For `Cluster`, you **must** import the class specifically, e.g.
 

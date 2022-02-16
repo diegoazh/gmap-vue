@@ -1,6 +1,43 @@
 import { getLazyValue } from '../helpers';
 
 /**
+ * This function allow to auto detect an external load of the Google Maps API
+ * or load it dynamically from our component.
+ *
+ * @param  {Function} resolveFn the function that indicates to the plugin that Google Maps is loaded
+ * @param  {Function} customCallback the custom callback to execute when the plugin load. This option will be removed on the next major release
+ */
+function createCallbackAndChecksIfMapIsLoaded(resolveFn, customCallback) {
+  let callbackExecuted = false;
+
+  window.GoogleMapsCallback = () => {
+    try {
+      resolveFn();
+      callbackExecuted = true;
+      // TODO: this should be removed on the next major release
+      customCallback?.();
+    } catch (error) {
+      window.console.error('Error executing the GoogleMapsCallback', error);
+    }
+  };
+
+  let timeoutId = setTimeout(() => {
+    let intervalId = setInterval(() => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = undefined;
+      }
+
+      if (window?.google?.maps != null && !callbackExecuted) {
+        window.GoogleMapsCallback();
+        clearInterval(intervalId);
+        intervalId = undefined;
+      }
+    }, 500);
+  }, 1000);
+}
+
+/**
  * This function is a factory of the promise lazy creator
  * it helps you creating the function that will call the
  * Google Maps API in an async way
@@ -14,6 +51,7 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
    * The creator of the lazy promise
    *
    * @param  {Object|undefined} options=undefined configuration object to initialize the GmapVue plugin
+   * @param  {boolean} options.dynamicLoad=false load the Google Maps API dynamically, if you set this to `true` the plugin doesn't load the Google Maps API
    * @param  {boolean} options.installComponents=true install all components
    * @param  {boolean} options.autoBindAllEvents=false auto bind all Google Maps API events
    * @param  {Object|undefined} options.load=undefined options to configure the Google Maps API
@@ -35,7 +73,7 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
     }
 
     // If library should load the API
-    if (options?.load?.key) {
+    if (options?.load?.key || options.dynamicLoad) {
       return getLazyValue(() => {
         // This will only be evaluated once
         if (typeof window === 'undefined') {
@@ -45,11 +83,14 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
 
         return new Promise((resolve, reject) => {
           try {
-            window.GoogleMapsCallback = () => {
-              resolve();
-              window[options?.load?.customCallback]?.();
-            };
-            googleMapsApiInitializer(options.load, options.loadCn);
+            createCallbackAndChecksIfMapIsLoaded(
+              resolve,
+              window[options?.load?.customCallback]
+            );
+
+            if (!options.dynamicLoad) {
+              googleMapsApiInitializer(options.load, options.loadCn);
+            }
           } catch (err) {
             reject(err);
           }
@@ -66,29 +107,10 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
         return;
       }
 
-      let callbackExecuted = false;
-
-      window.GoogleMapsCallback = () => {
-        resolve();
-        callbackExecuted = true;
-        // TODO: this should be removed on the next major release
-        window[options?.load?.customCallback]?.();
-      };
-
-      let timeoutId = setTimeout(() => {
-        let intervalId = setInterval(() => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            timeoutId = undefined;
-          }
-
-          if (window?.google?.maps != null && !callbackExecuted) {
-            window.GoogleMapsCallback();
-            clearInterval(intervalId);
-            intervalId = undefined;
-          }
-        }, 500);
-      }, 1000);
+      createCallbackAndChecksIfMapIsLoaded(
+        resolve,
+        window[options?.load?.customCallback]
+      );
     }).then(onMapsReady);
 
     return getLazyValue(() => promise);
