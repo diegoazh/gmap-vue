@@ -117,13 +117,33 @@ export const infoWindowMappedProps = {
 };
 
 export const kmlLayerMappedProps = {
-  url: {
-    twoWay: false,
-    type: String,
+  clickable: {
+    type: Boolean,
+    twoWay: true,
   },
   map: {
-    twoWay: true,
     type: Object,
+    twoWay: true,
+  },
+  preserveViewport: {
+    type: Boolean,
+    twoWay: true,
+  },
+  screenOverlays: {
+    type: Boolean,
+    twoWay: true,
+  },
+  suppressInfoWindows: {
+    type: Boolean,
+    twoWay: true,
+  },
+  url: {
+    type: String,
+    twoWay: false,
+  },
+  zIndex: {
+    type: Number,
+    twoWay: true,
   },
 };
 

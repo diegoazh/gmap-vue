@@ -27,11 +27,33 @@ import { kmlLayerMappedProps } from '../utils/mapped-props-by-map-element';
 export default {
   mixins: [MapElementMixin],
   props: {
-    url: {
-      type: String,
+    clickable: {
+      type: Boolean,
+      default: true,
     },
     map: {
       type: Object,
+      default: undefined,
+    },
+    preserveViewport: {
+      type: Boolean,
+      default: false,
+    },
+    screenOverlays: {
+      type: Boolean,
+      default: false,
+    },
+    suppressInfoWindows: {
+      type: Boolean,
+      default: undefined,
+    },
+    url: {
+      type: String,
+      default: '',
+    },
+    zIndex: {
+      type: Number,
+      default: undefined,
     },
   },
   provide() {
@@ -92,13 +114,33 @@ If you need to know what are `mappedProps` please read the general concepts of t
 
 ```javascript
 export const kmlLayerMappedProps = {
-  url: {
-    twoWay: false,
-    type: String,
+  clickable: {
+    type: Boolean,
+    twoWay: true,
   },
   map: {
-    twoWay: true,
     type: Object,
+    twoWay: true,
+  },
+  preserveViewport: {
+    type: Boolean,
+    twoWay: true,
+  },
+  screenOverlays: {
+    type: Boolean,
+    twoWay: true,
+  },
+  suppressInfoWindows: {
+    type: Boolean,
+    twoWay: true,
+  },
+  url: {
+    type: String,
+    twoWay: false,
+  },
+  zIndex: {
+    type: Number,
+    twoWay: true,
   },
 };
 ```
@@ -130,6 +172,7 @@ const events = [
       v-for="l in kmlLayers"
       :url="l.url"
       :clickable="true"
+      :preserveViewport="true"
     >
     </google-kml-layer>
   </gmap-map>
@@ -161,12 +204,12 @@ If you need to know the **API of this component** please read it [here](/code/co
 <body>
   <div id="root">
     <gmap-map :center="center" :zoom="7" style="width: 100%; height: 500px">
-      <google-kml-layer v-for="l in kmlLayers" :url="l.url" :clickable="true"></google-kml-layer>
+      <google-kml-layer v-for="l in kmlLayers" :url="l.url" :clickable="true" :preserveViewport="true"></google-kml-layer>
     </gmap-map>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></>
-  <script src="https://cdn.jsdelivr.net/npm/gmap-vue@1.2.2/dist/gmap-vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gmap-vue/dist/gmap-vue.min.js"></script>
 
   <script>
     Vue.use(GmapVue, {

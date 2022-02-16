@@ -6,6 +6,7 @@
         :key="index"
         :url="l.url"
         :clickable="true"
+        :preserveViewport="true"
       ></gmap-kml-layer>
     </gmap-map>
   </div>

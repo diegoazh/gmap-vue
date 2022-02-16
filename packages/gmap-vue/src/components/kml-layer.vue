@@ -8,6 +8,7 @@ import { kmlLayerMappedProps } from '../utils/mapped-props-by-map-element';
  * @displayName Kml-Layer
  * @see [source code](/guide/kml-layer.html#source-code)
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/kmllayer)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/kml)
  */
 export default {
   name: 'KmlLayer',
@@ -57,19 +58,60 @@ export default {
   },
   props: {
     /**
-     * The URL of the .kml file
-     * @see [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)
+     * If true, the layer receives mouse events. Default value is true.
+     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.clickable)
+     */
+    clickable: {
+      type: Boolean,
+      default: true,
+    },
+    /**
+     * Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method
+     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.map)
+     */
+    map: {
+      type: Object,
+      default: undefined,
+    },
+    /**
+     * By default, the input map is centered and zoomed to the bounding box of the contents of the layer. If this option is set to true, the viewport is
+     * left unchanged, unless the map's center and zoom were never set.
+     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.preserveViewport)
+     */
+    preserveViewport: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * Whether to render the screen overlays. Default true.
+     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.screenOverlays)
+     */
+    screenOverlays: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * Suppress the rendering of info windows when layer features are clicked.
+     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.suppressInfoWindows)
+     */
+    suppressInfoWindows: {
+      type: Boolean,
+      default: undefined,
+    },
+    /**
+     * The URL of the KML document to display.
+     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.url)
      */
     url: {
       type: String,
       default: '',
     },
     /**
-     * Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method
-     * @see [KML layer options](https://developers.google.com/maps/documentation/javascript/kmllayer#kml_layer_options)
+     * The z-index of the layer.
+     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.zIndex)
      */
-    map: {
-      type: Object,
+    zIndex: {
+      type: Number,
       default: undefined,
     },
   },
