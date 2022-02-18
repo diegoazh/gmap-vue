@@ -8,6 +8,12 @@ Because of that we fork the project and plain to continue working and adding new
 
 ## Braking changes
 
+::: warning
+
+We have planned to change all components names and file names to the same way that they are registered for the next major release (v4.0.0).
+
+:::
+
 ### v3.0.0
 
 - `autobindAllEvents` config option was renamed to `autoBindAllEvents`
