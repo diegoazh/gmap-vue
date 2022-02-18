@@ -109,12 +109,12 @@ export default {
   },
   updated() {
     if (this.$clusterObject) {
-      this.$clusterObject.repaint();
+      this.$clusterObject.render();
     }
   },
   methods: {
     reinsertMarkers() {
-      const oldMarkers = this.$clusterObject.getMarkers();
+      const oldMarkers = [...this.$clusterObject.markers];
       this.$clusterObject.clearMarkers();
       this.$clusterObject.addMarkers(oldMarkers);
     },
