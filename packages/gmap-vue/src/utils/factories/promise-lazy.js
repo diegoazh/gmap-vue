@@ -30,6 +30,10 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn, customCallback) {
 
       if (window?.google?.maps != null && !callbackExecuted) {
         window.GoogleMapsCallback();
+        callbackExecuted = true;
+      }
+
+      if (callbackExecuted) {
         clearInterval(intervalId);
         intervalId = undefined;
       }
