@@ -115,6 +115,15 @@ export default {
       default: false,
     },
     /**
+     * Indicates whether this Polygon handles mouse events. Defaults to true.
+     * @value true, false
+     * @see [Polyline draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.clickable)
+     */
+    clickable: {
+      type: Boolean,
+      default: false,
+    },
+    /**
      * Indicates if the polyline is draggable
      * @value true, false
      * @see [Polyline draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.draggable)
@@ -129,6 +138,42 @@ export default {
      */
     editable: {
       type: Boolean,
+    },
+    /**
+     * The stroke color. All CSS3 colors are supported except for extended named colors.
+     * @value '#000'
+     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeColor)
+     */
+    strokeColor: {
+      type: String,
+      default: '',
+    },
+    /**
+     * The stroke opacity between 0.0 and 1.0.
+     * @value 1
+     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeOpacity)
+     */
+    strokeOpacity: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * The stroke width in pixels.
+     * @value 1
+     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeWeight)
+     */
+    strokeWeight: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * Whether this polyline is visible on the map. Defaults to true.
+     * @value 1
+     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.visible)
+     */
+    visible: {
+      type: Boolean,
+      default: true,
     },
     /**
      * More options that you can pass to the component

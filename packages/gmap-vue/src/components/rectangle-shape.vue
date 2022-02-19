@@ -68,6 +68,15 @@ export default {
       default: undefined,
     },
     /**
+     * Indicates whether this Polygon handles mouse events. Defaults to true.
+     * @value true, false
+     * @see [Rectangle draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.clickable)
+     */
+    clickable: {
+      type: Boolean,
+      default: false,
+    },
+    /**
      * If set to true, the user can drag this rectangle over the map. Defaults to false.
      * @value boolean
      * @see [Rectangle draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.draggable)
@@ -84,6 +93,70 @@ export default {
     editable: {
       type: Boolean,
       default: false,
+    },
+    /**
+     * The fill color. All CSS3 colors are supported except for extended named colors.
+     * @value '#000'
+     * @see [Rectangle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.fillColor)
+     */
+    fillColor: {
+      type: String,
+      default: '',
+    },
+    /**
+     * The fill opacity between 0.0 and 1.0
+     * @value 1
+     * @see [Rectangle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.fillOpacity)
+     */
+    fillOpacity: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * The stroke color. All CSS3 colors are supported except for extended named colors.
+     * @value '#000'
+     * @see [Rectangle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokeColor)
+     */
+    strokeColor: {
+      type: String,
+      default: '',
+    },
+    /**
+     * The stroke opacity between 0.0 and 1.0.
+     * @value 1
+     * @see [Rectangle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokeOpacity)
+     */
+    strokeOpacity: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * The stroke position. Defaults to CENTER.
+     * @value 1
+     * @see [Rectangle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokePosition)
+     * @see [StrokePosition constant](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#StrokePosition)
+     */
+    strokePosition: {
+      type: Number,
+      default: 0,
+    },
+    /**
+     * The stroke width in pixels.
+     * @value 1
+     * @see [Rectangle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokeWeight)
+     */
+    strokeWeight: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * Whether this polyline is visible on the map. Defaults to true.
+     * @value 1
+     * @see [Rectangle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.visible)
+     */
+    visible: {
+      type: Boolean,
+      default: true,
     },
     /**
      * More options that you can pass to the component

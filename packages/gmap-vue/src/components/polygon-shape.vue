@@ -185,9 +185,18 @@ export default {
       default: false,
     },
     /**
+     * Indicates whether this Polygon handles mouse events. Defaults to true.
+     * @value true, false
+     * @see [Polygon draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.clickable)
+     */
+    clickable: {
+      type: Boolean,
+      default: false,
+    },
+    /**
      * Indicates if the polygon is draggable
      * @value true, false
-     * @see [Polygon dragable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.draggable)
+     * @see [Polygon dragable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.draggable)
      */
     draggable: {
       type: Boolean,
@@ -196,11 +205,75 @@ export default {
     /**
      * Indicates if the polygon is editable
      * @value true, false
-     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.editable)
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.editable)
      */
     editable: {
       type: Boolean,
       default: false,
+    },
+    /**
+     * The fill color. All CSS3 colors are supported except for extended named colors.
+     * @value '#000'
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.fillColor)
+     */
+    fillColor: {
+      type: String,
+      default: '',
+    },
+    /**
+     * The fill opacity between 0.0 and 1.0
+     * @value 1
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.fillOpacity)
+     */
+    fillOpacity: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * The stroke color. All CSS3 colors are supported except for extended named colors.
+     * @value '#000'
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokeColor)
+     */
+    strokeColor: {
+      type: String,
+      default: '',
+    },
+    /**
+     * The stroke opacity between 0.0 and 1.0.
+     * @value 1
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokeOpacity)
+     */
+    strokeOpacity: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * The stroke position. Defaults to CENTER.
+     * @value 1
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokePosition)
+     * @see [StrokePosition constant](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#StrokePosition)
+     */
+    strokePosition: {
+      type: Number,
+      default: 0,
+    },
+    /**
+     * The stroke width in pixels.
+     * @value 1
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokeWeight)
+     */
+    strokeWeight: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * Whether this polyline is visible on the map. Defaults to true.
+     * @value 1
+     * @see [Polygon editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.visible)
+     */
+    visible: {
+      type: Boolean,
+      default: true,
     },
     /**
      * More options that you can pass to the component
@@ -213,7 +286,7 @@ export default {
     /**
      * Indicates if the polygon is editable
      * @value Array
-     * @see [Polygon path](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.path)
+     * @see [Polygon path](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.path)
      */
     path: {
       type: Array,

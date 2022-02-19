@@ -34,30 +34,6 @@ export const autocompleteMappedProps = {
   },
 };
 
-export const circleMappedProps = {
-  center: {
-    type: Object,
-    twoWay: true,
-    required: true,
-  },
-  radius: {
-    type: Number,
-    twoWay: true,
-  },
-  draggable: {
-    type: Boolean,
-    default: false,
-  },
-  editable: {
-    type: Boolean,
-    default: false,
-  },
-  options: {
-    type: Object,
-    twoWay: false,
-  },
-};
-
 export const drawingManagerMappedProps = {
   circleOptions: {
     type: Object,
@@ -276,10 +252,34 @@ export const streetViewPanoramaMappedProps = {
 };
 
 export const polygonMappedProps = {
+  clickable: {
+    type: Boolean,
+  },
   draggable: {
     type: Boolean,
   },
   editable: {
+    type: Boolean,
+  },
+  fillColor: {
+    type: String,
+  },
+  fillOpacity: {
+    type: Number,
+  },
+  strokeColor: {
+    type: String,
+  },
+  strokeOpacity: {
+    type: Number,
+  },
+  strokePosition: {
+    type: Number,
+  },
+  strokeWeight: {
+    type: Number,
+  },
+  visible: {
     type: Boolean,
   },
   options: {
@@ -298,10 +298,25 @@ export const polygonMappedProps = {
 };
 
 export const polylineMappedProps = {
+  clickable: {
+    type: Boolean,
+  },
   draggable: {
     type: Boolean,
   },
   editable: {
+    type: Boolean,
+  },
+  strokeColor: {
+    type: String,
+  },
+  strokeOpacity: {
+    type: Number,
+  },
+  strokeWeight: {
+    type: Number,
+  },
+  visible: {
     type: Boolean,
   },
   options: {
@@ -319,6 +334,9 @@ export const rectangleMappedProps = {
     type: Object,
     twoWay: true,
   },
+  clickable: {
+    type: Boolean,
+  },
   draggable: {
     type: Boolean,
     default: false,
@@ -326,6 +344,75 @@ export const rectangleMappedProps = {
   editable: {
     type: Boolean,
     default: false,
+  },
+  fillColor: {
+    type: String,
+  },
+  fillOpacity: {
+    type: Number,
+  },
+  strokeColor: {
+    type: String,
+  },
+  strokeOpacity: {
+    type: Number,
+  },
+  strokePosition: {
+    type: Number,
+  },
+  strokeWeight: {
+    type: Number,
+  },
+  visible: {
+    type: Boolean,
+  },
+  options: {
+    type: Object,
+    twoWay: false,
+  },
+};
+
+export const circleMappedProps = {
+  center: {
+    type: Object,
+    twoWay: true,
+    required: true,
+  },
+  radius: {
+    type: Number,
+    twoWay: true,
+  },
+  clickable: {
+    type: Boolean,
+  },
+  draggable: {
+    type: Boolean,
+    default: false,
+  },
+  editable: {
+    type: Boolean,
+    default: false,
+  },
+  fillColor: {
+    type: String,
+  },
+  fillOpacity: {
+    type: Number,
+  },
+  strokeColor: {
+    type: String,
+  },
+  strokeOpacity: {
+    type: Number,
+  },
+  strokePosition: {
+    type: Number,
+  },
+  strokeWeight: {
+    type: Number,
+  },
+  visible: {
+    type: Boolean,
   },
   options: {
     type: Object,

@@ -61,40 +61,113 @@ export default {
   },
   props: {
     /**
-     * The center of the circle
+     * The center of the Circle.
      * @value { lat: 41.878, lng: -87.629 }
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/examples/circle-simple)
+     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.center)
      */
     center: {
       type: Object,
       required: true,
     },
     /**
-     * The radious of the circle
+     * The radius in meters on the Earth's surface.
      * @value 10
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/examples/circle-simple)
+     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.radius)
      */
     radius: {
       type: Number,
       default: 10,
     },
     /**
-     * Indicates if the circle is draggable
+     * Indicates whether this Polygon handles mouse events. Defaults to true.
      * @value true, false
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/examples/circle-simple)
+     * @see [Circle draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.clickable)
+     */
+    clickable: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * If set to true, the user can drag this circle over the map. Defaults to false.
+     * @value true, false
+     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.draggable)
      */
     draggable: {
       type: Boolean,
       default: false,
     },
     /**
-     * Indicates if the circle is editable
+     * If set to true, the user can edit this circle by dragging the control points shown at the center and around the circumference of the circle. Defaults to false.
      * @value true, false
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/examples/circle-simple)
+     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.editable)
      */
     editable: {
       type: Boolean,
       default: false,
+    },
+    /**
+     * The fill color. All CSS3 colors are supported except for extended named colors.
+     * @value '#000'
+     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.fillColor)
+     */
+    fillColor: {
+      type: String,
+      default: '',
+    },
+    /**
+     * The fill opacity between 0.0 and 1.0
+     * @value 1
+     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.fillOpacity)
+     */
+    fillOpacity: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * The stroke color. All CSS3 colors are supported except for extended named colors.
+     * @value '#000'
+     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeColor)
+     */
+    strokeColor: {
+      type: String,
+      default: '',
+    },
+    /**
+     * The stroke opacity between 0.0 and 1.0.
+     * @value 1
+     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeOpacity)
+     */
+    strokeOpacity: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * The stroke position. Defaults to CENTER.
+     * @value 1
+     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokePosition)
+     * @see [StrokePosition constant](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#StrokePosition)
+     */
+    strokePosition: {
+      type: Number,
+      default: 0,
+    },
+    /**
+     * The stroke width in pixels.
+     * @value 1
+     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeWeight)
+     */
+    strokeWeight: {
+      type: Number,
+      default: 1,
+    },
+    /**
+     * Whether this polyline is visible on the map. Defaults to true.
+     * @value 1
+     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.visible)
+     */
+    visible: {
+      type: Boolean,
+      default: true,
     },
     /**
      * The Google Maps circle options
