@@ -39,7 +39,7 @@ export default {
   props: {
     content: {
       type: [String, Object],
-      default: '',
+      default: undefined,
     },
     opened: {
       type: Boolean,
@@ -187,6 +187,41 @@ const events = ['domready', 'closeclick', 'content_changed'];
 :::
 
 ## How to use it
+
+::: warn
+
+If you only need to display a simple text, from **v3.4.3**, we added a new prop called `content` and you can use it to pass data to the `InfoWindow` component, it accepts HTML too but take care about it because **it has precedence** over the slot **use only one of both options**.
+
+If you need to pass an entire block of HTML is better and simplest to use the default slot for it and leave the content prop empty. Doing that you have more flexibility and control over your HTML content.
+
+:::
+
+From v3.4.3
+
+```vue
+<template>
+  <gmap-map :center="center" :zoom="15" style="width: 100%; height: 500px">
+    <gmap-info-window
+      content="This is my info window content"
+      :options="infoOptions"
+      :position="infoWindowPos"
+      :opened="infoWinOpen"
+      @closeclick="infoWinOpen=false"
+    />
+
+    <gmap-marker
+      :key="i"
+      v-for="(m,i) in markers"
+      :position="m.position"
+      :clickable="true"
+      @click="toggleInfoWindow(m,i)"
+    >
+    </gmap-marker>
+  </gmap-map>
+</template>
+```
+
+or use the default slot as below
 
 ```vue
 <template>

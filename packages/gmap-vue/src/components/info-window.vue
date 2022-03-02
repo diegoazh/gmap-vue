@@ -84,13 +84,14 @@ export default {
   },
   props: {
     /**
+     * NOTE: This prop overrides the content of the default slot, use only one of them, not both at the same time
      * Content to display in the InfoWindow. This can be an HTML element, a plain-text string, or a string containing HTML. The InfoWindow will be sized according to the content. To set an explicit size for the content, set content to be a HTML element with that size.
-     * @value ''
+     * @value undefined
      * @see [InfoWindow content](https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.content)
      */
     content: {
       type: [String, Object],
-      default: '',
+      default: undefined,
     },
     /**
      * Determines if the info-window is open or not
