@@ -138,11 +138,20 @@ export default {
           );
         }
 
-        const { map: mapInstance, markers, ...clusterOptions } = finalOptions;
+        const {
+          map: mapInstance,
+          markers,
+          algorithm,
+          onClusterClick,
+          renderer,
+        } = finalOptions;
 
         this.$clusterObject = new MarkerClusterer({
           map: mapInstance,
           markers,
+          algorithm,
+          onClusterClick,
+          renderer,
         });
 
         bindProps(this, this.$clusterObject, {});
