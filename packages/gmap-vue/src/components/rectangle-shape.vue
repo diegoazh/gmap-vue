@@ -8,6 +8,7 @@ import { rectangleMappedProps } from '../utils/mapped-props-by-map-element';
  * @displayName GmapRectangle
  * @see [source code](/guide/rectangle.html#source-code)
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Rectangle)
+ * @see [official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Rectangle)
  */
 export default {
   name: 'RectangleShape',

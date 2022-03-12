@@ -8,6 +8,7 @@ import { polygonMappedProps } from '../utils/mapped-props-by-map-element';
  * @displayName GmapPolygon
  * @see [source code](/guide/polygon.html#source-code)
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/examples/polygon-arrays?hl=es)
+ * @see [official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polygon)
  */
 export default {
   name: 'PolygonShape',

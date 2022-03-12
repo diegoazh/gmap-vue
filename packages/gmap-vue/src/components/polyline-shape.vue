@@ -8,6 +8,7 @@ import { polylineMappedProps } from '../utils/mapped-props-by-map-element';
  * @displayName GmapPolyline
  * @see [source code](/guide/polyline.html#source-code)
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline)
+ * @see [official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline)
  */
 export default {
   name: 'PolylineShape',
