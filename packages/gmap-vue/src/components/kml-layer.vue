@@ -114,6 +114,14 @@ export default {
       type: Number,
       default: undefined,
     },
+    /**
+     * More options that you can pass to the component
+     * @value boolean
+     */
+    options: {
+      type: Object,
+      default: undefined,
+    },
   },
   destroyed() {
     // Note: not all Google Maps components support maps

@@ -100,6 +100,7 @@ export const kmlLayerMappedProps = {
   clickable: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   map: {
     type: Object,
@@ -108,14 +109,17 @@ export const kmlLayerMappedProps = {
   preserveViewport: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   screenOverlays: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   suppressInfoWindows: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   url: {
     type: String,
@@ -124,6 +128,12 @@ export const kmlLayerMappedProps = {
   zIndex: {
     type: Number,
     twoWay: true,
+  },
+  options: {
+    type: Object,
+    default() {
+      return {};
+    },
   },
 };
 
@@ -258,6 +268,7 @@ export const streetViewPanoramaMappedProps = {
 export const polygonMappedProps = {
   clickable: {
     type: Boolean,
+    noBind: true,
   },
   draggable: {
     type: Boolean,
@@ -267,21 +278,27 @@ export const polygonMappedProps = {
   },
   fillColor: {
     type: String,
+    noBind: true,
   },
   fillOpacity: {
     type: Number,
+    noBind: true,
   },
   strokeColor: {
     type: String,
+    noBind: true,
   },
   strokeOpacity: {
     type: Number,
+    noBind: true,
   },
   strokePosition: {
     type: Number,
+    noBind: true,
   },
   strokeWeight: {
     type: Number,
+    noBind: true,
   },
   visible: {
     type: Boolean,
@@ -304,6 +321,7 @@ export const polygonMappedProps = {
 export const polylineMappedProps = {
   clickable: {
     type: Boolean,
+    noBind: true,
   },
   draggable: {
     type: Boolean,
@@ -313,12 +331,15 @@ export const polylineMappedProps = {
   },
   strokeColor: {
     type: String,
+    noBind: true,
   },
   strokeOpacity: {
     type: Number,
+    noBind: true,
   },
   strokeWeight: {
     type: Number,
+    noBind: true,
   },
   visible: {
     type: Boolean,
@@ -340,6 +361,7 @@ export const rectangleMappedProps = {
   },
   clickable: {
     type: Boolean,
+    noBind: true,
   },
   draggable: {
     type: Boolean,
@@ -351,21 +373,27 @@ export const rectangleMappedProps = {
   },
   fillColor: {
     type: String,
+    noBind: true,
   },
   fillOpacity: {
     type: Number,
+    noBind: true,
   },
   strokeColor: {
     type: String,
+    noBind: true,
   },
   strokeOpacity: {
     type: Number,
+    noBind: true,
   },
   strokePosition: {
     type: Number,
+    noBind: true,
   },
   strokeWeight: {
     type: Number,
+    noBind: true,
   },
   visible: {
     type: Boolean,
@@ -388,6 +416,7 @@ export const circleMappedProps = {
   },
   clickable: {
     type: Boolean,
+    noBind: true,
   },
   draggable: {
     type: Boolean,
@@ -399,21 +428,27 @@ export const circleMappedProps = {
   },
   fillColor: {
     type: String,
+    noBind: true,
   },
   fillOpacity: {
     type: Number,
+    noBind: true,
   },
   strokeColor: {
     type: String,
+    noBind: true,
   },
   strokeOpacity: {
     type: Number,
+    noBind: true,
   },
   strokePosition: {
     type: Number,
+    noBind: true,
   },
   strokeWeight: {
     type: Number,
+    noBind: true,
   },
   visible: {
     type: Boolean,
