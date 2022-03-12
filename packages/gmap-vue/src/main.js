@@ -2,6 +2,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import Autocomplete from './components/autocomplete-input.vue';
 import Circle from './components/circle-shape.vue';
+import Cluster from './components/cluster-icon.vue';
 import DrawingManager from './components/drawing-manager.vue';
 import HeatmapLayer from './components/heatmap-layer.vue';
 import InfoWindow from './components/info-window.vue';
@@ -27,9 +28,9 @@ import googleMapsApiInitializer from './utils/initializer/google-maps-api-initia
  * Therefore we use babel-plugin-transform-inline-environment-variables to
  * set BUILD_DEV to truthy / falsy
  */
-const Cluster = ((s) => s.default || s)(
-  require('./components/cluster-icon.vue')
-);
+// const Cluster = ((s) => s.default || s)(
+//   require('./components/cluster-icon.vue')
+// );
 
 /**
  * @var
@@ -45,7 +46,7 @@ let GoogleMapsApi;
  * when its ready on the window object
  * @function
  */
-export function getGoogleMapsAPI() {
+function getGoogleMapsAPI() {
   return GoogleMapsApi.isReady && window.google;
 }
 
@@ -70,7 +71,7 @@ export function getGoogleMapsAPI() {
  * @property  {Object}  MapElementMixin - Vue component MapElementMixin
  * @property  {Object}  MountableMixin - Vue component MountableMixin
  */
-export const components = {
+const components = {
   HeatmapLayer,
   KmlLayer,
   Marker,
@@ -96,7 +97,7 @@ export const components = {
  * @property  {Function}  initGoogleMapsApi - function to initialize the Google Maps API
  * @property  {Function}  MapElementFactory - function to initialize the Google Maps API
  */
-export const helpers = {
+const helpers = {
   googleMapsApiInitializer,
   MapElementFactory,
 };
@@ -205,11 +206,26 @@ function gmapVuePluginInstallFn(Vue, options) {
 }
 
 /**
+ * Export objects and install function for ESM and UMD modules
+ *
+ * @property {Function} getGoogleMapsAPI function to get the Google Maps API
+ * @property {Object} components all exported components
+ * @property {Object} helpers all exported helpers
+ * @property {Function} install function to install the plugin
+ * @see gmapVuePluginInstallFn
+ */
+export {
+  getGoogleMapsAPI,
+  components,
+  helpers,
+  gmapVuePluginInstallFn as install,
+};
+
+/**
  * Export default of the default Vue object for plugins
+ * Export for ESM modules
  *
  * @property {Function} install function to install the plugin
  * @see gmapVuePluginInstallFn
  */
-export default {
-  install: gmapVuePluginInstallFn,
-};
+export default { install: gmapVuePluginInstallFn };
