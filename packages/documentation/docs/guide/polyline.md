@@ -161,6 +161,7 @@ If you need to know what are `mappedProps` please read the general concepts of t
 export const polylineMappedProps = {
   clickable: {
     type: Boolean,
+    noBind: true,
   },
   draggable: {
     type: Boolean,
@@ -170,12 +171,15 @@ export const polylineMappedProps = {
   },
   strokeColor: {
     type: String,
+    noBind: true,
   },
   strokeOpacity: {
     type: Number,
+    noBind: true,
   },
   strokeWeight: {
     type: Number,
+    noBind: true,
   },
   visible: {
     type: Boolean,

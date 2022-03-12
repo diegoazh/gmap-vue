@@ -12,7 +12,7 @@
     "prepare": "pnpm run snyk-protect"
   },
   "dependencies": {
-    "gmap-vue": "^3.0.0",
+    "gmap-vue": "^3.5.1",
     "lodash": "^4.17.21",
     "snyk": "^1.850.0",
     "vuepress": "^1.9.7"

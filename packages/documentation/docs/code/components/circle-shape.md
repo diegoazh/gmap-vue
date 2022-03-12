@@ -12,6 +12,7 @@ title: circle-shape
   
   
   [See]([source code](/guide/circle.html#source-code))
+,[See]([official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Circle))
 
   
 

@@ -240,6 +240,7 @@ If you need to know what are `mappedProps` please read the general concepts of t
 export const polygonMappedProps = {
   clickable: {
     type: Boolean,
+    noBind: true,
   },
   draggable: {
     type: Boolean,
@@ -249,21 +250,27 @@ export const polygonMappedProps = {
   },
   fillColor: {
     type: String,
+    noBind: true,
   },
   fillOpacity: {
     type: Number,
+    noBind: true,
   },
   strokeColor: {
     type: String,
+    noBind: true,
   },
   strokeOpacity: {
     type: Number,
+    noBind: true,
   },
   strokePosition: {
     type: Number,
+    noBind: true,
   },
   strokeWeight: {
     type: Number,
+    noBind: true,
   },
   visible: {
     type: Boolean,

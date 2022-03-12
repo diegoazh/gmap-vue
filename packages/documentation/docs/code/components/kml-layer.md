@@ -29,6 +29,7 @@ title: kml-layer
 | suppressInfoWindows | Suppress the rendering of info windows when layer features are clicked.<br/>`@see` [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.suppressInfoWindows) | boolean | - | undefined |
 | url | The URL of the KML document to display.<br/>`@see` [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.url) | string | - | '' |
 | zIndex | The z-index of the layer.<br/>`@see` [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.zIndex) | number | - | undefined |
+| options | More options that you can pass to the component<br/>`@value` boolean | object | - | undefined |
 
   
   

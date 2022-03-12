@@ -13,6 +13,7 @@ title: polyline-shape
   
   [See]([source code](/guide/polyline.html#source-code))
 ,[See]([official docs](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline))
+,[See]([official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline))
 
   
 

@@ -13,6 +13,7 @@ title: rectangle-shape
   
   [See]([source code](/guide/rectangle.html#source-code))
 ,[See]([official docs](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Rectangle))
+,[See]([official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Rectangle))
 
   
 

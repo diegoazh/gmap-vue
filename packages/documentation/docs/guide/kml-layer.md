@@ -117,6 +117,7 @@ export const kmlLayerMappedProps = {
   clickable: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   map: {
     type: Object,
@@ -125,14 +126,17 @@ export const kmlLayerMappedProps = {
   preserveViewport: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   screenOverlays: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   suppressInfoWindows: {
     type: Boolean,
     twoWay: true,
+    noBind: true,
   },
   url: {
     type: String,
@@ -141,6 +145,12 @@ export const kmlLayerMappedProps = {
   zIndex: {
     type: Number,
     twoWay: true,
+  },
+  options: {
+    type: Object,
+    default() {
+      return {};
+    },
   },
 };
 ```

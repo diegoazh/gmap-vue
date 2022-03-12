@@ -18,12 +18,12 @@ export default {
   data() {
     return {
       center: {
-        lat: -19.257753,
-        lng: 146.823688,
+        lat: 37.7272,
+        lng: -123.032,
       },
       kmlLayers: [
         {
-          url: "https://developers.google.com/maps/documentation/javascript/examples/kml/westcampus.kml",
+          url: "https://raw.githubusercontent.com/googlearchive/kml-samples/gh-pages/kml/Placemark/placemark.kml",
         },
       ],
     };

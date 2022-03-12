@@ -13,6 +13,7 @@ title: polygon-shape
   
   [See]([source code](/guide/polygon.html#source-code))
 ,[See]([official docs](https://developers.google.com/maps/documentation/javascript/examples/polygon-arrays?hl=es))
+,[See]([official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polygon))
 
   
 

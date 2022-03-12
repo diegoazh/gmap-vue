@@ -8,6 +8,9 @@ export default ({
 }) => {
   Vue.use(GmapVue, {
     installComponents: true,
+    load: {
+      libraries: "places, drawing, visualization",
+    },
   });
 
   Vue.component(
