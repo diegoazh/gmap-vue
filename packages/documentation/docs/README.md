@@ -70,7 +70,7 @@ Just download `dist/gmap-vue.js` file and include it from your HTML.
 You can use a free CDN like [jsdelivr](https://www.jsdelivr.com) to include this plugin in your html file
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/gmap-vue@1.2.2/dist/gmap-vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gmap-vue@1.2.2/dist/gmap-vue.js"></script>
 ```
 
 ### unpkg
@@ -87,6 +87,42 @@ That is, instead of writing `<GmapMap>`, you need to write `<gmap-map>`.
 :::
 
 [Live example](https://diegoazh.github.io/gmap-vue/guide/).
+
+::: warn
+
+### Vue-CLI v4 applications
+
+For those application that use vue-cli v4 you will need to add the following dependencies and configuration to your `vue.config.js` file
+
+```bash
+npm install --save-dev babel-loader @babel/preset-env @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-nullish-coalescing-operator
+```
+
+```js
+// vue.config.js
+
+module.exports = {
+  chainWebpack: (config) => {
+    config.module
+      .rule('mjs')
+      .test({
+        test: /\.mjs$/,
+      })
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        presets: ['@babel/preset-env'],
+        plugins: [
+          '@babel/plugin-proposal-optional-chaining',
+          '@babel/plugin-proposal-nullish-coalescing-operator',
+        ],
+      })
+      .end()
+  },
+}
+```
+
+:::
 
 ## Basic usage
 
