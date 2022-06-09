@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "serve:docs": "pnpm run --recursive gen:api:docs && pnpm run --recursive serve:docs",
-    "build:all": "pnpm run gen:api:docs && pnpm run --recursive build && pnpm run --recursive build:docs",
+    "build:all": "pnpm run --recursive gen:api:docs && pnpm run --recursive build && pnpm run --recursive build:docs",
     "test": "pnpm run --recursive test",
     "lint": "pnpm run --recursive lint",
     "gen:api:docs": "pnpm run --recursive gen:api:docs",
