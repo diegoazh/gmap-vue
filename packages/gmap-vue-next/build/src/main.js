@@ -13,7 +13,7 @@ import Polyline from './components/polyline-shape.vue';
 import Rectangle from './components/rectangle-shape.vue';
 import StreetViewPanorama from './components/street-view-panorama.vue';
 import mapElementComposable from './composables/map-element';
-import resizeBusComposable, { defaultResizeBus } from './composables/resize-bus';
+import resizeBusComposable, { defaultResizeBus, } from './composables/resize-bus';
 import MapElementFactory from './utils/factories/map-element';
 import getPromiseLazyCreatorFn from './utils/factories/promise-lazy';
 import googleMapsApiInitializer from './utils/initializer/google-maps-api-initializer';
@@ -112,15 +112,9 @@ const helpers = {
  */
 function gmapVuePluginInstallFn(app, options) {
     // see defaults
-    const finalOptions = {
-        dynamicLoad: false,
-        installComponents: true,
-        autoBindAllEvents: false,
-        load: {
+    const finalOptions = Object.assign({ dynamicLoad: false, installComponents: true, autoBindAllEvents: false, load: {
             libraries: 'places',
-        },
-        ...options,
-    };
+        } }, options);
     /**
      * Use a lazy to only load the API when
      * a GMap component is loaded

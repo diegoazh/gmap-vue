@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import '@types/google.maps';
+import 'google.maps';
 import type { Emitter, EventType } from 'mitt';
 import type { PropType } from 'vue';
 import { defineComponent } from 'vue';

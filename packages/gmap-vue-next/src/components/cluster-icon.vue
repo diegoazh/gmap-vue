@@ -73,11 +73,14 @@ export default defineComponent({
           renderer,
         });
 
+        // TODO: this {} should be removed
         bindProps(this, this.$clusterObject, {});
         bindEvents(this, this.$clusterObject, events);
 
+        // TODO: this {} should be removed
         Object.keys({}).forEach((prop) => {
-          if ({}[prop].twoWay) {
+          // TODO: this {} should be removed
+          if (({} as any)[prop].twoWay) {
             this.$on(`${prop.toLowerCase()}_changed`, this.reinsertMarkers);
           }
         });

@@ -13,7 +13,7 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn, customCallback) {
             resolveFn();
             callbackExecuted = true;
             // TODO: this should be removed on the next major release
-            customCallback?.();
+            customCallback === null || customCallback === void 0 ? void 0 : customCallback();
         }
         catch (error) {
             globalThis.console.error('Error executing the GoogleMapsCallback', error);
@@ -21,11 +21,12 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn, customCallback) {
     };
     let timeoutId = globalThis.setTimeout(() => {
         let intervalId = globalThis.setInterval(() => {
+            var _a;
             if (timeoutId) {
                 globalThis.clearTimeout(timeoutId);
                 timeoutId = undefined;
             }
-            if (window?.google?.maps != null && !callbackExecuted) {
+            if (((_a = window === null || window === void 0 ? void 0 : window.google) === null || _a === void 0 ? void 0 : _a.maps) != null && !callbackExecuted) {
                 globalThis.GoogleMapsCallback();
                 callbackExecuted = true;
             }
@@ -61,6 +62,7 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
      * @param  {string|undefined} options.load.customCallback=undefined DEPRECATED - This option was added on v3.0.0 but will be removed in the next major release. If you already have an script tag that loads Google Maps API and you want to use it set you callback in the `customCallback` option and our `GoogleMapsCallback` callback will execute your custom callback at the end; it must attached to the `window` object, is the only requirement.
      */
     const promiseLazyCreator = (options) => {
+        var _a, _b;
         /**
          * Things to do once the API is loaded
          *
@@ -70,11 +72,11 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
             GoogleMapsApi.isReady = true;
             return globalThis.google;
         }
-        const customCallback = options?.load?.customCallback
+        const customCallback = ((_a = options === null || options === void 0 ? void 0 : options.load) === null || _a === void 0 ? void 0 : _a.customCallback)
             ? globalThis[options.load.customCallback]
             : undefined;
         // If library should load the API
-        if (options?.load?.key || options.dynamicLoad) {
+        if (((_b = options === null || options === void 0 ? void 0 : options.load) === null || _b === void 0 ? void 0 : _b.key) || options.dynamicLoad) {
             return getLazyValue(() => {
                 // This will only be evaluated once
                 if (typeof window === 'undefined') {
@@ -85,7 +87,7 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
                     try {
                         createCallbackAndChecksIfMapIsLoaded(resolve, customCallback);
                         if (!options.dynamicLoad && options.load) {
-                            googleMapsApiInitializer(options.load, options?.loadCn);
+                            googleMapsApiInitializer(options.load, options === null || options === void 0 ? void 0 : options.loadCn);
                         }
                     }
                     catch (err) {

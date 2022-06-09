@@ -3,6 +3,7 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
+    "target": "ES6",
     "lib": ["ES2020"],
     "composite": true,
     "baseUrl": ".",
@@ -11,7 +12,6 @@
     },
     "types": ["google.maps"],
     "outDir": "./build",
-    "declaration": true,
-    "declarationDir": "./types"
+    "declaration": true
   }
 }

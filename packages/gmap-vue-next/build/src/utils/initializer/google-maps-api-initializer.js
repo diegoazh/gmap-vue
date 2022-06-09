@@ -38,7 +38,7 @@ function createGoogleMapsAPIInitializer() {
         if (typeof document === 'undefined') {
             return;
         }
-        const finalOptions = { ...options };
+        const finalOptions = Object.assign({}, options);
         const { libraries } = finalOptions;
         if (!isApiSetUp) {
             isApiSetUp = true;
