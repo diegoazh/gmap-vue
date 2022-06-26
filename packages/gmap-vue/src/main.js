@@ -1,5 +1,3 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import Autocomplete from './components/autocomplete-input.vue';
 import Circle from './components/circle-shape.vue';
 import Cluster from './components/cluster-icon.vue';
