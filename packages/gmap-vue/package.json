@@ -10,7 +10,7 @@
     "./sfc": "dist/components"
   },
   "engines": {
-    "node": ">=12",
+    "node": ">=12 <16.15.1",
     "npm": ">6"
   },
   "scripts": {
