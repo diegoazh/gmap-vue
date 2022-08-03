@@ -74,7 +74,7 @@ export default {
 
         this.$map.addListener('click', this.clearSelection);
 
-        if (this?.finalShapes?.length) {
+        if (this && this.finalShapes && this.finalShapes.length) {
           this.drawAll();
         }
 

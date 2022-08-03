@@ -15,7 +15,9 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn, customCallback) {
       resolveFn();
       callbackExecuted = true;
       // TODO: this should be removed on the next major release
-      customCallback?.();
+      if (customCallback) {
+        customCallback();
+      }
     } catch (error) {
       window.console.error('Error executing the GoogleMapsCallback', error);
     }
@@ -28,7 +30,10 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn, customCallback) {
         timeoutId = undefined;
       }
 
-      if (window?.google?.maps != null && !callbackExecuted) {
+      if (
+        (window && window.google && window.google.maps) != null &&
+        !callbackExecuted
+      ) {
         window.GoogleMapsCallback();
         callbackExecuted = true;
       }
@@ -77,7 +82,7 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
     }
 
     // If library should load the API
-    if (options?.load?.key || options.dynamicLoad) {
+    if ((options && options.load && options.load.key) || options.dynamicLoad) {
       return getLazyValue(() => {
         // This will only be evaluated once
         if (typeof window === 'undefined') {
@@ -89,7 +94,7 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
           try {
             createCallbackAndChecksIfMapIsLoaded(
               resolve,
-              window[options?.load?.customCallback]
+              window[options && options.load && options.load.customCallback]
             );
 
             if (!options.dynamicLoad) {
@@ -113,7 +118,7 @@ function getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) {
 
       createCallbackAndChecksIfMapIsLoaded(
         resolve,
-        window[options?.load?.customCallback]
+        window[options && options.load && options.load.customCallback]
       );
     }).then(onMapsReady);
 

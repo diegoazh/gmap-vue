@@ -156,7 +156,12 @@ export default {
         const options = finalOptions;
 
         const recycleKey = this.getRecycleKey();
-        if (this?.options?.recycle && window[recycleKey]) {
+        if (
+          this &&
+          this.options &&
+          this.options.recycle &&
+          window[recycleKey]
+        ) {
           element.appendChild(window[recycleKey].div);
           this.$mapObject = window[recycleKey].map;
           this.$mapObject.setOptions(options);
@@ -322,7 +327,7 @@ Note: When the map is set to display: none, the fitBounds function reads the map
      * @public
      */
     getRecycleKey() {
-      return this?.options?.recycle
+      return this && this.options && this.options.recycle
         ? this.recyclePrefix + this.options.recycle
         : this.recyclePrefix;
     },
