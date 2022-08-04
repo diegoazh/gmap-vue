@@ -124,8 +124,9 @@ export function downArrowSimulator(input) {
       const origListener = listener;
       // eslint-disable-next-line no-param-reassign -- Is old style this should be analyzed
       listener = (event) => {
-        const suggestionSelected =
-          document.getElementsByClassName('pac-item-selected').length > 0;
+        const suggestionSelected = document
+          ? document.getElementsByClassName('pac-item-selected').length > 0
+          : null;
         if (event.which === 13 && !suggestionSelected) {
           const simulatedEvent = document.createEvent('Event');
           simulatedEvent.keyCode = 40;
