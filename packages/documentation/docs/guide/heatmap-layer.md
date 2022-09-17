@@ -2,13 +2,15 @@
 
 This components helps you to set a heat zone over the map.
 
-For more information read the Google Maps documentation for [heatmaplayer](https://developers.google.com/maps/documentation/javascript/heatmaplayer)
+For more information read the Google Maps documentation
+for [heatmaplayer](https://developers.google.com/maps/documentation/javascript/heatmaplayer)
 
 It is exported with the name `GmapHeatmapLayer`.
 
 ## Variables
 
-This component save the original heat map layer object provided by Google Maps in a property called `$heatmapLayerObject`, as the example below.
+This component save the original heat map layer object provided by Google Maps in a property
+called `$heatmapLayerObject`, as the example below.
 
 ```javascript
   this.$heatmapLayerObject = new google.maps.visualization.HeatmapLayer(...);
@@ -81,7 +83,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapHeatmapLayer</code> component
 
@@ -169,7 +172,8 @@ You also can use a computed property like below
 ```
 
 ::: warning
-This component is one of the few components where you must use the Google `LatLng` object to create the markers, you can't use a generic object like `{ lat: 0, lng: 0 }` to generate them.
+This component is one of the few components where you must use the Google `LatLng` object to create the markers, you
+can't use a generic object like `{ lat: 0, lng: 0 }` to generate them.
 :::
 
 If you need to know the **API of this component** please read it [here](/code/components/heatmap-layer.html).

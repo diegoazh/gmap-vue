@@ -2,13 +2,15 @@
 
 This component helps you to create a Kml layer.
 
-For more information read the Google Maps documentation for [kml layers](https://developers.google.com/maps/documentation/javascript/kmllayer).
+For more information read the Google Maps documentation
+for [kml layers](https://developers.google.com/maps/documentation/javascript/kmllayer).
 
 It is exported with the name `GmapKmlLayer`.
 
 ## Variables
 
-This component save the original Kml-layer object provided by Google Maps in a property called `$kmlLayerObject`, as the example below.
+This component save the original Kml-layer object provided by Google Maps in a property called `$kmlLayerObject`, as the
+example below.
 
 ```javascript
   this.$kmlLayerObject = new google.maps.KmlLayer(...);
@@ -108,7 +110,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapKmlLayer</code> component
 

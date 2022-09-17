@@ -2,13 +2,15 @@
 
 This component helps you to create a rectangle on Google Maps API.
 
-For more information read the Google Maps documentation for [rectangle](https://developers.google.com/maps/documentation/javascript/examples/rectangle-simple).
+For more information read the Google Maps documentation
+for [rectangle](https://developers.google.com/maps/documentation/javascript/examples/rectangle-simple).
 
 It is exported with the name `GmapRectangle`.
 
 ## Variables
 
-This component save the original polygon object provided by Google Maps in a property called `$rectangleObject`, as the example below.
+This component save the original polygon object provided by Google Maps in a property called `$rectangleObject`, as the
+example below.
 
 ```javascript
 this.$rectangleObject = new google.maps.Rectangle(...);
@@ -121,7 +123,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 ::: details Mapped Props of <code>GmapRectangle</code> component
 
@@ -229,7 +232,9 @@ If you need to know the **API of this component** please read it [here](/code/co
 
 :::details Simple rectangle example
 
-We use the following [example](https://developers.google.com/maps/documentation/javascript/examples/rectangle-simple?hl=en) of the google documentation.
+We use the
+following [example](https://developers.google.com/maps/documentation/javascript/examples/rectangle-simple?hl=en) of the
+google documentation.
 
 ```html
 <body>

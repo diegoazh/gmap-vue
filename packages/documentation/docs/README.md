@@ -2,7 +2,10 @@
 
 GmapVue is a fork from [vue2-google-maps](https://github.com/xkjyeah/vue-google-maps).
 
-This project has all features added to `vue2-google-maps` plugin up to [v0.10.8](https://github.com/xkjyeah/vue-google-maps/releases/tag/v0.10.8), but in the case of `gmap-vue` it has **the last features** added to `vue2-google-maps` repository by the community developers in many PRs, that they can't landed in a new version of that project, for different reasons.
+This project has all features added to `vue2-google-maps` plugin up
+to [v0.10.8](https://github.com/xkjyeah/vue-google-maps/releases/tag/v0.10.8), but in the case of `gmap-vue` it has **
+the last features** added to `vue2-google-maps` repository by the community developers in many PRs, that they can't
+landed in a new version of that project, for different reasons.
 
 Because of that we fork the project and plain to continue working and adding new features to this great plugin.
 
@@ -10,7 +13,8 @@ Because of that we fork the project and plain to continue working and adding new
 
 ::: warning
 
-We have planned to change all components names and file names to the same way that they are registered for the next major release (v4.0.0).
+We have planned to change all components names and file names to the same way that they are registered for the next
+major release (v4.0.0).
 
 :::
 
@@ -31,7 +35,8 @@ We have planned to change all components names and file names to the same way th
   - `components`: it has all components and mountable mixin)
   - `helpers`: it has promise lazy factory function, gmapApi function and map element mixin
 - The plugin now exports by default the install function, this means that you can do the following
-- From **v2.0.0** and above, the `autocomplete` component uses the `default` slot instead of the named `input` slot, from v1.5.0 the `input` slot on the autocomplete component still works.
+- From **v2.0.0** and above, the `autocomplete` component uses the `default` slot instead of the named `input` slot,
+  from v1.5.0 the `input` slot on the autocomplete component still works.
 
   ```js
   import GmapVue from 'gmap-vue';
@@ -92,7 +97,8 @@ That is, instead of writing `<GmapMap>`, you need to write `<gmap-map>`.
 
 ### Vue-CLI v4 applications
 
-For those application that use vue-cli v4 you will need to add the following dependencies and configuration to your `vue.config.js` file
+For those application that use vue-cli v4 you will need to add the following dependencies and configuration to
+your `vue.config.js` file
 
 ```bash
 npm install --save-dev babel-loader @babel/preset-env @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-nullish-coalescing-operator
@@ -182,15 +188,19 @@ Vue.use(GmapVue, {
 
 ### v3.2.0
 
-From v3.2.0 when you load the Google Maps API externally, from an HTML file for example, now you can load the plugin without any load option, and you don't need to change anything from you Google Map script tag in the HTML file, in that sort of cases if the callback is not called after **1 second** from be initialized the plugin will be check **every 0.5 second** if the object `window.google.maps` is populated and ready to use it.
+From v3.2.0 when you load the Google Maps API externally, from an HTML file for example, now you can load the plugin
+without any load option, and you don't need to change anything from you Google Map script tag in the HTML file, in that
+sort of cases if the callback is not called after **1 second** from be initialized the plugin will be check **every 0.5
+second** if the object `window.google.maps` is populated and ready to use it.
 
 ### v3.0.0
 
 **We encourage to use the new way introduced from v3.2.0 and explained above**
 
-If you already have an script tag that loads Google Maps API and you want to use it set you callback in the `customCallback` option and our `GoogleMapsCallback` callback will execute your custom callback at the end.
+If you already have an script tag that loads Google Maps API and you want to use it set you callback in
+the `customCallback` option and our `GoogleMapsCallback` callback will execute your custom callback at the end.
 
- **It must attached to the `window` object**, is the only requirement.
+**It must attached to the `window` object**, is the only requirement.
 
 ```js
 window.MyCustomCallback = () => { console.info('MyCustomCallback was executed') }
@@ -200,7 +210,8 @@ window.MyCustomCallback = () => { console.info('MyCustomCallback was executed') 
 
 ::: warning
 
-The new option `customCallback` inside the `load` object in the plugin configuration will be removed in the next major version.
+The new option `customCallback` inside the `load` object in the plugin configuration will be removed in the next major
+version.
 
 :::
 
@@ -232,7 +243,9 @@ Available from **v3.3.0** and above
 
 :::
 
-If you need to initialize the Google Maps API in a dynamic way you can use the `dynamicLoad` option of the plugin configuration, this option start the plugin but it doesn't load the Google Maps API, you need to load it manually using the `googleMapsApiInitializer` helper as we show below
+If you need to initialize the Google Maps API in a dynamic way you can use the `dynamicLoad` option of the plugin
+configuration, this option start the plugin but it doesn't load the Google Maps API, you need to load it manually using
+the `googleMapsApiInitializer` helper as we show below
 
 ```vue
 <script>
@@ -251,7 +264,9 @@ export default {
 </script>
 ```
 
-If you want to know the **`googleMapsApiInitializer` API** please check it [here](https://diegoazh.github.io/gmap-vue/code/utils/initializer/google-maps-api-initializer.html#creategooglemapsapiinitializer-googlemapsapiinitializer-options-loadcn).
+If you want to know the **`googleMapsApiInitializer` API** please check
+it [here](https://diegoazh.github.io/gmap-vue/code/utils/initializer/google-maps-api-initializer.html#creategooglemapsapiinitializer-googlemapsapiinitializer-options-loadcn)
+.
 
 ### The three main utilities
 
@@ -334,7 +349,9 @@ You will get an object with a `maps` property and inside of it you can find all 
 
 ### Map Options
 
-Control the options of the map with the options property. For more information about google [MapOptions](https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions) visit the link.
+Control the options of the map with the options property. For more information about
+google [MapOptions](https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions) visit the
+link.
 
  ```vue
  <GmapMap
@@ -353,7 +370,8 @@ Control the options of the map with the options property. For more information a
 
 ### Region and language localization
 
-To add region and language localization. For more information about google [Localization](https://developers.google.com/maps/documentation/javascript/localization) visit the link.
+To add region and language localization. For more information about
+google [Localization](https://developers.google.com/maps/documentation/javascript/localization) visit the link.
 
 ```js
 Vue.use(GmapVue, {
@@ -366,7 +384,10 @@ Vue.use(GmapVue, {
 
 ### Lazy loading
 
-If you need to wait for google maps API to be ready, you can use the `this.$gmapApiPromiseLazy()` function to wait for it. This function is automatically added to your components when you use GmapVue plugin, also, you can find a reference of this function in your Vue instance if you have a reference of following common practice to assign it to `vm` variable.
+If you need to wait for google maps API to be ready, you can use the `this.$gmapApiPromiseLazy()` function to wait for
+it. This function is automatically added to your components when you use GmapVue plugin, also, you can find a reference
+of this function in your Vue instance if you have a reference of following common practice to assign it to `vm`
+variable.
 
 A simple example
 
@@ -406,19 +427,27 @@ export default {
 ### GmapMap slots
 
 GmapMap component has two slots with a different behavior.
-The default slot is wrapped in a class that sets `display: none;` so by default any component you add to your map will be invisible.
+The default slot is wrapped in a class that sets `display: none;` so by default any component you add to your map will
+be invisible.
 
-This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc.
+This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if
+you want to bring up things like toolboxes, etc.
 
-There is a second slot named **"visible"** that must be used if you want to display content within the responsive wrapper for the map, hence that's why you'll see this in the [drawing manager with slot example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html). It's actually not required in the [first example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html#html-examples) because the default toolbox is part of the Google map object.
+There is a second slot named **"visible"** that must be used if you want to display content within the responsive
+wrapper for the map, hence that's why you'll see this in
+the [drawing manager with slot example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html). It's actually
+not required in the [first example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html#html-examples)
+because the default toolbox is part of the Google map object.
 
 > Thanks to [@davydnorris](https://github.com/davydnorris) to document this part of GmapVue.
 
 ### Exported objects from the GmapVue plugin
 
-In previous version the plugin exports all without any organization, from version 2 the plugin exports a default object with the install function required for Vue.js to install this plugin and two objects, `helpers` and `components`.
+In previous version the plugin exports all without any organization, from version 2 the plugin exports a default object
+with the install function required for Vue.js to install this plugin and two objects, `helpers` and `components`.
 
-This two objects exports the same functions as before but in a better way, in the `main.js` file. The code below is a copy from that file.
+This two objects exports the same functions as before but in a better way, in the `main.js` file. The code below is a
+copy from that file.
 
 ```js
 
@@ -505,9 +534,11 @@ in their source code.
 ### Adding your own components
 
 It should be relatively easy to add your own components (e.g. Heatmap, GroundOverlay). please refer to the
-[source code for `mapElementFactory`](https://github.com/diegoazh/gmap-vue/blob/master/packages/gmap-vue/src/utils/factories/map-element.js).
+[source code for `mapElementFactory`](https://github.com/diegoazh/gmap-vue/blob/master/packages/gmap-vue/src/utils/factories/map-element.js)
+.
 
-Example for [DirectionsRenderer](https://developers.google.com/maps/documentation/javascript/reference/3/#DirectionsRenderer):
+Example
+for [DirectionsRenderer](https://developers.google.com/maps/documentation/javascript/reference/3/#DirectionsRenderer):
 
 ```js
 // DirectionsRenderer.js

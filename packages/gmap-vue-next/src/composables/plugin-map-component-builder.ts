@@ -1,12 +1,7 @@
-import type { IGmapVueElementOptions } from '@/interfaces/gmap-vue.interface';
-import type { ComponentOptions } from 'vue';
-import {
-  bindEvents,
-  bindProps,
-  getPropsValues,
-  mappedPropsToVueProps,
-} from '../../composables/helpers';
-import { useMapElement } from '../../composables/map-element';
+import type { IGmapVueElementOptions } from "@/interfaces/gmap-vue.interface";
+import type { ComponentOptions } from "vue";
+import { useMapPromise } from "./google-maps-promise";
+import { bindEvents, bindProps, filterVuePropsOptions, getPropsValues } from "./helpers";
 
 /**
  * Custom assert for local validation
@@ -72,7 +67,9 @@ function _assert(v: boolean, message: string): void {
  *
  * @returns {Object} A component object that should be exported by default from a Vue component
  */
-function mapElement(providedOptions: IGmapVueElementOptions): ComponentOptions {
+export function pluginMapComponentBuilder(
+  providedOptions: IGmapVueElementOptions
+): ComponentOptions {
   const {
     mappedProps,
     name,
@@ -93,10 +90,10 @@ function mapElement(providedOptions: IGmapVueElementOptions): ComponentOptions {
   return {
     props: {
       ...props,
-      ...mappedPropsToVueProps(mappedProps),
+      ...filterVuePropsOptions(mappedProps),
     },
     async setup() {
-      const $map = await useMapElement();
+      await useMapPromise();
     },
     render() {
       return '';
@@ -111,7 +108,7 @@ function mapElement(providedOptions: IGmapVueElementOptions): ComponentOptions {
           const initialOptions = {
             ...this.options,
             map,
-            ...getPropsValues(this, mappedProps),
+            ...getPropsValues(mappedProps, this),
           };
           // don't use delete keyword in order to create a more predictable code for the engine
           const { options: extraOptions, ...finalOptions } = initialOptions; // delete the extra options
@@ -133,7 +130,7 @@ function mapElement(providedOptions: IGmapVueElementOptions): ComponentOptions {
             ? new (Function.prototype.bind.call(
                 ConstructorObject,
                 null,
-                ...ctrArgs(options, getPropsValues(this, props || {}))
+                ...ctrArgs(options, getPropsValues(props || {}, this))
               ))()
             : new ConstructorObject(options);
 
@@ -158,5 +155,3 @@ function mapElement(providedOptions: IGmapVueElementOptions): ComponentOptions {
     ...rest,
   };
 }
-
-export default mapElement;

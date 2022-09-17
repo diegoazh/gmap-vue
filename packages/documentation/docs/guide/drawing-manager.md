@@ -2,13 +2,15 @@
 
 This component helps you to drawing shapes on over the map.
 
-For more information read the Google Maps documentation for [drawing manager](https://developers.google.com/maps/documentation/javascript/drawinglayer).
+For more information read the Google Maps documentation
+for [drawing manager](https://developers.google.com/maps/documentation/javascript/drawinglayer).
 
 It is exported with the name `GmapDrawingManager`.
 
 ## Variables
 
-This component save the original drawing manager object provided by Google Maps in a property called `$drawingManagerObject`, as the example below.
+This component save the original drawing manager object provided by Google Maps in a property
+called `$drawingManagerObject`, as the example below.
 
 ```javascript
   this.$drawingManagerObject = new google.maps.drawing.DrawingManager(...);
@@ -255,7 +257,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapDrawingManager</code> component
 

@@ -1,13 +1,11 @@
-import type {
-  IGoogleMapProp,
-  IPluginOptions,
-  IVueProp,
-} from '@/interfaces/gmap-vue.interface';
-import type { LazyValueGetterFn } from '@/types/gmap-vue.types';
-import type { ComponentPublicInstance } from 'vue';
+import type { IGoogleMapProp, IPluginOptions, IVueProp } from '@/interfaces/gmap-vue.interface';
+import type { AutocompleteHtmlInput, GmapVuePluginProps, LazyValueGetterFn } from '@/types/gmap-vue.types';
+import { type ComponentPublicInstance, nextTick, watch } from 'vue';
 
 /**
  * This function helps you to bind events from Google Maps API to Vue events
+ *
+ * Note: For options API. This function should not be used on setup script.
  *
  * @param  {Object} vueInst the Vue instance
  * @param  {Object} googleMapsInst the Google Maps instance
@@ -46,12 +44,22 @@ export function capitalizeFirstLetter(text: string): string {
  * @returns {Object}
  */
 export function getPropsValues(
-  vueInst: ComponentPublicInstance,
-  props: Record<string, any>
+  props: Record<string, any>,
+  vueInst?: ComponentPublicInstance
 ): { [key: string]: IVueProp } {
-  return Object.keys(props).reduce((acc, prop) => {
-    if ((vueInst.$props as any)[prop] != null) {
-      acc[prop] = (vueInst.$props as any)[prop];
+  if (vueInst) {
+    return Object.keys(props).reduce((acc, propKey) => {
+      if ((vueInst?.$props as any)[propKey] != null) {
+        acc[propKey] = (vueInst?.$props as any)[propKey];
+      }
+
+      return acc;
+    }, {} as { [key: string]: IVueProp });
+  }
+
+  return Object.keys(props).reduce((acc, propKey) => {
+    if ((props as any)[propKey] != null) {
+      acc[propKey] = (props as any)[propKey];
     }
 
     return acc;
@@ -67,11 +75,11 @@ export function getPropsValues(
  *  @param  {Function} fn a function that actually return the promise or async value
  * @returns {Function} anonymous function that returns the value returned by the fn parameter
  */
-export function getLazyValue(fn: Function): LazyValueGetterFn {
+export function getLazyValue(fn: () => Promise<any>): LazyValueGetterFn {
   let called = false;
-  let ret: any;
+  let ret: Promise<any>;
 
-  return () => {
+  return (): Promise<any> => {
     if (!called) {
       called = true;
       ret = fn();
@@ -88,9 +96,11 @@ export function getLazyValue(fn: Function): LazyValueGetterFn {
  * @param {Object} mappedProps the mapped props object
  * @returns {Object}
  */
-export function mappedPropsToVueProps(
-  mappedProps: Record<string, IVueProp & IGoogleMapProp>
-): Record<string, any> {
+export function filterVuePropsOptions<T extends GmapVuePluginProps>(
+  mappedProps: T
+): {
+  [key in keyof T]: IVueProp;
+} {
   return (
     Object.entries(mappedProps).map(([key, prop]) => {
       const value: IVueProp = {};
@@ -100,12 +110,12 @@ export function mappedPropsToVueProps(
       if ('required' in prop) value.required = prop.required;
 
       return [key, value];
-    }) as Array<[string, IVueProp]>
+    }) as Array<[keyof T, IVueProp]>
   ).reduce((acc, [key, val]) => {
     acc[key] = val;
 
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as { [key in keyof T]: IVueProp });
 }
 
 /**
@@ -120,9 +130,7 @@ export function mappedPropsToVueProps(
  * @param  {Object} input the HTML input node element reference
  * @returns {void}
  */
-export function downArrowSimulator(
-  input: HTMLInputElement & { attachEvent: Function }
-): void {
+export function downArrowSimulator(input: AutocompleteHtmlInput): void {
   // eslint-disable-next-line no-underscore-dangle -- Is old style should be analyzed
   const _addEventListener = input.addEventListener
     ? input.addEventListener
@@ -174,23 +182,23 @@ export function downArrowSimulator(
  *
  * @param  {Function} fn Function to be executed to determine if the event was executed
  *
-    Example:
+ Example:
 
-    Let's say DrawingRecognitionCanvas is a deep-learning backed canvas
-    that, when given the name of an object (e.g. 'dog'), draws a dog.
-    But whenever the drawing on it changes, it also sends back its interpretation
-    of the image by way of the @newObjectRecognized event.
+ Let's say DrawingRecognitionCanvas is a deep-learning backed canvas
+ that, when given the name of an object (e.g. 'dog'), draws a dog.
+ But whenever the drawing on it changes, it also sends back its interpretation
+ of the image by way of the @newObjectRecognized event.
 
-    <input
-      type="text"
-      placeholder="an object, e.g. Dog, Cat, Frog"
-      v-model="identifiedObject" />
-    <DrawingRecognitionCanvas
-      :object="identifiedObject"
-      @newObjectRecognized="identifiedObject = $event"
-      />
+ <input
+ type="text"
+ placeholder="an object, e.g. Dog, Cat, Frog"
+ v-model="identifiedObject" />
+ <DrawingRecognitionCanvas
+ :object="identifiedObject"
+ @newObjectRecognized="identifiedObject = $event"
+ />
 
-    new TwoWayBindingWrapper((increment, decrement, shouldUpdate) => {
+ new TwoWayBindingWrapper((increment, decrement, shouldUpdate) => {
       this.$watch('identifiedObject', () => {
         // new object passed in
         increment()
@@ -227,17 +235,17 @@ export function twoWayBindingWrapper(fn: Function): void {
  *
  * In effect, it throttles the multiple $watch to execute at most once per tick.
  *
- * @param  {Object} vueInst the component instance
  * @param  {string[]} propertiesToTrack string array with all properties that you want to track
  * @param  {Function} handler function to be fired when the prop change
  * @param  {boolean} immediate=false
+ * @param  {Object?} vueInst the component instance
  * @returns {void}
  */
 export function watchPrimitiveProperties(
-  vueInst: ComponentPublicInstance,
   propertiesToTrack: string[],
   handler: Function,
-  immediate = false
+  immediate = false,
+  vueInst?: ComponentPublicInstance
 ): void {
   let isHandled = false;
 
@@ -249,15 +257,26 @@ export function watchPrimitiveProperties(
   function requestHandle(): void {
     if (!isHandled) {
       isHandled = true;
-      vueInst.$nextTick(() => {
-        isHandled = false;
-        handler();
-      });
+      if (vueInst) {
+        vueInst.$nextTick(() => {
+          isHandled = false;
+          handler();
+        });
+      } else {
+        nextTick(() => {
+          isHandled = false;
+          handler();
+        });
+      }
     }
   }
 
   propertiesToTrack.forEach((prop) => {
-    vueInst.$watch(prop, requestHandle, { immediate });
+    if (vueInst) {
+      vueInst.$watch(prop, requestHandle, { immediate });
+    } else {
+      watch(() => prop, requestHandle, { immediate });
+    }
   });
 }
 
@@ -268,6 +287,8 @@ export function watchPrimitiveProperties(
  * watch. For deep watch, we also prevent the _changed event from being
  * emitted if the data source was external.
  *
+ * Note: For options API. This function should not be used on setup script.
+ *
  * @param  {Object} vueInst the component instance
  * @param  {Object} googleMapsInst the Google Maps instance
  * @param  {Object} props object with the component props tha should be synched with the Google Maps instances props
@@ -276,16 +297,16 @@ export function watchPrimitiveProperties(
 export function bindProps(
   vueInst: ComponentPublicInstance & { $gmapOptions: IPluginOptions },
   googleMapsInst: Record<string, any>,
-  props: { [key: string]: IVueProp & IGoogleMapProp }
+  props: GmapVuePluginProps
 ): void {
-  Object.keys(props).forEach((attribute) => {
-    const { twoWay, type, trackProperties, noBind } = props[attribute];
+  Object.keys(props).forEach((propKey) => {
+    const { twoWay, type, trackProperties, noBind } = props[propKey];
 
     if (!noBind) {
-      const setMethodName = `set${capitalizeFirstLetter(attribute)}`;
-      const getMethodName = `get${capitalizeFirstLetter(attribute)}`;
-      const eventName = `${attribute.toLowerCase()}_changed`;
-      const initialValue = (vueInst.$props as any)[attribute];
+      const setMethodName = `set${capitalizeFirstLetter(propKey)}`;
+      const getMethodName = `get${capitalizeFirstLetter(propKey)}`;
+      const eventName = `${propKey.toLowerCase()}_changed`;
+      const initialValue = (vueInst.$props as any)[propKey];
 
       if (typeof googleMapsInst[setMethodName] === 'undefined') {
         throw new Error(
@@ -301,9 +322,9 @@ export function bindProps(
       if (type !== Object || !trackProperties) {
         // Track the object deeply
         vueInst.$watch(
-          attribute,
+          propKey,
           () => {
-            const attributeValue = (vueInst.$props as any)[attribute];
+            const attributeValue = (vueInst.$props as any)[propKey];
 
             googleMapsInst[setMethodName](attributeValue);
           },
@@ -314,12 +335,12 @@ export function bindProps(
         );
       } else {
         watchPrimitiveProperties(
-          vueInst,
-          trackProperties.map((prop) => `${attribute}.${prop}`),
+          trackProperties.map((prop) => `${propKey}.${prop}`),
           () => {
-            googleMapsInst[setMethodName]((vueInst.$props as any)[attribute]);
+            googleMapsInst[setMethodName]((vueInst.$props as any)[propKey]);
           },
-          (vueInst.$props as any)[attribute] !== undefined
+          (vueInst.$props as any)[propKey] !== undefined,
+          vueInst
         );
       }
 
@@ -335,14 +356,88 @@ export function bindProps(
   });
 }
 
-export default {
-  bindEvents,
-  bindProps,
-  capitalizeFirstLetter,
-  getPropsValues,
-  getLazyValue,
-  mappedPropsToVueProps,
-  downArrowSimulator,
-  twoWayBindingWrapper,
-  watchPrimitiveProperties,
-};
+/**
+ * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
+ * @typedef {Object} PropEvents
+ * @property {string[]} eventNames - The event names
+ * @property {[string, () => void][]} emitParams - The array of params to use on every emit call
+ */
+/**
+ * Binds the properties defined in props to the google maps instance.
+ * If the prop is an Object type, and we wish to track the properties
+ * of the object (e.g. the lat and lng of a LatLng), then we do a deep
+ * watch. For deep watch, we also prevent the _changed event from being
+ * emitted if the data source was external.
+ *
+ * Note: For composition API. This function should be used on setup script.
+ *
+ * @param  {Object} googleMapsInst - the Google Maps instance
+ * @param  {Object} props - object with the component props tha should be synched with the Google Maps instances props
+ * @param  {IPluginOptions} gmapOptions - the component instance
+ * @param  {Object} attrs - The vue attrs object that is get from useAttrs macro function
+ * @returns {PropEvents} The object which contain all event names to and params that should be used to add listener to the Google Maps instance
+ */
+export function bindPropsOnSetup(
+  googleMapsInst: Record<string, any>,
+  props: Record<string, any>,
+  gmapOptions: IPluginOptions,
+  attrs: Record<string, unknown>
+): {
+  eventNames: string[];
+  emitParams: [string, () => any][];
+} {
+  const eventNames: string[] = [];
+  const emitParams: [string, () => any][] = [];
+
+  Object.keys(props).forEach((propKey) => {
+    const {
+      twoWay,
+      type: propertyType,
+      trackProperties,
+      noBind,
+    } = props[propKey] as IVueProp & IGoogleMapProp;
+
+    if (!noBind) {
+      const setMethodName = `set${capitalizeFirstLetter(propKey)}`;
+      const getMethodName = `get${capitalizeFirstLetter(propKey)}`;
+      const eventName = `${propKey.toLowerCase()}_changed`;
+      const initialValue = (props as any)[propKey];
+
+      if (typeof googleMapsInst[setMethodName] !== 'undefined') {
+        // We need to avoid an endless
+        // propChanged -> event emitted -> propChanged -> event emitted loop
+        // although this may really be the user's responsibility
+        if (propertyType !== Object || !trackProperties) {
+          // Track the object deeply
+          watch(
+            () => propKey,
+            () => {
+              const attributeValue = props[propKey];
+
+              googleMapsInst[setMethodName](attributeValue);
+            },
+            {
+              immediate: typeof initialValue !== 'undefined',
+              deep: propertyType === Object,
+            }
+          );
+        } else {
+          watchPrimitiveProperties(
+            trackProperties.map((prop) => `${propKey}.${prop}`),
+            () => {
+              googleMapsInst[setMethodName](props[propKey]);
+            },
+            props[propKey] !== undefined
+          );
+        }
+
+        if (twoWay && (gmapOptions.autoBindAllEvents || attrs[eventName])) {
+          eventNames.push(eventName);
+          emitParams.push([eventName, googleMapsInst[getMethodName]]);
+        }
+      }
+    }
+  });
+
+  return { eventNames, emitParams };
+}

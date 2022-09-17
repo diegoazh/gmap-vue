@@ -1,5 +1,5 @@
-import type { ILoadPluginOptions } from '@/interfaces/gmap-vue.interface';
-import type { GoogleMapsAPIInitializerFn } from '@/types/gmap-vue.types';
+import type { ILoadPluginOptions } from "@/interfaces/gmap-vue.interface";
+import type { GoogleMapsAPIInitializerFn } from "@/types/gmap-vue.types";
 
 /**
  * This function returns the initializer function, it is exported
@@ -28,7 +28,7 @@ function createGoogleMapsAPIInitializer(): GoogleMapsAPIInitializerFn {
    * @param {boolean} loadCn=false    Boolean. If set to true, the map will be loaded from google maps China
    *                  (@see https://developers.google.com/maps/documentation/javascript/basics#GoogleMapsChina)
    */
-  const googleMapsAPIInitializer: GoogleMapsAPIInitializerFn = (
+  const googleMapsAPIInitializerFn: GoogleMapsAPIInitializerFn = (
     options: ILoadPluginOptions,
     loadCn = false
   ): void => {
@@ -52,10 +52,9 @@ function createGoogleMapsAPIInitializer(): GoogleMapsAPIInitializerFn {
 
     if (!isApiSetUp) {
       isApiSetUp = true;
-      const baseUrl =
-        typeof loadCn === 'boolean' && loadCn
-          ? 'https://maps.google.cn'
-          : 'https://maps.googleapis.com';
+      const baseUrl = loadCn
+        ? 'https://maps.google.cn'
+        : 'https://maps.googleapis.com';
 
       const googleMapScript = document.createElement('SCRIPT');
 
@@ -67,9 +66,7 @@ function createGoogleMapsAPIInitializer(): GoogleMapsAPIInitializerFn {
       finalOptions.callback = 'GoogleMapsCallback';
 
       const query = (
-        Object.keys(finalOptions) as Array<
-          'key' | 'libraries' | 'v' | 'callback' | 'customCallback'
-        >
+        Object.keys(finalOptions) as Array<keyof ILoadPluginOptions>
       )
         .map((key) => {
           if (finalOptions[key]) {
@@ -93,7 +90,9 @@ function createGoogleMapsAPIInitializer(): GoogleMapsAPIInitializerFn {
     }
   };
 
-  return googleMapsAPIInitializer;
+  return googleMapsAPIInitializerFn;
 }
 
-export default createGoogleMapsAPIInitializer();
+const googleMapsApiInitializer = createGoogleMapsAPIInitializer();
+
+export { googleMapsApiInitializer };

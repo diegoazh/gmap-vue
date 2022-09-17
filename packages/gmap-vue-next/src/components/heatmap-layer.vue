@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useGoogleMapsPromise } from '../composables/google-maps-promise';
 import { bindEvents, bindProps, getPropsValues } from '../composables/helpers';
-import MapElementMixin from '../composables/map-element';
 import { heatMapLayerMappedProps } from '../props/mapped-props-by-map-element';
 
 /**
@@ -12,7 +12,7 @@ import { heatMapLayerMappedProps } from '../props/mapped-props-by-map-element';
  */
 export default defineComponent({
   name: 'HeatmapLayer',
-  mixins: [MapElementMixin],
+  mixins: [useGoogleMapsPromise],
   render() {
     return '';
   },

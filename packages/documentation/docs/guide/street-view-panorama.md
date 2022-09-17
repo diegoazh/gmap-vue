@@ -2,13 +2,15 @@
 
 This component helps you to create a street view panorama on Google Maps API.
 
-For more information read the Google Maps documentation for [street view panorama](https://developers.google.com/maps/documentation/javascript/streetview).
+For more information read the Google Maps documentation
+for [street view panorama](https://developers.google.com/maps/documentation/javascript/streetview).
 
 It is exported with the name `GmapStreetViewPanorama`.
 
 ## Variables
 
-This component save the original street view panorama object provided by Google Maps in a property called `$panoObject`, as the example below.
+This component save the original street view panorama object provided by Google Maps in a property called `$panoObject`,
+as the example below.
 
 ```javascript
 this.$panoObject = new google.maps.StreetViewPanorama(element, options);
@@ -174,7 +176,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Events bound with to way on <code>GmapPolyline</code>
 
@@ -329,7 +332,7 @@ If you need to know the **API of this component** please read it [here](/code/co
 ## Test the component
 
 :::warning
-  Experimental
+Experimental
 :::
 
 <eg-base>

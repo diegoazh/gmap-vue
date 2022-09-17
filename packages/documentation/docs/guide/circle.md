@@ -2,13 +2,16 @@
 
 This component helps you to create a circle on Google Maps API.
 
-For more information read the Google Maps documentation for [circles](https://developers.google.com/maps/documentation/javascript/examples/circle-simple#maps_circle_simple-javascript).
+For more information read the Google Maps documentation
+for [circles](https://developers.google.com/maps/documentation/javascript/examples/circle-simple#maps_circle_simple-javascript)
+.
 
 It is exported with the name `GmapCircle`.
 
 ## Variables
 
-This component save the original circle object provided by Google Maps in a property called `$circleObject`, as the example below.
+This component save the original circle object provided by Google Maps in a property called `$circleObject`, as the
+example below.
 
 ```javascript
 this.$circleObject = new google.maps.Circle(...);
@@ -136,7 +139,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 ::: details Mapped Props of <code>GmapCircle</code> component
 
@@ -245,7 +249,8 @@ If you need to know the **API of this component** please read it [here](/code/co
 
 :::details Simple circle example
 
-We use the following [example](https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=en) of the google documentation.
+We use the following [example](https://developers.google.com/maps/documentation/javascript/examples/circle-simple?hl=en)
+of the google documentation.
 
 ```html
 <body>

@@ -6,20 +6,25 @@
         - `attrs`, it's type is `object`, it's all attributes passed to the component ([vm.$attrs](https://vuejs.org/v2/api/?#vm-attrs))<br>
         - `listeners`, it's type is `object`, it's all events passed to the component ([vm.$listeners](https://vuejs.org/v2/api/?#vm-listeners))
 			-->
-    <slot :attrs="$attrs" :listeners="$listeners">
-      <input ref="input" v-bind="$attrs" v-on="$listeners" />
+    <slot :attrs="$attrs">
+      <input ref="input" v-bind="$attrs" />
     </slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 import {
   bindProps,
   downArrowSimulator,
   getPropsValues,
 } from '../composables/helpers';
 import { autocompleteMappedProps } from '../props/mapped-props-by-map-element';
+import type { AutocompleteHtmlInput } from '../types/gmap-vue.types';
+
+export interface IAutocompleteData {
+  $autocomplete: google.maps.places.Autocomplete | undefined;
+}
 
 /**
  * Autocomplete component
@@ -69,21 +74,9 @@ export default defineComponent({
     /**
      * the unique ref set to the component passed in the slot input
      */
-    slotRefName: {
+    slotRef: {
       required: false,
-      type: String,
-      default: 'input',
-    },
-    /**
-     * The name of the ref to obtain the html input element
-     * if its a child  of component in the slot input
-     * very useful whe we use a component like v-text-field of vuetify
-     * that has a 'input' ref pointing to the final html input element
-     */
-    childRefName: {
-      required: false,
-      type: String,
-      default: 'input',
+      type: Object as PropType<HTMLInputElement>,
     },
     /**
      * Other options that you can pass to the Google Mapas
@@ -106,47 +99,24 @@ export default defineComponent({
      */
     setFieldsTo: {
       required: false,
-      type: Array,
+      type: Array as PropType<string[]>,
       default: null,
     },
   },
-  watch: {
-    /**
-     * This watcher is incharge to update
-     * the component restrictions when is
-     * changed from the parent
-     */
-    componentRestrictions(v) {
-      if (v !== undefined) {
-        this.$autocomplete.setComponentRestrictions(v);
-      }
-    },
+  data(): IAutocompleteData {
+    return {
+      $autocomplete: undefined,
+    };
   },
   async mounted() {
     await this.$gmapApiPromiseLazy();
 
-    let scopedInput = null;
-
-    if (this.$slots.default) {
-      if (!Object.keys(this.$slots.default()[0].context.$refs).length) {
-        throw new Error(
-          'If you use the slot input you must add a ref to the element that you will use as the input, and if you use a vue component, eg: v-text-field, etc, you need to set the childRefName indicating what is the ref name of the html input elemnt behind your component.'
-        );
-      }
-
-      scopedInput = this.$slots.default()[0].context.$refs[this.slotRefName];
-
-      if (scopedInput && scopedInput.$refs) {
-        scopedInput = scopedInput.$refs[this.childRefName];
-      }
-
-      if (scopedInput) {
-        this.$refs.input = scopedInput;
-      }
-    }
+    let scopedInput = this.slotRef
+      ? this.slotRef
+      : (this.$refs.input as HTMLInputElement);
 
     if (this.selectFirstOnEnter) {
-      downArrowSimulator(this.$refs.input);
+      downArrowSimulator(this.$refs.input as AutocompleteHtmlInput);
     }
 
     if (typeof google.maps.places.Autocomplete !== 'function') {
@@ -161,7 +131,7 @@ export default defineComponent({
     };
 
     this.$autocomplete = new google.maps.places.Autocomplete(
-      this.$refs.input,
+      scopedInput,
       autocompleteOptions
     );
 
@@ -174,20 +144,37 @@ export default defineComponent({
     // Not using `bindEvents` because we also want
     // to return the result of `getPlace()`
     this.$autocomplete.addListener('place_changed', () => {
-      /**
-       * Place change event
-       * @event place_changed
-       * @property {object} place `this.$autocomplete.getPlace()`
-       * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
-       */
-      this.$emit('place_changed', this.$autocomplete.getPlace());
+      if (this.$autocomplete) {
+        /**
+         * Place change event
+         * @event place_changed
+         * @property {object} place `this.$autocomplete.getPlace()`
+         * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
+         */
+        this.$emit('place_changed', this.$autocomplete.getPlace());
+      }
     });
   },
   unmounted() {
     // Note: not all Google Maps components support maps
-    if (this.$$autocomplete && this.$$autocomplete.setMap) {
-      this.$$autocomplete.setMap(null);
+    // TODO: with typescript we can know which objects have setMap method, maybe this is not necessary anymore
+    if (this.$autocomplete && (this.$autocomplete as any)?.setMap) {
+      (this.$autocomplete as any)?.setMap(null);
     }
+  },
+  watch: {
+    /**
+     * This watcher is incharge to update
+     * the component restrictions when is
+     * changed from the parent
+     */
+    componentRestrictions(v) {
+      if (v !== undefined) {
+        if (this.$autocomplete) {
+          this.$autocomplete.setComponentRestrictions(v);
+        }
+      }
+    },
   },
 });
 </script>

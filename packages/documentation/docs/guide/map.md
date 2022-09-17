@@ -2,13 +2,15 @@
 
 This component helps you to create a Google Map.
 
-For more information read the Google Maps documentation for [map](https://developers.google.com/maps/documentation/javascript/basics).
+For more information read the Google Maps documentation
+for [map](https://developers.google.com/maps/documentation/javascript/basics).
 
 It is exported with the name `GmapMap`.
 
 ## Variables
 
-This component save the original map object instance provided by Google Maps in a property called `$mapObject`, as the example below.
+This component save the original map object instance provided by Google Maps in a property called `$mapObject`, as the
+example below.
 
 ```javascript
   this.$mapObject = new google.maps.Map(element, options);;
@@ -72,7 +74,7 @@ export default {
   },
   provide() {
     this.$mapPromise = new Promise((resolve, reject) => {
-      this.$mapPromiseDeferred = { resolve, reject };
+      this.$mapPromise = { resolve, reject };
     });
 
     return {
@@ -182,7 +184,7 @@ export default {
           this.$emit('bounds_changed', this.$mapObject.getBounds());
         });
 
-        this.$mapPromiseDeferred.resolve(this.$mapObject);
+        this.$mapPromise.resolve(this.$mapObject);
 
         return this.$mapObject;
       })
@@ -263,7 +265,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapMap</code> component
 
@@ -330,17 +333,20 @@ const events = [
 
 #### `getBounds`
 
-If you need to use the `getBounds` method of the `$mapObject` you can do it with a reference as in the below example, but if you use the `getBounds` method in the mounted hook you need to take care about three things:
+If you need to use the `getBounds` method of the `$mapObject` you can do it with a reference as in the below example,
+but if you use the `getBounds` method in the mounted hook you need to take care about three things:
 
 1. the center should be defined
 2. the zoom should be defined
 3. the map should be visible
 
-In the [official documentation](https://developers.google.com/maps/documentation/javascript/reference/map#Map.getBounds) it says:
+In the [official documentation](https://developers.google.com/maps/documentation/javascript/reference/map#Map.getBounds)
+it says:
 
 > If the map is not yet initialized or center and zoom have not been set then the result is undefined.
 
-Because of that behaviour you must listen for the `tilesloaded` event in the map component, this event is fired when the maps is visible and allows you to accomplish with the three requirements mentioned above.
+Because of that behaviour you must listen for the `tilesloaded` event in the map component, this event is fired when the
+maps is visible and allows you to accomplish with the three requirements mentioned above.
 
 > You can refer to the [issue #67](https://github.com/diegoazh/gmap-vue/issues/67)
 

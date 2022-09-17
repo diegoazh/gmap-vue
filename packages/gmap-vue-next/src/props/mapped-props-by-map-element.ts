@@ -137,38 +137,38 @@ export const kmlLayerMappedProps = {
   },
 };
 
-export const mapMappedProps = {
-  center: {
-    required: true,
-    twoWay: true,
-    type: Object,
-    noBind: true,
-  },
-  zoom: {
-    required: false,
-    twoWay: true,
-    type: Number,
-    noBind: true,
-  },
-  heading: {
-    type: Number,
-    twoWay: true,
-  },
-  mapTypeId: {
-    twoWay: true,
-    type: String,
-  },
-  tilt: {
-    twoWay: true,
-    type: Number,
-  },
-  options: {
-    type: Object,
-    default() {
-      return {};
-    },
-  },
-};
+// export const mapMappedProps = {
+//   center: {
+//     type: Object,
+//     required: true,
+//     twoWay: true,
+//     noBind: true,
+//   },
+//   zoom: {
+//     type: Number,
+//     required: false,
+//     twoWay: true,
+//     noBind: true,
+//   },
+//   heading: {
+//     type: Number,
+//     twoWay: true,
+//   },
+//   mapTypeId: {
+//     type: String,
+//     twoWay: true,
+//   },
+//   tilt: {
+//     type: Number,
+//     twoWay: true,
+//   },
+//   options: {
+//     type: Object,
+//     default() {
+//       return {};
+//     },
+//   },
+// };
 
 export const markerMappedProps = {
   animation: {
@@ -519,7 +519,7 @@ export default {
   heatMapLayerMappedProps,
   infoWindowMappedProps,
   kmlLayerMappedProps,
-  mapMappedProps,
+  // mapMappedProps,
   markerMappedProps,
   streetViewPanoramaMappedProps,
   polygonMappedProps,

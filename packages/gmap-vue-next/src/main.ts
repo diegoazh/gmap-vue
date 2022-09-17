@@ -1,43 +1,50 @@
 import 'google.maps';
 import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
-import Autocomplete from './components/autocomplete-input.vue';
-import Circle from './components/circle-shape.vue';
-import Cluster from './components/cluster-icon.vue';
-import DrawingManager from './components/drawing-manager.vue';
-import HeatmapLayer from './components/heatmap-layer.vue';
-import InfoWindow from './components/info-window.vue';
-import KmlLayer from './components/kml-layer.vue';
+// import Autocomplete from './components/autocomplete-input.vue';
+// import Circle from './components/circle-shape.vue';
+// import Cluster from './components/cluster-icon.vue';
+// import DrawingManager from './components/drawing-manager.vue';
+// import HeatmapLayer from './components/heatmap-layer.vue';
+// import InfoWindow from './components/info-window.vue';
+// import KmlLayer from "./components/kml-layer.vue";
 import MapLayer from './components/map-layer.vue';
-import Marker from './components/marker-icon.vue';
-import Polygon from './components/polygon-shape.vue';
-import Polyline from './components/polyline-shape.vue';
-import Rectangle from './components/rectangle-shape.vue';
-import StreetViewPanorama from './components/street-view-panorama.vue';
-import mapElementComposable from './composables/map-element';
-import resizeBusComposable, {
-  defaultResizeBus,
-} from './composables/resize-bus';
-import type {
-  IGoogleMapsApiObject,
-  IPluginOptions,
-} from './interfaces/gmap-vue.interface';
+// import Marker from './components/marker-icon.vue';
+// import Polygon from './components/polygon-shape.vue';
+// import Polyline from './components/polyline-shape.vue';
+// import Rectangle from './components/rectangle-shape.vue';
+// import StreetViewPanorama from './components/street-view-panorama.vue';
+import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
+import { pluginMapComponentBuilder } from './composables/plugin-map-component-builder';
+import { getPromiseLazyBuilderFn, saveLazyPromiseAndFinalOptions } from './composables/promise-lazy-builder';
+import { getDefaultResizeBus, useResizeBus } from './composables/resize-bus';
+import type { IGoogleMapsApiObject, IPluginOptions } from './interfaces/gmap-vue.interface';
 import type { GlobalGoogleObject } from './types/gmap-vue.types';
-import MapElementFactory from './utils/factories/map-element';
-import getPromiseLazyCreatorFn from './utils/factories/promise-lazy';
-import googleMapsApiInitializer from './utils/initializer/google-maps-api-initializer';
+
+/**
+ * Vue augmentations
+ */
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    $gmapDefaultResizeBus: Emitter<Record<EventType, unknown>>;
+    $gmapApiPromiseLazy: () => Promise<any>;
+    $gmapOptions: IPluginOptions;
+  }
+}
 
 declare global {
   // eslint-disable-next-line no-var
   var GoogleMapsApi: IGoogleMapsApiObject;
   // eslint-disable-next-line no-var
   var GoogleMapsCallback: () => void;
+
   // eslint-disable-next-line no-var
 
   interface Window {
     GoogleMapsApi: IGoogleMapsApiObject;
     GoogleMapsCallback: <T = unknown>() => T;
     google: GlobalGoogleObject;
+
     [key: string | number | symbol]: any;
   }
 }
@@ -62,7 +69,6 @@ declare global {
  */
 globalThis.GoogleMapsApi = { isReady: false };
 
-// TODO: analyze the possibility of use globalThis here
 /**
  * This function helps you to get the Google Maps API
  * when its ready on the window object
@@ -90,25 +96,32 @@ function getGoogleMapsAPI() {
  * @property  {Object}  PlaceInput - Vue component PlaceInput
  * @property  {Object}  Autocomplete - Vue component Autocomplete
  * @property  {Object}  StreetViewPanorama - Vue component StreetViewPanorama
- * @property  {Object}  MapElementMixin - Vue component MapElementMixin
- * @property  {Object}  MountableMixin - Vue component MountableMixin
  */
 const components = {
-  HeatmapLayer,
-  KmlLayer,
-  Marker,
-  Polyline,
-  Polygon,
-  Circle,
-  Cluster,
-  Rectangle,
-  DrawingManager,
-  InfoWindow,
+  // HeatmapLayer,
+  // KmlLayer,
+  // Marker,
+  // Polyline,
+  // Polygon,
+  // Circle,
+  // Cluster,
+  // Rectangle,
+  // DrawingManager,
+  // InfoWindow,
   MapLayer,
-  Autocomplete,
-  StreetViewPanorama,
-  mapElementComposable,
-  resizeBusComposable,
+  // Autocomplete,
+  // StreetViewPanorama,
+};
+
+// TODO: Finish this doc statement
+/**
+ * Export all composables
+ * @constant
+ * @type  {Object} composables
+ * @property  {Function}  useResizeBus - Vue component Polyline
+ */
+const composables = {
+  useResizeBus,
 };
 
 /**
@@ -116,11 +129,13 @@ const components = {
  * @constant
  * @type  {Object} object containing all helpers
  * @property  {Function}  initGoogleMapsApi - function to initialize the Google Maps API
- * @property  {Function}  MapElementFactory - function to initialize the Google Maps API
+ * @property  {Function}  pluginMapComponentBuilder - function to initialize the Google Maps API
+ * @property  {Function}  getGoogleMapsAPI - function to get the original Google Maps API
  */
 const helpers = {
   googleMapsApiInitializer,
-  MapElementFactory,
+  pluginMapComponentBuilder,
+  getGoogleMapsAPI,
 };
 
 /**
@@ -140,7 +155,7 @@ const helpers = {
  * @param {boolean} loadCn=false    Boolean. If set to true, the map will be loaded from google maps China
  *                  (@see https://developers.google.com/maps/documentation/javascript/basics#GoogleMapsChina)
  */
-function gmapVuePluginInstallFn(app: App, options?: IPluginOptions): void {
+function pluginInstallFn(app: App, options?: IPluginOptions): void {
   // see defaults
   const finalOptions: IPluginOptions = {
     dynamicLoad: false,
@@ -159,9 +174,9 @@ function gmapVuePluginInstallFn(app: App, options?: IPluginOptions): void {
    * @constant
    * @type {Function} the promise lazy creator function
    */
-  const promiseLazyCreator = getPromiseLazyCreatorFn(
+  const promiseLazyCreator = getPromiseLazyBuilderFn(
     googleMapsApiInitializer,
-    GoogleMapsApi
+    globalThis.GoogleMapsApi
   );
   /**
    * The gmapApiPromiseLazy function to can wait until Google Maps API is ready
@@ -170,8 +185,10 @@ function gmapVuePluginInstallFn(app: App, options?: IPluginOptions): void {
    * @type {Function}
    */
   const gmapApiPromiseLazy = promiseLazyCreator(finalOptions);
+  saveLazyPromiseAndFinalOptions(finalOptions, gmapApiPromiseLazy);
 
   /**
+   * TODO: this should be removed
    * Instance properties
    *
    * In every component you have a references to
@@ -181,7 +198,7 @@ function gmapVuePluginInstallFn(app: App, options?: IPluginOptions): void {
    */
   app.mixin({
     created() {
-      this.$gmapDefaultResizeBus = defaultResizeBus;
+      this.$gmapDefaultResizeBus = getDefaultResizeBus();
       this.$gmapApiPromiseLazy = gmapApiPromiseLazy;
       this.$gmapOptions = finalOptions;
     },
@@ -196,23 +213,23 @@ function gmapVuePluginInstallFn(app: App, options?: IPluginOptions): void {
    * app.config.globalProperties.$gmapApiPromiseLazy - function that you can use to wait until Google Maps API is ready
    * app.config.globalProperties.$gmapOptions - object with the final options passed to Google Maps API to configure it
    */
-  app.config.globalProperties.$gmapDefaultResizeBus = defaultResizeBus;
+  app.config.globalProperties.$gmapDefaultResizeBus = getDefaultResizeBus();
   app.config.globalProperties.$gmapApiPromiseLazy = gmapApiPromiseLazy;
   app.config.globalProperties.$gmapOptions = finalOptions;
 
   if (finalOptions.installComponents) {
     app.component('GmapMap', MapLayer);
-    app.component('GmapMarker', Marker);
-    app.component('GmapInfoWindow', InfoWindow);
-    app.component('GmapHeatmapLayer', HeatmapLayer);
-    app.component('GmapKmlLayer', KmlLayer);
-    app.component('GmapPolyline', Polyline);
-    app.component('GmapPolygon', Polygon);
-    app.component('GmapCircle', Circle);
-    app.component('GmapRectangle', Rectangle);
-    app.component('GmapDrawingManager', DrawingManager);
-    app.component('GmapAutocomplete', Autocomplete);
-    app.component('GmapStreetViewPanorama', StreetViewPanorama);
+    // .component('GmapMarker', Marker)
+    // .component('GmapInfoWindow', InfoWindow)
+    // .component('GmapHeatmapLayer', HeatmapLayer)
+    // .component('GmapKmlLayer', KmlLayer)
+    // .component('GmapPolyline', Polyline)
+    // .component('GmapPolygon', Polygon)
+    // .component('GmapCircle', Circle)
+    // .component('GmapRectangle', Rectangle)
+    // .component('GmapDrawingManager', DrawingManager)
+    // .component('GmapAutocomplete', Autocomplete)
+    // .component('GmapStreetViewPanorama', StreetViewPanorama);
   }
 }
 
@@ -223,31 +240,31 @@ function gmapVuePluginInstallFn(app: App, options?: IPluginOptions): void {
  * @property {Object} components all exported components
  * @property {Object} helpers all exported helpers
  * @property {Function} install function to install the plugin
- * @see gmapVuePluginInstallFn
+ * @see pluginInstallFn
  */
-export {
-  getGoogleMapsAPI,
-  components,
-  helpers,
-  gmapVuePluginInstallFn as install,
-};
+// export {
+//   getGoogleMapsAPI,
+//   components,
+//   composables,
+//   helpers,
+//   pluginInstallFn as install,
+// };
 
 /**
  * Export default of the default Vue object for plugins
  * Export for ESM modules
  *
  * @property {Function} install function to install the plugin
- * @see gmapVuePluginInstallFn
+ * @property {Function} getGoogleMapsAPI function to get the Google Maps API
+ * @property {Object} components all exported components
+ * @property {Object} helpers all exported helpers
+ * @property {Function} install function to install the plugin
+ * @see pluginInstallFn
  */
-export default { install: gmapVuePluginInstallFn } as Plugin;
-
-/**
- * Vue augmentations
- */
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $gmapDefaultResizeBus: Emitter<Record<EventType, unknown>>;
-    $gmapApiPromiseLazy: () => Promise<any>;
-    $gmapOptions: IPluginOptions;
-  }
-}
+export default {
+  install: pluginInstallFn,
+  getGoogleMapsAPI,
+  components,
+  composables,
+  helpers,
+} as Plugin;

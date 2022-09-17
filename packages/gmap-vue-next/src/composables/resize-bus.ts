@@ -2,66 +2,53 @@
 
 import type { Emitter, EventType } from 'mitt';
 import mitt from 'mitt';
-import { nextTick, onUnmounted, ref, watch, type Ref } from 'vue';
-import { useMapObjectOrMapPromiseDeferred } from './map-promise';
+import { nextTick, ref, type Ref, watch } from 'vue';
 
+// not used
 type Events = {};
 
-export interface Props {
+interface Props {
   resizeBus?: Emitter<Record<EventType, unknown>>;
 }
 
-export const defaultResizeBus = mitt();
-export function useDefaultResizeBus() {
-  return { defaultResizeBus };
-}
-export function useResizeBus(props: { [key: string]: any }) {
-  const { $mapObject } = useMapObjectOrMapPromiseDeferred();
-  const { defaultResizeBus } = useDefaultResizeBus();
+// end not used
 
-  // TODO: enable this when move to composition API
-  // const props = defineProps<Props>();
-  const _actualResizeBus: Ref<Emitter<Record<EventType, unknown>> | undefined> =
-    ref();
+const defaultResizeBus = mitt();
+const currentResizeBus: Ref<Emitter<Record<EventType, unknown>> | undefined> =
+  ref();
+let _resizeCallback: () => void;
+let _delayedResizeCallback: () => Promise<void>;
 
+export function onMountedResizeBusHook(
+  map: google.maps.Map,
+  props: { [key: string]: any },
+  resize: () => void
+) {
   if (!props.resizeBus) {
-    _actualResizeBus.value = defaultResizeBus;
+    currentResizeBus.value = defaultResizeBus;
   }
 
   if (props.resizeBus) {
-    _actualResizeBus.value = props.resizeBus;
+    currentResizeBus.value = props.resizeBus;
   }
 
-  /**
-   * This method trigger the resize event of Google Maps
-   * @method resize
-   * @param {undefined}
-   * @returns {void}
-   * @public
-   */
-  function resize(): void {
-    if ($mapObject) {
-      google.maps.event.trigger($mapObject, 'resize');
-    }
-  }
-
-  function _resizeCallback(): void {
+  _resizeCallback = (preserveCenter = false): void => {
     resize();
-  }
+  };
 
-  function _delayedResizeCallback(): void {
-    nextTick(() => _resizeCallback());
-  }
+  _delayedResizeCallback = (): Promise<void> => {
+    return nextTick(() => _resizeCallback());
+  };
 
   watch(
     () => props.resizeBus,
     (newVal) => {
-      _actualResizeBus.value = newVal;
+      currentResizeBus.value = newVal.value;
     }
   );
 
   watch(
-    () => _actualResizeBus,
+    () => currentResizeBus,
     (newVal, oldVal) => {
       if (oldVal.value) {
         oldVal.value.off('resize', _delayedResizeCallback);
@@ -72,18 +59,22 @@ export function useResizeBus(props: { [key: string]: any }) {
       }
     }
   );
-
-  onUnmounted(() => {
-    if (_actualResizeBus.value) {
-      _actualResizeBus.value.off('resize', _delayedResizeCallback);
-    }
-  });
-
-  return { _actualResizeBus, resize, _resizeCallback, _delayedResizeCallback };
 }
 
-export default {
-  defaultResizeBus,
-  useDefaultResizeBus,
-  useResizeBus,
+export function onUnmountedResizeBusHook() {
+  if (currentResizeBus.value) {
+    currentResizeBus.value.off('resize', _delayedResizeCallback);
+  }
+}
+
+export function getDefaultResizeBus() {
+  return defaultResizeBus;
+}
+
+export function useResizeBus() {
+  return {
+    currentResizeBus,
+    _resizeCallback,
+    _delayedResizeCallback,
+  };
 }

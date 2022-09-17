@@ -2,13 +2,15 @@
 
 This component helps you to create a marker in the map.
 
-For more information read the Google Maps documentation for [markers](https://developers.google.com/maps/documentation/javascript/markers).
+For more information read the Google Maps documentation
+for [markers](https://developers.google.com/maps/documentation/javascript/markers).
 
 It is exported with the name `GmapMarker`.
 
 ## Variables
 
-This component save the original marker object provided by Google Maps in a property called `$kmlLayerObject`, as the example below.
+This component save the original marker object provided by Google Maps in a property called `$kmlLayerObject`, as the
+example below.
 
 ```javascript
   this.$markerObject = new google.maps.Marker(...);
@@ -189,7 +191,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapMarker</code> component
 
@@ -274,7 +277,9 @@ const events = [
 
 ### `update:position` event (from v3.1.0)
 
-From version 3.1.0 we emit the `update:position` when the Google Maps API fires the `dragend` event, it returns an object in the form `{ lat: 10, lng: 10 }`, in this way we start preparing the plugin to migrate to Vue v3 in a near future and can use **v-model** on the **position** prop.
+From version 3.1.0 we emit the `update:position` when the Google Maps API fires the `dragend` event, it returns an
+object in the form `{ lat: 10, lng: 10 }`, in this way we start preparing the plugin to migrate to Vue v3 in a near
+future and can use **v-model** on the **position** prop.
 
 :::
 

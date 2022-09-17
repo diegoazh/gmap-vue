@@ -1,6 +1,6 @@
 <template>
   <div class="vue-map-container">
-    <div ref="vue-map" class="vue-map"></div>
+    <div ref="vueMap" class="vue-map"></div>
     <div class="vue-map-hidden">
       <!-- @slot The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc. -->
       <slot></slot>
@@ -10,403 +10,438 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import 'google.maps';
-import type { Emitter, EventType } from 'mitt';
-import type { PropType } from 'vue';
-import { defineComponent } from 'vue';
 import {
-  bindEvents,
-  bindProps,
+  computed,
+  defineEmits,
+  defineProps,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+  provide,
+  reactive,
+  ref,
+  useAttrs,
+  watch,
+  withDefaults
+} from 'vue';
+import {
+  bindPropsOnSetup,
   getPropsValues,
   twoWayBindingWrapper,
-  watchPrimitiveProperties,
-} from '../composables/helpers';
-import {
-  provideMapPromise,
-  useMapObjectOrMapPromiseDeferred,
-} from '../composables/map-promise';
-import { useResizeBus } from '../composables/resize-bus';
-import { mapMappedProps } from '../props/mapped-props-by-map-element';
+  watchPrimitiveProperties
+} from '@/composables/helpers';
+import { pluginOptions, useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import { onMountedResizeBusHook, onUnmountedResizeBusHook, useResizeBus } from '@/composables/resize-bus';
+import { $mapPromise } from '@/keys/gmap-vue.keys';
+import { getMap } from '@/composables/google-maps-promise';
+import { Emitter, EventType } from 'mitt';
+import { getMapLayerEvents, getMapLayerProps } from '@/composables/map-layer-props';
 
 /**
- * Map component
- * @displayName Map
- * @see [source code](/guide/map.html#source-code)
- * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/basics)
- * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
+ * Interfaces
  */
-export default defineComponent({
-  name: 'MapLayer',
-  setup(props) {
-    provideMapPromise();
-    const { $mapObject, $mapPromiseDeferred } =
-      useMapObjectOrMapPromiseDeferred();
+interface IMapLayerData {
+  recyclePrefix: string;
+}
 
-    const {
-      _actualResizeBus,
-      _delayedResizeCallback,
-      _resizeCallback,
-      resize,
-    } = useResizeBus(props);
+interface IMapLayerData {
+  recyclePrefix: string;
+}
 
-    return {
-      $mapObject,
-      $mapPromiseDeferred,
-      _actualResizeBus,
-      _delayedResizeCallback,
-      _resizeCallback,
-      resize,
-    };
-  },
-  props: {
-    resizeBus: {
-      type: Object as PropType<Emitter<Record<EventType, unknown>>>,
-      required: false,
-    },
-    /**
-     * The initial Map center.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
-     */
-    center: {
-      type: Object as PropType<google.maps.LatLng | google.maps.LatLngLiteral>,
-      required: true,
-    },
-    /**
-     * The initial Map zoom level. Valid values: Integers between zero, and up to the supported maximum zoom level.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
-     */
-    zoom: {
-      type: Number,
-      required: false,
-      default: undefined,
-    },
-    /**
-     * The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
-     */
-    heading: {
-      type: Number,
-      default: undefined,
-    },
-    /**
-     * The initial Map mapTypeId. Defaults to ROADMAP.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
-     */
-    mapTypeId: {
-      type: String,
-      default: 'roadmap',
-    },
-    /**
-     * For vector maps, sets the angle of incidence of the map. The allowed values are restricted depending on the zoom level of the map. For raster maps, controls the automatic switching behavior for the angle of incidence of the map. The only allowed values are 0 and 45. The value 0 causes the map to always use a 0° overhead view regardless of the zoom level and viewport. The value 45 causes the tilt angle to automatically switch to 45 whenever 45° imagery is available for the current zoom level and viewport, and switch back to 0 whenever 45° imagery is not available (this is the default behavior). 45° imagery is only available for satellite and hybrid map types, within some locations, and at some zoom levels. Note: getTilt returns the current tilt angle, not the value specified by this option. Because getTilt and this option refer to different things, do not bind() the tilt property; doing so may yield unpredictable effects.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
-     */
-    tilt: {
-      type: Number,
-      default: undefined,
-    },
-    /**
-     * Extra options that you want pass to the component
-     */
-    options: {
-      type: Object as PropType<{ [key: string]: any }>,
-      default: undefined,
-    },
-  },
-  data(): {
-    recyclePrefix: string;
-  } {
-    return {
-      recyclePrefix: '__gmc__',
-    };
-  },
-  computed: {
-    finalLat(): number {
-      if (!this.center) {
-        throw new Error('center is not defined');
+interface MapPromiseDeferred {
+  resolve: ((value: google.maps.Map | undefined) => void) | undefined;
+  reject: ((reason?: any) => void) | undefined;
+}
+
+/**
+ * The initial Map center.
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
+ *
+ * The initial Map zoom level. Valid values: Integers between zero, and up to the supported maximum zoom level.
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
+ *
+ * The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
+ *
+ * The initial Map mapTypeId. Defaults to ROADMAP.
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
+ *
+ * For vector maps, sets the angle of incidence of the map. The allowed values are restricted depending on the zoom level of the map. For raster maps, controls the automatic switching behavior for the angle of incidence of the map. The only allowed values are 0 and 45. The value 0 causes the map to always use a 0° overhead view regardless of the zoom level and viewport. The value 45 causes the tilt angle to automatically switch to 45 whenever 45° imagery is available for the current zoom level and viewport, and switch back to 0 whenever 45° imagery is not available (this is the default behavior). 45° imagery is only available for satellite and hybrid map types, within some locations, and at some zoom levels. Note: getTilt returns the current tilt angle, not the value specified by this option. Because getTilt and this option refer to different things, do not bind() the tilt property; doing so may yield unpredictable effects.
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
+ */
+interface IMapLayerVueComponentProps {
+  resizeBus?: Emitter<Record<EventType, unknown>>;
+  center: google.maps.LatLng | google.maps.LatLngLiteral;
+  zoom?: number;
+  heading?: number;
+  mapTypeId?: google.maps.MapTypeId;
+  tilt?: number;
+  options?: { [key: string]: any };
+}
+
+/**
+ * Data
+ */
+const mapPromiseDeferred: MapPromiseDeferred = reactive({
+  resolve: undefined,
+  reject: undefined
+});
+const promise: Promise<google.maps.Map | undefined> = new Promise(
+  (resolve, reject) => {
+    mapPromiseDeferred.resolve = resolve;
+    mapPromiseDeferred.reject = reject;
+  }
+);
+const recyclePrefix = '__gmc__';
+const map = getMap();
+
+/**
+ * Provide $mapPromise to all children
+ */
+provide($mapPromise, promise);
+
+/**
+ * Define component props
+ */
+const props = withDefaults(defineProps<IMapLayerVueComponentProps>(), {
+  mapTypeId: globalThis?.google?.maps?.MapTypeId?.ROADMAP || 'roadmap'
+});
+
+/**
+ * Define resize bus
+ */
+const { currentResizeBus, _delayedResizeCallback } = useResizeBus();
+let { _resizeCallback } = useResizeBus();
+
+/**
+ * Computed
+ */
+const finalLat = computed(() => {
+  if (!props.center) {
+    throw new Error('center is not defined');
+  }
+
+  return typeof props.center.lat === 'function'
+    ? props.center.lat()
+    : props.center.lat;
+});
+const finalLng = computed(() => {
+  if (!props.center) {
+    throw new Error('center is not defined');
+  }
+
+  return typeof props.center.lng === 'function'
+    ? props.center.lng()
+    : props.center.lng;
+});
+const finalLatLng = computed(() => {
+  return { lat: finalLat.value, lng: finalLng.value };
+});
+
+/**
+ * Changes the center of the map by the given distance in pixels. If the distance is less than both the width and height of the map, the transition will be smoothly animated. Note that the map coordinate system increases from west to east (for x values) and north to south (for y values).
+ * @method panBy
+ * @param {number} x - Number of pixels to move the map in the x direction.
+ * @param {number} y - Number of pixels to move the map in the y direction.
+ * @returns {void}
+ * @public
+ */
+function panBy(...args: [number, number]): void {
+  if (map.value) {
+    map.value.panBy(...args);
+  }
+}
+
+/**
+ * Changes the center of the map to the given LatLng. If the change is less than both the width and height of the map, the transition will be smoothly animated.
+ * @method panTo
+ * @param {(LatLng|LatLngLiteral)} latLng - The new center latitude/longitude of the map. (types `LatLng|LatLngLiteral`)
+ * @returns {void}
+ * @public
+ */
+function panTo(args: google.maps.LatLng | google.maps.LatLngLiteral): void {
+  if (map.value) {
+    map.value.panTo(args);
+  }
+}
+
+/**
+ * Pans the map by the minimum amount necessary to contain the given LatLngBounds. It makes no guarantee where on the map the bounds will be, except that the map will be panned to show as much of the bounds as possible inside {currentMapSizeInPx} - {padding}. For both raster and vector maps, the map's zoom, tilt, and heading will not be changed.
+ * @method panToBounds
+ * @param {(LatLngBounds|LatLngBoundsLiteral)} latLngBounds - The bounds to pan the map to. (types: `LatLngBounds|LatLngBoundsLiteral`)
+ * @param {(number|Padding)} [padding] - optional Padding in pixels. A number value will yield the same padding on all 4 sides. The default value is 0. (types: `number|Padding`)
+ * @returns {void}
+ * @public
+ */
+function panToBounds(
+  ...args: [
+      google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+      number | google.maps.Padding
+  ]
+): void {
+  if (map.value) {
+    map.value.panToBounds(...args);
+  }
+}
+
+/**
+ * Sets the viewport to contain the given bounds.
+ Note: When the map is set to display: none, the fitBounds function reads the map's size as 0x0, and therefore does not do anything. To change the viewport while the map is hidden, set the map to visibility: hidden, thereby ensuring the map div has an actual size. For vector maps, this method sets the map's tilt and heading to their default zero values.
+ * @method fitBounds
+ * @param {(LatLngBounds|LatLngBoundsLiteral)} bounds - Bounds to show. (types: `LatLngBounds|LatLngBoundsLiteral`)
+ * @param {(number|Padding)} [padding] - optional Padding in pixels. The bounds will be fit in the part of the map that remains after padding is removed. A number value will yield the same padding on all 4 sides. Supply 0 here to make a fitBounds idempotent on the result of getBounds. (types: `number|Padding`)
+ * @returns {void}
+ * @public
+ */
+function fitBounds(
+  ...args: [
+      google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+      number | google.maps.Padding
+  ]
+): void {
+  if (map.value) {
+    map.value.fitBounds(...args);
+  }
+}
+
+/**
+ * Get the recycle key of the map
+ * @method getRecycleKey
+ * @param {undefined}
+ * @returns {void}
+ * @public
+ */
+function getRecycleKey(): string {
+  return props?.options?.recycle
+    ? `${recyclePrefix}${props?.options.recycle}`
+    : recyclePrefix;
+}
+
+/**
+ * This method trigger the resize event of Google Maps
+ * @method resize
+ * @param {undefined}
+ * @returns {void}
+ * @public
+ */
+function resize(): void {
+  if (map.value) {
+    google.maps.event.trigger(map.value, 'resize');
+  }
+}
+
+/**
+ * Preserve the previous center when resize the map
+ * @method resizePreserveCenter
+ * @param {undefined}
+ * @returns {void}
+ * @public
+ */
+function resizePreserveCenter(): void {
+  if (!map.value) {
+    return;
+  }
+
+  const oldCenter = map.value.getCenter();
+  google.maps.event.trigger(map.value, 'resize');
+
+  if (oldCenter) {
+    map.value.setCenter(oldCenter);
+  }
+}
+
+// Override composable resizeBus::_resizeCallback
+// because resizePreserveCenter is usually the
+// expected behaviour
+_resizeCallback = () => {
+  resizePreserveCenter();
+};
+
+/**
+ * Watchers
+ */
+watch(
+  () => props.zoom,
+  (newVal) => {
+    if (map.value && newVal) {
+      map.value.setZoom(newVal);
+    }
+  }
+);
+
+/**
+ * Template refs
+ */
+const vueMap = ref<HTMLElement | null>(null);
+
+/**
+ * Get attributes
+ */
+const $attrs = useAttrs();
+
+/**
+ * Define events emitted by this component
+ */
+const emits = defineEmits(getMapLayerEvents());
+
+/**
+ * Expose local variables
+ */
+defineExpose({ vueMap });
+
+/**
+ * Hooks
+ */
+onMounted(() => {
+  useGmapApiPromiseLazy()
+    .then(() => {
+      if (!vueMap.value) {
+        throw new Error(`we can find the template ref: 'vueMap'`);
       }
 
-      return typeof this.center.lat === 'function'
-        ? this.center.lat()
-        : this.center.lat;
-    },
-    finalLng(): number {
-      if (!this.center) {
-        throw new Error('center is not defined');
+      const initialOptions = {
+        ...props.options,
+        ...getPropsValues(props)
+      };
+
+      const { options: extraOptions, ...finalOptions } = initialOptions;
+
+      const recycleKey = getRecycleKey();
+
+      if (props?.options?.recycle && window[recycleKey]) {
+        vueMap.value.appendChild(window[recycleKey].div);
+        map.value = window[recycleKey].map as google.maps.Map;
+        map.value.setOptions(finalOptions);
+      } else {
+        map.value = new google.maps.Map(vueMap.value, finalOptions);
+        window[recycleKey] = { map: map.value };
       }
 
-      return typeof this.center.lng === 'function'
-        ? this.center.lng()
-        : this.center.lng;
-    },
-    finalLatLng(): {
-      lat: number;
-      lng: number;
-    } {
-      return { lat: this.finalLat, lng: this.finalLng };
-    },
-  },
-  watch: {
-    zoom(zoom): void {
-      if (this.$mapObject) {
-        this.$mapObject.setZoom(zoom);
-      }
-    },
-  },
-  mounted(): Promise<any> {
-    return this.$gmapApiPromiseLazy()
-      .then(() => {
-        const events = [
-          'bounds_changed',
-          'click',
-          'dblclick',
-          'drag',
-          'dragend',
-          'dragstart',
-          'idle',
-          'mousemove',
-          'mouseout',
-          'mouseover',
-          'resize',
-          'rightclick',
-          'tilesloaded',
-        ];
+      onMountedResizeBusHook(map.value, props, resize);
 
-        // getting the DOM element where to create the map
-        const element = this.$refs['vue-map'] as HTMLElement;
+      const mapLayerProps = getMapLayerProps();
+      const mapLayerEvents = getMapLayerEvents('events');
+      const $gmapOptions = pluginOptions();
 
-        if (!element) {
-          throw new Error(`we can find the ref: 'vue-map'`);
-        }
+      // binding properties (two and one way)
+      const propsEvents = bindPropsOnSetup(
+        map,
+        mapLayerProps as any,
+        $gmapOptions,
+        $attrs
+      );
 
-        // creating the map
-        const initialOptions = {
-          ...this.options,
-          ...getPropsValues(this, mapMappedProps),
-        };
-
-        // don't use delete keyword in order to create a more predictable code for the engine
-        const { options: extraOptions, ...finalOptions } = initialOptions;
-        const options = finalOptions;
-
-        const recycleKey = this.getRecycleKey();
-
-        if (this?.options?.recycle && window[recycleKey]) {
-          element.appendChild(window[recycleKey].div);
-          this.$mapObject = window[recycleKey].map as google.maps.Map;
-          this.$mapObject.setOptions(options);
-        } else {
-          // console.warn('[gmap-vue] New google map created')
-          this.$mapObject = new google.maps.Map(element, options);
-          window[recycleKey] = { map: this.$mapObject };
-        }
-
-        // binding properties (two and one way)
-        bindProps(this, this.$mapObject, mapMappedProps);
-        // binding events
-        bindEvents(this, this.$mapObject, events);
-
-        // manually trigger center and zoom
-        twoWayBindingWrapper(
-          (
-            increment: () => void,
-            decrement: () => void,
-            shouldUpdate: () => boolean
-          ) => {
-            this.$mapObject?.addListener('center_changed', () => {
-              if (shouldUpdate()) {
-                /**
-                 * This event is fired when the map center property changes. It sends the position displayed at the center of the map. If the center or bounds have not been set then the result is undefined. (types: `LatLng|undefined`)
-                 *
-                 * @event center_changed
-                 * @type {(LatLng|undefined)}
-                 */
-                this.$emit('center_changed', this.$mapObject?.getCenter());
-              }
-
-              decrement();
-            });
-
-            const updateCenter = () => {
-              increment();
-
-              this.$mapObject?.setCenter(this.finalLatLng);
-            };
-
-            watchPrimitiveProperties(
-              this,
-              ['finalLat', 'finalLng'],
-              updateCenter
-            );
-          }
-        );
-
-        this.$mapObject.addListener('zoom_changed', () => {
-          /**
-           * This event is fired when the map zoom property changes. It sends the zoom of the map. If the zoom has not been set then the result is undefined. (types: `number|undefined`)
-           *
-           * @event zoom_changed
-           * @type {(number|undefined)}
-           */
-          this.$emit('zoom_changed', this.$mapObject?.getZoom());
+      // bind prop events of google maps
+      propsEvents.emitParams.forEach((emitParam) => {
+        map.value?.addListener(emitParam[0], () => {
+          emits(emitParam[0] as any, emitParam[1]());
         });
-        this.$mapObject.addListener('bounds_changed', () => {
-          /**
-           * This event is fired when the viewport bounds have changed. It sends The lat/lng bounds of the current viewport.
-           *
-           * @event bounds_changed
-           * @type {LatLngBounds}
-           */
-          this.$emit('bounds_changed', this.$mapObject?.getBounds());
-        });
-
-        if (!this.$mapPromiseDeferred.resolve) {
-          throw new Error('$mapPromiseDeferred.resolve is undefined');
-        }
-
-        this.$mapPromiseDeferred.resolve(this.$mapObject);
-
-        return this.$mapObject;
-      })
-      .catch((error) => {
-        throw error;
       });
-  },
-  beforeUnmount(): void {
-    const recycleKey = this.getRecycleKey();
 
-    if (window[recycleKey]) {
-      (window[recycleKey] as any).div = this?.$mapObject?.getDiv();
-    }
-  },
-  methods: {
-    /**
-     * Preserve the previous center when resize the map
-     * @method resizePreserveCenter
-     * @param {undefined}
-     * @returns {void}
-     * @public
-     */
-    resizePreserveCenter(): void {
-      if (!this.$mapObject) {
-        return;
+      // binding events
+      mapLayerEvents.forEach((eventName) => {
+        if ($gmapOptions.autoBindAllEvents || $attrs[eventName]) {
+          map.value?.addListener(eventName, (ev: any) => {
+            emits(eventName as any, ev);
+          });
+        }
+      });
+
+      // manually trigger center and zoom
+      twoWayBindingWrapper(
+        (
+          increment: () => void,
+          decrement: () => void,
+          shouldUpdate: () => boolean
+        ) => {
+          map.value?.addListener('center_changed', () => {
+            if (shouldUpdate()) {
+              /**
+               * This event is fired when the map center property changes. It sends the position displayed at the center of the map. If the center or bounds have not been set then the result is undefined. (types: `LatLng|undefined`)
+               *
+               * @event center_changed
+               * @type {(LatLng|undefined)}
+               */
+              emits('center_changed', map.value?.getCenter());
+            }
+
+            decrement();
+          });
+
+          const updateCenter = () => {
+            increment();
+
+            map.value?.setCenter(finalLatLng.value);
+          };
+
+          watchPrimitiveProperties(['finalLat', 'finalLng'], updateCenter);
+        }
+      );
+
+      map.value?.addListener('zoom_changed', () => {
+        /**
+         * This event is fired when the map zoom property changes. It sends the zoom of the map. If the zoom has not been set then the result is undefined. (types: `number|undefined`)
+         *
+         * @event zoom_changed
+         * @type {(number|undefined)}
+         */
+        emits('zoom_changed', map.value?.getZoom());
+      });
+      map.value?.addListener('bounds_changed', () => {
+        /**
+         * This event is fired when the viewport bounds have changed. It sends The lat/lng bounds of the current viewport.
+         *
+         * @event bounds_changed
+         * @type {LatLngBounds}
+         */
+        emits('bounds_changed', map.value?.getBounds());
+      });
+
+      if (!mapPromiseDeferred.resolve) {
+        throw new Error('$mapPromiseDeferred.resolve is undefined');
       }
 
-      const oldCenter = this.$mapObject.getCenter();
-      google.maps.event.trigger(this.$mapObject, 'resize');
+      mapPromiseDeferred.resolve(map.value);
+      return map.value;
+    })
+    .catch((error) => {
+      throw error;
+    });
+});
 
-      if (oldCenter) {
-        this.$mapObject.setCenter(oldCenter);
-      }
-    },
+onBeforeUnmount(() => {
+  const recycleKey = getRecycleKey();
+  if (window[recycleKey]) {
+    window[recycleKey].div = map.value?.getDiv();
+  }
+});
 
-    // Override mountableMixin::_resizeCallback
-    // because resizePreserveCenter is usually the
-    // expected behaviour
-    // TODO: analyze the following disabled rule
-    // eslint-disable-next-line no-underscore-dangle -- old code
-    _resizeCallback(): void {
-      this.resizePreserveCenter();
-    },
-    /**
-     * Changes the center of the map by the given distance in pixels. If the distance is less than both the width and height of the map, the transition will be smoothly animated. Note that the map coordinate system increases from west to east (for x values) and north to south (for y values).
-     * @method panBy
-     * @param {number} x - Number of pixels to move the map in the x direction.
-     * @param {number} y - Number of pixels to move the map in the y direction.
-     * @returns {void}
-     * @public
-     */
-    panBy(...args: [number, number]): void {
-      if (this.$mapObject) {
-        this.$mapObject.panBy(...args);
-      }
-    },
-    /**
-     * Changes the center of the map to the given LatLng. If the change is less than both the width and height of the map, the transition will be smoothly animated.
-     * @method panTo
-     * @param {(LatLng|LatLngLiteral)} latLng - The new center latitude/longitude of the map. (types `LatLng|LatLngLiteral`)
-     * @returns {void}
-     * @public
-     */
-    panTo(args: google.maps.LatLng | google.maps.LatLngLiteral): void {
-      if (this.$mapObject) {
-        this.$mapObject.panTo(args);
-      }
-    },
-    /**
-     * Pans the map by the minimum amount necessary to contain the given LatLngBounds. It makes no guarantee where on the map the bounds will be, except that the map will be panned to show as much of the bounds as possible inside {currentMapSizeInPx} - {padding}. For both raster and vector maps, the map's zoom, tilt, and heading will not be changed.
-     * @method panToBounds
-     * @param {(LatLngBounds|LatLngBoundsLiteral)} latLngBounds - The bounds to pan the map to. (types: `LatLngBounds|LatLngBoundsLiteral`)
-     * @param {(number|Padding)} [padding] - optional Padding in pixels. A number value will yield the same padding on all 4 sides. The default value is 0. (types: `number|Padding`)
-     * @returns {void}
-     * @public
-     */
-    panToBounds(
-      ...args: [
-        google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
-        number | google.maps.Padding
-      ]
-    ): void {
-      if (this.$mapObject) {
-        this.$mapObject.panToBounds(...args);
-      }
-    },
-    /**
-     * Sets the viewport to contain the given bounds.
-Note: When the map is set to display: none, the fitBounds function reads the map's size as 0x0, and therefore does not do anything. To change the viewport while the map is hidden, set the map to visibility: hidden, thereby ensuring the map div has an actual size. For vector maps, this method sets the map's tilt and heading to their default zero values.
-     * @method fitBounds
-     * @param {(LatLngBounds|LatLngBoundsLiteral)} bounds - Bounds to show. (types: `LatLngBounds|LatLngBoundsLiteral`)
-     * @param {(number|Padding)} [padding] - optional Padding in pixels. The bounds will be fit in the part of the map that remains after padding is removed. A number value will yield the same padding on all 4 sides. Supply 0 here to make a fitBounds idempotent on the result of getBounds. (types: `number|Padding`)
-     * @returns {void}
-     * @public
-     */
-    fitBounds(
-      ...args: [
-        google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
-        number | google.maps.Padding
-      ]
-    ): void {
-      if (this.$mapObject) {
-        this.$mapObject.fitBounds(...args);
-      }
-    },
-    /**
-     * Get the recycle key of the map
-     * @method getRecycleKey
-     * @param {undefined}
-     * @returns {void}
-     * @public
-     */
-    getRecycleKey(): string {
-      return this?.options?.recycle
-        ? `${this.recyclePrefix}${this.options.recycle}`
-        : this.recyclePrefix;
-    },
-  },
-  unmounted(): void {
-    // TODO: with typescript this is not longer necessary, remove it
-    // Note: not all Google Maps components support maps
-    if (this.$mapObject && (this.$mapObject as any)?.setMap) {
-      (this.$mapObject as any)?.setMap(null);
-    }
-  },
+onUnmounted(() => {
+  onUnmountedResizeBusHook();
+
+  // Note: not all Google Maps components support maps
+  if (map.value && (map.value as any)?.setMap) {
+    (map.value as any).setMap(null);
+  }
 });
 </script>
 
-<style lang="css">
+<style lang="stylus" scoped>
 .vue-map-container {
   position: relative;
-}
 
-.vue-map-container .vue-map {
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  position: absolute;
-}
+  .vue-map {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+  }
 
-.vue-map-hidden {
-  display: none;
+  .vue-map-hidden {
+    display: none;
+  }
 }
 </style>

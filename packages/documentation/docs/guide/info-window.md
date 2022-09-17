@@ -2,13 +2,15 @@
 
 This component helps you to create a info window in a marker.
 
-For more information read the Google Maps documentation for [info window](https://developers.google.com/maps/documentation/javascript/infowindows).
+For more information read the Google Maps documentation
+for [info window](https://developers.google.com/maps/documentation/javascript/infowindows).
 
 It is exported with the name `GmapInfoWindow`.
 
 ## Variables
 
-This component save the original Info-Window object provided by Google Maps in a property called `$infoWindowObject`, as the example below.
+This component save the original Info-Window object provided by Google Maps in a property called `$infoWindowObject`, as
+the example below.
 
 ```javascript
   this.$infoWindowObject = new google.maps.InfoWindow(...);
@@ -148,7 +150,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 :::details Mapped Props of <code>GmapInfoWindow</code> component
 
@@ -190,9 +193,12 @@ const events = ['domready', 'closeclick', 'content_changed'];
 
 ::: warn
 
-If you only need to display a simple text, from **v3.4.3**, we added a new prop called `content` and you can use it to pass data to the `InfoWindow` component, it accepts HTML too but take care about it because **it has precedence** over the slot **use only one of both options**.
+If you only need to display a simple text, from **v3.4.3**, we added a new prop called `content` and you can use it to
+pass data to the `InfoWindow` component, it accepts HTML too but take care about it because **it has precedence** over
+the slot **use only one of both options**.
 
-If you need to pass an entire block of HTML is better and simplest to use the default slot for it and leave the content prop empty. Doing that you have more flexibility and control over your HTML content.
+If you need to pass an entire block of HTML is better and simplest to use the default slot for it and leave the content
+prop empty. Doing that you have more flexibility and control over your HTML content.
 
 :::
 

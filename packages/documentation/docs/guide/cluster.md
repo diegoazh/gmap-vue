@@ -2,7 +2,8 @@
 
 This component helps you to create a cluster of markers on Google Maps API.
 
-For more information read the Google Maps documentation for [clustering](https://developers.google.com/maps/documentation/javascript/marker-clustering).
+For more information read the Google Maps documentation
+for [clustering](https://developers.google.com/maps/documentation/javascript/marker-clustering).
 
 ::: warning
 
@@ -82,7 +83,8 @@ export default {
 
 ## Variables
 
-This component save the original cluster object provided by Google Maps in a property called `$clusterObject`, as the example below.
+This component save the original cluster object provided by Google Maps in a property called `$clusterObject`, as the
+example below.
 
 ```javascript
 this.$clusterObject = new MarkerClusterer(...);
@@ -229,7 +231,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 ::: details Mapped Props of <code>GmapCluster</code> component
 

@@ -2,13 +2,15 @@
 
 This component helps you to create a polyline on Google Maps API.
 
-For more information read the Google Maps documentation for [polyline](https://developers.google.com/maps/documentation/javascript/examples/polyline-simple).
+For more information read the Google Maps documentation
+for [polyline](https://developers.google.com/maps/documentation/javascript/examples/polyline-simple).
 
 It is exported with the name `GmapPolyline`.
 
 ## Variables
 
-This component save the original polygon object provided by Google Maps in a property called `$polylineObject`, as the example below.
+This component save the original polygon object provided by Google Maps in a property called `$polylineObject`, as the
+example below.
 
 ```javascript
 this.$polylineObject = new google.maps.Polyline(...);
@@ -153,7 +155,8 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this
+application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
 
 ::: details Mapped Props of <code>GmapPolyline</code> component
 

@@ -51,11 +51,7 @@ export default {
       },
     },
   ],
-  external: [
-    vue,
-    '@googlemaps/markerclusterer',
-    'google.maps',
-  ],
+  external: [vue, '@googlemaps/markerclusterer', 'google.maps'],
   plugins: [
     vue({ css: true, compileTemplate: true }),
     css(),
@@ -78,9 +74,7 @@ export default {
     babel({ babelHelpers: 'bundled' }),
     json(),
     copy({
-      targets: [
-        { src: 'src/components/*', dest: 'dist/components' },
-      ],
+      targets: [{ src: 'src/components/*', dest: 'dist/components' }],
     }),
   ],
 };
