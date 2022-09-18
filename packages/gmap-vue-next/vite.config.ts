@@ -26,6 +26,7 @@ export default defineConfig({
         globals: {
           vue: 'Vue',
           '@googlemaps/markerclusterer': 'MarkerClusterer',
+          'google.maps': 'google.maps',
         },
       },
     },

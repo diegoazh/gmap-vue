@@ -1,4 +1,3 @@
-import 'google.maps';
 import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
 // import Autocomplete from './components/autocomplete-input.vue';
@@ -188,26 +187,9 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
   saveLazyPromiseAndFinalOptions(finalOptions, gmapApiPromiseLazy);
 
   /**
-   * TODO: this should be removed
-   * Instance properties
-   *
-   * In every component you have a references to
-   * this.$gmapDefaultResizeBus - function to use the default resize bus
-   * this.$gmapApiPromiseLazy - function that you can use to wait until Google Maps API is ready
-   * this.$gmapOptions - object with the final options passed to Google Maps API to configure it
-   */
-  app.mixin({
-    created() {
-      this.$gmapDefaultResizeBus = getDefaultResizeBus();
-      this.$gmapApiPromiseLazy = gmapApiPromiseLazy;
-      this.$gmapOptions = finalOptions;
-    },
-  });
-
-  /**
    * Static properties
    *
-   * These properties are the same references that you can find in the instance
+   * These properties are the same references that you can find in the instance,
    * but they are static because they are attached to the main Vue object.
    * app.config.globalProperties.$gmapDefaultResizeBus - function to use the default resize bus
    * app.config.globalProperties.$gmapApiPromiseLazy - function that you can use to wait until Google Maps API is ready

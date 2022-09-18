@@ -1,5 +1,5 @@
-import type { ILoadPluginOptions } from "@/interfaces/gmap-vue.interface";
-import type { GoogleMapsAPIInitializerFn } from "@/types/gmap-vue.types";
+import type { ILoadPluginOptions } from '@/interfaces/gmap-vue.interface';
+import type { GoogleMapsAPIInitializerFn } from '@/types/gmap-vue.types';
 
 /**
  * This function returns the initializer function, it is exported
@@ -38,7 +38,7 @@ function createGoogleMapsAPIInitializer(): GoogleMapsAPIInitializerFn {
      * such as Google for business
      * https://developers.google.com/maps/documentation/javascript/get-api-key#premium-auth
      */
-    if (typeof options !== 'object') {
+    if (Array.isArray(options) || typeof options !== 'object') {
       throw new Error('options should  be an object');
     }
 
