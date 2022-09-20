@@ -2,16 +2,21 @@
   <div class="container-flex">
     <aside>
       <ul>
-        <li>Map</li>
+        <li>
+          <button @click="loadMap">Map</button>
+        </li>
       </ul>
     </aside>
     <main>
-      <div :is="component"></div>
+      <MapTest />
+<!--      <component v-if="component" :is="component"></component>-->
     </main>
   </div>
 </template>
 
 <script>
+import MapTest from '@/components/MapTest.vue';
+
 export default {
   name: 'App',
   data() {
@@ -19,7 +24,14 @@ export default {
       component: null
     };
   },
-  components: {}
+  methods: {
+    loadMap() {
+      this.component = 'map-test';
+    }
+  },
+  components: {
+    MapTest,
+  }
 };
 </script>
 

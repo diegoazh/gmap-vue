@@ -2,11 +2,11 @@
   "name": "gmap-vue-next",
   "version": "3.5.2",
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
-  "main": "dist/lib/gmap-vue.umd.js",
-  "module": "dist/lib/gmap-vue.es.js",
-  "typings": "dist/types/gmap-vue.d.ts",
-  "unpkg": "dist/lib/gmap-vue.umd.js",
-  "jsdelivr": "dist/lib/gmap-vue.umd.js",
+  "main": "dist/main.umd.js",
+  "module": "dist/main.es.js",
+  "typings": "dist/types",
+  "unpkg": "dist/main.umd.js",
+  "jsdelivr": "dist/main.umd.js",
   "browser": {
     "./sfc": "dist/components"
   },
@@ -30,8 +30,8 @@
     "coverage": "vitest run --coverage",
     "test:e2e": "start-server-and-test preview http://localhost:4173/ 'cypress open --e2e'",
     "test:e2e:ci": "start-server-and-test preview http://localhost:4173/ 'cypress run --e2e'",
-    "test:e2e:runner": "vite build --config cypress/runner/vite.config.js && vite preview --config cypress/runner/vite.config.js",
-    "test:e2e:node:runner": "node cypress/runner/runner.cjs",
+    "test:e2e:build": "vite build --config cypress/runner/vite.config.js && vite preview --config cypress/runner/vite.config.js",
+    "test:e2e:runner": "node cypress/runner/runner.cjs",
     "lint": "prettier --write ./src && eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "lint-staged": "lint-staged",
     "copy:components": "cpx \"./src/components/*.vue\" \"./build/src/components\" --verbose",
@@ -40,9 +40,9 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/lib/gmap-vue.es.js",
-      "require": "./dist/lib/gmap-vue.umd.js",
-      "default": "./dist/lib/gmap-vue.es.js"
+      "import": "./dist/main.es.js",
+      "require": "./dist/main.umd.js",
+      "default": "./dist/main.es.js"
     }
   },
   "files": [
