@@ -1,5 +1,5 @@
 <template>
-  <div id="vue-map-container">
+  <div class="vue-map-container">
     <div ref="vueMap" class="vue-map"></div>
     <div class="vue-map-hidden">
       <!-- @slot The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc. -->
@@ -429,7 +429,7 @@ onUnmounted(() => {
 
 <style lang="stylus" scoped>
 body {
-  #vue-map-container {
+  .vue-map-container {
     position: relative;
 
     .vue-map {

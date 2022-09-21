@@ -1,4 +1,4 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 import GmapVue from '../../dist/main.es';
 import App from './components/MapTest.vue';
 

@@ -13,13 +13,13 @@
       <input v-model.lazy.trim="reportedMapCenter.lat"
              step="0.00001"
              type="number"
-             @change="sync"/>
+             @change="sync" />
       &nbsp;
       <small><strong>Lng:</strong></small>
       <input v-model.number.lazy="reportedMapCenter.lng"
              step="0.00001"
              type="number"
-             @change="sync"/>
+             @change="sync" />
     </div>
 
     <br>
@@ -34,13 +34,13 @@
         </gmap-map>
       </div>
       <div>
-              <gmap-street-view-panorama
-                ref="pano"
-                :position="mapCenter"
-                :pov="pov"
-                class="map-container"
-                @position_changed="updateCenter">
-              </gmap-street-view-panorama>
+        <gmap-street-view-panorama
+          ref="pano"
+          :position="mapCenter"
+          :pov="pov"
+          class="map-container"
+          @position_changed="updateCenter">
+        </gmap-street-view-panorama>
       </div>
     </div>
   </div>
@@ -55,7 +55,10 @@ export default {
         lat: 1.32,
         lng: 103.8
       },
-      mapCenter: null,
+      mapCenter: {
+        lat: 1.32,
+        lng: 103.8
+      },
       pov: {
         pitch: 0,
         heading: 0
