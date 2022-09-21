@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Test 1</h2>
+    <h2>Test E2E: Map layer</h2>
     <ol>
       <li>You can pan around this map, and the center is updated.</li>
       <li>When you edit the lat/lng the map center is updated</li>
@@ -10,16 +10,20 @@
       <small>
         <strong>Lat:</strong>
       </small>
-      <input v-model.lazy.trim="reportedMapCenter.lat"
+      <input v-model.number.lazy.trim="reportedMapCenter.lat"
+             name="lat"
              step="0.00001"
              type="number"
-             @change="sync" />
+             @change="sync"
+             @keyup.enter="setCenter" />
       &nbsp;
       <small><strong>Lng:</strong></small>
-      <input v-model.number.lazy="reportedMapCenter.lng"
+      <input v-model.number.lazy.trim="reportedMapCenter.lng"
+             name="lng"
              step="0.00001"
              type="number"
-             @change="sync" />
+             @change="sync"
+             @keyup.enter="setCenter" />
     </div>
 
     <br>
@@ -34,19 +38,23 @@
         </gmap-map>
       </div>
       <div>
-        <gmap-street-view-panorama
-          ref="pano"
-          :position="mapCenter"
-          :pov="pov"
-          class="map-container"
-          @position_changed="updateCenter">
-        </gmap-street-view-panorama>
+        <!--        <gmap-street-view-panorama-->
+        <!--          ref="pano"-->
+        <!--          :position="mapCenter"-->
+        <!--          :pov="pov"-->
+        <!--          class="map-container"-->
+        <!--          @position_changed="updateCenter">-->
+        <!--        </gmap-street-view-panorama>-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import GmapVue from '../../../dist/main.es';
+
+const { composables: { getMapPromise } } = GmapVue;
+
 export default {
   name: 'MapTest',
   data() {
@@ -77,6 +85,10 @@ export default {
     },
     sync() {
       this.mapCenter = this.reportedMapCenter;
+    },
+    async setCenter() {
+      const map = await getMapPromise();
+      map.setCenter(this.reportedMapCenter);
     }
   }
 };

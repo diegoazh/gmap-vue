@@ -2,7 +2,6 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import { fileURLToPath, URL } from 'url';
 import { defineConfig } from 'vite';
-import VitePluginStyleInject from 'vite-plugin-style-inject';
 import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
@@ -10,7 +9,6 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({ outputDir: 'dist/types', exclude: ['./env.d.ts', 'node_modules'] }),
-    VitePluginStyleInject(),
   ],
   resolve: {
     alias: {

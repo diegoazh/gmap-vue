@@ -16,9 +16,11 @@ import MapLayer from './components/map-layer.vue';
 import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
 import { pluginMapComponentBuilder } from './composables/plugin-map-component-builder';
 import { getPromiseLazyBuilderFn, saveLazyPromiseAndFinalOptions } from './composables/promise-lazy-builder';
-import { getDefaultResizeBus, useResizeBus } from './composables/resize-bus';
+import { getDefaultResizeBus } from './composables/resize-bus';
 import type { IGoogleMapsApiObject, IPluginOptions } from './interfaces/gmap-vue.interface';
 import type { GlobalGoogleObject } from './types/gmap-vue.types';
+import composables from './composables';
+import { $mapPromise } from './keys/gmap-vue.keys';
 
 /**
  * Vue augmentations
@@ -110,17 +112,6 @@ const components = {
   MapLayer,
   // Autocomplete,
   // StreetViewPanorama,
-};
-
-// TODO: Finish this doc statement
-/**
- * Export all composables
- * @constant
- * @type  {Object} composables
- * @property  {Function}  useResizeBus - Vue component Polyline
- */
-const composables = {
-  useResizeBus,
 };
 
 /**
@@ -216,32 +207,17 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
 }
 
 /**
- * Export objects and install function for ESM and UMD modules
- *
- * @property {Function} getGoogleMapsAPI function to get the Google Maps API
- * @property {Object} components all exported components
- * @property {Object} helpers all exported helpers
- * @property {Function} install function to install the plugin
- * @see pluginInstallFn
- */
-// export {
-//   getGoogleMapsAPI,
-//   components,
-//   composables,
-//   helpers,
-//   pluginInstallFn as install,
-// };
-
-/**
  * Export default of the default Vue object for plugins
  * Export for ESM modules
  *
+ * @see pluginInstallFn
+ * @type GmapVue
  * @property {Function} install function to install the plugin
  * @property {Function} getGoogleMapsAPI function to get the Google Maps API
  * @property {Object} components all exported components
+ * @property {Composables} composables function to install the plugin
  * @property {Object} helpers all exported helpers
- * @property {Function} install function to install the plugin
- * @see pluginInstallFn
+ * @property {Object} keys function to install the plugin
  */
 export default {
   install: pluginInstallFn,
@@ -249,4 +225,7 @@ export default {
   components,
   composables,
   helpers,
+  keys: {
+    $mapPromise,
+  },
 } as Plugin;

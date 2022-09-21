@@ -1,7 +1,7 @@
-import type { IGmapVueElementOptions } from "@/interfaces/gmap-vue.interface";
-import type { ComponentOptions } from "vue";
-import { useMapPromise } from "./google-maps-promise";
-import { bindEvents, bindProps, filterVuePropsOptions, getPropsValues } from "./helpers";
+import type { IGmapVueElementOptions } from '@/interfaces/gmap-vue.interface';
+import type { ComponentOptions } from 'vue';
+import { injectMapPromise } from './google-maps-promise';
+import { bindEvents, bindProps, filterVuePropsOptions, getPropsValues } from './helpers';
 
 /**
  * Custom assert for local validation
@@ -93,7 +93,7 @@ export function pluginMapComponentBuilder(
       ...filterVuePropsOptions(mappedProps),
     },
     async setup() {
-      await useMapPromise();
+      await injectMapPromise();
     },
     render() {
       return '';

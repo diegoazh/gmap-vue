@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs/promises');
 const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 const port = process.env.PORT || 4173;
 

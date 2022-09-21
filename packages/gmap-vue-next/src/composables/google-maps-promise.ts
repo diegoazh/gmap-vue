@@ -1,10 +1,25 @@
 import { $mapPromise } from '@/keys/gmap-vue.keys';
-import { inject, ref, type Ref } from 'vue';
+import { inject, reactive, ref, type Ref } from 'vue';
+
+interface MapPromiseDeferred {
+  resolve: ((value: google.maps.Map | undefined) => void) | undefined;
+  reject: ((reason?: any) => void) | undefined;
+}
 
 const map: Ref<google.maps.Map | undefined> = ref();
+const mapPromiseDeferred: MapPromiseDeferred = reactive({
+  resolve: undefined,
+  reject: undefined,
+});
+const promise: Promise<google.maps.Map | undefined> = new Promise(
+  (resolve, reject) => {
+    mapPromiseDeferred.resolve = resolve;
+    mapPromiseDeferred.reject = reject;
+  }
+);
 
 /**
- * Internal use
+ * INTERNAL
  *
  * @returns Ref
  */
@@ -13,21 +28,28 @@ export function getMap(): Ref<google.maps.Map | undefined> {
 }
 
 /**
- * Add description
+ * INTERNAL
+ *
+ * @returns void
+ */
+export function getMapPromise(): Promise<google.maps.Map | undefined> {
+  return promise;
+}
+
+/**
+ * INTERNAL
+ *
+ * @returns void
+ */
+export function getMapPromiseDeferred(): MapPromiseDeferred {
+  return mapPromiseDeferred;
+}
+
+/**
+ * EXPOSED
  *
  * @returns Promise
  */
-export async function useMapPromise(): Promise<void> {
-  /**
-   * **Note**: although this mixin is not "providing" anything,
-   * components' expect the `$map` property to be present on the component.
-   * In order for that to happen, this mixin must intercept the `$mapPromise
-   * .then(() => {})` first before its component does so.
-   *
-   * Since a `provide()` on a mixin is executed before a `provide()` on the
-   * component, putting this code in `provide()` ensures that the `$map` is
-   * already set by the time the component's `provide()` is called.
-   */
-  const mapPromise = inject($mapPromise);
-  map.value = await mapPromise;
+export async function injectMapPromise(): Promise<google.maps.Map | undefined> {
+  return inject($mapPromise);
 }

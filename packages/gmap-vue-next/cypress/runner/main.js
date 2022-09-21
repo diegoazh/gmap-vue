@@ -5,7 +5,7 @@ import App from './components/MapTest.vue';
 window.app = createApp(App)
   .use(GmapVue, {
     load: {
-      key: '',
+      key: import.meta.env.VITE_GOOGLE_API_KEY,
     },
   })
   .mount('#app');

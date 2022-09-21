@@ -1,7 +1,7 @@
 <template>
-  <div class="vue-map-container">
-    <div ref="vueMap" class="vue-map"></div>
-    <div class="vue-map-hidden">
+  <div class="gmap-vue-container">
+    <div ref="vueMap" class="gmap-vue-map"></div>
+    <div class="gmap-vue-map-hidden">
       <!-- @slot The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc. -->
       <slot></slot>
     </div>
@@ -19,7 +19,6 @@ import {
   onMounted,
   onUnmounted,
   provide,
-  reactive,
   ref,
   useAttrs,
   watch,
@@ -34,7 +33,7 @@ import {
 import { pluginOptions, useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
 import { onMountedResizeBusHook, onUnmountedResizeBusHook, useResizeBus } from '@/composables/resize-bus';
 import { $mapPromise } from '@/keys/gmap-vue.keys';
-import { getMap } from '@/composables/google-maps-promise';
+import { getMap, getMapPromise, getMapPromiseDeferred } from '@/composables/google-maps-promise';
 import { Emitter, EventType } from 'mitt';
 import { getMapLayerEvents, getMapLayerProps } from '@/composables/map-layer-props';
 
@@ -47,11 +46,6 @@ interface IMapLayerData {
 
 interface IMapLayerData {
   recyclePrefix: string;
-}
-
-interface MapPromiseDeferred {
-  resolve: ((value: google.maps.Map | undefined) => void) | undefined;
-  reject: ((reason?: any) => void) | undefined;
 }
 
 /**
@@ -83,22 +77,14 @@ interface IMapLayerVueComponentProps {
 /**
  * Data
  */
-const mapPromiseDeferred: MapPromiseDeferred = reactive({
-  resolve: undefined,
-  reject: undefined
-});
-const promise: Promise<google.maps.Map | undefined> = new Promise(
-  (resolve, reject) => {
-    mapPromiseDeferred.resolve = resolve;
-    mapPromiseDeferred.reject = reject;
-  }
-);
 const recyclePrefix = '__gmc__';
 const map = getMap();
 
 /**
  * Provide $mapPromise to all children
  */
+const mapPromiseDeferred = getMapPromiseDeferred();
+const promise = getMapPromise();
 provide($mapPromise, promise);
 
 /**
@@ -428,21 +414,19 @@ onUnmounted(() => {
 </script>
 
 <style lang="stylus" scoped>
-body {
-  .vue-map-container {
-    position: relative;
+.gmap-vue-container {
+  position: relative;
 
-    .vue-map {
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      position: absolute;
-    }
+  .gmap-vue-map {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+  }
 
-    .vue-map-hidden {
-      display: none;
-    }
+  .gmap-vue-map-hidden {
+    display: none;
   }
 }
 </style>

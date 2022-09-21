@@ -26,7 +26,7 @@ describe('google-maps-promise.ts', () => {
     // Assert
     expect(keys.length).toBe(2);
     expect(keys.includes('getMap')).toBeTruthy();
-    expect(keys.includes('useMapPromise')).toBeTruthy();
+    expect(keys.includes('injectMapPromise')).toBeTruthy();
   });
 
   test('should return a vue map ref when call getMap function', () => {
@@ -44,7 +44,7 @@ describe('google-maps-promise.ts', () => {
     vi.spyOn(vue, 'inject').mockResolvedValueOnce(mockResult);
 
     // Act
-    await googleMapsPromise.useMapPromise();
+    await googleMapsPromise.injectMapPromise();
     const result = googleMapsPromise.getMap();
 
     // Act
