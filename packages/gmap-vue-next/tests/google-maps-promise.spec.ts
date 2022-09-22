@@ -37,7 +37,28 @@ describe('google-maps-promise.ts', () => {
     expect(result.value).toBeUndefined();
   });
 
-  test('should wait until map promise is resolve when is called', async () => {
+  test('should return a object with resolve and reject properties when is called', () => {
+    // Arrange
+    // Act
+    const result = googleMapsPromise.getMapPromiseDeferred();
+    const keys = Object.keys(result);
+
+    // Assert
+    expect(keys.includes('resolve')).toBeTruthy();
+    expect(keys.includes('reject')).toBeTruthy();
+  });
+
+  test('should return a promise object when is called', () => {
+    // Arrange
+    // Act
+    const result = googleMapsPromise.getMapPromise();
+
+    // Assert
+    expect(typeof result).toBe('object');
+    expect(result).toBeInstanceOf(Promise);
+  });
+
+  test('should call inject and return its result when is called', async () => {
     // Arrange
     const mockResult = { test: 'value' };
     vi.spyOn(vue, 'inject').mockResolvedValueOnce(mockResult);

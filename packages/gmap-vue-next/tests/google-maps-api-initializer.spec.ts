@@ -52,7 +52,7 @@ describe('google-maps-api-initializer.ts', () => {
 
     // Act
     try {
-      initializer.googleMapsApiInitializer();
+      initializer.googleMapsApiInitializer(undefined);
     } catch (e) {
       error = e;
     }
