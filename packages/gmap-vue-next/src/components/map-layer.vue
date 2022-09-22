@@ -37,9 +37,9 @@ import { getMap, getMapPromise, getMapPromiseDeferred } from '@/composables/goog
 import { Emitter, EventType } from 'mitt';
 import { getMapLayerEvents, getMapLayerProps } from '@/composables/map-layer-props';
 
-/**
- * Interfaces
- */
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
 interface IMapLayerData {
   recyclePrefix: string;
 }
@@ -74,35 +74,100 @@ interface IMapLayerVueComponentProps {
   options?: { [key: string]: any };
 }
 
-/**
- * Data
- */
-const recyclePrefix = '__gmc__';
-const map = getMap();
-
-/**
- * Provide $mapPromise to all children
- */
-const mapPromiseDeferred = getMapPromiseDeferred();
-const promise = getMapPromise();
-provide($mapPromise, promise);
-
-/**
- * Define component props
- */
+/*******************************************************************************
+ * DEFINE COMPONENT PROPS
+ ******************************************************************************/
 const props = withDefaults(defineProps<IMapLayerVueComponentProps>(), {
   mapTypeId: globalThis?.google?.maps?.MapTypeId?.ROADMAP || 'roadmap'
 });
 
+/*******************************************************************************
+ * TEMPLATE REF, ATTRIBUTES AND EMITTERS
+ ******************************************************************************/
+const vueMap = ref<HTMLElement | null>(null);
+const $attrs = useAttrs();
+const emits = defineEmits(getMapLayerEvents());
+
+/*******************************************************************************
+ * RECYCLE KEY
+ ******************************************************************************/
+const recyclePrefix = '__gmc__';
+
 /**
- * Define resize bus
+ * Get the recycle key of the map
+ * @method getRecycleKey
+ * @param {undefined}
+ * @returns {void}
+ * @public
  */
+function getRecycleKey(): string {
+  return props?.options?.recycle
+    ? `${recyclePrefix}${props?.options.recycle}`
+    : recyclePrefix;
+}
+
+
+/*******************************************************************************
+ * MAP AND MAP PROMISE
+ *
+ * provide to all children
+ ******************************************************************************/
+const mapPromiseDeferred = getMapPromiseDeferred();
+const promise = getMapPromise();
+const map = getMap();
+provide($mapPromise, promise);
+
+/*******************************************************************************
+ * RESIZE BUS
+ ******************************************************************************/
 const { currentResizeBus, _delayedResizeCallback } = useResizeBus();
 let { _resizeCallback } = useResizeBus();
 
 /**
- * Computed
+ * This method trigger the resize event of Google Maps
+ * @method resize
+ * @param {undefined}
+ * @returns {void}
+ * @public
  */
+function resize(): void {
+  if (map.value) {
+    google.maps.event.trigger(map.value, 'resize');
+  }
+}
+
+/**
+ * Preserve the previous center when resize the map
+ * @method resizePreserveCenter
+ * @param {undefined}
+ * @returns {void}
+ * @public
+ */
+function resizePreserveCenter(): void {
+  if (!map.value) {
+    return;
+  }
+
+  const oldCenter = map.value.getCenter();
+  google.maps.event.trigger(map.value, 'resize');
+
+  if (oldCenter) {
+    map.value.setCenter(oldCenter);
+  }
+}
+
+/**
+ * Override composable resizeBus::_resizeCallback
+ * because resizePreserveCenter is usually the
+ * expected behaviour
+ */
+_resizeCallback = () => {
+  resizePreserveCenter();
+};
+
+/*******************************************************************************
+ * COMPUTED
+ ******************************************************************************/
 const finalLat = computed(() => {
   if (!props.center) {
     throw new Error('center is not defined');
@@ -125,6 +190,9 @@ const finalLatLng = computed(() => {
   return { lat: finalLat.value, lng: finalLng.value };
 });
 
+/*******************************************************************************
+ * FUNCTIONS
+ ******************************************************************************/
 /**
  * Changes the center of the map by the given distance in pixels. If the distance is less than both the width and height of the map, the transition will be smoothly animated. Note that the map coordinate system increases from west to east (for x values) and north to south (for y values).
  * @method panBy
@@ -191,62 +259,9 @@ function fitBounds(
   }
 }
 
-/**
- * Get the recycle key of the map
- * @method getRecycleKey
- * @param {undefined}
- * @returns {void}
- * @public
- */
-function getRecycleKey(): string {
-  return props?.options?.recycle
-    ? `${recyclePrefix}${props?.options.recycle}`
-    : recyclePrefix;
-}
-
-/**
- * This method trigger the resize event of Google Maps
- * @method resize
- * @param {undefined}
- * @returns {void}
- * @public
- */
-function resize(): void {
-  if (map.value) {
-    google.maps.event.trigger(map.value, 'resize');
-  }
-}
-
-/**
- * Preserve the previous center when resize the map
- * @method resizePreserveCenter
- * @param {undefined}
- * @returns {void}
- * @public
- */
-function resizePreserveCenter(): void {
-  if (!map.value) {
-    return;
-  }
-
-  const oldCenter = map.value.getCenter();
-  google.maps.event.trigger(map.value, 'resize');
-
-  if (oldCenter) {
-    map.value.setCenter(oldCenter);
-  }
-}
-
-// Override composable resizeBus::_resizeCallback
-// because resizePreserveCenter is usually the
-// expected behaviour
-_resizeCallback = () => {
-  resizePreserveCenter();
-};
-
-/**
- * Watchers
- */
+/*******************************************************************************
+ * WATCHERS
+ ******************************************************************************/
 watch(
   () => props.zoom,
   (newVal) => {
@@ -256,29 +271,9 @@ watch(
   }
 );
 
-/**
- * Template refs
- */
-const vueMap = ref<HTMLElement | null>(null);
-
-/**
- * Get attributes
- */
-const $attrs = useAttrs();
-
-/**
- * Define events emitted by this component
- */
-const emits = defineEmits(getMapLayerEvents());
-
-/**
- * Expose local variables
- */
-defineExpose({ vueMap });
-
-/**
- * Hooks
- */
+/*******************************************************************************
+ * HOOKS
+ ******************************************************************************/
 onMounted(() => {
   useGmapApiPromiseLazy()
     .then(() => {
@@ -411,6 +406,11 @@ onUnmounted(() => {
     (map.value as any).setMap(null);
   }
 });
+
+/*******************************************************************************
+ * EXPOSE
+ ******************************************************************************/
+defineExpose({ vueMap });
 </script>
 
 <style lang="stylus" scoped>
