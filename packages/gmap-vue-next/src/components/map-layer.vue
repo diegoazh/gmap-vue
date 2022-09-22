@@ -30,11 +30,11 @@ import {
   twoWayBindingWrapper,
   watchPrimitiveProperties
 } from '@/composables/helpers';
-import { pluginOptions, useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import { getPluginOptions, useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
 import { onMountedResizeBusHook, onUnmountedResizeBusHook, useResizeBus } from '@/composables/resize-bus';
 import { $mapPromise } from '@/keys/gmap-vue.keys';
 import { getMap, getMapPromise, getMapPromiseDeferred } from '@/composables/google-maps-promise';
-import { Emitter, EventType } from 'mitt';
+import type { Emitter, EventType } from 'mitt';
 import { getMapLayerEvents, getMapLayerProps } from '@/composables/map-layer-props';
 
 /*******************************************************************************
@@ -301,9 +301,9 @@ onMounted(() => {
 
       onMountedResizeBusHook(map.value, props, resize);
 
+      const $gmapOptions = getPluginOptions();
       const mapLayerProps = getMapLayerProps();
       const mapLayerEvents = getMapLayerEvents('events');
-      const $gmapOptions = pluginOptions();
 
       // binding properties (two and one way)
       const propsEvents = bindPropsOnSetup(

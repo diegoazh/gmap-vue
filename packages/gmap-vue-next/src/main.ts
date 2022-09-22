@@ -8,7 +8,7 @@ import type { App, Plugin } from 'vue';
 // import InfoWindow from './components/info-window.vue';
 // import KmlLayer from "./components/kml-layer.vue";
 import MapLayer from './components/map-layer.vue';
-// import Marker from './components/marker-icon.vue';
+import Marker from './components/marker-icon.vue';
 // import Polygon from './components/polygon-shape.vue';
 // import Polyline from './components/polyline-shape.vue';
 // import Rectangle from './components/rectangle-shape.vue';
@@ -100,7 +100,7 @@ function getGoogleMapsAPI() {
 const components = {
   // HeatmapLayer,
   // KmlLayer,
-  // Marker,
+  Marker,
   // Polyline,
   // Polygon,
   // Circle,
@@ -190,8 +190,7 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
   app.config.globalProperties.$gmapOptions = finalOptions;
 
   if (finalOptions.installComponents) {
-    app.component('GmapMap', MapLayer);
-    // .component('GmapMarker', Marker)
+    app.component('GmapMap', MapLayer).component('GmapMarker', Marker);
     // .component('GmapInfoWindow', InfoWindow)
     // .component('GmapHeatmapLayer', HeatmapLayer)
     // .component('GmapKmlLayer', KmlLayer)

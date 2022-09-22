@@ -17,7 +17,7 @@ describe('promise-lazy-builder', () => {
     vi.spyOn(console, 'warn');
 
     // Act
-    promiseLazyBuilder.pluginOptions();
+    promiseLazyBuilder.getPluginOptions();
 
     // Assert
     expect(console.warn).toBeCalledTimes(1);
@@ -33,7 +33,7 @@ describe('promise-lazy-builder', () => {
     );
 
     // Act
-    const result = promiseLazyBuilder.pluginOptions();
+    const result = promiseLazyBuilder.getPluginOptions();
 
     // Assert
     expect(result).toEqual(optionsMock);
@@ -47,7 +47,7 @@ describe('promise-lazy-builder', () => {
     // Act
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock, fnMock);
 
-    expect(promiseLazyBuilder.pluginOptions()).toEqual(optionsMock);
+    expect(promiseLazyBuilder.getPluginOptions()).toEqual(optionsMock);
     expect(promiseLazyBuilder.useGmapApiPromiseLazy()).toEqual(fnMock());
   });
 
@@ -62,7 +62,7 @@ describe('promise-lazy-builder', () => {
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock2, fnMock2);
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock, fnMock);
 
-    expect(promiseLazyBuilder.pluginOptions()).toEqual(optionsMock2);
+    expect(promiseLazyBuilder.getPluginOptions()).toEqual(optionsMock2);
     expect(promiseLazyBuilder.useGmapApiPromiseLazy()).toEqual(fnMock2());
   });
 

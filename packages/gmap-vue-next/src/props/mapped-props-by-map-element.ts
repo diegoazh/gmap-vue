@@ -170,63 +170,63 @@ export const kmlLayerMappedProps = {
 //   },
 // };
 
-export const markerMappedProps = {
-  animation: {
-    twoWay: true,
-    type: Number,
-  },
-  attribution: {
-    type: Object,
-  },
-  clickable: {
-    type: Boolean,
-    twoWay: true,
-    default: true,
-  },
-  cursor: {
-    type: String,
-    twoWay: true,
-  },
-  draggable: {
-    type: Boolean,
-    twoWay: true,
-    default: false,
-  },
-  icon: {
-    twoWay: true,
-  },
-  label: {},
-  opacity: {
-    type: Number,
-    default: 1,
-  },
-  options: {
-    type: Object,
-  },
-  place: {
-    type: Object,
-  },
-  position: {
-    type: Object,
-    twoWay: true,
-  },
-  shape: {
-    type: Object,
-    twoWay: true,
-  },
-  title: {
-    type: String,
-    twoWay: true,
-  },
-  zIndex: {
-    type: Number,
-    twoWay: true,
-  },
-  visible: {
-    twoWay: true,
-    default: true,
-  },
-};
+// export const markerMappedProps = {
+//   animation: {
+//     twoWay: true,
+//     type: Number,
+//   },
+//   attribution: {
+//     type: Object,
+//   },
+//   clickable: {
+//     type: Boolean,
+//     twoWay: true,
+//     default: true,
+//   },
+//   cursor: {
+//     type: String,
+//     twoWay: true,
+//   },
+//   draggable: {
+//     type: Boolean,
+//     twoWay: true,
+//     default: false,
+//   },
+//   icon: {
+//     twoWay: true,
+//   },
+//   label: {},
+//   opacity: {
+//     type: Number,
+//     default: 1,
+//   },
+//   options: {
+//     type: Object,
+//   },
+//   place: {
+//     type: Object,
+//   },
+//   position: {
+//     type: Object,
+//     twoWay: true,
+//   },
+//   shape: {
+//     type: Object,
+//     twoWay: true,
+//   },
+//   title: {
+//     type: String,
+//     twoWay: true,
+//   },
+//   zIndex: {
+//     type: Number,
+//     twoWay: true,
+//   },
+//   visible: {
+//     twoWay: true,
+//     default: true,
+//   },
+// };
 
 export const streetViewPanoramaMappedProps = {
   zoom: {

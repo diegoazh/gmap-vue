@@ -9,7 +9,7 @@
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import MapElementMixin from '../mixins/map-element';
 import { clusterIconMappedProps } from '../utils/mapped-props-by-map-element';
-import { bindEvents, getPropsValues, bindProps } from '../utils/helpers';
+import { bindEvents, bindProps, getPropsValues } from '../utils/helpers';
 
 /**
  * Cluster component
@@ -33,7 +33,7 @@ export default {
       'mouseup',
       'mousedown',
       'mouseover',
-      'mouseout',
+      'mouseout'
     ];
 
     // Infowindow needs this to be immediately available
@@ -46,7 +46,7 @@ export default {
           // TODO: analyze the below line because I think it can be removed
           ...this.options,
           map,
-          ...getPropsValues(this, clusterIconMappedProps),
+          ...getPropsValues(this, clusterIconMappedProps)
         };
         const { options: extraOptions, ...finalOptions } = initialOptions;
 
@@ -61,7 +61,7 @@ export default {
           markers,
           algorithm,
           onClusterClick,
-          renderer,
+          renderer
         } = finalOptions;
 
         this.$clusterObject = new MarkerClusterer({
@@ -69,7 +69,7 @@ export default {
           markers,
           algorithm,
           onClusterClick,
-          renderer,
+          renderer
         });
 
         bindProps(this, this.$clusterObject, {});
@@ -100,7 +100,7 @@ export default {
      */
     algorithm: {
       type: Object,
-      default: undefined,
+      default: undefined
     },
     /**
      * Function to run when the user clicks the cluster.
@@ -109,7 +109,7 @@ export default {
      */
     onClusterClick: {
       type: Function,
-      default: undefined,
+      default: undefined
     },
     /**
      * An object that converts a Cluster into a `google.maps.Marker`. Default is DefaultRenderer.
@@ -118,7 +118,7 @@ export default {
      */
     renderer: {
       type: Object,
-      default: undefined,
+      default: undefined
     },
     /**
      * Other options that you can pass to the MarkerClusterer
@@ -126,8 +126,8 @@ export default {
      */
     options: {
       type: Object,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   beforeDestroy() {
     /* Performance optimization when destroying a large number of markers */
@@ -157,7 +157,7 @@ export default {
       const oldMarkers = [...this.$clusterObject.markers];
       this.$clusterObject.clearMarkers();
       this.$clusterObject.addMarkers(oldMarkers);
-    },
-  },
+    }
+  }
 };
 </script>

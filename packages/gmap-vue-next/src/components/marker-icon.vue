@@ -1,239 +1,208 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { bindEvents, bindProps, getPropsValues } from '../composables/helpers';
-import MapElementMixin from '../composables/map-element';
-import { markerMappedProps } from '../props/mapped-props-by-map-element';
+<script lang="tsx" setup>
+import {
+  defineProps,
+  h,
+  inject,
+  onUnmounted,
+  provide,
+  type Ref,
+  ref,
+  type RendererElement,
+  type RendererNode,
+  useAttrs,
+  useSlots,
+  type VNode,
+  withDefaults
+} from 'vue';
+import { $clusterPromise, $markerPromise } from '@/keys/gmap-vue.keys';
+import { getMarkerIconEvents, getMarkerIconProps } from '@/composables/marker-icon-props';
+import { getMapPromise } from '@/composables/google-maps-promise';
+import { bindPropsOnSetup, getPropsValues } from '@/composables/helpers';
+import { getPluginOptions } from '@/composables/promise-lazy-builder';
 
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
 /**
- * Marker component
- * @displayName Marker
- * @see [source code](/guide/marker.html#source-code)
- * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/markers)
- * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/marker)
+ * Marker Google Maps properties documentation
+ *
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.animation
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.clickable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.cursor
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.draggable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.icon
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.label
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.opacity
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.position
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.shape
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.title
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.visible
+ * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.zIndex
  */
-export default defineComponent({
-  name: 'MarkerIcon',
-  mixins: [MapElementMixin],
-  inject: {
-    $clusterPromise: {
-      default: null,
-    },
-  },
-  provide() {
-    const events = [
-      'click',
-      'rightclick',
-      'dblclick',
-      'drag',
-      'dragstart',
-      'dragend',
-      'mouseup',
-      'mousedown',
-      'mouseover',
-      'mouseout',
-    ];
+interface IMarkerIconVueComponentProps {
+  animation?: number | google.maps.Animation;
+  /**
+   *  This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
+   */
+  attribution?: Record<string, unknown>; // TODO: Define properties of this object.
+  clickable?: boolean;
+  cursor?: string;
+  draggable?: boolean;
+  icon?: string | symbol | google.maps.Icon;
+  label?: string | google.maps.MarkerLabel;
+  opacity?: number;
+  options?: Record<string, unknown>;
+  place?: Record<string, unknown>; // TODO: Define properties of this object
+  position?: google.maps.LatLng | google.maps.LatLngLiteral;
+  shape?: google.maps.MarkerShape;
+  title?: string;
+  visible?: boolean;
+  zIndex?: number;
+}
 
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
+/*******************************************************************************
+ * DEFINE COMPONENT PROPS
+ ******************************************************************************/
+const props = withDefaults(defineProps<IMarkerIconVueComponentProps>(), {
+  clickable: true,
+  cursor: 'pointer',
+  draggable: false,
+  opacity: 1,
+  visible: true
+});
 
-        // Initialize the maps with the given options
-        const initialOptions = {
-          // TODO: analyze the below line because I think it can be removed
-          ...this.options,
-          map,
-          ...getPropsValues(this, markerMappedProps),
-        };
+/*******************************************************************************
+ * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
+ ******************************************************************************/
+const emits = defineEmits(getMarkerIconEvents());
+const attrs = useAttrs();
+const slots = useSlots();
 
-        const { options: extraOptions, ...finalOptions } = initialOptions;
+/*******************************************************************************
+ * INJECT
+ ******************************************************************************/
+const clusterPromise = inject($clusterPromise);
+const clusterOwner: Ref<any | undefined> = ref(); // TODO: add types for this any
 
-        if (this.$clusterPromise) {
-          finalOptions.map = null;
-        }
+/*******************************************************************************
+ * MARKER
+ ******************************************************************************/
+let map: google.maps.Map | undefined;
+const markerInstance: Ref<google.maps.Marker | undefined> = ref();
+const promise = getMapPromise().then((mapInstance) => {
+  map = mapInstance;
+  // Initialize the maps with the given options
+  const initialOptions: { [key: string]: any } = {
+    ...props.options,
+    map,
+    ...getPropsValues(props)
+  };
+  const { options: extraOptions, ...finalOptions } = initialOptions;
 
-        this.$markerObject = new google.maps.Marker(finalOptions);
+  if (clusterPromise) {
+    finalOptions.map = null;
+  }
 
-        bindProps(this, this.$markerObject, markerMappedProps);
-        bindEvents(this, this.$markerObject, events);
+  markerInstance.value = new google.maps.Marker(finalOptions);
 
-        this.$markerObject.addListener('dragend', () => {
-          const newPosition = this.$markerObject.getPosition();
-          /**
-           * An event to detect when a position changes
-           * @property {Object} position Object with lat and lng values, eg: { lat: 10.0, lng: 10.0 }
-           */
-          this.$emit('update:position', {
-            lat: newPosition.lat(),
-            lng: newPosition.lng(),
-          });
-        });
+  const pluginOptions = getPluginOptions();
+  const markerIconProps = getMarkerIconProps();
+  const markerIconEvents = getMarkerIconEvents('events');
 
-        if (this.$clusterPromise) {
-          this.$clusterPromise.then((clusterObject) => {
-            clusterObject.addMarker(this.$markerObject);
-            this.$clusterObject = clusterObject;
-          });
-        }
+  const propsEvents = bindPropsOnSetup(markerInstance, markerIconProps, pluginOptions, attrs);
 
-        return this.$markerObject;
-      })
-      .catch((error) => {
-        throw error;
+  // bind prop events of google maps
+  propsEvents.emitParams.forEach((emitParam) => {
+    markerInstance.value?.addListener(emitParam[0], () => {
+      emits(emitParam[0], emitParam[1]());
+    });
+  });
+
+  // binding events
+  markerIconEvents.forEach((eventName) => {
+    if (pluginOptions.autoBindAllEvents || attrs[eventName]) {
+      markerInstance.value?.addListener(eventName, (ev: any) => {
+        emits(eventName, ev);
       });
+    }
+  });
 
-    this.$markerPromise = promise;
-    return { $markerPromise: promise };
-  },
-  props: {
+  markerInstance.value?.addListener('dragend', () => {
+    const newPosition = markerInstance.value?.getPosition();
     /**
-     * Which animation to play when marker is added to a map.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
+     * An event to detect when a position changes
+     * @property {Object} position Object with lat and lng values, eg: { lat: 10.0, lng: 10.0 }
      */
-    animation: {
-      type: Number,
-      default: undefined,
-    },
-    /**
-     * This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component.
-     * Any suggestion is welcome here.
-     */
-    attribution: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * If true, the marker receives mouse and touch events. Default value is true.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    clickable: {
-      type: Boolean,
-      default: true,
-    },
-    /**
-     * Mouse cursor type to show on hover.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    cursor: {
-      type: String,
-      default: undefined,
-    },
-    /**
-     * If true, the marker can be dragged. Default value is false.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    draggable: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * Icon for the foreground. If a string is provided, it is treated as though it were an Icon with the string as url.
-     * Its type can be string|Icon|Symbol optional
-     * @see [Icon type](https://developers.google.com/maps/documentation/javascript/reference/marker#Icon)
-     * @see [Symbol type](https://developers.google.com/maps/documentation/javascript/reference/marker#Symbol)
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    icon: {
-      type: [String, Object],
-      default: undefined,
-    },
-    /**
-     * Adds a label to the marker. A marker label is a letter or number that appears inside a marker. The label can either be a string, or a MarkerLabel object. If provided and MarkerOptions.title is not provided, an accessibility text (e.g. for use with screen readers) will be added to the marker with the provided label's text. Please note that the label is currently only used for accessibility text for non-optimized markers.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    label: {
-      type: [String, Object],
-      default: undefined,
-    },
-    /**
-     * A number between 0.0, transparent, and 1.0, opaque.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    opacity: {
-      type: Number,
-      default: 1,
-    },
-    /**
-     * Extra options passed to this component.
-     */
-    options: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component.
-     * Any suggestion is welcome here.
-     */
-    place: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * Marker position. The position is required to display the marker and can be provided with Marker.setPosition if not provided at marker construction.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    position: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * Image map region definition used for drag/click.
-     * @see [MarkerShape type](https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerShape)
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    shape: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * Rollover text. If provided, an accessibility text (e.g. for use with screen readers) will be added to the marker with the provided value. Please note that the title is currently only used for accessibility text for non-optimized markers.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    title: {
-      type: String,
-      default: undefined,
-    },
-    /**
-     * If true, the marker is visible.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    visible: {
-      type: Boolean,
-      default: true,
-    },
-    /**
-     * All markers are displayed on the map in order of their zIndex, with higher values displaying in front of markers with lower values. By default, markers are displayed according to their vertical position on screen, with lower markers appearing in front of markers further up the screen.
-     * @see https://developers.google.com/maps/documentation/javascript/reference/marker
-     */
-    zIndex: {
-      type: Number,
-      default: undefined,
-    },
-  },
-  unmounted() {
-    if (!this.$markerObject) {
-      return;
-    }
+    emits('update:position', {
+      lat: newPosition?.lat(),
+      lng: newPosition?.lng()
+    });
+  });
 
-    if (this.$clusterObject) {
-      // Repaint will be performed in `updated()` of cluster
-      this.$clusterObject.removeMarker(this.$markerObject, true);
-    } else if (this.$markerObject && this.$markerObject.setMap) {
-      this.$markerObject.setMap(null);
-    }
-  },
-  render(h) {
-    if (!this.$slots.default || this.$slots.default.length === 0) {
-      return '';
-    }
-    if (this.$slots.default.length === 1) {
-      // So that infowindows can have a marker parent
-      return this.$slots.default[0];
-    }
+  if (clusterPromise) {
+    clusterPromise.then((clusterInstance) => {
+      clusterInstance.addMarker(markerInstance.value!);
+      clusterOwner.value = clusterInstance;
+    });
+  }
 
+  return markerInstance.value;
+}).catch((reason) => {
+  throw reason;
+});
+
+provide($markerPromise, promise);
+
+/*******************************************************************************
+ * COMPUTED
+ ******************************************************************************/
+
+/*******************************************************************************
+ * FUNCTIONS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * WATCHERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * HOOKS
+ ******************************************************************************/
+onUnmounted(() => {
+  if (!markerInstance.value) {
+    return;
+  }
+
+  if (clusterOwner.value) {
+    // Repaint will be performed in `updated()` of cluster
+    clusterOwner.value.removeMarker(markerInstance.value!, true);
+  } else if (markerInstance.value && (markerInstance.value as any).setMap) {
+    (markerInstance.value as any).setMap(null);
+  }
+});
+
+/*******************************************************************************
+ * RENDERS
+ ******************************************************************************/
+let VNodeMarkerIcon: VNode<RendererNode, RendererElement, { [p: string]: any }>;
+
+if (slots.default && typeof slots.default === 'function' && slots.default?.().length) {
+  if (slots.default().length === 1) {
+    // So that infowindows can have a marker parent
+    VNodeMarkerIcon = slots.default()[0];
+  } else {
     /**
      * @slot Default slot of the component.
      */
-    return h('div', this.$slots.default);
-  },
-});
+    VNodeMarkerIcon = h('div', slots.default());
+  }
+}
+
+/*******************************************************************************
+ * EXPOSE
+ ******************************************************************************/
 </script>
+
+<template>
+  <VNodeMarkerIcon />
+</template>

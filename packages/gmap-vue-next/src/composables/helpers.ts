@@ -290,13 +290,13 @@ export function watchPrimitiveProperties(
  * Note: For options API. This function should not be used on setup script.
  *
  * @param  {Object} vueInst the component instance
- * @param  {Object} googleMapsInst the Google Maps instance
+ * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
  * @param  {Object} props object with the component props tha should be synched with the Google Maps instances props
  * @returns {void}
  */
 export function bindProps(
   vueInst: ComponentPublicInstance & { $gmapOptions: IPluginOptions },
-  googleMapsInst: Record<string, any>,
+  AnyGoogleMapsClassInstance: Record<string, any>,
   props: GmapVuePluginProps
 ): void {
   Object.keys(props).forEach((propKey) => {
@@ -308,7 +308,7 @@ export function bindProps(
       const eventName = `${propKey.toLowerCase()}_changed`;
       const initialValue = (vueInst.$props as any)[propKey];
 
-      if (typeof googleMapsInst[setMethodName] === 'undefined') {
+      if (typeof AnyGoogleMapsClassInstance[setMethodName] === 'undefined') {
         throw new Error(
           // TODO: Analyze all disabled rules in the file
           // eslint-disable-next-line no-underscore-dangle -- old code should be analyzed
@@ -326,7 +326,7 @@ export function bindProps(
           () => {
             const attributeValue = (vueInst.$props as any)[propKey];
 
-            googleMapsInst[setMethodName](attributeValue);
+            AnyGoogleMapsClassInstance[setMethodName](attributeValue);
           },
           {
             immediate: typeof initialValue !== 'undefined',
@@ -337,7 +337,9 @@ export function bindProps(
         watchPrimitiveProperties(
           trackProperties.map((prop) => `${propKey}.${prop}`),
           () => {
-            googleMapsInst[setMethodName]((vueInst.$props as any)[propKey]);
+            AnyGoogleMapsClassInstance[setMethodName](
+              (vueInst.$props as any)[propKey]
+            );
           },
           (vueInst.$props as any)[propKey] !== undefined,
           vueInst
@@ -348,8 +350,8 @@ export function bindProps(
         twoWay &&
         (vueInst.$gmapOptions.autoBindAllEvents || vueInst.$attrs[eventName])
       ) {
-        googleMapsInst.addListener(eventName, () => {
-          vueInst.$emit(eventName, googleMapsInst[getMethodName]());
+        AnyGoogleMapsClassInstance.addListener(eventName, () => {
+          vueInst.$emit(eventName, AnyGoogleMapsClassInstance[getMethodName]());
         });
       }
     }
@@ -371,17 +373,17 @@ export function bindProps(
  *
  * Note: For composition API. This function should be used on setup script.
  *
- * @param  {Object} googleMapsInst - the Google Maps instance
- * @param  {Object} props - object with the component props tha should be synched with the Google Maps instances props
+ * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
+ * @param  {Object} props - object with the component props tha should be synced with the Google Maps instances props
  * @param  {IPluginOptions} gmapOptions - the component instance
  * @param  {Object} attrs - The vue attrs object that is get from useAttrs macro function
  * @returns {PropEvents} The object which contain all event names to and params that should be used to add listener to the Google Maps instance
  */
 export function bindPropsOnSetup(
-  googleMapsInst: Record<string, any>,
+  AnyGoogleMapsClassInstance: Record<string, any>,
   props: Record<string, any>,
-  gmapOptions: IPluginOptions,
-  attrs: Record<string, unknown>
+  gmapOptions?: IPluginOptions,
+  attrs?: Record<string, unknown>
 ): {
   eventNames: string[];
   emitParams: [string, () => any][];
@@ -403,7 +405,7 @@ export function bindPropsOnSetup(
       const eventName = `${propKey.toLowerCase()}_changed`;
       const initialValue = (props as any)[propKey];
 
-      if (typeof googleMapsInst[setMethodName] !== 'undefined') {
+      if (typeof AnyGoogleMapsClassInstance[setMethodName] !== 'undefined') {
         // We need to avoid an endless
         // propChanged -> event emitted -> propChanged -> event emitted loop
         // although this may really be the user's responsibility
@@ -414,7 +416,7 @@ export function bindPropsOnSetup(
             () => {
               const attributeValue = props[propKey];
 
-              googleMapsInst[setMethodName](attributeValue);
+              AnyGoogleMapsClassInstance[setMethodName](attributeValue);
             },
             {
               immediate: typeof initialValue !== 'undefined',
@@ -425,15 +427,18 @@ export function bindPropsOnSetup(
           watchPrimitiveProperties(
             trackProperties.map((prop) => `${propKey}.${prop}`),
             () => {
-              googleMapsInst[setMethodName](props[propKey]);
+              AnyGoogleMapsClassInstance[setMethodName](props[propKey]);
             },
             props[propKey] !== undefined
           );
         }
 
-        if (twoWay && (gmapOptions.autoBindAllEvents || attrs[eventName])) {
+        if (twoWay && (gmapOptions?.autoBindAllEvents || attrs?.[eventName])) {
           eventNames.push(eventName);
-          emitParams.push([eventName, googleMapsInst[getMethodName]]);
+          emitParams.push([
+            eventName,
+            AnyGoogleMapsClassInstance[getMethodName],
+          ]);
         }
       }
     }

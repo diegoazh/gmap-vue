@@ -169,7 +169,7 @@ export function useGmapApiPromiseLazy(): Promise<any> {
   return $gmapApiPromiseLazy?.();
 }
 
-export function pluginOptions(): IPluginOptions {
+export function getPluginOptions(): IPluginOptions {
   if (!$finalOptions) {
     globalThis.console.warn('$finalOptions was not defined yet...');
   }
