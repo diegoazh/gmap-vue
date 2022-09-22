@@ -20,7 +20,6 @@ import { getDefaultResizeBus } from './composables/resize-bus';
 import type { IGoogleMapsApiObject, IPluginOptions } from './interfaces/gmap-vue.interface';
 import type { GlobalGoogleObject } from './types/gmap-vue.types';
 import composables from './composables';
-import { $mapPromise } from './keys/gmap-vue.keys';
 
 /**
  * Vue augmentations
@@ -217,7 +216,6 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
  * @property {Object} components all exported components
  * @property {Composables} composables function to install the plugin
  * @property {Object} helpers all exported helpers
- * @property {Object} keys function to install the plugin
  */
 export default {
   install: pluginInstallFn,
@@ -225,7 +223,4 @@ export default {
   components,
   composables,
   helpers,
-  keys: {
-    $mapPromise,
-  },
 } as Plugin;

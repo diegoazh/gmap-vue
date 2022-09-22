@@ -4,7 +4,7 @@
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
   "main": "dist/main.umd.js",
   "module": "dist/main.es.js",
-  "typings": "dist/types",
+  "typings": "dist/types/main.d.ts",
   "unpkg": "dist/main.umd.js",
   "jsdelivr": "dist/main.umd.js",
   "browser": {
