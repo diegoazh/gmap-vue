@@ -4,14 +4,11 @@ import * as vue from 'vue';
 
 describe('google-maps-promise.ts', () => {
   beforeEach(() => {
-    vi.mock('vue', () => {
-      const vue = {
-        inject: vi.fn(() => Promise.resolve(undefined)),
-        ref: vi.fn(() => ({ value: undefined })),
-      };
-
-      return vue;
-    });
+    vi.mock('vue', () => ({
+      inject: vi.fn(() => Promise.resolve(undefined)),
+      ref: vi.fn(() => ({ value: undefined })),
+      reactive: vi.fn((args) => args),
+    }));
   });
 
   afterEach(() => {
@@ -24,8 +21,10 @@ describe('google-maps-promise.ts', () => {
     const keys = Object.keys(googleMapsPromise);
 
     // Assert
-    expect(keys.length).toBe(2);
+    expect(keys.length).toBe(4);
     expect(keys.includes('getMap')).toBeTruthy();
+    expect(keys.includes('getMapPromise')).toBeTruthy();
+    expect(keys.includes('getMapPromiseDeferred')).toBeTruthy();
     expect(keys.includes('injectMapPromise')).toBeTruthy();
   });
 
@@ -44,11 +43,10 @@ describe('google-maps-promise.ts', () => {
     vi.spyOn(vue, 'inject').mockResolvedValueOnce(mockResult);
 
     // Act
-    await googleMapsPromise.injectMapPromise();
-    const result = googleMapsPromise.getMap();
+    const injectResult = await googleMapsPromise.injectMapPromise();
 
     // Act
     expect(vue.inject).toHaveBeenCalledTimes(1);
-    expect(result.value).toBe(mockResult);
+    expect(injectResult).toBe(mockResult);
   });
 });
