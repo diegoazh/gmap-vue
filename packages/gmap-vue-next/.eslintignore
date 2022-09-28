@@ -1,2 +1,3 @@
-build
-dist
+/build
+/dist
+/cypress/runner/dist/*

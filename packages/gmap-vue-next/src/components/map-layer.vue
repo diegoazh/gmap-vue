@@ -20,57 +20,111 @@ import {
   onUnmounted,
   provide,
   ref,
-  useAttrs,
   watch,
-  withDefaults
+  withDefaults,
 } from 'vue';
 import {
-  bindPropsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValues,
   twoWayBindingWrapper,
-  watchPrimitiveProperties
+  watchPrimitiveProperties,
 } from '@/composables/helpers';
-import { getPluginOptions, useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
-import { onMountedResizeBusHook, onUnmountedResizeBusHook, useResizeBus } from '@/composables/resize-bus';
+import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import {
+  onMountedResizeBusHook,
+  onUnmountedResizeBusHook,
+  useResizeBus,
+} from '@/composables/resize-bus';
 import { $mapPromise } from '@/keys/gmap-vue.keys';
-import { getMap, getMapPromise, getMapPromiseDeferred } from '@/composables/google-maps-promise';
+import {
+  getMap,
+  getMapPromise,
+  getMapPromiseDeferred,
+} from '@/composables/google-maps-promise';
 import type { Emitter, EventType } from 'mitt';
-import { getMapLayerEvents, getMapLayerProps } from '@/composables/map-layer-props';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
 
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
-interface IMapLayerData {
-  recyclePrefix: string;
-}
-
-interface IMapLayerData {
-  recyclePrefix: string;
-}
-
 /**
- * The initial Map center.
+ * MapOptions interface
+ *
+ * MapOptions object used to define the properties that can be set on a Map.
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
  *
- * The initial Map zoom level. Valid values: Integers between zero, and up to the supported maximum zoom level.
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
- *
- * The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
- *
- * The initial Map mapTypeId. Defaults to ROADMAP.
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
- *
- * For vector maps, sets the angle of incidence of the map. The allowed values are restricted depending on the zoom level of the map. For raster maps, controls the automatic switching behavior for the angle of incidence of the map. The only allowed values are 0 and 45. The value 0 causes the map to always use a 0° overhead view regardless of the zoom level and viewport. The value 45 causes the tilt angle to automatically switch to 45 whenever 45° imagery is available for the current zoom level and viewport, and switch back to 0 whenever 45° imagery is not available (this is the default behavior). 45° imagery is only available for satellite and hybrid map types, within some locations, and at some zoom levels. Note: getTilt returns the current tilt angle, not the value specified by this option. Because getTilt and this option refer to different things, do not bind() the tilt property; doing so may yield unpredictable effects.
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.backgroundColor
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.center
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.clickableIcons
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.controlSize
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.disableDefaultUI
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.draggableCursor
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.draggingCursor
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.fullscreenControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.fullscreenControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.gestureHandling
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.heading
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.isFractionalZoomEnabled
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.keyboardShortcuts
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeId
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.maxZoom
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.minZoom
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.noClear
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.panControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.panControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.restriction
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.rotateControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.rotateControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.scaleControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.scaleControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.streetView
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.streetViewControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.styles
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.tilt
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.zoom
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.zoomControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.zoomControlOptions
  */
 interface IMapLayerVueComponentProps {
-  resizeBus?: Emitter<Record<EventType, unknown>>;
+  backgroundColor?: string;
   center: google.maps.LatLng | google.maps.LatLngLiteral;
-  zoom?: number;
+  clickableIcons?: boolean;
+  controlSize?: number;
+  disableDefaultUI?: boolean;
+  draggableCursor?: string;
+  draggingCursor?: string;
+  fullscreenControl?: boolean;
+  fullscreenControlOptions?: google.maps.FullscreenControlOptions;
+  gestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
   heading?: number;
+  isFractionalZoomEnabled?: boolean;
+  keyboardShortcuts?: boolean;
+  mapTypeControl?: boolean;
+  mapTypeControlOptions?: google.maps.MapTypeControlOptions;
   mapTypeId?: google.maps.MapTypeId;
+  maxZoom?: number;
+  minZoom?: number;
+  noClear?: boolean;
+  panControl?: boolean;
+  panControlOptions?: google.maps.PanControlOptions;
+  restriction?: google.maps.MapRestriction;
+  rotateControl?: boolean;
+  rotateControlOptions?: google.maps.RotateControlOptions;
+  scaleControl?: boolean;
+  scaleControlOptions?: google.maps.ScaleControlOptions;
+  streetView?: google.maps.StreetViewPanorama;
+  streetViewControl?: boolean;
+  styles?: google.maps.MapTypeStyle[];
   tilt?: number;
+  zoom?: number;
+  zoomControl?: boolean;
+  zoomControlOptions?: google.maps.ZoomControlOptions;
+  resizeBus?: Emitter<Record<EventType, unknown>>;
   options?: { [key: string]: any };
 }
 
@@ -78,15 +132,25 @@ interface IMapLayerVueComponentProps {
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
 const props = withDefaults(defineProps<IMapLayerVueComponentProps>(), {
-  mapTypeId: globalThis?.google?.maps?.MapTypeId?.ROADMAP || 'roadmap'
+  mapTypeId: globalThis?.google?.maps?.MapTypeId?.ROADMAP || 'roadmap',
+  clickableIcons: true,
+  disableDefaultUI: false,
+  fullscreenControl: true,
+  gestureHandling: 'auto',
+  keyboardShortcuts: true,
+  mapTypeControl: true,
+  panControl: true,
+  rotateControl: true,
+  scaleControl: true,
+  streetViewControl: true,
+  zoomControl: true,
 });
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES AND EMITTERS
  ******************************************************************************/
 const vueMap = ref<HTMLElement | null>(null);
-const $attrs = useAttrs();
-const emits = defineEmits(getMapLayerEvents());
+const emits = defineEmits(getComponentEventsConfig('GmapMap'));
 
 /*******************************************************************************
  * RECYCLE KEY
@@ -96,7 +160,6 @@ const recyclePrefix = '__gmc__';
 /**
  * Get the recycle key of the map
  * @method getRecycleKey
- * @param {undefined}
  * @returns {void}
  * @public
  */
@@ -105,7 +168,6 @@ function getRecycleKey(): string {
     ? `${recyclePrefix}${props?.options.recycle}`
     : recyclePrefix;
 }
-
 
 /*******************************************************************************
  * MAP AND MAP PROMISE
@@ -126,7 +188,6 @@ let { _resizeCallback } = useResizeBus();
 /**
  * This method trigger the resize event of Google Maps
  * @method resize
- * @param {undefined}
  * @returns {void}
  * @public
  */
@@ -139,7 +200,6 @@ function resize(): void {
 /**
  * Preserve the previous center when resize the map
  * @method resizePreserveCenter
- * @param {undefined}
  * @returns {void}
  * @public
  */
@@ -156,21 +216,12 @@ function resizePreserveCenter(): void {
   }
 }
 
-/**
- * Override composable resizeBus::_resizeCallback
- * because resizePreserveCenter is usually the
- * expected behaviour
- */
-_resizeCallback = () => {
-  resizePreserveCenter();
-};
-
 /*******************************************************************************
  * COMPUTED
  ******************************************************************************/
 const finalLat = computed(() => {
   if (!props.center) {
-    throw new Error('center is not defined');
+    return console.warn('center is not defined');
   }
 
   return typeof props.center.lat === 'function'
@@ -179,16 +230,17 @@ const finalLat = computed(() => {
 });
 const finalLng = computed(() => {
   if (!props.center) {
-    throw new Error('center is not defined');
+    return console.warn('center is not defined');
   }
 
   return typeof props.center.lng === 'function'
     ? props.center.lng()
     : props.center.lng;
 });
-const finalLatLng = computed(() => {
-  return { lat: finalLat.value, lng: finalLng.value };
-});
+const finalLatLng = computed(
+  () =>
+    ({ lat: finalLat.value, lng: finalLng.value } as google.maps.LatLngLiteral)
+);
 
 /*******************************************************************************
  * FUNCTIONS
@@ -201,9 +253,9 @@ const finalLatLng = computed(() => {
  * @returns {void}
  * @public
  */
-function panBy(...args: [number, number]): void {
+function panBy(x: number, y: number): void {
   if (map.value) {
-    map.value.panBy(...args);
+    map.value.panBy(x, y);
   }
 }
 
@@ -214,9 +266,9 @@ function panBy(...args: [number, number]): void {
  * @returns {void}
  * @public
  */
-function panTo(args: google.maps.LatLng | google.maps.LatLngLiteral): void {
+function panTo(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
   if (map.value) {
-    map.value.panTo(args);
+    map.value.panTo(latLng);
   }
 }
 
@@ -229,13 +281,11 @@ function panTo(args: google.maps.LatLng | google.maps.LatLngLiteral): void {
  * @public
  */
 function panToBounds(
-  ...args: [
-      google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
-      number | google.maps.Padding
-  ]
+  latLngBounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+  padding: number | google.maps.Padding
 ): void {
   if (map.value) {
-    map.value.panToBounds(...args);
+    map.value.panToBounds(latLngBounds, padding);
   }
 }
 
@@ -249,13 +299,11 @@ function panToBounds(
  * @public
  */
 function fitBounds(
-  ...args: [
-      google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
-      number | google.maps.Padding
-  ]
+  bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+  padding: number | google.maps.Padding
 ): void {
   if (map.value) {
-    map.value.fitBounds(...args);
+    map.value.fitBounds(bounds, padding);
   }
 }
 
@@ -283,7 +331,7 @@ onMounted(() => {
 
       const initialOptions = {
         ...props.options,
-        ...getPropsValues(props)
+        ...getPropsValues(props),
       };
 
       const { options: extraOptions, ...finalOptions } = initialOptions;
@@ -299,34 +347,24 @@ onMounted(() => {
         window[recycleKey] = { map: map.value };
       }
 
-      onMountedResizeBusHook(map.value, props, resize);
+      onMountedResizeBusHook(map.value, props, resizePreserveCenter);
 
-      const $gmapOptions = getPluginOptions();
-      const mapLayerProps = getMapLayerProps();
-      const mapLayerEvents = getMapLayerEvents('events');
+      const mapLayerProps = getComponentPropsConfig('GmapMap');
+      const mapLayerEvents = getComponentEventsConfig('GmapMap', 'auto');
 
       // binding properties (two and one way)
-      const propsEvents = bindPropsOnSetup(
-        map,
-        mapLayerProps as any,
-        $gmapOptions,
-        $attrs
+      bindPropsWithGoogleMapsSettersAndGettersOnSetup(
+        map.value,
+        props,
+        mapLayerProps,
+        emits
       );
 
-      // bind prop events of google maps
-      propsEvents.emitParams.forEach((emitParam) => {
-        map.value?.addListener(emitParam[0], () => {
-          emits(emitParam[0] as any, emitParam[1]());
-        });
-      });
-
-      // binding events
+      // Auto bind all events by default
       mapLayerEvents.forEach((eventName) => {
-        if ($gmapOptions.autoBindAllEvents || $attrs[eventName]) {
-          map.value?.addListener(eventName, (ev: any) => {
-            emits(eventName as any, ev);
-          });
-        }
+        map.value?.addListener(eventName, (ev: any) => {
+          emits(eventName, ev);
+        });
       });
 
       // manually trigger center and zoom
@@ -410,7 +448,19 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ vueMap });
+defineExpose({
+  vueMap,
+  panBy,
+  panTo,
+  panToBounds,
+  fitBounds,
+  currentResizeBus,
+  _resizeCallback,
+  _delayedResizeCallback,
+  resize,
+  resizePreserveCenter,
+  getRecycleKey,
+});
 </script>
 
 <style lang="stylus" scoped>

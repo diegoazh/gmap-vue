@@ -4,7 +4,7 @@ import type { Emitter, EventType } from 'mitt';
 import mitt from 'mitt';
 import { nextTick, ref, type Ref, watch } from 'vue';
 
-// not used
+// not used yet
 type Events = {};
 
 interface Props {
@@ -19,10 +19,18 @@ const currentResizeBus: Ref<Emitter<Record<EventType, unknown>> | undefined> =
 let _resizeCallback: () => void;
 let _delayedResizeCallback: () => Promise<void>;
 
+/**
+ * This function should be used to set and use the defined resize bus function
+ * the default one or a custom one
+ *
+ * @param {google.maps.Map} map - The Google Maps instance
+ * @param {Object} props - The Vue props of MapLayer component
+ * @param {() => void} resizeFn - The resize function that _resizeCallback function should use
+ */
 export function onMountedResizeBusHook(
   map: google.maps.Map,
   props: { [key: string]: any },
-  resize: () => void
+  resizeFn: () => void
 ) {
   if (!props.resizeBus) {
     currentResizeBus.value = defaultResizeBus;
@@ -32,8 +40,8 @@ export function onMountedResizeBusHook(
     currentResizeBus.value = props.resizeBus;
   }
 
-  _resizeCallback = (preserveCenter = false): void => {
-    resize();
+  _resizeCallback = (): void => {
+    resizeFn();
   };
 
   _delayedResizeCallback = (): Promise<void> => {
@@ -61,16 +69,37 @@ export function onMountedResizeBusHook(
   );
 }
 
+/**
+ * Function that should be used on MapLayer component on unmount hook
+ *
+ * @returns void
+ */
 export function onUnmountedResizeBusHook() {
   if (currentResizeBus.value) {
     currentResizeBus.value.off('resize', _delayedResizeCallback);
   }
 }
 
+/**
+ * This function return the defaultResizeBus function
+ *
+ * @returns {() => void}
+ */
 export function getDefaultResizeBus() {
   return defaultResizeBus;
 }
 
+/**
+ * @typedef ResizeBus
+ * @property {() => void} currentResizeBus
+ * @property {() => void} _resizeCallback
+ * @property {() => void} _delayedResizeCallback
+ */
+/**
+ * this function returns the rezise bus functions
+ *
+ * @returns {ResizeBus}
+ */
 export function useResizeBus() {
   return {
     currentResizeBus,

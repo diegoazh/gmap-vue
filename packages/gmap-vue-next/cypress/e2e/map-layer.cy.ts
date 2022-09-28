@@ -6,6 +6,7 @@ describe('MapLayer component', () => {
   it('visits the app root url', () => {
     const newCenter = { lat: 88, lng: 100 };
     cy.visit('/');
+    cy.get('button[name=map]').click();
     cy.contains('h2', 'Test E2E: Map layer');
     cy.get('.gmap-vue-container > .gmap-vue-map > div');
     cy.get('input[name=lat]')

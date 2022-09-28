@@ -15,9 +15,15 @@ import Marker from './components/marker-icon.vue';
 // import StreetViewPanorama from './components/street-view-panorama.vue';
 import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
 import { pluginMapComponentBuilder } from './composables/plugin-map-component-builder';
-import { getPromiseLazyBuilderFn, saveLazyPromiseAndFinalOptions } from './composables/promise-lazy-builder';
+import {
+  getPromiseLazyBuilderFn,
+  saveLazyPromiseAndFinalOptions,
+} from './composables/promise-lazy-builder';
 import { getDefaultResizeBus } from './composables/resize-bus';
-import type { IGoogleMapsApiObject, IPluginOptions } from './interfaces/gmap-vue.interface';
+import type {
+  IGoogleMapsApiObject,
+  IPluginOptions,
+} from './interfaces/gmap-vue.interface';
 import type { GlobalGoogleObject } from './types/gmap-vue.types';
 import composables from './composables';
 
@@ -149,7 +155,6 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
   const finalOptions: IPluginOptions = {
     dynamicLoad: false,
     installComponents: true,
-    autoBindAllEvents: false,
     load: {
       libraries: 'places',
     } as any,

@@ -7,9 +7,10 @@ const port = process.env.PORT || 4173;
 
 const server = http.createServer((req, res) => {
   const baseUrl = path.resolve(__dirname, './dist');
-  const filePath = req.url === '/'
-    ? path.join(baseUrl, 'index.html')
-    : !/^https?:\/\//gim.test(req.url)
+  const filePath =
+    req.url === '/'
+      ? path.join(baseUrl, 'index.html')
+      : !/^https?:\/\//gim.test(req.url)
       ? path.join(baseUrl, req.url)
       : req.url;
   const extension = path.extname(filePath);

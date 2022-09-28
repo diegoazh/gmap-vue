@@ -10,31 +10,37 @@
       <small>
         <strong>Lat:</strong>
       </small>
-      <input v-model.number.lazy.trim="reportedMapCenter.lat"
-             name="lat"
-             step="0.00001"
-             type="number"
-             @change="sync"
-             @keyup.enter="setCenter" />
+      <input
+        v-model.number.lazy.trim="reportedMapCenter.lat"
+        name="lat"
+        step="0.00001"
+        type="number"
+        @change="sync"
+        @keyup.enter="setCenter"
+      />
       &nbsp;
       <small><strong>Lng:</strong></small>
-      <input v-model.number.lazy.trim="reportedMapCenter.lng"
-             name="lng"
-             step="0.00001"
-             type="number"
-             @change="sync"
-             @keyup.enter="setCenter" />
+      <input
+        v-model.number.lazy.trim="reportedMapCenter.lng"
+        name="lng"
+        step="0.00001"
+        type="number"
+        @change="sync"
+        @keyup.enter="setCenter"
+      />
     </div>
 
-    <br>
+    <br />
 
     <div class="flex-container">
       <div>
-        <gmap-map :center="mapCenter"
-                  :zoom="12"
-                  class="map-container"
-                  @center_changed="updateCenter"
-                  @idle="sync">
+        <gmap-map
+          :center="mapCenter"
+          :zoom="12"
+          class="map-container"
+          @center_changed="updateCenter"
+          @idle="sync"
+        >
         </gmap-map>
       </div>
       <div>
@@ -53,7 +59,9 @@
 <script>
 import GmapVue from '../../../dist/main.es';
 
-const { composables: { getMapPromise } } = GmapVue;
+const {
+  composables: { getMapPromise },
+} = GmapVue;
 
 export default {
   name: 'MapTest',
@@ -61,16 +69,16 @@ export default {
     return {
       reportedMapCenter: {
         lat: 1.32,
-        lng: 103.8
+        lng: 103.8,
       },
       mapCenter: {
         lat: 1.32,
-        lng: 103.8
+        lng: 103.8,
       },
       pov: {
         pitch: 0,
-        heading: 0
-      }
+        heading: 0,
+      },
     };
   },
   onMounted() {
@@ -80,17 +88,20 @@ export default {
     updateCenter(latLng) {
       this.reportedMapCenter = {
         lat: latLng.lat(),
-        lng: latLng.lng()
+        lng: latLng.lng(),
       };
     },
     sync() {
-      this.mapCenter = this.reportedMapCenter;
+      this.mapCenter.lat = this.reportedMapCenter.lat;
+      this.mapCenter.lng = this.reportedMapCenter.lng;
     },
     async setCenter() {
       const map = await getMapPromise();
-      map.setCenter(this.reportedMapCenter);
-    }
-  }
+      this.mapCenter.lat = this.reportedMapCenter.lat;
+      this.mapCenter.lng = this.reportedMapCenter.lng;
+      map.setCenter(this.mapCenter);
+    },
+  },
 };
 </script>
 

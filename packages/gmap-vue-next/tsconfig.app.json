@@ -9,6 +9,10 @@
     "src/**/__tests__/*"
   ],
   "compilerOptions": {
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
     "target": "ES2020",
     "composite": true,
     "baseUrl": ".",

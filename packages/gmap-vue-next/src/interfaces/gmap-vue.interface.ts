@@ -31,7 +31,6 @@ export interface ILoadPluginOptions {
 export interface IPluginOptions {
   dynamicLoad: boolean;
   installComponents: boolean;
-  autoBindAllEvents: boolean;
   load?: ILoadPluginOptions;
   loadCn?: boolean;
 }

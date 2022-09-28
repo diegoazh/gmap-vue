@@ -25,5 +25,9 @@ module.exports = {
   },
   globals: {
     google: true,
+    globalThis: true,
+  },
+  rules: {
+    '@typescript-eslint/no-unused-vars': ['warn', { ignoreRestSiblings: true }],
   },
 };
