@@ -155,14 +155,18 @@ export function downArrowSimulator(input: AutocompleteHtmlInput): void {
       listener = (event: KeyboardEvent) => {
         const suggestionSelected =
           document.getElementsByClassName('pac-item-selected').length > 0;
-        if (event.which === 13 && !suggestionSelected) {
-          const simulatedEvent = document.createEvent('Event') as Event & {
-            keyCode: any;
-            which: any;
-          };
-          simulatedEvent.keyCode = 40;
-          simulatedEvent.which = 40;
-          origListener.apply(input, [simulatedEvent]);
+        if (
+          event.key === 'Enter' &&
+          event.code === 'Enter' &&
+          !suggestionSelected
+        ) {
+          const simulatedArrowDownKeyDownEvent = new KeyboardEvent('keydown', {
+            key: 'ArrowDown',
+            code: 'ArrowDown',
+            keyCode: 40,
+            which: 40,
+          });
+          origListener.apply(input, [simulatedArrowDownKeyDownEvent]);
         }
 
         origListener.apply(input, [event]);
@@ -359,11 +363,27 @@ export function bindProps(
 }
 
 /**
- * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
- * @typedef {Object} PropEvents
- * @property {string[]} eventNames - The event names
- * @property {[string, () => void][]} emitParams - The array of params to use on every emit call
+ * This function helps you to bind events from Google Maps API to Vue events on setup
+ *
+ * Note: For composition API. This function should be used on setup script.
+ *
+ * @param  {string[]} events - An array of string with all events that you want to bind
+ * @param  {Object} AnyGoogleMapsClassInstance - Any Google Maps instance
+ * @param {() => void} emits - The Vue emit object built with defineEmits function
+ * @returns {void}
  */
+export function bindGoogleMapsEventsToVueEventsOnSetup(
+  events: string[],
+  AnyGoogleMapsClassInstance: Record<string, any>,
+  emits: (ev: string, value: any) => void
+): void {
+  events.forEach((eventName) => {
+    AnyGoogleMapsClassInstance?.addListener(eventName, (ev: any) => {
+      emits(eventName, ev);
+    });
+  });
+}
+
 /**
  * Binds the properties defined in props to the google maps instance.
  * If the prop is an Object type, and we wish to track the properties
@@ -375,9 +395,9 @@ export function bindProps(
  *
  * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
  * @param  {Object} props - Vue component props  of the component that should be synced with the Google Maps instances props
- * @param {ISinglePluginComponentConfig} propComponentConfig - The plugin component configuration for this Google Maps instance
+ * @param {SinglePluginComponentConfig} propComponentConfig - The plugin component configuration for this Google Maps instance
  * @param {() => void} emits - The Vue emit object built with defineEmits function
- * @returns {PropEvents} The object which contain all event names to and params that should be used to add listener to the Google Maps instance
+ * @returns {void} The object which contain all event names to and params that should be used to add listener to the Google Maps instance
  */
 export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
   AnyGoogleMapsClassInstance: Record<string, any>,

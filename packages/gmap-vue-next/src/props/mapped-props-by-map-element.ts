@@ -497,20 +497,20 @@ export const placeInputMappedProps = {
   },
 };
 
-export const clusterIconMappedProps = {
-  algorithm: {
-    type: Object,
-  },
-  onClusterClick: {
-    type: Function,
-  },
-  renderer: {
-    type: Object,
-  },
-  options: {
-    type: Object,
-  },
-};
+// export const clusterIconMappedProps = {
+//   algorithm: {
+//     type: Object,
+//   },
+//   onClusterClick: {
+//     type: Function,
+//   },
+//   renderer: {
+//     type: Object,
+//   },
+//   options: {
+//     type: Object,
+//   },
+// };
 
 export default {
   autocompleteMappedProps,
@@ -520,11 +520,11 @@ export default {
   infoWindowMappedProps,
   kmlLayerMappedProps,
   // mapMappedProps,
-  markerMappedProps,
+  // markerMappedProps,
   streetViewPanoramaMappedProps,
   polygonMappedProps,
   polylineMappedProps,
   rectangleMappedProps,
   placeInputMappedProps,
-  clusterIconMappedProps,
+  // clusterIconMappedProps,
 };

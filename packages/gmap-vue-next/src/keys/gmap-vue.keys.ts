@@ -1,13 +1,14 @@
 import type { InjectionKey } from 'vue';
+import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 
 export const $mapPromise = Symbol('mapPromise') as InjectionKey<
   Promise<google.maps.Map | undefined>
 >;
 export const $clusterPromise = Symbol('clusterPromise') as InjectionKey<
-  Promise<any | undefined> // TODO: type this any
+  Promise<MarkerClusterer | undefined>
 >;
 export const $markerPromise = Symbol('markerPromise') as InjectionKey<
-  Promise<google.maps.Marker | undefined> // TODO: type this any
+  Promise<google.maps.Marker | undefined>
 >;
 // export const $map = Symbol() as InjectionKey<google.maps.Map | undefined>;
 // export const $googleMapsAPIPromise = Symbol() as InjectionKey<Promise<void>>;

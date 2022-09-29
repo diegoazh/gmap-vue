@@ -1,3 +1,7 @@
+<template>
+  <VNodeMarkerIcon />
+</template>
+
 <script lang="tsx" setup>
 import {
   defineProps,
@@ -16,6 +20,7 @@ import {
 import { $clusterPromise, $markerPromise } from '@/keys/gmap-vue.keys';
 import { getMapPromise } from '@/composables/google-maps-promise';
 import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValues,
 } from '@/composables/helpers';
@@ -24,6 +29,13 @@ import {
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
 
+/**
+ * Marker component
+ * @displayName Marker
+ * @see [source code](/guide/marker.html#source-code)
+ * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/markers)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/marker)
+ */
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
@@ -51,7 +63,7 @@ interface IMarkerIconVueComponentProps {
   crossOnDrag?: boolean;
   cursor?: string;
   draggable?: boolean;
-  icon?: string | symbol | google.maps.Icon;
+  icon?: string | google.maps.Icon | google.maps.Symbol | null;
   label?: string | google.maps.MarkerLabel;
   opacity?: number;
   optimized?: boolean;
@@ -90,7 +102,7 @@ const slots = useSlots();
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const clusterPromise = inject($clusterPromise);
+const clusterPromise = inject($clusterPromise, undefined);
 const clusterOwner: Ref<any | undefined> = ref(); // TODO: add types for this any
 
 /*******************************************************************************
@@ -102,7 +114,9 @@ const promise = getMapPromise()
   .then((mapInstance) => {
     map = mapInstance;
     // Initialize the maps with the given options
-    const initialOptions: { [key: string]: any } = {
+    const initialOptions: IMarkerIconVueComponentProps & {
+      map: google.maps.Map | undefined;
+    } = {
       ...props.options,
       map,
       ...getPropsValues(props),
@@ -110,7 +124,7 @@ const promise = getMapPromise()
     const { options: extraOptions, ...finalOptions } = initialOptions;
 
     if (clusterPromise) {
-      finalOptions.map = null;
+      finalOptions.map = undefined;
     }
 
     markerInstance.value = new google.maps.Marker(finalOptions);
@@ -127,11 +141,11 @@ const promise = getMapPromise()
     );
 
     // binding events
-    markerIconEvents.forEach((eventName) => {
-      markerInstance.value?.addListener(eventName, (ev: any) => {
-        emits(eventName, ev);
-      });
-    });
+    bindGoogleMapsEventsToVueEventsOnSetup(
+      markerIconEvents,
+      markerInstance.value,
+      emits
+    );
 
     markerInstance.value?.addListener('dragend', () => {
       const newPosition = markerInstance.value?.getPosition();
@@ -147,7 +161,7 @@ const promise = getMapPromise()
 
     if (clusterPromise) {
       clusterPromise.then((clusterInstance) => {
-        clusterInstance.addMarker(markerInstance.value!);
+        clusterInstance?.addMarker(markerInstance.value!);
         clusterOwner.value = clusterInstance;
       });
     }
@@ -183,6 +197,8 @@ onUnmounted(() => {
   if (clusterOwner.value) {
     // Repaint will be performed in `updated()` of cluster
     clusterOwner.value.removeMarker(markerInstance.value!, true);
+    /* Performance optimization when destroying a large number of markers */
+    clusterOwner.value = undefined;
   } else if (markerInstance.value && (markerInstance.value as any).setMap) {
     (markerInstance.value as any).setMap(null);
   }
@@ -214,9 +230,5 @@ if (
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose(VNodeMarkerIcon);
+defineExpose({ VNodeMarkerIcon });
 </script>
-
-<template>
-  <VNodeMarkerIcon />
-</template>

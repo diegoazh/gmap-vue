@@ -24,6 +24,7 @@ import {
   withDefaults,
 } from 'vue';
 import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValues,
   twoWayBindingWrapper,
@@ -47,6 +48,13 @@ import {
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
 
+/**
+ * Map component
+ * @displayName Map
+ * @see [source code](/guide/map.html#source-code)
+ * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/basics)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
+ */
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
@@ -329,7 +337,7 @@ onMounted(() => {
         throw new Error(`we can find the template ref: 'vueMap'`);
       }
 
-      const initialOptions = {
+      const initialOptions: Partial<IMapLayerVueComponentProps> = {
         ...props.options,
         ...getPropsValues(props),
       };
@@ -361,11 +369,7 @@ onMounted(() => {
       );
 
       // Auto bind all events by default
-      mapLayerEvents.forEach((eventName) => {
-        map.value?.addListener(eventName, (ev: any) => {
-          emits(eventName, ev);
-        });
-      });
+      bindGoogleMapsEventsToVueEventsOnSetup(mapLayerEvents, map.value, emits);
 
       // manually trigger center and zoom
       twoWayBindingWrapper(

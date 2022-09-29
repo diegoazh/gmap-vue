@@ -2,7 +2,7 @@ import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
 // import Autocomplete from './components/autocomplete-input.vue';
 // import Circle from './components/circle-shape.vue';
-// import Cluster from './components/cluster-icon.vue';
+import Cluster from './components/cluster-icon.vue';
 // import DrawingManager from './components/drawing-manager.vue';
 // import HeatmapLayer from './components/heatmap-layer.vue';
 // import InfoWindow from './components/info-window.vue';
@@ -110,7 +110,7 @@ const components = {
   // Polyline,
   // Polygon,
   // Circle,
-  // Cluster,
+  Cluster,
   // Rectangle,
   // DrawingManager,
   // InfoWindow,
