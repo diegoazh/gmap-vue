@@ -20,7 +20,7 @@
     "env:test": "cross-env NODE_ENV=test",
     "env:dev": "cross-env NODE_ENV=development",
     "dev": "vite",
-    "dev:e2e": "vite --config cypress/runner/vite.config.js",
+    "dev:e2e": "pnpm run build && vite --config cypress/runner/vite.config.js",
     "preview": "vite preview --port 4173",
     "build": "vite build",
     "tsc:build": "tsc --project tsconfig.app.json",

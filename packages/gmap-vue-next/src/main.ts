@@ -5,7 +5,7 @@ import type { App, Plugin } from 'vue';
 import Cluster from './components/cluster-icon.vue';
 // import DrawingManager from './components/drawing-manager.vue';
 // import HeatmapLayer from './components/heatmap-layer.vue';
-// import InfoWindow from './components/info-window.vue';
+import InfoWindow from './components/info-window.vue';
 // import KmlLayer from "./components/kml-layer.vue";
 import MapLayer from './components/map-layer.vue';
 import Marker from './components/marker-icon.vue';
@@ -113,7 +113,7 @@ const components = {
   Cluster,
   // Rectangle,
   // DrawingManager,
-  // InfoWindow,
+  InfoWindow,
   MapLayer,
   // Autocomplete,
   // StreetViewPanorama,
@@ -195,8 +195,10 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
   app.config.globalProperties.$gmapOptions = finalOptions;
 
   if (finalOptions.installComponents) {
-    app.component('GmapMap', MapLayer).component('GmapMarker', Marker);
-    // .component('GmapInfoWindow', InfoWindow)
+    app
+      .component('GmapMap', MapLayer)
+      .component('GmapMarker', Marker)
+      .component('GmapInfoWindow', InfoWindow);
     // .component('GmapHeatmapLayer', HeatmapLayer)
     // .component('GmapKmlLayer', KmlLayer)
     // .component('GmapPolyline', Polyline)

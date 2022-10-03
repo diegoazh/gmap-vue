@@ -5,7 +5,11 @@ import type {
   IVueProp,
 } from '@/interfaces/gmap-vue.interface';
 
-export type PluginComponentNames = 'GmapMap' | 'GmapMarker' | 'GmapCluster';
+export type PluginComponentNames =
+  | 'GmapMap'
+  | 'GmapMarker'
+  | 'GmapCluster'
+  | 'GmapInfoWindow';
 /**
  * @typedef {Object} SinglePluginComponentConfig
  * @property {string[]} noBind - Props with should not be bind to Google Maps. Has precedence over twoWay

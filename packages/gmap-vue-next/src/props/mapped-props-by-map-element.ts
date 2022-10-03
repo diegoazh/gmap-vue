@@ -74,27 +74,27 @@ export const heatMapLayerMappedProps = {
   },
 };
 
-export const infoWindowMappedProps = {
-  content: {
-    type: Object,
-    twoWay: true,
-  },
-  options: {
-    type: Object,
-    required: false,
-    default() {
-      return {};
-    },
-  },
-  position: {
-    type: Object,
-    twoWay: true,
-  },
-  zIndex: {
-    type: Number,
-    twoWay: true,
-  },
-};
+// export const infoWindowMappedProps = {
+//   content: {
+//     type: Object,
+//     twoWay: true,
+//   },
+//   options: {
+//     type: Object,
+//     required: false,
+//     default() {
+//       return {};
+//     },
+//   },
+//   position: {
+//     type: Object,
+//     twoWay: true,
+//   },
+//   zIndex: {
+//     type: Number,
+//     twoWay: true,
+//   },
+// };
 
 export const kmlLayerMappedProps = {
   clickable: {
@@ -517,7 +517,7 @@ export default {
   circleMappedProps,
   drawingManagerMappedProps,
   heatMapLayerMappedProps,
-  infoWindowMappedProps,
+  // infoWindowMappedProps,
   kmlLayerMappedProps,
   // mapMappedProps,
   // markerMappedProps,

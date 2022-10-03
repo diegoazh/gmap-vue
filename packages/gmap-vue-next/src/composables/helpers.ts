@@ -40,33 +40,33 @@ export function capitalizeFirstLetter(text: string): string {
 }
 
 /**
- * Function that helps you to get all non nullable props from a component
+ * Function that helps you to get all non-nullable props from a component
  *
  * @param  {Object} vueInst the Vue component instance
  * @param  {Object} props the props object
  * @returns {Object}
  */
 export function getPropsValues(
-  props: Record<string, any>,
+  props: { [key: string | number | symbol]: unknown },
   vueInst?: ComponentPublicInstance
-): { [key: string]: IVueProp } {
+): Omit<{ [key: string | number | symbol]: IVueProp }, 'options'> {
   if (vueInst) {
     return Object.keys(props).reduce((acc, propKey) => {
-      if ((vueInst?.$props as any)[propKey] != null) {
+      if (propKey !== 'options' && (vueInst?.$props as any)[propKey] != null) {
         acc[propKey] = (vueInst?.$props as any)[propKey];
       }
 
       return acc;
-    }, {} as { [key: string]: IVueProp });
+    }, {} as { [key: string | number | symbol]: IVueProp });
   }
 
   return Object.keys(props).reduce((acc, propKey) => {
-    if ((props as any)[propKey] != null) {
+    if (propKey !== 'options' && (props as any)[propKey] != null) {
       acc[propKey] = (props as any)[propKey];
     }
 
     return acc;
-  }, {} as { [key: string]: IVueProp });
+  }, {} as { [key: string | number | symbol]: IVueProp });
 }
 
 /**
@@ -448,7 +448,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
     // although this may really be the user's responsibility
     if (
       (typeof propValue !== 'object' && !Array.isArray(propValue)) ||
-      !trackProperties.length
+      !trackProperties?.length
     ) {
       // Track the object deeply
       watch(

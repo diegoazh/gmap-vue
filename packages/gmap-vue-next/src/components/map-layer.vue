@@ -337,21 +337,19 @@ onMounted(() => {
         throw new Error(`we can find the template ref: 'vueMap'`);
       }
 
-      const initialOptions: Partial<IMapLayerVueComponentProps> = {
+      const mapLayerOptions: Partial<IMapLayerVueComponentProps> = {
         ...props.options,
         ...getPropsValues(props),
       };
-
-      const { options: extraOptions, ...finalOptions } = initialOptions;
 
       const recycleKey = getRecycleKey();
 
       if (props?.options?.recycle && window[recycleKey]) {
         vueMap.value.appendChild(window[recycleKey].div);
         map.value = window[recycleKey].map as google.maps.Map;
-        map.value.setOptions(finalOptions);
+        map.value.setOptions(mapLayerOptions);
       } else {
-        map.value = new google.maps.Map(vueMap.value, finalOptions);
+        map.value = new google.maps.Map(vueMap.value, mapLayerOptions);
         window[recycleKey] = { map: map.value };
       }
 

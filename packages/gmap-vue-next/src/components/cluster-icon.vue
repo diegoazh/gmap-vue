@@ -8,6 +8,7 @@
 <script lang="ts" setup>
 import {
   defineProps,
+  inject,
   onBeforeUnmount,
   onUnmounted,
   onUpdated,
@@ -26,13 +27,12 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
-import { getMapPromise } from '@/composables/google-maps-promise';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValues,
 } from '@/composables/helpers';
-import { $clusterPromise } from '@/keys/gmap-vue.keys';
+import { $clusterPromise, $mapPromise } from '@/keys/gmap-vue.keys';
 
 /**
  * Cluster component
@@ -73,14 +73,19 @@ const emits = defineEmits(getComponentEventsConfig('GmapCluster'));
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
+const mapPromise = inject($mapPromise);
 
 /*******************************************************************************
  * MARKER CLUSTER
  ******************************************************************************/
 let map: google.maps.Map | undefined;
 const clusterInstance: Ref<MarkerClusterer | undefined> = ref();
-const promise = getMapPromise()
-  .then((mapInstance) => {
+const promise = mapPromise
+  ?.then((mapInstance) => {
+    if (!mapInstance) {
+      throw new Error('The GmapMap component is not defined or initialized');
+    }
+
     map = mapInstance;
 
     // Initialize the maps with the given options

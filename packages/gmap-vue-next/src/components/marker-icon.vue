@@ -17,8 +17,11 @@ import {
   type VNode,
   withDefaults,
 } from 'vue';
-import { $clusterPromise, $markerPromise } from '@/keys/gmap-vue.keys';
-import { getMapPromise } from '@/composables/google-maps-promise';
+import {
+  $clusterPromise,
+  $mapPromise,
+  $markerPromise,
+} from '@/keys/gmap-vue.keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
@@ -28,6 +31,7 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 
 /**
  * Marker component
@@ -102,39 +106,43 @@ const slots = useSlots();
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
+const mapPromise = inject($mapPromise);
 const clusterPromise = inject($clusterPromise, undefined);
-const clusterOwner: Ref<any | undefined> = ref(); // TODO: add types for this any
+const clusterOwner: Ref<MarkerClusterer | undefined> = ref();
 
 /*******************************************************************************
  * MARKER
  ******************************************************************************/
 let map: google.maps.Map | undefined;
 const markerInstance: Ref<google.maps.Marker | undefined> = ref();
-const promise = getMapPromise()
-  .then((mapInstance) => {
+const promise = mapPromise
+  ?.then((mapInstance) => {
+    if (!mapInstance) {
+      throw new Error('The GmapMap component is not defined or initialized');
+    }
+
     map = mapInstance;
     // Initialize the maps with the given options
-    const initialOptions: IMarkerIconVueComponentProps & {
+    const markerIconOptions: Partial<IMarkerIconVueComponentProps> & {
       map: google.maps.Map | undefined;
     } = {
       ...props.options,
       map,
       ...getPropsValues(props),
     };
-    const { options: extraOptions, ...finalOptions } = initialOptions;
 
     if (clusterPromise) {
-      finalOptions.map = undefined;
+      markerIconOptions.map = undefined;
     }
 
-    markerInstance.value = new google.maps.Marker(finalOptions);
+    markerInstance.value = new google.maps.Marker(markerIconOptions);
 
     const propComponentConfig = getComponentPropsConfig('GmapMarker');
     const markerIconEvents = getComponentEventsConfig('GmapMarker', 'auto');
 
     // bind prop events of google maps
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      markerInstance,
+      markerInstance.value,
       props,
       propComponentConfig,
       emits

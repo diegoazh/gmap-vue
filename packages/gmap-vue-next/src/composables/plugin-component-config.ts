@@ -100,6 +100,33 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
+  GmapInfoWindow: {
+    noBind: ['ariaLabel', 'options'],
+    twoWay: [
+      'content',
+      'disableAutoPan',
+      'maxWidth',
+      'minWidth',
+      'pixelOffset',
+      'position',
+      'zIndex',
+    ],
+    trackProperties: {},
+    events: {
+      /**
+       * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindow-Events
+       */
+      auto: [
+        'closeclick',
+        'content_changed',
+        'domready',
+        'position_changed',
+        'visible',
+        'zindex_changed',
+      ],
+      manual: [],
+    },
+  },
 };
 
 /**
