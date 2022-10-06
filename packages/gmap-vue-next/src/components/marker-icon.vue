@@ -2,44 +2,7 @@
   <VNodeMarkerIcon />
 </template>
 
-<script lang="tsx" setup>
-import {
-  defineProps,
-  h,
-  inject,
-  onUnmounted,
-  provide,
-  type Ref,
-  ref,
-  type RendererElement,
-  type RendererNode,
-  useSlots,
-  type VNode,
-  withDefaults,
-} from 'vue';
-import {
-  $clusterPromise,
-  $mapPromise,
-  $markerPromise,
-} from '@/keys/gmap-vue.keys';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValues,
-} from '@/composables/helpers';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
-
-/**
- * Marker component
- * @displayName Marker
- * @see [source code](/guide/marker.html#source-code)
- * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/markers)
- * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/marker)
- */
+<script lang="ts">
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
@@ -83,6 +46,46 @@ interface IMarkerIconVueComponentProps {
    */
   attribution?: Record<string, unknown>; // TODO: Define properties of this object.
 }
+</script>
+
+<script lang="tsx" setup>
+import {
+  defineProps,
+  h,
+  inject,
+  onUnmounted,
+  provide,
+  type Ref,
+  ref,
+  type RendererElement,
+  type RendererNode,
+  useSlots,
+  type VNode,
+  withDefaults,
+} from 'vue';
+import {
+  $clusterPromise,
+  $mapPromise,
+  $markerPromise,
+} from '@/keys/gmap-vue.keys';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getPropsValues,
+} from '@/composables/helpers';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+import type { MarkerClusterer } from '@googlemaps/markerclusterer';
+
+/**
+ * Marker component
+ * @displayName Marker
+ * @see [source code](/guide/marker.html#source-code)
+ * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/markers)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/marker)
+ */
 
 /*******************************************************************************
  * DEFINE COMPONENT PROPS
@@ -238,5 +241,5 @@ if (
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ VNodeMarkerIcon });
+defineExpose({ VNodeMarkerIcon, markerInstance });
 </script>

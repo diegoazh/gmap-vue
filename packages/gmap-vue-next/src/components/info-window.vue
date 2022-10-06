@@ -8,6 +8,35 @@
   </div>
 </template>
 
+<script lang="ts">
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
+/**
+ * Info Window Google Maps properties documentation
+ *
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.ariaLabel
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.content
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.disableAutoPan
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.maxWidth
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.minWidth
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.pixelOffset
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.position
+ * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.zIndex
+ */
+interface IInfoWindowVueComponentProps {
+  ariaLabel?: string;
+  disableAutoPan?: boolean;
+  maxWidth?: number;
+  minWidth?: number;
+  pixelOffset?: google.maps.Size;
+  position?: google.maps.LatLng | google.maps.LatLngLiteral;
+  zIndex?: number;
+  opened?: boolean;
+  options: Record<string | number | symbol, unknown>;
+}
+</script>
+
 <script lang="ts" setup>
 import {
   defineProps,
@@ -41,32 +70,6 @@ import {
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/infowindows)
  * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/info-window)
  */
-/*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Info Window Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.ariaLabel
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.content
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.disableAutoPan
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.maxWidth
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.minWidth
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.pixelOffset
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.position
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.zIndex
- */
-interface IInfoWindowVueComponentProps {
-  ariaLabel?: string;
-  disableAutoPan?: boolean;
-  maxWidth?: number;
-  minWidth?: number;
-  pixelOffset?: google.maps.Size;
-  position?: google.maps.LatLng | google.maps.LatLngLiteral;
-  zIndex?: number;
-  opened?: boolean;
-  options: Record<string | number | symbol, unknown>;
-}
 
 /*******************************************************************************
  * DEFINE COMPONENT PROPS
@@ -159,7 +162,7 @@ provide($infoWindowPromise, promise);
 function openInfoWindow(): void {
   if (props.opened) {
     if (markerOwner.value) {
-      infoWindowInstance.value?.open(map, markerOwner);
+      infoWindowInstance.value?.open(map, markerOwner.value);
     } else {
       infoWindowInstance.value?.open(map);
     }
@@ -203,5 +206,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ flyaway });
+defineExpose({ infoWindowInstance });
 </script>

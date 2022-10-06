@@ -5,6 +5,27 @@
   </div>
 </template>
 
+<script lang="ts">
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
+/**
+ * Marker Google Maps properties documentation
+ *
+ * @see [algorithm](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#algorithm)
+ * @see [markers](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#markers)
+ * @see [onClusterClick](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#onClusterClick)
+ * @see [renderer](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#renderer)
+ */
+interface IMarkerClusterVueComponentProps {
+  algorithm?: Algorithm;
+  markers?: google.maps.Marker[];
+  onClusterClick?: onClusterClickHandler;
+  renderer?: Renderer;
+  options?: Record<string, any>;
+}
+</script>
+
 <script lang="ts" setup>
 import {
   defineProps,
@@ -14,7 +35,7 @@ import {
   onUpdated,
   provide,
   ref,
-  Ref,
+  type Ref,
   withDefaults,
 } from 'vue';
 import type {
@@ -41,24 +62,6 @@ import { $clusterPromise, $mapPromise } from '@/keys/gmap-vue.keys';
  * @see [Official documentation](https://googlemaps.github.io/js-markerclusterer/modules.html)
  * @see [Marker clusterer](https://developers.google.com/maps/documentation/javascript/marker-clustering#maps_marker_clustering-javascript)
  */
-/*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Marker Google Maps properties documentation
- *
- * @see [algorithm](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#algorithm)
- * @see [markers](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#markers)
- * @see [onClusterClick](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#onClusterClick)
- * @see [renderer](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#renderer)
- */
-interface IMarkerClusterVueComponentProps {
-  algorithm?: Algorithm;
-  markers?: google.maps.Marker[];
-  onClusterClick?: onClusterClickHandler;
-  renderer?: Renderer;
-  options?: Record<string, any>;
-}
 
 /*******************************************************************************
  * DEFINE COMPONENT PROPS

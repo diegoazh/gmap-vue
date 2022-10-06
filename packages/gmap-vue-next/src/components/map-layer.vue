@@ -10,51 +10,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import {
-  computed,
-  defineEmits,
-  defineProps,
-  onBeforeUnmount,
-  onMounted,
-  onUnmounted,
-  provide,
-  ref,
-  watch,
-  withDefaults,
-} from 'vue';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValues,
-  twoWayBindingWrapper,
-  watchPrimitiveProperties,
-} from '@/composables/helpers';
-import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
-import {
-  onMountedResizeBusHook,
-  onUnmountedResizeBusHook,
-  useResizeBus,
-} from '@/composables/resize-bus';
-import { $mapPromise } from '@/keys/gmap-vue.keys';
-import {
-  getMap,
-  getMapPromise,
-  getMapPromiseDeferred,
-} from '@/composables/google-maps-promise';
-import type { Emitter, EventType } from 'mitt';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-
-/**
- * Map component
- * @displayName Map
- * @see [source code](/guide/map.html#source-code)
- * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/basics)
- * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
- */
+<script lang="ts">
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
@@ -135,6 +91,53 @@ interface IMapLayerVueComponentProps {
   resizeBus?: Emitter<Record<EventType, unknown>>;
   options?: { [key: string]: any };
 }
+</script>
+
+<script lang="ts" setup>
+import {
+  computed,
+  defineEmits,
+  defineProps,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+  provide,
+  ref,
+  watch,
+  withDefaults,
+} from 'vue';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getPropsValues,
+  twoWayBindingWrapper,
+  watchPrimitiveProperties,
+} from '@/composables/helpers';
+import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import {
+  onMountedResizeBusHook,
+  onUnmountedResizeBusHook,
+  useResizeBus,
+} from '@/composables/resize-bus';
+import { $mapPromise } from '@/keys/gmap-vue.keys';
+import {
+  getMap,
+  getMapPromise,
+  getMapPromiseDeferred,
+} from '@/composables/google-maps-promise';
+import type { Emitter, EventType } from 'mitt';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+
+/**
+ * Map component
+ * @displayName Map
+ * @see [source code](/guide/map.html#source-code)
+ * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/basics)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
+ */
 
 /*******************************************************************************
  * DEFINE COMPONENT PROPS
@@ -184,7 +187,7 @@ function getRecycleKey(): string {
  ******************************************************************************/
 const mapPromiseDeferred = getMapPromiseDeferred();
 const promise = getMapPromise();
-const map = getMap();
+const mapInstance = getMap();
 provide($mapPromise, promise);
 
 /*******************************************************************************
@@ -200,8 +203,8 @@ let { _resizeCallback } = useResizeBus();
  * @public
  */
 function resize(): void {
-  if (map.value) {
-    google.maps.event.trigger(map.value, 'resize');
+  if (mapInstance.value) {
+    google.maps.event.trigger(mapInstance.value, 'resize');
   }
 }
 
@@ -212,15 +215,15 @@ function resize(): void {
  * @public
  */
 function resizePreserveCenter(): void {
-  if (!map.value) {
+  if (!mapInstance.value) {
     return;
   }
 
-  const oldCenter = map.value.getCenter();
-  google.maps.event.trigger(map.value, 'resize');
+  const oldCenter = mapInstance.value.getCenter();
+  google.maps.event.trigger(mapInstance.value, 'resize');
 
   if (oldCenter) {
-    map.value.setCenter(oldCenter);
+    mapInstance.value.setCenter(oldCenter);
   }
 }
 
@@ -262,8 +265,8 @@ const finalLatLng = computed(
  * @public
  */
 function panBy(x: number, y: number): void {
-  if (map.value) {
-    map.value.panBy(x, y);
+  if (mapInstance.value) {
+    mapInstance.value.panBy(x, y);
   }
 }
 
@@ -275,8 +278,8 @@ function panBy(x: number, y: number): void {
  * @public
  */
 function panTo(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
-  if (map.value) {
-    map.value.panTo(latLng);
+  if (mapInstance.value) {
+    mapInstance.value.panTo(latLng);
   }
 }
 
@@ -292,8 +295,8 @@ function panToBounds(
   latLngBounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
   padding: number | google.maps.Padding
 ): void {
-  if (map.value) {
-    map.value.panToBounds(latLngBounds, padding);
+  if (mapInstance.value) {
+    mapInstance.value.panToBounds(latLngBounds, padding);
   }
 }
 
@@ -310,8 +313,8 @@ function fitBounds(
   bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
   padding: number | google.maps.Padding
 ): void {
-  if (map.value) {
-    map.value.fitBounds(bounds, padding);
+  if (mapInstance.value) {
+    mapInstance.value.fitBounds(bounds, padding);
   }
 }
 
@@ -321,8 +324,8 @@ function fitBounds(
 watch(
   () => props.zoom,
   (newVal) => {
-    if (map.value && newVal) {
-      map.value.setZoom(newVal);
+    if (mapInstance.value && newVal) {
+      mapInstance.value.setZoom(newVal);
     }
   }
 );
@@ -346,28 +349,32 @@ onMounted(() => {
 
       if (props?.options?.recycle && window[recycleKey]) {
         vueMap.value.appendChild(window[recycleKey].div);
-        map.value = window[recycleKey].map as google.maps.Map;
-        map.value.setOptions(mapLayerOptions);
+        mapInstance.value = window[recycleKey].map as google.maps.Map;
+        mapInstance.value.setOptions(mapLayerOptions);
       } else {
-        map.value = new google.maps.Map(vueMap.value, mapLayerOptions);
-        window[recycleKey] = { map: map.value };
+        mapInstance.value = new google.maps.Map(vueMap.value, mapLayerOptions);
+        window[recycleKey] = { map: mapInstance.value };
       }
 
-      onMountedResizeBusHook(map.value, props, resizePreserveCenter);
+      onMountedResizeBusHook(mapInstance.value, props, resizePreserveCenter);
 
       const mapLayerProps = getComponentPropsConfig('GmapMap');
       const mapLayerEvents = getComponentEventsConfig('GmapMap', 'auto');
 
       // binding properties (two and one way)
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-        map.value,
+        mapInstance.value,
         props,
         mapLayerProps,
         emits
       );
 
       // Auto bind all events by default
-      bindGoogleMapsEventsToVueEventsOnSetup(mapLayerEvents, map.value, emits);
+      bindGoogleMapsEventsToVueEventsOnSetup(
+        mapLayerEvents,
+        mapInstance.value,
+        emits
+      );
 
       // manually trigger center and zoom
       twoWayBindingWrapper(
@@ -376,7 +383,7 @@ onMounted(() => {
           decrement: () => void,
           shouldUpdate: () => boolean
         ) => {
-          map.value?.addListener('center_changed', () => {
+          mapInstance.value?.addListener('center_changed', () => {
             if (shouldUpdate()) {
               /**
                * This event is fired when the map center property changes. It sends the position displayed at the center of the map. If the center or bounds have not been set then the result is undefined. (types: `LatLng|undefined`)
@@ -384,7 +391,7 @@ onMounted(() => {
                * @event center_changed
                * @type {(LatLng|undefined)}
                */
-              emits('center_changed', map.value?.getCenter());
+              emits('center_changed', mapInstance.value?.getCenter());
             }
 
             decrement();
@@ -393,38 +400,38 @@ onMounted(() => {
           const updateCenter = () => {
             increment();
 
-            map.value?.setCenter(finalLatLng.value);
+            mapInstance.value?.setCenter(finalLatLng.value);
           };
 
           watchPrimitiveProperties(['finalLat', 'finalLng'], updateCenter);
         }
       );
 
-      map.value?.addListener('zoom_changed', () => {
+      mapInstance.value?.addListener('zoom_changed', () => {
         /**
          * This event is fired when the map zoom property changes. It sends the zoom of the map. If the zoom has not been set then the result is undefined. (types: `number|undefined`)
          *
          * @event zoom_changed
          * @type {(number|undefined)}
          */
-        emits('zoom_changed', map.value?.getZoom());
+        emits('zoom_changed', mapInstance.value?.getZoom());
       });
-      map.value?.addListener('bounds_changed', () => {
+      mapInstance.value?.addListener('bounds_changed', () => {
         /**
          * This event is fired when the viewport bounds have changed. It sends The lat/lng bounds of the current viewport.
          *
          * @event bounds_changed
          * @type {LatLngBounds}
          */
-        emits('bounds_changed', map.value?.getBounds());
+        emits('bounds_changed', mapInstance.value?.getBounds());
       });
 
       if (!mapPromiseDeferred.resolve) {
         throw new Error('$mapPromiseDeferred.resolve is undefined');
       }
 
-      mapPromiseDeferred.resolve(map.value);
-      return map.value;
+      mapPromiseDeferred.resolve(mapInstance.value);
+      return mapInstance.value;
     })
     .catch((error) => {
       throw error;
@@ -434,7 +441,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   const recycleKey = getRecycleKey();
   if (window[recycleKey]) {
-    window[recycleKey].div = map.value?.getDiv();
+    window[recycleKey].div = mapInstance.value?.getDiv();
   }
 });
 
@@ -442,8 +449,8 @@ onUnmounted(() => {
   onUnmountedResizeBusHook();
 
   // Note: not all Google Maps components support maps
-  if (map.value && (map.value as any)?.setMap) {
-    (map.value as any).setMap(null);
+  if (mapInstance.value && (mapInstance.value as any)?.setMap) {
+    (mapInstance.value as any).setMap(null);
   }
 });
 
@@ -451,7 +458,7 @@ onUnmounted(() => {
  * EXPOSE
  ******************************************************************************/
 defineExpose({
-  vueMap,
+  mapInstance,
   panBy,
   panTo,
   panToBounds,
