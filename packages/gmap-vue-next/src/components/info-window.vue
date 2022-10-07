@@ -194,13 +194,6 @@ onMounted(() => {
   }
 });
 
-onUnmounted(() => {
-  // Note: not all Google Maps components support maps
-  if (infoWindowInstance.value && (infoWindowInstance.value as any).setMap) {
-    (infoWindowInstance.value as any).setMap(null);
-  }
-});
-
 /*******************************************************************************
  * RENDERS
  ******************************************************************************/

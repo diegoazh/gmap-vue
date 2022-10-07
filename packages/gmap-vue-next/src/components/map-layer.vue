@@ -361,20 +361,20 @@ onMounted(() => {
 
       onMountedResizeBusHook(mapInstance.value, props, resizePreserveCenter);
 
-      const mapLayerProps = getComponentPropsConfig('GmapMap');
-      const mapLayerEvents = getComponentEventsConfig('GmapMap', 'auto');
+      const mapLayerPropsConfig = getComponentPropsConfig('GmapMap');
+      const mapLayerEventsConfig = getComponentEventsConfig('GmapMap', 'auto');
 
       // binding properties (two and one way)
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         mapInstance.value,
         props,
-        mapLayerProps,
+        mapLayerPropsConfig,
         emits
       );
 
       // Auto bind all events by default
       bindGoogleMapsEventsToVueEventsOnSetup(
-        mapLayerEvents,
+        mapLayerEventsConfig,
         mapInstance.value,
         emits
       );
@@ -450,11 +450,6 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
   onUnmountedResizeBusHook();
-
-  // Note: not all Google Maps components support maps
-  if (mapInstance.value && (mapInstance.value as any)?.setMap) {
-    (mapInstance.value as any).setMap(null);
-  }
 });
 
 /*******************************************************************************

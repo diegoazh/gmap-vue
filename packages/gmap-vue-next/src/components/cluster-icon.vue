@@ -118,18 +118,21 @@ const promise = mapPromise
       renderer,
     });
 
-    const componentConfig = getComponentPropsConfig('GmapCluster');
-    const clusterEvents = getComponentEventsConfig('GmapCluster', 'auto');
+    const clusterIconPropsConfig = getComponentPropsConfig('GmapCluster');
+    const clusterIconEventsConfig = getComponentEventsConfig(
+      'GmapCluster',
+      'auto'
+    );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       clusterInstance.value,
       props,
-      componentConfig,
+      clusterIconPropsConfig,
       emits
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
-      clusterEvents,
+      clusterIconEventsConfig,
       clusterInstance.value,
       emits
     );
@@ -164,8 +167,7 @@ onBeforeUnmount(() => {
 });
 
 onUnmounted(() => {
-  // Note: not all Google Maps components support maps
-  if (clusterInstance.value && clusterInstance.value.setMap) {
+  if (clusterInstance.value) {
     clusterInstance.value.setMap(null);
   }
 });

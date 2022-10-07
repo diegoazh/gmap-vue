@@ -141,20 +141,23 @@ const promise = mapPromise
 
     markerInstance.value = new google.maps.Marker(markerIconOptions);
 
-    const propComponentConfig = getComponentPropsConfig('GmapMarker');
-    const markerIconEvents = getComponentEventsConfig('GmapMarker', 'auto');
+    const markerIconPropsConfig = getComponentPropsConfig('GmapMarker');
+    const markerIconEventsConfig = getComponentEventsConfig(
+      'GmapMarker',
+      'auto'
+    );
 
     // bind prop events of google maps
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       markerInstance.value,
       props,
-      propComponentConfig,
+      markerIconPropsConfig,
       emits
     );
 
     // binding events
     bindGoogleMapsEventsToVueEventsOnSetup(
-      markerIconEvents,
+      markerIconEventsConfig,
       markerInstance.value,
       emits
     );
@@ -211,8 +214,8 @@ onUnmounted(() => {
     clusterOwner.value.removeMarker(markerInstance.value!, true);
     /* Performance optimization when destroying a large number of markers */
     clusterOwner.value = undefined;
-  } else if (markerInstance.value && (markerInstance.value as any).setMap) {
-    (markerInstance.value as any).setMap(null);
+  } else if (markerInstance.value) {
+    markerInstance.value.setMap(null);
   }
 });
 
