@@ -35,6 +35,8 @@ interface IInfoWindowVueComponentProps {
   opened?: boolean;
   options: Record<string | number | symbol, unknown>;
 }
+
+export default {};
 </script>
 
 <script lang="ts" setup>
@@ -107,9 +109,9 @@ const promise = mapPromise
     const infoWindowOptions: Partial<IInfoWindowVueComponentProps> & {
       map: google.maps.Map | undefined;
     } = {
-      ...props.options,
       map,
       ...getPropsValues(props),
+      ...props.options,
     };
 
     if (markerPromise) {

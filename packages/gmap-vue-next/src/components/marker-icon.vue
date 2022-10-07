@@ -46,6 +46,8 @@ interface IMarkerIconVueComponentProps {
    */
   attribution?: Record<string, unknown>; // TODO: Define properties of this object.
 }
+
+export default {};
 </script>
 
 <script lang="tsx" setup>
@@ -55,7 +57,6 @@ import {
   inject,
   onUnmounted,
   provide,
-  type Ref,
   ref,
   type RendererElement,
   type RendererNode,
@@ -111,13 +112,13 @@ const slots = useSlots();
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
 const clusterPromise = inject($clusterPromise, undefined);
-const clusterOwner: Ref<MarkerClusterer | undefined> = ref();
+const clusterOwner = ref<MarkerClusterer | undefined>();
 
 /*******************************************************************************
  * MARKER
  ******************************************************************************/
 let map: google.maps.Map | undefined;
-const markerInstance: Ref<google.maps.Marker | undefined> = ref();
+const markerInstance = ref<google.maps.Marker | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -129,9 +130,9 @@ const promise = mapPromise
     const markerIconOptions: Partial<IMarkerIconVueComponentProps> & {
       map: google.maps.Map | undefined;
     } = {
-      ...props.options,
       map,
       ...getPropsValues(props),
+      ...props.options,
     };
 
     if (clusterPromise) {

@@ -14,6 +14,8 @@
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
+import type { Emitter, EventType } from 'mitt';
+
 /**
  * MapOptions interface
  *
@@ -91,6 +93,8 @@ interface IMapLayerVueComponentProps {
   resizeBus?: Emitter<Record<EventType, unknown>>;
   options?: { [key: string]: any };
 }
+
+export default {};
 </script>
 
 <script lang="ts" setup>
@@ -125,7 +129,6 @@ import {
   getMapPromise,
   getMapPromiseDeferred,
 } from '@/composables/google-maps-promise';
-import type { Emitter, EventType } from 'mitt';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
@@ -341,8 +344,8 @@ onMounted(() => {
       }
 
       const mapLayerOptions: Partial<IMapLayerVueComponentProps> = {
-        ...props.options,
         ...getPropsValues(props),
+        ...props.options,
       };
 
       const recycleKey = getRecycleKey();

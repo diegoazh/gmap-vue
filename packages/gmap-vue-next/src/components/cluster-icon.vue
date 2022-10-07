@@ -9,6 +9,12 @@
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
+import type {
+  Algorithm,
+  onClusterClickHandler,
+  Renderer,
+} from '@googlemaps/markerclusterer';
+
 /**
  * Marker Google Maps properties documentation
  *
@@ -24,6 +30,8 @@ interface IMarkerClusterVueComponentProps {
   renderer?: Renderer;
   options?: Record<string, any>;
 }
+
+export default {};
 </script>
 
 <script lang="ts" setup>
@@ -35,14 +43,8 @@ import {
   onUpdated,
   provide,
   ref,
-  type Ref,
   withDefaults,
 } from 'vue';
-import type {
-  Algorithm,
-  onClusterClickHandler,
-  Renderer,
-} from '@googlemaps/markerclusterer';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import {
   getComponentEventsConfig,
@@ -82,7 +84,7 @@ const mapPromise = inject($mapPromise);
  * MARKER CLUSTER
  ******************************************************************************/
 let map: google.maps.Map | undefined;
-const clusterInstance: Ref<MarkerClusterer | undefined> = ref();
+const clusterInstance = ref<MarkerClusterer | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -96,9 +98,9 @@ const promise = mapPromise
       map: google.maps.Map | undefined;
       [key: string]: any;
     } = {
-      ...props.options,
       map,
       ...getPropsValues(props),
+      ...props.options,
     };
     const { markers, onClusterClick, renderer, algorithm } = initialOptions;
 
