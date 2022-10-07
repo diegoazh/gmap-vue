@@ -1,8 +1,8 @@
 import type { IPluginOptions, IVueProp } from '@/interfaces/gmap-vue.interface';
 import type {
-  AutocompleteHtmlInput,
   GmapVuePluginProps,
   LazyValueGetterFn,
+  OldHtmlInputElement,
   SinglePluginComponentConfig,
 } from '@/types/gmap-vue.types';
 import { type ComponentPublicInstance, nextTick, watch } from 'vue';
@@ -133,11 +133,16 @@ export function filterVuePropsOptions<T extends GmapVuePluginProps>(
  * @param  {Object} input the HTML input node element reference
  * @returns {void}
  */
-export function downArrowSimulator(input: AutocompleteHtmlInput): void {
-  // eslint-disable-next-line no-underscore-dangle -- Is old style should be analyzed
-  const _addEventListener = input.addEventListener
-    ? input.addEventListener
-    : input.attachEvent;
+export function downArrowSimulator(input: HTMLInputElement | null): void {
+  if (!input) {
+    throw new Error(
+      `The input for downArrowSimulator should be defined, currently: ${input}`
+    );
+  }
+
+  const _addEventListener = oldHtmlInputElementGuard(input)
+    ? input.attachEvent
+    : input.addEventListener;
 
   /**
    * Add event listener wrapper that will replace to default addEventListener or attachEvent function
@@ -146,7 +151,10 @@ export function downArrowSimulator(input: AutocompleteHtmlInput): void {
    * @param  {Function} listener function should be executed when the event is fired
    * @returns {void}
    */
-  function addEventListenerWrapper(type: string, listener: Function): void {
+  function addEventListenerWrapper(
+    type: string,
+    listener: (...args: any[]) => any
+  ): void {
     // Simulate a 'down arrow' keypress on hitting 'return' when no pac suggestion is selected,
     // and then trigger the original listener.
     if (type === 'keydown') {
@@ -176,8 +184,11 @@ export function downArrowSimulator(input: AutocompleteHtmlInput): void {
     _addEventListener.apply(input, [type, listener]);
   }
 
-  input.addEventListener = addEventListenerWrapper as any;
-  input.attachEvent = addEventListenerWrapper;
+  input.addEventListener = addEventListenerWrapper;
+
+  if (oldHtmlInputElementGuard(input)) {
+    input.attachEvent = addEventListenerWrapper;
+  }
 }
 
 /**
@@ -282,6 +293,7 @@ export function watchPrimitiveProperties(
     if (vueInst) {
       vueInst.$watch(prop, requestHandle, { immediate });
     } else {
+      // TODO: check if this watch works, I think it needs to receive the variable not only the name of the variable
       watch(() => prop, requestHandle, { immediate });
     }
   });
@@ -395,27 +407,27 @@ export function bindGoogleMapsEventsToVueEventsOnSetup(
  *
  * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
  * @param  {Object} props - Vue component props  of the component that should be synced with the Google Maps instances props
- * @param {SinglePluginComponentConfig} propComponentConfig - The plugin component configuration for this Google Maps instance
+ * @param {SinglePluginComponentConfig} propsComponentConfig - The plugin component configuration for this Google Maps instance
  * @param {() => void} emits - The Vue emit object built with defineEmits function
  * @returns {void} The object which contain all event names to and params that should be used to add listener to the Google Maps instance
  */
 export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
   AnyGoogleMapsClassInstance: Record<string, any>,
   props: Record<any, any>,
-  propComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
+  propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
   emits: (ev: string, value: any) => void
 ): void {
   Object.entries(props).forEach(([propKey, propValue]) => {
-    if (!propComponentConfig.noBind.includes(propKey)) {
+    if (!propsComponentConfig.noBind.includes(propKey)) {
       const { eventName, getMethodName } =
         bindVuePropsWithGoogleMapsPropsSetters(
           propKey,
           propValue,
-          propComponentConfig.trackProperties[propKey],
+          propsComponentConfig.trackProperties[propKey],
           AnyGoogleMapsClassInstance
         );
 
-      if (propComponentConfig.twoWay.includes(propKey)) {
+      if (propsComponentConfig.twoWay.includes(propKey)) {
         if (
           AnyGoogleMapsClassInstance[getMethodName] &&
           typeof AnyGoogleMapsClassInstance[getMethodName] === 'function'
@@ -452,6 +464,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
     ) {
       // Track the object deeply
       watch(
+        // TODO: confirm this watch works, because I think it needs the variable not only the name of the variable
         () => propKey,
         () => {
           AnyGoogleMapsClassInstance[setMethodName](propValue);
@@ -473,4 +486,10 @@ function bindVuePropsWithGoogleMapsPropsSetters(
   }
 
   return { eventName, getMethodName };
+}
+
+function oldHtmlInputElementGuard(
+  input: HTMLInputElement | OldHtmlInputElement
+): input is OldHtmlInputElement {
+  return (input as OldHtmlInputElement).attachEvent !== undefined;
 }

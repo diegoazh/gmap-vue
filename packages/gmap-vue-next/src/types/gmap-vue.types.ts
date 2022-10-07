@@ -9,7 +9,8 @@ export type PluginComponentNames =
   | 'GmapMap'
   | 'GmapMarker'
   | 'GmapCluster'
-  | 'GmapInfoWindow';
+  | 'GmapInfoWindow'
+  | 'GmapAutocomplete';
 /**
  * @typedef {Object} SinglePluginComponentConfig
  * @property {string[]} noBind - Props with should not be bind to Google Maps. Has precedence over twoWay
@@ -42,7 +43,7 @@ export type LazyValueGetterFn = () => Promise<any>;
 export type PromiseLazyCreatorFn = (
   options: IPluginOptions
 ) => LazyValueGetterFn;
-export type AutocompleteHtmlInput = HTMLInputElement & {
-  attachEvent: Function;
+export type OldHtmlInputElement = HTMLInputElement & {
+  attachEvent: (type: string, listener: () => any) => void;
 };
 export type GmapVuePluginProps = { [key: string]: IVueProp & IGoogleMapProp };

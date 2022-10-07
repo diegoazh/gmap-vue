@@ -16,23 +16,23 @@
  * for those properties that are not extraneous to Vue.
  */
 
-export const autocompleteMappedProps = {
-  bounds: {
-    type: Object,
-  },
-  componentRestrictions: {
-    type: Object,
-    // Do not bind -- must check for undefined
-    // in the property
-    noBind: true,
-  },
-  types: {
-    type: Array,
-    default() {
-      return [];
-    },
-  },
-};
+// export const autocompleteMappedProps = {
+//   bounds: {
+//     type: Object,
+//   },
+//   componentRestrictions: {
+//     type: Object,
+//     // Do not bind -- must check for undefined
+//     // in the property
+//     noBind: true,
+//   },
+//   types: {
+//     type: Array,
+//     default() {
+//       return [];
+//     },
+//   },
+// };
 
 export const drawingManagerMappedProps = {
   circleOptions: {
@@ -513,7 +513,7 @@ export const placeInputMappedProps = {
 // };
 
 export default {
-  autocompleteMappedProps,
+  // autocompleteMappedProps,
   circleMappedProps,
   drawingManagerMappedProps,
   heatMapLayerMappedProps,

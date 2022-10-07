@@ -127,6 +127,15 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
+  GmapAutocomplete: {
+    noBind: ['componentRestrictions'],
+    twoWay: [],
+    trackProperties: {},
+    events: {
+      auto: [],
+      manual: ['place_changed'],
+    },
+  },
 };
 
 /**
