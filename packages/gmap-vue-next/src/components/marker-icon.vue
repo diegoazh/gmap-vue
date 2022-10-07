@@ -44,7 +44,7 @@ interface IMarkerIconVueComponentProps {
   /**
    *  This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
    */
-  attribution?: Record<string, unknown>; // TODO: Define properties of this object.
+  attribution?: Record<string, unknown>; // TODO: Define properties of this object, or remove it if it's not used
 }
 
 export default {};

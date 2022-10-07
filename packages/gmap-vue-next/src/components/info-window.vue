@@ -33,7 +33,7 @@ interface IInfoWindowVueComponentProps {
   position?: google.maps.LatLng | google.maps.LatLngLiteral;
   zIndex?: number;
   opened?: boolean;
-  options: Record<string | number | symbol, unknown>;
+  options?: Record<string | number | symbol, unknown>;
 }
 
 export default {};
