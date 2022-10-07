@@ -11,7 +11,7 @@ import { defineComponent } from 'vue';
 import {
   bindEvents,
   bindProps,
-  getPropsValues,
+  getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
   watchPrimitiveProperties,
 } from '../composables/helpers';
@@ -20,7 +20,7 @@ import { streetViewPanoramaMappedProps } from '../props/mapped-props-by-map-elem
 
 /**
  * Street View Panorama component
- * @displayName GmapStreetViewPanorama
+ * @displayName GmvStreetViewPanorama
  * @see [source code](/guide/street-view-panorama.html#source-code)
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanorama)
  */
@@ -138,7 +138,10 @@ export default defineComponent({
         // creating the map
         const options = {
           ...this.options,
-          ...getPropsValues(this, streetViewPanoramaMappedProps),
+          ...getPropsValuesWithoutOptionsProp(
+            this,
+            streetViewPanoramaMappedProps
+          ),
         };
 
         const { options: extraOptions, ...finalOptions } = options;

@@ -5,7 +5,7 @@ import type {
 } from '@/types/gmap-vue.types';
 
 const componentConfigs: PluginComponentConfig = {
-  GmapMap: {
+  GmvMap: {
     noBind: ['resizeBus', 'center', 'zoom', 'options'],
     twoWay: ['heading', 'mapTypeId', 'tilt'],
     trackProperties: {},
@@ -36,7 +36,7 @@ const componentConfigs: PluginComponentConfig = {
       manual: ['bounds_changed', 'center_changed', 'zoom_changed'],
     },
   },
-  GmapMarker: {
+  GmvMarker: {
     noBind: [],
     twoWay: [
       'animation',
@@ -60,7 +60,6 @@ const componentConfigs: PluginComponentConfig = {
         'cursor_changed',
         'dblclick',
         'drag',
-        // 'dragend',
         'draggable_changed',
         'dragstart',
         'flat_changed',
@@ -78,7 +77,7 @@ const componentConfigs: PluginComponentConfig = {
       manual: ['dragend', 'update:position'],
     },
   },
-  GmapCluster: {
+  GmvCluster: {
     noBind: [],
     twoWay: [],
     trackProperties: {},
@@ -100,7 +99,7 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
-  GmapInfoWindow: {
+  GmvInfoWindow: {
     noBind: ['ariaLabel', 'options'],
     twoWay: [
       'content',
@@ -127,7 +126,7 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
-  GmapAutocomplete: {
+  GmvAutocomplete: {
     noBind: ['componentRestrictions'],
     twoWay: [],
     trackProperties: {},

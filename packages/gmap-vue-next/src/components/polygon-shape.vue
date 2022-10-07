@@ -1,6 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { bindEvents, bindProps, getPropsValues } from '../composables/helpers';
+import {
+  bindEvents,
+  bindProps,
+  getPropsValuesWithoutOptionsProp,
+} from '../composables/helpers';
 import MapElementMixin from '../composables/map-element';
 import { polygonMappedProps } from '../props/mapped-props-by-map-element';
 
@@ -40,7 +44,7 @@ export default defineComponent({
         const initialOptions = {
           ...this.options,
           map,
-          ...getPropsValues(this, polygonMappedProps),
+          ...getPropsValuesWithoutOptionsProp(this, polygonMappedProps),
         };
         const {
           options: extraOptions,

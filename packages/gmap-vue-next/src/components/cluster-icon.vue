@@ -5,15 +5,45 @@
   </div>
 </template>
 
-<script lang="ts">
-/*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-import type {
+<script lang="ts" setup>
+import {
+  defineProps,
+  inject,
+  onBeforeUnmount,
+  onUnmounted,
+  onUpdated,
+  provide,
+  ref,
+  withDefaults,
+} from 'vue';
+import {
   Algorithm,
+  MarkerClusterer,
   onClusterClickHandler,
   Renderer,
 } from '@googlemaps/markerclusterer';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getPropsValuesWithoutOptionsProp,
+} from '@/composables/helpers';
+import { $clusterPromise, $mapPromise } from '@/keys/gmap-vue.keys';
+
+/**
+ * Cluster component
+ * @displayName GmvCluster
+ * @see [source code](/guide/cluster.html#source-code)
+ * @see [Official documentation](https://googlemaps.github.io/js-markerclusterer/modules.html)
+ * @see [Marker clusterer](https://developers.google.com/maps/documentation/javascript/marker-clustering#maps_marker_clustering-javascript)
+ */
+
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
 
 /**
  * Marker Google Maps properties documentation
@@ -31,40 +61,6 @@ interface IMarkerClusterVueComponentProps {
   options?: Record<string, any>;
 }
 
-export default {};
-</script>
-
-<script lang="ts" setup>
-import {
-  defineProps,
-  inject,
-  onBeforeUnmount,
-  onUnmounted,
-  onUpdated,
-  provide,
-  ref,
-  withDefaults,
-} from 'vue';
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValues,
-} from '@/composables/helpers';
-import { $clusterPromise, $mapPromise } from '@/keys/gmap-vue.keys';
-
-/**
- * Cluster component
- * @displayName GmapCluster
- * @see [source code](/guide/cluster.html#source-code)
- * @see [Official documentation](https://googlemaps.github.io/js-markerclusterer/modules.html)
- * @see [Marker clusterer](https://developers.google.com/maps/documentation/javascript/marker-clustering#maps_marker_clustering-javascript)
- */
-
 /*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
@@ -73,7 +69,7 @@ const props = withDefaults(defineProps<IMarkerClusterVueComponentProps>(), {});
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmapCluster'));
+const emits = defineEmits(getComponentEventsConfig('GmvCluster'));
 
 /*******************************************************************************
  * INJECT
@@ -99,7 +95,7 @@ const promise = mapPromise
       [key: string]: any;
     } = {
       map,
-      ...getPropsValues(props),
+      ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
     };
     const { markers, onClusterClick, renderer, algorithm } = initialOptions;
@@ -118,9 +114,9 @@ const promise = mapPromise
       renderer,
     });
 
-    const clusterIconPropsConfig = getComponentPropsConfig('GmapCluster');
+    const clusterIconPropsConfig = getComponentPropsConfig('GmvCluster');
     const clusterIconEventsConfig = getComponentEventsConfig(
-      'GmapCluster',
+      'GmvCluster',
       'auto'
     );
 

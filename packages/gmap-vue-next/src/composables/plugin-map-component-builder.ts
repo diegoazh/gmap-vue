@@ -5,7 +5,7 @@ import {
   bindEvents,
   bindProps,
   filterVuePropsOptions,
-  getPropsValues,
+  getPropsValuesWithoutOptionsProp,
 } from './helpers';
 
 /**
@@ -111,9 +111,9 @@ export function pluginMapComponentBuilder(
 
           // Initialize the maps with the given options
           const initialOptions = {
-            ...this.options,
             map,
-            ...getPropsValues(mappedProps, this),
+            ...getPropsValuesWithoutOptionsProp(mappedProps, this),
+            ...this.options,
           };
           // don't use delete keyword in order to create a more predictable code for the engine
           const { options: extraOptions, ...finalOptions } = initialOptions; // delete the extra options
@@ -135,7 +135,10 @@ export function pluginMapComponentBuilder(
             ? new (Function.prototype.bind.call(
                 ConstructorObject,
                 null,
-                ...ctrArgs(options, getPropsValues(props || {}, this))
+                ...ctrArgs(
+                  options,
+                  getPropsValuesWithoutOptionsProp(props || {}, this)
+                )
               ))()
             : new ConstructorObject(options);
 

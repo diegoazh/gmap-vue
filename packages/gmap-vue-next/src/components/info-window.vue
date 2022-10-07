@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div ref="flyaway">
+    <div ref="gmvInfoWindow">
       <!-- so named because it will fly away to another component -->
       <!-- @slot Used to set your info window.  -->
       <slot></slot>
@@ -8,7 +8,39 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import {
+  defineProps,
+  inject,
+  onMounted,
+  provide,
+  ref,
+  watch,
+  withDefaults,
+} from 'vue';
+import {
+  $infoWindowPromise,
+  $mapPromise,
+  $markerPromise,
+} from '@/keys/gmap-vue.keys';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getPropsValuesWithoutOptionsProp,
+} from '@/composables/helpers';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+
+/**
+ * InfoWindow component
+ * @displayName GmvInfoWindow
+ * @see [source code](/guide/info-window.html#source-code)
+ * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/infowindows)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/info-window)
+ */
+
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
@@ -36,43 +68,6 @@ interface IInfoWindowVueComponentProps {
   options?: Record<string | number | symbol, unknown>;
 }
 
-export default {};
-</script>
-
-<script lang="ts" setup>
-import {
-  defineProps,
-  inject,
-  onMounted,
-  onUnmounted,
-  provide,
-  ref,
-  watch,
-  withDefaults,
-} from 'vue';
-import {
-  $infoWindowPromise,
-  $mapPromise,
-  $markerPromise,
-} from '@/keys/gmap-vue.keys';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValues,
-} from '@/composables/helpers';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-
-/**
- * InfoWindow component
- * @displayName Info-Window
- * @see [source code](/guide/info-window.html#source-code)
- * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/infowindows)
- * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/info-window)
- */
-
 /*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
@@ -83,8 +78,8 @@ const props = withDefaults(defineProps<IInfoWindowVueComponentProps>(), {
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const flyaway = ref<HTMLElement | null>(null);
-const emits = defineEmits(getComponentEventsConfig('GmapInfoWindow'));
+const gmvInfoWindow = ref<HTMLElement | null>(null);
+const emits = defineEmits(getComponentEventsConfig('GmvInfoWindow'));
 
 /*******************************************************************************
  * INJECT
@@ -110,7 +105,7 @@ const promise = mapPromise
       map: google.maps.Map | undefined;
     } = {
       map,
-      ...getPropsValues(props),
+      ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
     };
 
@@ -122,12 +117,12 @@ const promise = mapPromise
 
     infoWindowInstance.value = new google.maps.InfoWindow({
       ...infoWindowOptions,
-      content: flyaway.value,
+      content: gmvInfoWindow.value,
     });
 
-    const infoWindowPropsConfig = getComponentPropsConfig('GmapInfoWindow');
+    const infoWindowPropsConfig = getComponentPropsConfig('GmvInfoWindow');
     const infoWindowEventsConfig = getComponentEventsConfig(
-      'GmapInfoWindow',
+      'GmvInfoWindow',
       'auto'
     );
 
@@ -187,7 +182,7 @@ watch(
  * HOOKS
  ******************************************************************************/
 onMounted(() => {
-  const el = flyaway.value;
+  const el = gmvInfoWindow.value;
 
   if (el) {
     el?.parentNode?.removeChild(el);

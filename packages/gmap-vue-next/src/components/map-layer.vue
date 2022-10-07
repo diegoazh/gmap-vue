@@ -1,6 +1,6 @@
 <template>
   <div class="gmap-vue-container">
-    <div ref="vueMap" class="gmap-vue-map"></div>
+    <div ref="gmvMap" class="gmap-vue-map"></div>
     <div class="gmap-vue-map-hidden">
       <!-- @slot The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc. -->
       <slot></slot>
@@ -10,12 +10,55 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import {
+  computed,
+  defineEmits,
+  defineProps,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+  provide,
+  ref,
+  watch,
+  withDefaults,
+} from 'vue';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getPropsValuesWithoutOptionsProp,
+  twoWayBindingWrapper,
+  watchPrimitiveProperties,
+} from '@/composables/helpers';
+import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import {
+  onMountedResizeBusHook,
+  onUnmountedResizeBusHook,
+  useResizeBus,
+} from '@/composables/resize-bus';
+import { $mapPromise } from '@/keys/gmap-vue.keys';
+import {
+  getMap,
+  getMapPromise,
+  getMapPromiseDeferred,
+} from '@/composables/google-maps-promise';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+import type { Emitter, EventType } from 'mitt';
+
+/**
+ * Map component
+ * @displayName GmvMap
+ * @see [source code](/guide/map.html#source-code)
+ * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/basics)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
+ */
+
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
-import type { Emitter, EventType } from 'mitt';
-
 /**
  * MapOptions interface
  *
@@ -94,54 +137,6 @@ interface IMapLayerVueComponentProps {
   options?: { [key: string]: any };
 }
 
-export default {};
-</script>
-
-<script lang="ts" setup>
-import {
-  computed,
-  defineEmits,
-  defineProps,
-  onBeforeUnmount,
-  onMounted,
-  onUnmounted,
-  provide,
-  ref,
-  watch,
-  withDefaults,
-} from 'vue';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValues,
-  twoWayBindingWrapper,
-  watchPrimitiveProperties,
-} from '@/composables/helpers';
-import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
-import {
-  onMountedResizeBusHook,
-  onUnmountedResizeBusHook,
-  useResizeBus,
-} from '@/composables/resize-bus';
-import { $mapPromise } from '@/keys/gmap-vue.keys';
-import {
-  getMap,
-  getMapPromise,
-  getMapPromiseDeferred,
-} from '@/composables/google-maps-promise';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-
-/**
- * Map component
- * @displayName Map
- * @see [source code](/guide/map.html#source-code)
- * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/basics)
- * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
- */
-
 /*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
@@ -163,8 +158,8 @@ const props = withDefaults(defineProps<IMapLayerVueComponentProps>(), {
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES AND EMITTERS
  ******************************************************************************/
-const vueMap = ref<HTMLElement | null>(null);
-const emits = defineEmits(getComponentEventsConfig('GmapMap'));
+const gmvMap = ref<HTMLElement | null>(null);
+const emits = defineEmits(getComponentEventsConfig('GmvMap'));
 
 /*******************************************************************************
  * RECYCLE KEY
@@ -339,30 +334,34 @@ watch(
 onMounted(() => {
   useGmapApiPromiseLazy()
     .then(() => {
-      if (!vueMap.value) {
-        throw new Error(`we can find the template ref: 'vueMap'`);
+      if (!gmvMap.value) {
+        throw new Error(`we can find the template ref: 'gmvMap'`);
       }
 
       const mapLayerOptions: Partial<IMapLayerVueComponentProps> = {
-        ...getPropsValues(props),
+        ...getPropsValuesWithoutOptionsProp(props),
         ...props.options,
       };
 
       const recycleKey = getRecycleKey();
 
       if (props?.options?.recycle && window[recycleKey]) {
-        vueMap.value.appendChild(window[recycleKey].div);
+        gmvMap.value.appendChild(window[recycleKey].div);
         mapInstance.value = window[recycleKey].map as google.maps.Map;
         mapInstance.value.setOptions(mapLayerOptions);
       } else {
-        mapInstance.value = new google.maps.Map(vueMap.value, mapLayerOptions);
+        mapInstance.value = new google.maps.Map(gmvMap.value, mapLayerOptions);
         window[recycleKey] = { map: mapInstance.value };
       }
 
       onMountedResizeBusHook(mapInstance.value, props, resizePreserveCenter);
 
-      const mapLayerPropsConfig = getComponentPropsConfig('GmapMap');
-      const mapLayerEventsConfig = getComponentEventsConfig('GmapMap', 'auto');
+      const mapLayerPropsConfig = getComponentPropsConfig('GmvMap');
+      const mapLayerEventsConfig = getComponentEventsConfig('GmvMap', 'auto');
+      const mapLayerManualEventsConfig = getComponentEventsConfig(
+        'GmvMap',
+        'manual'
+      );
 
       // binding properties (two and one way)
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(

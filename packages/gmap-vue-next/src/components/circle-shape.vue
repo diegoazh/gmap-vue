@@ -1,6 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { bindEvents, bindProps, getPropsValues } from '../composables/helpers';
+import {
+  bindEvents,
+  bindProps,
+  getPropsValuesWithoutOptionsProp,
+} from '../composables/helpers';
 import mapElementMixin from '../composables/map-element';
 import { circleMappedProps } from '../props/mapped-props-by-map-element';
 
@@ -41,7 +45,7 @@ export default defineComponent({
         const initialOptions = {
           ...this.options,
           map,
-          ...getPropsValues(this, circleMappedProps),
+          ...getPropsValuesWithoutOptionsProp(this, circleMappedProps),
         };
 
         const { options: extraOptions, ...finalOptions } = initialOptions;

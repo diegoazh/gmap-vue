@@ -7,12 +7,44 @@
         - `listeners`, it's type is `object`, it's all events passed to the component ([vm.$listeners](https://vuejs.org/v2/api/?#vm-listeners))
 			-->
     <slot :attrs="$attrs">
-      <input ref="autoCompleteInput" v-bind="$attrs" />
+      <input ref="gmvAutoCompleteInput" v-bind="$attrs" />
     </slot>
   </div>
 </template>
 
 <script lang="ts">
+export default {
+  inheritAttrs: false,
+};
+</script>
+
+<script lang="ts" setup>
+import {
+  defineProps,
+  onMounted,
+  ref,
+  withDefaults,
+  defineEmits,
+  watch,
+} from 'vue';
+import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  downArrowSimulator,
+  getPropsValuesWithoutOptionsProp,
+} from '@/composables/helpers';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+
+/**
+ * Autocomplete component
+ * @displayName GmvAutocomplete
+ * @see [source code](/guide/autocomplete.html#source-code)
+ */
+
 /*******************************************************************************
  * INTERFACES
  ******************************************************************************/
@@ -53,38 +85,6 @@ interface IAutoCompleteInputVueComponentProps {
   options?: Record<string, unknown>;
 }
 
-export default {
-  inheritAttrs: false,
-};
-</script>
-
-<script lang="ts" setup>
-import {
-  defineProps,
-  onMounted,
-  ref,
-  withDefaults,
-  defineEmits,
-  watch,
-} from 'vue';
-import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  downArrowSimulator,
-  getPropsValues,
-} from '@/composables/helpers';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-
-/**
- * Autocomplete component
- * @displayName GmapAutocomplete
- * @see [source code](/guide/autocomplete.html#source-code)
- */
-
 /*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
@@ -95,8 +95,8 @@ const props = withDefaults(defineProps<IAutoCompleteInputVueComponentProps>(), {
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const autoCompleteInput = ref<HTMLInputElement | null>(null);
-const emits = defineEmits(getComponentEventsConfig('GmapAutocomplete'));
+const gmvAutoCompleteInput = ref<HTMLInputElement | null>(null);
+const emits = defineEmits(getComponentEventsConfig('GmvAutocomplete'));
 
 /*******************************************************************************
  * INJECT
@@ -133,11 +133,13 @@ watch(
 onMounted(() => {
   useGmapApiPromiseLazy()
     .then(() => {
-      let scopedInput = props.slotRef ? props.slotRef : autoCompleteInput.value;
+      let scopedInput = props.slotRef
+        ? props.slotRef
+        : gmvAutoCompleteInput.value;
 
       if (!scopedInput) {
         throw new Error(
-          `we can find the template ref: 'autoCompleteInput' or we can't use the slotRef prop`
+          `we can find the template ref: 'gmvAutoCompleteInput' or we can't use the slotRef prop`
         );
       }
 
@@ -152,7 +154,7 @@ onMounted(() => {
       }
 
       const autocompleteOptions: IAutoCompleteInputVueComponentProps = {
-        ...getPropsValues(props),
+        ...getPropsValuesWithoutOptionsProp(props),
         ...props.options,
       };
 
@@ -162,9 +164,9 @@ onMounted(() => {
       );
 
       const autoCompletePropsConfig =
-        getComponentPropsConfig('GmapAutocomplete');
+        getComponentPropsConfig('GmvAutocomplete');
       const autoCompleteEventsConfig = getComponentEventsConfig(
-        'GmapAutocomplete',
+        'GmvAutocomplete',
         'auto'
       );
 

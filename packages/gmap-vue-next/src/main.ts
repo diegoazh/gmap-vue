@@ -1,12 +1,12 @@
 import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
-// import Autocomplete from './components/autocomplete-input.vue';
+import Autocomplete from './components/autocomplete-input.vue';
 // import Circle from './components/circle-shape.vue';
 import Cluster from './components/cluster-icon.vue';
 // import DrawingManager from './components/drawing-manager.vue';
 // import HeatmapLayer from './components/heatmap-layer.vue';
 import InfoWindow from './components/info-window.vue';
-// import KmlLayer from "./components/kml-layer.vue";
+import KmlLayer from './components/kml-layer.vue';
 import MapLayer from './components/map-layer.vue';
 import Marker from './components/marker-icon.vue';
 // import Polygon from './components/polygon-shape.vue';
@@ -105,7 +105,7 @@ function getGoogleMapsAPI() {
  */
 const components = {
   // HeatmapLayer,
-  // KmlLayer,
+  KmlLayer,
   Marker,
   // Polyline,
   // Polygon,
@@ -115,7 +115,7 @@ const components = {
   // DrawingManager,
   InfoWindow,
   MapLayer,
-  // Autocomplete,
+  Autocomplete,
   // StreetViewPanorama,
 };
 
@@ -196,18 +196,18 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
 
   if (finalOptions.installComponents) {
     app
-      .component('GmapMap', MapLayer)
-      .component('GmapMarker', Marker)
-      .component('GmapInfoWindow', InfoWindow);
-    // .component('GmapHeatmapLayer', HeatmapLayer)
-    // .component('GmapKmlLayer', KmlLayer)
-    // .component('GmapPolyline', Polyline)
-    // .component('GmapPolygon', Polygon)
-    // .component('GmapCircle', Circle)
-    // .component('GmapRectangle', Rectangle)
-    // .component('GmapDrawingManager', DrawingManager)
-    // .component('GmapAutocomplete', Autocomplete)
-    // .component('GmapStreetViewPanorama', StreetViewPanorama);
+      .component('GmvMap', MapLayer)
+      .component('GmvMarker', Marker)
+      .component('GmvInfoWindow', InfoWindow)
+      // .component('GmvHeatmapLayer', HeatmapLayer)
+      .component('GmvKmlLayer', KmlLayer)
+      // .component('GmvPolyline', Polyline)
+      // .component('GmvPolygon', Polygon)
+      // .component('GmvCircle', Circle)
+      // .component('GmvRectangle', Rectangle)
+      // .component('GmvDrawingManager', DrawingManager)
+      .component('GmvAutocomplete', Autocomplete);
+    // .component('GmvStreetViewPanorama', StreetViewPanorama);
   }
 }
 

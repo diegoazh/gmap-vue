@@ -2,15 +2,18 @@
   <div>
     <!-- @slot Used to set your drawing manager -->
     <slot
-      :set-drawing-mode="setDrawingMode"
       :delete-selection="deleteSelection"
+      :set-drawing-mode="setDrawingMode"
     />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { bindProps, getPropsValues } from '../composables/helpers';
+import {
+  bindProps,
+  getPropsValuesWithoutOptionsProp,
+} from '../composables/helpers';
 import MapElementMixin from '../composables/map-element';
 import { drawingManagerMappedProps } from '../props/mapped-props-by-map-element';
 
@@ -35,7 +38,7 @@ export default defineComponent({
           // TODO: analyze the below line because I think it can be removed
           ...this.options,
           map,
-          ...getPropsValues(this, drawingManagerMappedProps),
+          ...getPropsValuesWithoutOptionsProp(this, drawingManagerMappedProps),
         };
 
         const { options: extraOptions, ...finalOptions } = initialOptions;

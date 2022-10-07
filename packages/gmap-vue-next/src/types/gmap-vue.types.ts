@@ -6,11 +6,12 @@ import type {
 } from '@/interfaces/gmap-vue.interface';
 
 export type PluginComponentNames =
-  | 'GmapMap'
-  | 'GmapMarker'
-  | 'GmapCluster'
-  | 'GmapInfoWindow'
-  | 'GmapAutocomplete';
+  | 'GmvMap'
+  | 'GmvMarker'
+  | 'GmvCluster'
+  | 'GmvInfoWindow'
+  | 'GmvAutocomplete'
+  | 'GmvKmlLayer';
 /**
  * @typedef {Object} SinglePluginComponentConfig
  * @property {string[]} noBind - Props with should not be bind to Google Maps. Has precedence over twoWay
@@ -28,7 +29,7 @@ export type SinglePluginComponentConfig = {
   trackProperties: { [key: string]: string[] };
   events: {
     auto: string[];
-    manual: string[];
+    manual: string[]; // TODO: try to improve this to be an object with specific keys that can be used in the code
   };
 };
 export type PluginComponentConfig = {

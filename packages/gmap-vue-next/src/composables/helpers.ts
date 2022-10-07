@@ -46,7 +46,7 @@ export function capitalizeFirstLetter(text: string): string {
  * @param  {Object} props the props object
  * @returns {Object}
  */
-export function getPropsValues(
+export function getPropsValuesWithoutOptionsProp(
   props: { [key: string | number | symbol]: unknown },
   vueInst?: ComponentPublicInstance
 ): Omit<{ [key: string | number | symbol]: IVueProp }, 'options'> {

@@ -1,7 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useGoogleMapsPromise } from '../composables/google-maps-promise';
-import { bindEvents, bindProps, getPropsValues } from '../composables/helpers';
+import {
+  bindEvents,
+  bindProps,
+  getPropsValuesWithoutOptionsProp,
+} from '../composables/helpers';
 import { rectangleMappedProps } from '../props/mapped-props-by-map-element';
 
 /**
@@ -40,7 +44,7 @@ export default defineComponent({
         const initialOptions = {
           ...this.options,
           map,
-          ...getPropsValues(this, rectangleMappedProps),
+          ...getPropsValuesWithoutOptionsProp(this, rectangleMappedProps),
         };
         const { options: extraOptions, ...finalOptions } = initialOptions;
 
