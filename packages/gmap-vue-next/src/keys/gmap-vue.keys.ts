@@ -13,5 +13,6 @@ export const $markerPromise = Symbol('markerPromise') as InjectionKey<
 export const $infoWindowPromise = Symbol('infoWindowPromise') as InjectionKey<
   Promise<google.maps.InfoWindow | undefined>
 >;
-// export const $map = Symbol() as InjectionKey<google.maps.Map | undefined>;
-// export const $googleMapsAPIPromise = Symbol() as InjectionKey<Promise<void>>;
+export const $kmlLayerPromise = Symbol('kmlLayerPromise') as InjectionKey<
+  Promise<google.maps.KmlLayer | undefined>
+>;

@@ -1,134 +1,141 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { bindEvents, bindProps, getPropsValues } from '../composables/helpers';
-import MapElementMixin from '../composables/map-element';
-import { kmlLayerMappedProps } from '../props/mapped-props-by-map-element';
+<script lang="ts" setup>
+import {
+  defineEmits,
+  defineProps,
+  inject,
+  onUnmounted,
+  provide,
+  ref,
+  withDefaults,
+} from 'vue';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+import { $kmlLayerPromise, $mapPromise } from '@/keys/gmap-vue.keys';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getPropsValuesWithoutOptionsProp,
+} from '@/composables/helpers';
 
 /**
  * KmlLayer component
- * @displayName Kml-Layer
+ * @displayName GmvKmlLayer
  * @see [source code](/guide/kml-layer.html#source-code)
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/kmllayer)
  * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/kml)
  */
-export default defineComponent({
-  name: 'KmlLayer',
-  mixins: [MapElementMixin],
-  render() {
-    return '';
-  },
-  provide() {
-    const events = [
-      'click',
-      'rightclick',
-      'dblclick',
-      'mouseup',
-      'mousedown',
-      'mouseover',
-      'mouseout',
-    ];
 
-    // Infowindow needs this to be immediately available
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
+/**
+ * Kml layer Google Maps properties documentation
+ *
+ * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.clickable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.preserveViewport
+ * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.screenOverlays
+ * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.suppressInfoWindows
+ * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.url
+ */
+interface IKmlLayerVueComponentProps {
+  clickable?: boolean;
+  preserveViewport?: boolean;
+  screenOverlays?: boolean;
+  suppressInfoWindows?: boolean;
+  url?: string;
+  zIndex?: number;
+  options?: Record<string, unknown>;
+}
 
-        // Initialize the maps with the given options
-        const initialOptions = {
-          // TODO: analyze the below line because I think it can be removed
-          ...this.options,
-          map,
-          ...getPropsValues(this, kmlLayerMappedProps),
-        };
-
-        const { options: extraOptions, ...finalOptions } = initialOptions;
-
-        this.$kmlLayerObject = new google.maps.KmlLayer(finalOptions);
-
-        bindProps(this, this.$kmlLayerObject, kmlLayerMappedProps);
-        bindEvents(this, this.$kmlLayerObject, events);
-
-        return this.$kmlLayerObject;
-      })
-      .catch((error) => {
-        throw error;
-      });
-
-    this.$kmlLayerPromise = promise;
-    return { $kmlLayerPromise: promise };
-  },
-  props: {
-    /**
-     * If true, the layer receives mouse events. Default value is true.
-     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.clickable)
-     */
-    clickable: {
-      type: Boolean,
-      default: true,
-    },
-    /**
-     * Specifies the Map on which to render the KmlLayer. You can hide a KmlLayer by setting this value to null within the setMap() method
-     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.map)
-     */
-    map: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * By default, the input map is centered and zoomed to the bounding box of the contents of the layer. If this option is set to true, the viewport is
-     * left unchanged, unless the map's center and zoom were never set.
-     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.preserveViewport)
-     */
-    preserveViewport: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * Whether to render the screen overlays. Default true.
-     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.screenOverlays)
-     */
-    screenOverlays: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * Suppress the rendering of info windows when layer features are clicked.
-     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.suppressInfoWindows)
-     */
-    suppressInfoWindows: {
-      type: Boolean,
-      default: undefined,
-    },
-    /**
-     * The URL of the KML document to display.
-     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.url)
-     */
-    url: {
-      type: String,
-      default: '',
-    },
-    /**
-     * The z-index of the layer.
-     * @see [KmlLayerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.zIndex)
-     */
-    zIndex: {
-      type: Number,
-      default: undefined,
-    },
-    /**
-     * More options that you can pass to the component
-     * @value boolean
-     */
-    options: {
-      type: Object,
-      default: undefined,
-    },
-  },
-  unmounted() {
-    // Note: not all Google Maps components support maps
-    if (this.$kmlLayerObject && this.$kmlLayerObject.setMap) {
-      this.$kmlLayerObject.setMap(null);
-    }
-  },
+/*******************************************************************************
+ * DEFINE COMPONENT PROPS
+ ******************************************************************************/
+const props = withDefaults(defineProps<IKmlLayerVueComponentProps>(), {
+  clickable: true,
+  preserveViewport: false,
+  screenOverlays: true,
 });
+
+/*******************************************************************************
+ * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
+ ******************************************************************************/
+const emits = defineEmits(getComponentEventsConfig('GmapKmlLayer'));
+
+/*******************************************************************************
+ * INJECT
+ ******************************************************************************/
+const mapPromise = inject($mapPromise);
+
+/*******************************************************************************
+ * KML LAYER
+ ******************************************************************************/
+const map = ref<google.maps.Map | undefined>();
+const kmlLayerInstance = ref<google.maps.KmlLayer | undefined>();
+const promise = mapPromise
+  ?.then((mapInstance) => {
+    map.value = mapInstance;
+
+    const kmlLayerOptions = {
+      map: mapInstance,
+      ...getPropsValuesWithoutOptionsProp(props),
+      ...props.options,
+    };
+
+    kmlLayerInstance.value = new google.maps.KmlLayer(kmlLayerOptions);
+
+    const kmlLayerPropsConfig = getComponentPropsConfig('GmapKmlLayer');
+    const kmlLayerEventsConig = getComponentEventsConfig(
+      'GmapKmlLayer',
+      'auto'
+    );
+
+    bindPropsWithGoogleMapsSettersAndGettersOnSetup(
+      kmlLayerInstance.value,
+      props,
+      kmlLayerPropsConfig,
+      emits
+    );
+    bindGoogleMapsEventsToVueEventsOnSetup(
+      kmlLayerEventsConig,
+      kmlLayerInstance.value,
+      emits
+    );
+
+    return kmlLayerInstance.value;
+  })
+  .catch((error) => {
+    throw error;
+  });
+
+provide($kmlLayerPromise, promise);
+
+/*******************************************************************************
+ * COMPUTED
+ ******************************************************************************/
+
+/*******************************************************************************
+ * FUNCTIONS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * WATCHERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * HOOKS
+ ******************************************************************************/
+onUnmounted(() => {
+  if (kmlLayerInstance.value) {
+    kmlLayerInstance.value.setMap(null);
+  }
+});
+/*******************************************************************************
+ * RENDERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * EXPOSE
+ ******************************************************************************/
 </script>

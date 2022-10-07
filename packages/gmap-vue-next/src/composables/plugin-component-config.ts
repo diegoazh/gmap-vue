@@ -135,6 +135,28 @@ const componentConfigs: PluginComponentConfig = {
       manual: ['place_changed'],
     },
   },
+  GmvKmlLayer: {
+    noBind: [
+      'clickable',
+      'preserveViewport',
+      'screenOverlays',
+      'suppressInfoWindows',
+    ],
+    twoWay: ['map', 'zIndex'],
+    trackProperties: {},
+    events: {
+      auto: [
+        'click',
+        'rightclick',
+        'dblclick',
+        'mouseup',
+        'mousedown',
+        'mouseover',
+        'mouseout',
+      ],
+      manual: [],
+    },
+  },
 };
 
 /**
