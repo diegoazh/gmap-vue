@@ -2,7 +2,7 @@
 
 import type { Emitter, EventType } from 'mitt';
 import mitt from 'mitt';
-import { nextTick, ref, type Ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 // not used yet
 type Events = {};
@@ -14,8 +14,7 @@ interface Props {
 // end not used
 
 const defaultResizeBus = mitt();
-const currentResizeBus: Ref<Emitter<Record<EventType, unknown>> | undefined> =
-  ref();
+const currentResizeBus = ref<Emitter<Record<EventType, unknown>> | undefined>();
 let _resizeCallback: () => void;
 let _delayedResizeCallback: () => Promise<void>;
 

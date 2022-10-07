@@ -326,8 +326,8 @@ function fitBounds(
  ******************************************************************************/
 watch(
   () => props.zoom,
-  (newVal) => {
-    if (mapInstance.value && newVal) {
+  (newVal, oldValue) => {
+    if (mapInstance.value && newVal && newVal !== oldValue) {
       mapInstance.value.setZoom(newVal);
     }
   }

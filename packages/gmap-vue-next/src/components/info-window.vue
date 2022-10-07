@@ -177,7 +177,7 @@ function openInfoWindow(): void {
  * WATCHERS
  ******************************************************************************/
 watch(
-  () => 'opened',
+  () => props.opened,
   () => {
     openInfoWindow();
   }
