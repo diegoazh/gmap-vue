@@ -1,7 +1,7 @@
 <template>
-  <div class="gmap-vue-container">
-    <div ref="gmvMap" class="gmap-vue-map"></div>
-    <div class="gmap-vue-map-hidden">
+  <div class="gmv-map-container">
+    <div ref="gmvMap" class="gmv-map"></div>
+    <div class="gmv-map-hidden">
       <!-- @slot The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc. -->
       <slot></slot>
     </div>
@@ -467,10 +467,10 @@ defineExpose({
 </script>
 
 <style lang="stylus" scoped>
-.gmap-vue-container {
+.gmv-map-container {
   position: relative;
 
-  .gmap-vue-map {
+  .gmv-map {
     left: 0;
     right: 0;
     top: 0;
@@ -478,7 +478,7 @@ defineExpose({
     position: absolute;
   }
 
-  .gmap-vue-map-hidden {
+  .gmv-map-hidden {
     display: none;
   }
 }
