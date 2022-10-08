@@ -75,6 +75,10 @@ const map = ref<google.maps.Map | undefined>();
 const kmlLayerInstance = ref<google.maps.KmlLayer | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
+    if (!mapInstance) {
+      throw new Error('the map instance was not created');
+    }
+
     map.value = mapInstance;
 
     const kmlLayerOptions = {

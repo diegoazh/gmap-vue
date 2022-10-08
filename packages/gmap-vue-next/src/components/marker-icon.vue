@@ -118,7 +118,7 @@ const markerInstance = ref<google.maps.Marker | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
-      throw new Error('The GmapMap component is not defined or initialized');
+      throw new Error('the map instance was not created');
     }
 
     map = mapInstance;
