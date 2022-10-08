@@ -19,14 +19,7 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import {
-  defineProps,
-  onMounted,
-  ref,
-  withDefaults,
-  defineEmits,
-  watch,
-} from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,

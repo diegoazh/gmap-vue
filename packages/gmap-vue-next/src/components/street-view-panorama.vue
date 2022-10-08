@@ -10,16 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  defineEmits,
-  defineProps,
-  onMounted,
-  provide,
-  ref,
-  watch,
-  withDefaults,
-} from 'vue';
+import { computed, onMounted, provide, ref, watch } from 'vue';
 import { $streetViewPanoramaPromise } from '@/keys/gmap-vue.keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,

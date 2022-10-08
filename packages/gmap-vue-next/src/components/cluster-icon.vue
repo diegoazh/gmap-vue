@@ -7,20 +7,18 @@
 
 <script lang="ts" setup>
 import {
-  defineProps,
   inject,
   onBeforeUnmount,
   onUnmounted,
   onUpdated,
   provide,
   ref,
-  withDefaults,
 } from 'vue';
 import {
-  Algorithm,
+  type Algorithm,
   MarkerClusterer,
-  onClusterClickHandler,
-  Renderer,
+  type onClusterClickHandler,
+  type Renderer,
 } from '@googlemaps/markerclusterer';
 import {
   getComponentEventsConfig,

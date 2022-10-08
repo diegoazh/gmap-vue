@@ -9,15 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  defineProps,
-  inject,
-  onMounted,
-  provide,
-  ref,
-  watch,
-  withDefaults,
-} from 'vue';
+import { inject, onMounted, provide, ref, watch } from 'vue';
 import {
   $infoWindowPromise,
   $mapPromise,

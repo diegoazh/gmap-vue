@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineEmits,
-  defineProps,
-  inject,
-  onUnmounted,
-  provide,
-  ref,
-  withDefaults,
-} from 'vue';
+import { inject, onUnmounted, provide, ref } from 'vue';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,

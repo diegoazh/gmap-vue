@@ -13,15 +13,12 @@
 <script lang="ts" setup>
 import {
   computed,
-  defineEmits,
-  defineProps,
   onBeforeUnmount,
   onMounted,
   onUnmounted,
   provide,
   ref,
   watch,
-  withDefaults,
 } from 'vue';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,

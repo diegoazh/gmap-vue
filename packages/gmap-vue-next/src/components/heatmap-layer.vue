@@ -1,12 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineProps,
-  inject,
-  onUnmounted,
-  provide,
-  ref,
-  withDefaults,
-} from 'vue';
+import { inject, onUnmounted, provide, ref } from 'vue';
 import { $heatmapLayerPromise, $mapPromise } from '@/keys/gmap-vue.keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,

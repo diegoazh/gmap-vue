@@ -4,7 +4,6 @@
 
 <script lang="tsx" setup>
 import {
-  defineProps,
   h,
   inject,
   onUnmounted,
@@ -14,7 +13,6 @@ import {
   type RendererNode,
   useSlots,
   type VNode,
-  withDefaults,
 } from 'vue';
 import {
   $clusterPromise,

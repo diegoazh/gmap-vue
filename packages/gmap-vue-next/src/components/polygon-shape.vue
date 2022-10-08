@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineProps,
-  inject,
-  onUnmounted,
-  provide,
-  ref,
-  watch,
-  withDefaults,
-} from 'vue';
+import { inject, onUnmounted, provide, ref, watch } from 'vue';
 import { $mapPromise, $polygonShapePromise } from '@/keys/gmap-vue.keys';
 import {
   getComponentEventsConfig,
