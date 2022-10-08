@@ -1,204 +1,162 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
 import {
-  bindEvents,
-  bindProps,
+  defineProps,
+  inject,
+  onUnmounted,
+  provide,
+  ref,
+  withDefaults,
+} from 'vue';
+import { $circleShapePromise, $mapPromise } from '@/keys/gmap-vue.keys';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '../composables/helpers';
-import mapElementMixin from '../composables/map-element';
-import { circleMappedProps } from '../props/mapped-props-by-map-element';
+} from '@/composables/helpers';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
 
 /**
  * Circle component
- * @displayName GmapCircle
+ * @displayName GmvCircle
  * @see [source code](/guide/circle.html#source-code)
  * @see [official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Circle)
  */
-export default defineComponent({
-  name: 'CircleShape',
-  mixins: [mapElementMixin],
-  render() {
-    return '';
-  },
-  provide() {
-    // events to bind with toWay
-    const events = [
-      'click',
-      'dblclick',
-      'drag',
-      'dragend',
-      'dragstart',
-      'mousedown',
-      'mousemove',
-      'mouseout',
-      'mouseover',
-      'mouseup',
-      'rightclick',
-    ];
 
-    // Infowindow needs this to be immediately available
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
+/**
+ * Circle shape Google Maps properties documentation
+ *
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.center
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.clickable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.draggable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.editable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.fillColor
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.fillOpacity
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.radius
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeColor
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeOpacity
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokePosition
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeWeight
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.visible
+ */
+interface ICircleShapeVueComponentProps {
+  center?: google.maps.LatLng | google.maps.LatLngLiteral;
+  clickable?: boolean;
+  draggable?: boolean;
+  editable?: boolean;
+  fillColor?: string;
+  fillOpacity?: number;
+  radius?: number;
+  strokeColor?: string;
+  strokeOpacity?: number;
+  strokePosition?: google.maps.StrokePosition;
+  strokeWeight?: number;
+  visible?: boolean;
+  zIndex?: number;
+  options?: Record<string, unknown>;
+}
 
-        // Initialize the maps with the given options
-        const initialOptions = {
-          ...this.options,
-          map,
-          ...getPropsValuesWithoutOptionsProp(this, circleMappedProps),
-        };
-
-        const { options: extraOptions, ...finalOptions } = initialOptions;
-
-        this.$circleObject = new google.maps.Circle(finalOptions);
-
-        bindProps(this, this.$circleObject, circleMappedProps);
-        bindEvents(this, this.$circleObject, events);
-
-        return this.$circleObject;
-      })
-      .catch((error) => {
-        throw error;
-      });
-
-    // TODO: analyze the efects of only returns the instance and remove completely the promise
-    this.$circlePromise = promise;
-    return { $circlePromise: promise };
-  },
-  props: {
-    /**
-     * The center of the Circle.
-     * @value { lat: 41.878, lng: -87.629 }
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.center)
-     */
-    center: {
-      type: Object,
-      required: true,
-    },
-    /**
-     * The radius in meters on the Earth's surface.
-     * @value 10
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.radius)
-     */
-    radius: {
-      type: Number,
-      default: 10,
-    },
-    /**
-     * Indicates whether this Polygon handles mouse events. Defaults to true.
-     * @value true, false
-     * @see [Circle draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.clickable)
-     */
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * If set to true, the user can drag this circle over the map. Defaults to false.
-     * @value true, false
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.draggable)
-     */
-    draggable: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * If set to true, the user can edit this circle by dragging the control points shown at the center and around the circumference of the circle. Defaults to false.
-     * @value true, false
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.editable)
-     */
-    editable: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * The fill color. All CSS3 colors are supported except for extended named colors.
-     * @value '#000'
-     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.fillColor)
-     */
-    fillColor: {
-      type: String,
-      default: '',
-    },
-    /**
-     * The fill opacity between 0.0 and 1.0
-     * @value 1
-     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.fillOpacity)
-     */
-    fillOpacity: {
-      type: Number,
-      default: 1,
-    },
-    /**
-     * The stroke color. All CSS3 colors are supported except for extended named colors.
-     * @value '#000'
-     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeColor)
-     */
-    strokeColor: {
-      type: String,
-      default: '',
-    },
-    /**
-     * The stroke opacity between 0.0 and 1.0.
-     * @value 1
-     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeOpacity)
-     */
-    strokeOpacity: {
-      type: Number,
-      default: 1,
-    },
-    /**
-     * The stroke position. Defaults to CENTER.
-     * @value 1
-     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokePosition)
-     * @see [StrokePosition constant](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#StrokePosition)
-     */
-    strokePosition: {
-      type: Number,
-      default: 0,
-    },
-    /**
-     * The stroke width in pixels.
-     * @value 1
-     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.strokeWeight)
-     */
-    strokeWeight: {
-      type: Number,
-      default: 1,
-    },
-    /**
-     * Whether this polyline is visible on the map. Defaults to true.
-     * @value 1
-     * @see [Circle editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#CircleOptions.visible)
-     */
-    visible: {
-      type: Boolean,
-      default: true,
-    },
-    /**
-     * The Google Maps circle options
-     * @value {
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: "#FF0000",
-        fillOpacity: 0.35,
-        map,
-        center: citymap[city].center,
-        radius: Math.sqrt(citymap[city].population) * 100,
-      }
-     * @see [Circle simple](https://developers.google.com/maps/documentation/javascript/examples/circle-simple)
-     */
-    options: {
-      type: Object,
-      default: undefined,
-    },
-  },
-  unmounted() {
-    // Note: not all Google Maps components support maps
-    if (this.$circleObject && this.$circleObject.setMap) {
-      this.$circleObject.setMap(null);
-    }
-  },
+/*******************************************************************************
+ * DEFINE COMPONENT PROPS
+ ******************************************************************************/
+const props = withDefaults(defineProps<ICircleShapeVueComponentProps>(), {
+  clickable: true,
+  draggable: false,
+  editable: false,
+  strokePosition: google.maps.StrokePosition.CENTER,
+  visible: true,
 });
+
+/*******************************************************************************
+ * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
+ ******************************************************************************/
+const emits = defineEmits(getComponentEventsConfig('GmvCircle'));
+
+/*******************************************************************************
+ * INJECT
+ ******************************************************************************/
+const mapPromise = inject($mapPromise);
+
+/*******************************************************************************
+ * CIRCLE SHAPE
+ ******************************************************************************/
+const map = ref<google.maps.Map | undefined>();
+const circleShapeInstance = ref<google.maps.Circle | undefined>();
+
+const promise = mapPromise
+  ?.then((mapInstance) => {
+    if (!mapInstance) {
+      throw new Error('the map instance was not created');
+    }
+
+    map.value = mapInstance;
+
+    const circleShapeOptions: ICircleShapeVueComponentProps & {
+      map: google.maps.Map;
+    } = {
+      map: mapInstance,
+      ...getPropsValuesWithoutOptionsProp(props),
+      ...props.options,
+    };
+
+    circleShapeInstance.value = new google.maps.Circle(circleShapeOptions);
+
+    const circleShapePropsConfig = getComponentPropsConfig('GmvCircle');
+    const circleShapeEventsConfig = getComponentEventsConfig(
+      'GmvCircle',
+      'auto'
+    );
+
+    bindPropsWithGoogleMapsSettersAndGettersOnSetup(
+      circleShapeInstance.value,
+      props,
+      circleShapePropsConfig,
+      emits
+    );
+    bindGoogleMapsEventsToVueEventsOnSetup(
+      circleShapeEventsConfig,
+      circleShapeInstance.value,
+      emits
+    );
+
+    return circleShapeInstance.value;
+  })
+  .catch((error) => {
+    throw error;
+  });
+
+provide($circleShapePromise, promise);
+
+/*******************************************************************************
+ * COMPUTED
+ ******************************************************************************/
+
+/*******************************************************************************
+ * FUNCTIONS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * WATCHERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * HOOKS
+ ******************************************************************************/
+onUnmounted(() => {
+  if (circleShapeInstance.value) {
+    circleShapeInstance.value.setMap(null);
+  }
+});
+/*******************************************************************************
+ * RENDERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * EXPOSE
+ ******************************************************************************/
 </script>

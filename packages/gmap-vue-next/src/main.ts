@@ -1,7 +1,7 @@
 import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
 import Autocomplete from './components/autocomplete-input.vue';
-// import Circle from './components/circle-shape.vue';
+import Circle from './components/circle-shape.vue';
 import Cluster from './components/cluster-icon.vue';
 // import DrawingManager from './components/drawing-manager.vue';
 import HeatmapLayer from './components/heatmap-layer.vue';
@@ -109,7 +109,7 @@ const components = {
   Marker,
   // Polyline,
   // Polygon,
-  // Circle,
+  Circle,
   Cluster,
   // Rectangle,
   // DrawingManager,
@@ -203,7 +203,7 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
       .component('GmvKmlLayer', KmlLayer)
       // .component('GmvPolyline', Polyline)
       // .component('GmvPolygon', Polygon)
-      // .component('GmvCircle', Circle)
+      .component('GmvCircle', Circle)
       // .component('GmvRectangle', Rectangle)
       // .component('GmvDrawingManager', DrawingManager)
       .component('GmvAutocomplete', Autocomplete)

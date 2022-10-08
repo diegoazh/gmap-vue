@@ -185,6 +185,36 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
+  GmvCircle: {
+    noBind: [
+      'clickable',
+      'fillColor',
+      'fillOpacity',
+      'strokeColor',
+      'strokeOpacity',
+      'strokePosition',
+      'strokeWeight',
+      '',
+    ],
+    twoWay: ['center', 'radius'],
+    trackProperties: {},
+    events: {
+      auto: [
+        'click',
+        'dblclick',
+        'drag',
+        'dragend',
+        'dragstart',
+        'mousedown',
+        'mousemove',
+        'mouseout',
+        'mouseover',
+        'mouseup',
+        'rightclick',
+      ],
+      manual: [],
+    },
+  },
 };
 
 /**

@@ -22,3 +22,6 @@ export const $kmlLayerPromise = Symbol('kmlLayerPromise') as InjectionKey<
 export const $heatmapLayerPromise = Symbol(
   'heatmapLayerPromise'
 ) as InjectionKey<Promise<google.maps.visualization.HeatmapLayer | undefined>>;
+export const $circleShapePromise = Symbol('circleShapePromise') as InjectionKey<
+  Promise<google.maps.Circle | undefined>
+>;

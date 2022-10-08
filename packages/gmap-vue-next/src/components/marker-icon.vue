@@ -113,7 +113,7 @@ const clusterOwner = ref<MarkerClusterer | undefined>();
 /*******************************************************************************
  * MARKER
  ******************************************************************************/
-let map: google.maps.Map | undefined;
+const map = ref<google.maps.Map | undefined>();
 const markerInstance = ref<google.maps.Marker | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -121,12 +121,12 @@ const promise = mapPromise
       throw new Error('the map instance was not created');
     }
 
-    map = mapInstance;
+    map.value = mapInstance;
     // Initialize the maps with the given options
     const markerIconOptions: Partial<IMarkerIconVueComponentProps> & {
       map: google.maps.Map | undefined;
     } = {
-      map,
+      map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
     };
