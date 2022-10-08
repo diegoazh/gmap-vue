@@ -232,7 +232,13 @@ export function downArrowSimulator(input: HTMLInputElement | null): void {
       })
     })
  */
-export function twoWayBindingWrapper(fn: Function): void {
+export function twoWayBindingWrapper(
+  fn: (
+    increment: () => void,
+    decrement: () => void,
+    shouldUpdate: () => boolean
+  ) => void
+): void {
   let counter = 0;
 
   fn(

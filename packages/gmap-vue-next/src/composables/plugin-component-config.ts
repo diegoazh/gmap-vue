@@ -157,6 +157,25 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
+  GmvStreetViewPanorama: {
+    noBind: ['position'],
+    twoWay: ['pov', 'pano', 'visible'],
+    trackProperties: {
+      pov: ['pitch', 'heading'],
+    },
+    events: {
+      auto: [
+        'closeclick',
+        'pano_changed',
+        'pov_changed',
+        'resize',
+        'status_changed',
+        'visible_changed',
+        'zoom_changed',
+      ],
+      manual: ['position_changed'],
+    },
+  },
 };
 
 /**

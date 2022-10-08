@@ -228,42 +228,42 @@ export const heatMapLayerMappedProps = {
 //   },
 // };
 
-export const streetViewPanoramaMappedProps = {
-  zoom: {
-    twoWay: true,
-    type: Number,
-  },
-  pov: {
-    twoWay: true,
-    type: Object,
-    trackProperties: ['pitch', 'heading'],
-  },
-  position: {
-    twoWay: true,
-    type: Object,
-    noBind: true,
-  },
-  pano: {
-    twoWay: true,
-    type: String,
-  },
-  motionTracking: {
-    twoWay: false,
-    type: Boolean,
-  },
-  visible: {
-    twoWay: true,
-    type: Boolean,
-    default: true,
-  },
-  options: {
-    twoWay: false,
-    type: Object,
-    default() {
-      return {};
-    },
-  },
-};
+// export const streetViewPanoramaMappedProps = {
+//   zoom: {
+//     twoWay: true,
+//     type: Number,
+//   },
+//   pov: {
+//     twoWay: true,
+//     type: Object,
+//     trackProperties: ['pitch', 'heading'],
+//   },
+//   position: {
+//     twoWay: true,
+//     type: Object,
+//     noBind: true,
+//   },
+//   pano: {
+//     twoWay: true,
+//     type: String,
+//   },
+//   motionTracking: {
+//     twoWay: false,
+//     type: Boolean,
+//   },
+//   visible: {
+//     twoWay: true,
+//     type: Boolean,
+//     default: true,
+//   },
+//   options: {
+//     twoWay: false,
+//     type: Object,
+//     default() {
+//       return {};
+//     },
+//   },
+// };
 
 export const polygonMappedProps = {
   clickable: {
@@ -521,7 +521,7 @@ export default {
   // kmlLayerMappedProps,
   // mapMappedProps,
   // markerMappedProps,
-  streetViewPanoramaMappedProps,
+  // streetViewPanoramaMappedProps,
   polygonMappedProps,
   polylineMappedProps,
   rectangleMappedProps,

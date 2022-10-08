@@ -1,13 +1,7 @@
-import { $mapPromise } from '@/keys/gmap-vue.keys';
-import { inject, reactive, ref, type Ref } from 'vue';
+import { reactive } from 'vue';
+import type { PromiseDeferred } from '@/interfaces/gmap-vue.interface';
 
-interface MapPromiseDeferred {
-  resolve: ((value: google.maps.Map | undefined) => void) | undefined;
-  reject: ((reason?: any) => void) | undefined;
-}
-
-const map: Ref<google.maps.Map | undefined> = ref();
-const mapPromiseDeferred: MapPromiseDeferred = reactive({
+const mapPromiseDeferred: PromiseDeferred<google.maps.Map> = reactive({
   resolve: undefined,
   reject: undefined,
 });
@@ -17,15 +11,6 @@ const promise: Promise<google.maps.Map | undefined> = new Promise(
     mapPromiseDeferred.reject = reject;
   }
 );
-
-/**
- * INTERNAL
- *
- * @returns Ref
- */
-export function getMap(): Ref<google.maps.Map | undefined> {
-  return map;
-}
 
 /**
  * INTERNAL
@@ -41,15 +26,6 @@ export function getMapPromise(): Promise<google.maps.Map | undefined> {
  *
  * @returns void
  */
-export function getMapPromiseDeferred(): MapPromiseDeferred {
+export function getMapPromiseDeferred(): PromiseDeferred<google.maps.Map> {
   return mapPromiseDeferred;
-}
-
-/**
- * EXPOSED
- *
- * @returns Promise
- */
-export async function injectMapPromise(): Promise<google.maps.Map | undefined> {
-  return inject($mapPromise);
 }

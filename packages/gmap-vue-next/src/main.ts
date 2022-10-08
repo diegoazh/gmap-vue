@@ -12,7 +12,7 @@ import Marker from './components/marker-icon.vue';
 // import Polygon from './components/polygon-shape.vue';
 // import Polyline from './components/polyline-shape.vue';
 // import Rectangle from './components/rectangle-shape.vue';
-// import StreetViewPanorama from './components/street-view-panorama.vue';
+import StreetViewPanorama from './components/street-view-panorama.vue';
 import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
 import { pluginMapComponentBuilder } from './composables/plugin-map-component-builder';
 import {
@@ -116,7 +116,7 @@ const components = {
   InfoWindow,
   MapLayer,
   Autocomplete,
-  // StreetViewPanorama,
+  StreetViewPanorama,
 };
 
 /**
@@ -206,8 +206,8 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
       // .component('GmvCircle', Circle)
       // .component('GmvRectangle', Rectangle)
       // .component('GmvDrawingManager', DrawingManager)
-      .component('GmvAutocomplete', Autocomplete);
-    // .component('GmvStreetViewPanorama', StreetViewPanorama);
+      .component('GmvAutocomplete', Autocomplete)
+      .component('GmvStreetViewPanorama', StreetViewPanorama);
   }
 }
 

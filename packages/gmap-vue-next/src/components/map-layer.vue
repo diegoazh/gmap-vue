@@ -38,7 +38,6 @@ import {
 } from '@/composables/resize-bus';
 import { $mapPromise } from '@/keys/gmap-vue.keys';
 import {
-  getMap,
   getMapPromise,
   getMapPromiseDeferred,
 } from '@/composables/map-promise';
@@ -179,13 +178,15 @@ function getRecycleKey(): string {
 }
 
 /*******************************************************************************
- * MAP AND MAP PROMISE
- *
- * provide to all children
+ * MAP
+ ******************************************************************************/
+const mapInstance = ref<google.maps.Map | undefined>();
+
+/*******************************************************************************
+ * PROVIDE
  ******************************************************************************/
 const mapPromiseDeferred = getMapPromiseDeferred();
 const promise = getMapPromise();
-const mapInstance = getMap();
 provide($mapPromise, promise);
 
 /*******************************************************************************
@@ -358,10 +359,6 @@ onMounted(() => {
 
       const mapLayerPropsConfig = getComponentPropsConfig('GmvMap');
       const mapLayerEventsConfig = getComponentEventsConfig('GmvMap', 'auto');
-      const mapLayerManualEventsConfig = getComponentEventsConfig(
-        'GmvMap',
-        'manual'
-      );
 
       // binding properties (two and one way)
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
@@ -429,7 +426,7 @@ onMounted(() => {
       });
 
       if (!mapPromiseDeferred.resolve) {
-        throw new Error('$mapPromiseDeferred.resolve is undefined');
+        throw new Error('mapPromiseDeferred.resolve is undefined');
       }
 
       mapPromiseDeferred.resolve(mapInstance.value);

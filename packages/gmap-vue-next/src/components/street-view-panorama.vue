@@ -1,22 +1,42 @@
 <template>
-  <div class="vue-street-view-pano-container">
-    <div ref="vue-street-view-pano" class="vue-street-view-pano"></div>
+  <div class="gmv-street-view-panorama-container">
+    <div
+      ref="gmvStreetViewPanoramaContainer"
+      class="gmv-street-view-panorama"
+    ></div>
     <!-- @slot A default slot to render the street view panorama -->
     <slot></slot>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
 import {
-  bindEvents,
-  bindProps,
+  computed,
+  defineEmits,
+  defineProps,
+  onMounted,
+  provide,
+  ref,
+  watch,
+  withDefaults,
+} from 'vue';
+import { $streetViewPanoramaPromise } from '@/keys/gmap-vue.keys';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
   watchPrimitiveProperties,
-} from '../composables/helpers';
-import MountableMixin from '../composables/resize-bus';
-import { streetViewPanoramaMappedProps } from '../props/mapped-props-by-map-element';
+} from '@/composables/helpers';
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import {
+  getStreetViewPanoramaPromise,
+  getStreetViewPanoramaPromiseDeferred,
+} from '@/composables/street-view-panorama-promise';
 
 /**
  * Street View Panorama component
@@ -24,192 +44,266 @@ import { streetViewPanoramaMappedProps } from '../props/mapped-props-by-map-elem
  * @see [source code](/guide/street-view-panorama.html#source-code)
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanorama)
  */
-export default defineComponent({
-  name: 'StreetViewPanorama',
-  mixins: [MountableMixin],
-  provide() {
-    this.$panoPromise = new Promise((resolve, reject) => {
-      this.$panoPromiseDeferred = { resolve, reject };
-    });
-    return {
-      $panoPromise: this.$panoPromise,
-      $mapPromise: this.$panoPromise, // so that we can use it with markers
-    };
-  },
-  props: {
-    /**
-     * The zoom of the panorama, specified as a number. A zoom of 0 gives a 180 degrees Field of View.
-     * @value number
-     * @see [StreetViewPanorama zoom](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.zoom)
-     */
-    zoom: {
-      type: Number,
-      default: undefined,
-    },
-    /**
-     * The camera orientation, specified as heading and pitch, for the panorama.
-     * @value object
-     * @type StreetViewPov
-     * @see [StreetViewPanorama pov](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.pov)
-     */
-    pov: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * The LatLng position of the Street View panorama.
-     * @value object
-     * @type LatLng|LatLngLiteral
-     * @see [StreetViewPanorama position](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.position)
-     */
-    position: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * The panorama ID, which should be set when specifying a custom panorama.
-     * @value string
-     * @see [StreetViewPanorama pano](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.pano)
-     */
-    pano: {
-      type: String,
-      default: undefined,
-    },
-    /**
-     * Whether motion tracking is on or off. Enabled by default when the motion tracking control is present, so that the POV (point of view) follows the orientation of the device. This is primarily applicable to mobile devices. If motionTracking is set to false while motionTrackingControl is enabled, the motion tracking control appears but tracking is off. The user can tap the motion tracking control to toggle this option.
-     * @value boolean
-     * @see [StreetViewPanorama motionTracking](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTracking)
-     */
-    motionTracking: {
-      type: Boolean,
-    },
-    /**
-     * If true, the Street View panorama is visible on load.
-     * @value boolean
-     * @see [StreetViewPanorama visible](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.visible)
-     */
-    visible: {
-      type: Boolean,
-      default: true,
-    },
-    /**
-     * More options that you can pass to the component
-     * @value boolean
-     */
-    options: {
-      type: Object,
-      default: undefined,
-    },
-  },
-  replace: false, // necessary for css styles
-  computed: {
-    finalLat() {
-      return this.position && typeof this.position.lat === 'function'
-        ? this.position.lat()
-        : this.position.lat;
-    },
-    finalLng() {
-      return this.position && typeof this.position.lng === 'function'
-        ? this.position.lng()
-        : this.position.lng;
-    },
-    finalLatLng() {
-      return {
-        lat: this.finalLat,
-        lng: this.finalLng,
-      };
-    },
-  },
-  watch: {
-    zoom(zoom) {
-      if (this.$panoObject) {
-        this.$panoObject.setZoom(zoom);
-      }
-    },
-  },
-  mounted() {
-    const events = ['closeclick', 'status_changed'];
 
-    return this.$gmapApiPromiseLazy()
-      .then(() => {
-        // getting the DOM element where to create the map
-        const element = this.$refs['vue-street-view-pano'];
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
+/**
+ * Street View Google Maps properties documentation
+ *
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.addressControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.addressControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.clickToGo
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.controlSize
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.disableDefaultUI
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.disableDoubleClickZoom
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.enableCloseButton
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.fullscreenControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.fullscreenControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.imageDateControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.linksControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTracking
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTrackingControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTrackingControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.panControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.panControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.pano
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.position
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.pov
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.scrollwheel
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.showRoadLabels
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.visible
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.zoom
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.zoomControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.zoomControlOptions
+ */
+interface IStreetViewPanoramaVueComponentProps {
+  addressControl?: boolean;
+  addressControlOptions?: google.maps.StreetViewAddressControlOptions;
+  clickToGo?: boolean;
+  controlSize?: number;
+  disableDefaultUI?: boolean;
+  disableDoubleClickZoom?: boolean;
+  enableCloseButton?: boolean;
+  fullscreenControl?: boolean;
+  fullscreenControlOptions?: google.maps.FullscreenControlOptions;
+  imageDateControl?: boolean;
+  linksControl?: boolean;
+  motionTracking?: boolean;
+  motionTrackingControl?: boolean;
+  motionTrackingControlOptions?: google.maps.MotionTrackingControlOptions;
+  panControl?: boolean;
+  panControlOptions?: google.maps.PanControlOptions;
+  pano?: string;
+  position?: google.maps.LatLng | google.maps.LatLngLiteral;
+  pov?: google.maps.StreetViewPov;
+  scrollwheel?: boolean;
+  showRoadLabels?: boolean;
+  visible?: boolean;
+  zoom?: number;
+  zoomControl?: boolean;
+  zoomControlOptions?: google.maps.ZoomControlOptions;
+  options: Record<string, unknown>;
+}
 
-        // creating the map
-        const options = {
-          ...this.options,
-          ...getPropsValuesWithoutOptionsProp(
-            this,
-            streetViewPanoramaMappedProps
-          ),
-        };
+/*******************************************************************************
+ * DEFINE COMPONENT PROPS
+ ******************************************************************************/
+const props = withDefaults(
+  defineProps<IStreetViewPanoramaVueComponentProps>(),
+  {
+    clickToGo: true,
+    disableDoubleClickZoom: true,
+    enableCloseButton: false,
+    scrollwheel: true,
+    showRoadLabels: true,
+  }
+);
 
-        const { options: extraOptions, ...finalOptions } = options;
+/*******************************************************************************
+ * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
+ ******************************************************************************/
+const gmvStreetViewPanoramaContainer = ref<HTMLElement | null>(null);
+const emits = defineEmits(getComponentEventsConfig('GmvStreetViewPanorama'));
 
-        this.$panoObject = new google.maps.StreetViewPanorama(
-          element,
-          finalOptions
+/*******************************************************************************
+ * STREET VIEW PANORAMA
+ ******************************************************************************/
+const streetViewPanoramaInstance = ref<
+  google.maps.StreetViewPanorama | undefined
+>();
+
+/*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const streetViewPanoramaPromiseDeferred =
+  getStreetViewPanoramaPromiseDeferred();
+const promise = getStreetViewPanoramaPromise();
+provide($streetViewPanoramaPromise, promise);
+// TODO: find a way to implement this in order to use with markers
+// provide($mapPromise, promise); // so that we can use it with markers
+
+/*******************************************************************************
+ * COMPUTED
+ ******************************************************************************/
+const finalLat = computed(() => {
+  if (!props.position) {
+    return console.warn('position is not defined');
+  }
+
+  return typeof props.position.lat === 'function'
+    ? props.position.lat()
+    : props.position.lat;
+});
+const finalLng = computed(() => {
+  if (!props.position) {
+    return console.warn('position is not defined');
+  }
+
+  return typeof props.position.lng === 'function'
+    ? props.position.lng()
+    : props.position.lng;
+});
+const finalLatLng = computed(
+  () =>
+    ({ lat: finalLat.value, lng: finalLng.value } as google.maps.LatLngLiteral)
+);
+
+/*******************************************************************************
+ * FUNCTIONS
+ ******************************************************************************/
+function resize() {
+  if (streetViewPanoramaInstance.value) {
+    google.maps.event.trigger(streetViewPanoramaInstance.value, 'resize');
+  }
+}
+
+/*******************************************************************************
+ * WATCHERS
+ ******************************************************************************/
+watch(
+  () => props.zoom,
+  (newValue, oldValue) => {
+    if (streetViewPanoramaInstance.value && newValue && newValue !== oldValue) {
+      streetViewPanoramaInstance.value.setZoom(newValue);
+    }
+  }
+);
+
+/*******************************************************************************
+ * HOOKS
+ ******************************************************************************/
+onMounted(() => {
+  useGmapApiPromiseLazy()
+    .then(() => {
+      if (!gmvStreetViewPanoramaContainer.value) {
+        throw new Error(
+          `we can find the template ref: 'gmvStreetViewPanoramaContainer'`
         );
+      }
 
-        // binding properties (two and one way)
-        bindProps(this, this.$panoObject, streetViewPanoramaMappedProps);
-        // binding events
-        bindEvents(this, this.$panoObject, events);
+      const streetViewOptions = {
+        ...getPropsValuesWithoutOptionsProp(props),
+        ...props.options,
+      };
 
-        // manually trigger position
-        twoWayBindingWrapper((increment, decrement, shouldUpdate) => {
-          // Panos take a while to load
-          increment();
+      streetViewPanoramaInstance.value = new google.maps.StreetViewPanorama(
+        gmvStreetViewPanoramaContainer.value,
+        streetViewOptions
+      );
 
-          this.$panoObject.addListener('position_changed', () => {
-            if (shouldUpdate()) {
-              this.$emit('position_changed', this.$panoObject.getPosition());
+      const streetViewPanoramaPropsConfig = getComponentPropsConfig(
+        'GmvStreetViewPanorama'
+      );
+      const streetViewPanoramaEventsConfig = getComponentEventsConfig(
+        'GmvStreetViewPanorama',
+        'auto'
+      );
+
+      bindPropsWithGoogleMapsSettersAndGettersOnSetup(
+        streetViewPanoramaInstance.value,
+        props,
+        streetViewPanoramaPropsConfig,
+        emits
+      );
+      bindGoogleMapsEventsToVueEventsOnSetup(
+        streetViewPanoramaEventsConfig,
+        streetViewPanoramaInstance.value,
+        emits
+      );
+
+      // manually trigger position
+      twoWayBindingWrapper((increment, decrement, shouldUpdate) => {
+        // Panos take a while to load
+        increment();
+
+        if (!streetViewPanoramaInstance.value) {
+          throw new Error('the street view panorama instance was not created');
+        }
+
+        streetViewPanoramaInstance.value.addListener('position_changed', () => {
+          if (shouldUpdate()) {
+            if (!streetViewPanoramaInstance.value) {
+              throw new Error(
+                'the street view panorama instance was not created'
+              );
             }
-            decrement();
-          });
 
-          const updateCenter = () => {
-            increment();
-            this.$panoObject.setPosition(this.finalLatLng);
-          };
+            emits(
+              'position_changed',
+              streetViewPanoramaInstance.value.getPosition()
+            );
+          }
 
-          watchPrimitiveProperties(
-            this,
-            ['finalLat', 'finalLng'],
-            updateCenter
-          );
+          decrement();
         });
 
-        this.$panoPromiseDeferred.resolve(this.$panoObject);
+        const updateCenter = () => {
+          increment();
+          if (!streetViewPanoramaInstance.value) {
+            throw new Error(
+              'the street view panorama instance was not created'
+            );
+          }
 
-        return this.$panoPromise;
-      })
-      .catch((error) => {
-        throw error;
+          streetViewPanoramaInstance.value.setPosition(finalLatLng.value);
+        };
+
+        watchPrimitiveProperties(['finalLat', 'finalLng'], updateCenter);
       });
-  },
-  methods: {
-    resize() {
-      if (this.$panoObject) {
-        google.maps.event.trigger(this.$panoObject, 'resize');
+
+      if (!streetViewPanoramaPromiseDeferred.resolve) {
+        throw new Error(
+          'streetViewPanoramaPromiseDeferred.resolve is undefined'
+        );
       }
-    },
-  },
-  unmounted() {
-    // Note: not all Google Maps components support maps
-    if (this.$panoObject && this.$panoObject.setMap) {
-      this.$panoObject.setMap(null);
-    }
-  },
+
+      streetViewPanoramaPromiseDeferred.resolve(
+        streetViewPanoramaInstance.value
+      );
+
+      return streetViewPanoramaInstance.value;
+    })
+    .catch((error) => {
+      throw error;
+    });
 });
+/*******************************************************************************
+ * RENDERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * EXPOSE
+ ******************************************************************************/
+defineExpose({ resize });
 </script>
 
 <style lang="css">
-.vue-street-view-pano-container {
+.gmv-street-view-panorama-container {
   position: relative;
 }
 
-.vue-street-view-pano-container .vue-street-view-pano {
+.gmv-street-view-panorama-container .gmv-street-view-panorama {
   left: 0;
   right: 0;
   top: 0;

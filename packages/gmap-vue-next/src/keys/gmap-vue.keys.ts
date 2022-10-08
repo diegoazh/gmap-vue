@@ -4,6 +4,9 @@ import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 export const $mapPromise = Symbol('mapPromise') as InjectionKey<
   Promise<google.maps.Map | undefined>
 >;
+export const $streetViewPanoramaPromise = Symbol(
+  'streetViewPanoramaPromise'
+) as InjectionKey<Promise<google.maps.StreetViewPanorama | undefined>>;
 export const $clusterPromise = Symbol('clusterPromise') as InjectionKey<
   Promise<MarkerClusterer | undefined>
 >;

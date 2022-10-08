@@ -79,3 +79,8 @@ export interface IMapPromiseFactory {
       }
     | undefined;
 }
+
+export interface PromiseDeferred<T> {
+  resolve: ((value: T | undefined) => void) | undefined;
+  reject: ((reason?: any) => void) | undefined;
+}

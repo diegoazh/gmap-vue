@@ -1,12 +1,13 @@
 import type { IGmapVueElementOptions } from '@/interfaces/gmap-vue.interface';
 import type { ComponentOptions } from 'vue';
-import { injectMapPromise } from './map-promise';
+import { inject } from 'vue';
 import {
   bindEvents,
   bindProps,
   filterVuePropsOptions,
   getPropsValuesWithoutOptionsProp,
 } from './helpers';
+import { $mapPromise } from '@/keys/gmap-vue.keys';
 
 /**
  * Custom assert for local validation
@@ -98,13 +99,15 @@ export function pluginMapComponentBuilder(
       ...filterVuePropsOptions(mappedProps),
     },
     async setup() {
-      await injectMapPromise();
+      const mapPromise = inject($mapPromise);
+
+      return { mapPromise };
     },
     render() {
       return '';
     },
     provide() {
-      const promise = this.$mapPromise
+      const promise = this.mapPromise
         .then((map: google.maps.Map) => {
           // Infowindow needs this to be immediately available
           this.$map = map;
