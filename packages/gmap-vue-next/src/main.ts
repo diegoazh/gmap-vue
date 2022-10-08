@@ -9,7 +9,7 @@ import InfoWindow from './components/info-window.vue';
 import KmlLayer from './components/kml-layer.vue';
 import MapLayer from './components/map-layer.vue';
 import Marker from './components/marker-icon.vue';
-// import Polygon from './components/polygon-shape.vue';
+import Polygon from './components/polygon-shape.vue';
 // import Polyline from './components/polyline-shape.vue';
 // import Rectangle from './components/rectangle-shape.vue';
 import StreetViewPanorama from './components/street-view-panorama.vue';
@@ -108,7 +108,7 @@ const components = {
   KmlLayer,
   Marker,
   // Polyline,
-  // Polygon,
+  Polygon,
   Circle,
   Cluster,
   // Rectangle,
@@ -202,7 +202,7 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
       .component('GmvHeatmapLayer', HeatmapLayer)
       .component('GmvKmlLayer', KmlLayer)
       // .component('GmvPolyline', Polyline)
-      // .component('GmvPolygon', Polygon)
+      .component('GmvPolygon', Polygon)
       .component('GmvCircle', Circle)
       // .component('GmvRectangle', Rectangle)
       // .component('GmvDrawingManager', DrawingManager)

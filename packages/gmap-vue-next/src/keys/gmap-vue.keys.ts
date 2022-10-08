@@ -25,3 +25,6 @@ export const $heatmapLayerPromise = Symbol(
 export const $circleShapePromise = Symbol('circleShapePromise') as InjectionKey<
   Promise<google.maps.Circle | undefined>
 >;
+export const $polygonShapePromise = Symbol(
+  'polygonShapePromise'
+) as InjectionKey<Promise<google.maps.Polygon | undefined>>;

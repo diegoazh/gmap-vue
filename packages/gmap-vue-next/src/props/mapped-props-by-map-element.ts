@@ -265,58 +265,58 @@ export const drawingManagerMappedProps = {
 //   },
 // };
 
-export const polygonMappedProps = {
-  clickable: {
-    type: Boolean,
-    noBind: true,
-  },
-  draggable: {
-    type: Boolean,
-  },
-  editable: {
-    type: Boolean,
-  },
-  fillColor: {
-    type: String,
-    noBind: true,
-  },
-  fillOpacity: {
-    type: Number,
-    noBind: true,
-  },
-  strokeColor: {
-    type: String,
-    noBind: true,
-  },
-  strokeOpacity: {
-    type: Number,
-    noBind: true,
-  },
-  strokePosition: {
-    type: Number,
-    noBind: true,
-  },
-  strokeWeight: {
-    type: Number,
-    noBind: true,
-  },
-  visible: {
-    type: Boolean,
-  },
-  options: {
-    type: Object,
-  },
-  path: {
-    type: Array,
-    twoWay: true,
-    noBind: true,
-  },
-  paths: {
-    type: Array,
-    twoWay: true,
-    noBind: true,
-  },
-};
+// export const polygonMappedProps = {
+//   clickable: {
+//     type: Boolean,
+//     noBind: true,
+//   },
+//   draggable: {
+//     type: Boolean,
+//   },
+//   editable: {
+//     type: Boolean,
+//   },
+//   fillColor: {
+//     type: String,
+//     noBind: true,
+//   },
+//   fillOpacity: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   strokeColor: {
+//     type: String,
+//     noBind: true,
+//   },
+//   strokeOpacity: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   strokePosition: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   strokeWeight: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   visible: {
+//     type: Boolean,
+//   },
+//   options: {
+//     type: Object,
+//   },
+//   path: {
+//     type: Array,
+//     twoWay: true,
+//     noBind: true,
+//   },
+//   paths: {
+//     type: Array,
+//     twoWay: true,
+//     noBind: true,
+//   },
+// };
 
 export const polylineMappedProps = {
   clickable: {
@@ -459,43 +459,43 @@ export const rectangleMappedProps = {
 //   },
 // };
 
-export const placeInputMappedProps = {
-  bounds: {
-    type: Object,
-  },
-  defaultPlace: {
-    type: String,
-    default: '',
-  },
-  componentRestrictions: {
-    type: Object,
-    default: null,
-  },
-  types: {
-    type: Array,
-    default() {
-      return [];
-    },
-  },
-  placeholder: {
-    required: false,
-    type: String,
-  },
-  className: {
-    required: false,
-    type: String,
-  },
-  label: {
-    required: false,
-    type: String,
-    default: null,
-  },
-  selectFirstOnEnter: {
-    require: false,
-    type: Boolean,
-    default: false,
-  },
-};
+// export const placeInputMappedProps = {
+//   bounds: {
+//     type: Object,
+//   },
+//   defaultPlace: {
+//     type: String,
+//     default: '',
+//   },
+//   componentRestrictions: {
+//     type: Object,
+//     default: null,
+//   },
+//   types: {
+//     type: Array,
+//     default() {
+//       return [];
+//     },
+//   },
+//   placeholder: {
+//     required: false,
+//     type: String,
+//   },
+//   className: {
+//     required: false,
+//     type: String,
+//   },
+//   label: {
+//     required: false,
+//     type: String,
+//     default: null,
+//   },
+//   selectFirstOnEnter: {
+//     require: false,
+//     type: Boolean,
+//     default: false,
+//   },
+// };
 
 // export const clusterIconMappedProps = {
 //   algorithm: {
@@ -522,9 +522,9 @@ export default {
   // mapMappedProps,
   // markerMappedProps,
   // streetViewPanoramaMappedProps,
-  polygonMappedProps,
+  // polygonMappedProps,
   polylineMappedProps,
   rectangleMappedProps,
-  placeInputMappedProps,
+  // placeInputMappedProps,
   // clusterIconMappedProps,
 };
