@@ -73,7 +73,7 @@ function _assert(v: boolean, message: string): void {
  *
  * @returns {Object} A component object that should be exported by default from a Vue component
  */
-export function pluginMapComponentBuilder(
+export function pluginComponentBuilder(
   providedOptions: IGmapVueElementOptions
 ): ComponentOptions {
   const {

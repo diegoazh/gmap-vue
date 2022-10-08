@@ -176,6 +176,15 @@ const componentConfigs: PluginComponentConfig = {
       manual: ['position_changed'],
     },
   },
+  GmvHeatmapLayer: {
+    noBind: [],
+    twoWay: ['data'],
+    trackProperties: {},
+    events: {
+      auto: [],
+      manual: [],
+    },
+  },
 };
 
 /**

@@ -4,7 +4,7 @@ import Autocomplete from './components/autocomplete-input.vue';
 // import Circle from './components/circle-shape.vue';
 import Cluster from './components/cluster-icon.vue';
 // import DrawingManager from './components/drawing-manager.vue';
-// import HeatmapLayer from './components/heatmap-layer.vue';
+import HeatmapLayer from './components/heatmap-layer.vue';
 import InfoWindow from './components/info-window.vue';
 import KmlLayer from './components/kml-layer.vue';
 import MapLayer from './components/map-layer.vue';
@@ -14,7 +14,7 @@ import Marker from './components/marker-icon.vue';
 // import Rectangle from './components/rectangle-shape.vue';
 import StreetViewPanorama from './components/street-view-panorama.vue';
 import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
-import { pluginMapComponentBuilder } from './composables/plugin-map-component-builder';
+import { pluginComponentBuilder } from './composables/plugin-component-builder';
 import {
   getPromiseLazyBuilderFn,
   saveLazyPromiseAndFinalOptions,
@@ -104,7 +104,7 @@ function getGoogleMapsAPI() {
  * @property  {Object}  StreetViewPanorama - Vue component StreetViewPanorama
  */
 const components = {
-  // HeatmapLayer,
+  HeatmapLayer,
   KmlLayer,
   Marker,
   // Polyline,
@@ -124,12 +124,12 @@ const components = {
  * @constant
  * @type  {Object} object containing all helpers
  * @property  {Function}  initGoogleMapsApi - function to initialize the Google Maps API
- * @property  {Function}  pluginMapComponentBuilder - function to initialize the Google Maps API
+ * @property  {Function}  pluginComponentBuilder - function to initialize the Google Maps API
  * @property  {Function}  getGoogleMapsAPI - function to get the original Google Maps API
  */
 const helpers = {
   googleMapsApiInitializer,
-  pluginMapComponentBuilder,
+  pluginMapComponentBuilder: pluginComponentBuilder,
   getGoogleMapsAPI,
 };
 
@@ -199,7 +199,7 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
       .component('GmvMap', MapLayer)
       .component('GmvMarker', Marker)
       .component('GmvInfoWindow', InfoWindow)
-      // .component('GmvHeatmapLayer', HeatmapLayer)
+      .component('GmvHeatmapLayer', HeatmapLayer)
       .component('GmvKmlLayer', KmlLayer)
       // .component('GmvPolyline', Polyline)
       // .component('GmvPolygon', Polygon)

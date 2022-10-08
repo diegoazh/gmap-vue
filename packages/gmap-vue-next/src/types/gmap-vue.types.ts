@@ -12,7 +12,8 @@ export type PluginComponentNames =
   | 'GmvInfoWindow'
   | 'GmvAutocomplete'
   | 'GmvKmlLayer'
-  | 'GmvStreetViewPanorama';
+  | 'GmvStreetViewPanorama'
+  | 'GmvHeatmapLayer';
 /**
  * @typedef {Object} SinglePluginComponentConfig
  * @property {string[]} noBind - Props with should not be bind to Google Maps. Has precedence over twoWay

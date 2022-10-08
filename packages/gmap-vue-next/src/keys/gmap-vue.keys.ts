@@ -19,3 +19,6 @@ export const $infoWindowPromise = Symbol('infoWindowPromise') as InjectionKey<
 export const $kmlLayerPromise = Symbol('kmlLayerPromise') as InjectionKey<
   Promise<google.maps.KmlLayer | undefined>
 >;
+export const $heatmapLayerPromise = Symbol(
+  'heatmapLayerPromise'
+) as InjectionKey<Promise<google.maps.visualization.HeatmapLayer | undefined>>;
