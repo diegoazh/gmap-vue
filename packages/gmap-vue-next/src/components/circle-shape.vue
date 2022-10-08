@@ -85,7 +85,6 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * CIRCLE SHAPE
  ******************************************************************************/
-const map = ref<google.maps.Map | undefined>();
 const circleShapeInstance = ref<google.maps.Circle | undefined>();
 
 const promise = mapPromise
@@ -94,10 +93,9 @@ const promise = mapPromise
       throw new Error('the map instance was not created');
     }
 
-    map.value = mapInstance;
-
     const circleShapeOptions: ICircleShapeVueComponentProps & {
       map: google.maps.Map;
+      [key: string]: any;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),

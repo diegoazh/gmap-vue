@@ -79,7 +79,6 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * MARKER CLUSTER
  ******************************************************************************/
-let map: google.maps.Map | undefined;
 const clusterInstance = ref<MarkerClusterer | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -87,14 +86,12 @@ const promise = mapPromise
       throw new Error('the map instance was not created');
     }
 
-    map = mapInstance;
-
     // Initialize the maps with the given options
     const initialOptions: IMarkerClusterVueComponentProps & {
       map: google.maps.Map | undefined;
       [key: string]: any;
     } = {
-      map,
+      map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
     };
@@ -107,7 +104,7 @@ const promise = mapPromise
     }
 
     clusterInstance.value = new MarkerClusterer({
-      map,
+      map: mapInstance,
       markers,
       onClusterClick,
       algorithm,

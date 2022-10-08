@@ -153,7 +153,9 @@ onMounted(() => {
         );
       }
 
-      const autocompleteOptions: IAutoCompleteInputVueComponentProps = {
+      const autocompleteOptions: IAutoCompleteInputVueComponentProps & {
+        [key: string]: any;
+      } = {
         ...getPropsValuesWithoutOptionsProp(props),
         ...props.options,
       };

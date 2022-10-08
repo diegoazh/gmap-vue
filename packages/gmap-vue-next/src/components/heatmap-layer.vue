@@ -72,7 +72,6 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * HEATMAP
  ******************************************************************************/
-const map = ref<google.maps.Map | undefined>();
 const heatMapLayerInstance = ref<
   google.maps.visualization.HeatmapLayer | undefined
 >();
@@ -83,10 +82,9 @@ const promise = mapPromise
       throw new Error('the map instance was not created');
     }
 
-    map.value = mapInstance;
-
     const heatmapLayerOptions: IHeatmapLayerVueComponentProps & {
       map: google.maps.Map;
+      [key: string]: any;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),

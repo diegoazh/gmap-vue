@@ -61,7 +61,7 @@ const props = withDefaults(defineProps<IKmlLayerVueComponentProps>(), {
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmapKmlLayer'));
+const emits = defineEmits(getComponentEventsConfig('GmvKmlLayer'));
 
 /*******************************************************************************
  * INJECT
@@ -71,7 +71,6 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * KML LAYER
  ******************************************************************************/
-const map = ref<google.maps.Map | undefined>();
 const kmlLayerInstance = ref<google.maps.KmlLayer | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -79,9 +78,10 @@ const promise = mapPromise
       throw new Error('the map instance was not created');
     }
 
-    map.value = mapInstance;
-
-    const kmlLayerOptions = {
+    const kmlLayerOptions: IKmlLayerVueComponentProps & {
+      map: google.maps.Map;
+      [key: string]: any;
+    } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
@@ -89,11 +89,8 @@ const promise = mapPromise
 
     kmlLayerInstance.value = new google.maps.KmlLayer(kmlLayerOptions);
 
-    const kmlLayerPropsConfig = getComponentPropsConfig('GmapKmlLayer');
-    const kmlLayerEventsConig = getComponentEventsConfig(
-      'GmapKmlLayer',
-      'auto'
-    );
+    const kmlLayerPropsConfig = getComponentPropsConfig('GmvKmlLayer');
+    const kmlLayerEventsConig = getComponentEventsConfig('GmvKmlLayer', 'auto');
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       kmlLayerInstance.value,

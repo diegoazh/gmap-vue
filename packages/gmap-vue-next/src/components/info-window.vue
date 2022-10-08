@@ -91,7 +91,7 @@ const markerOwner = ref<google.maps.Marker | undefined>();
 /*******************************************************************************
  * INFO WINDOW
  ******************************************************************************/
-let map: google.maps.Map | undefined;
+const map = ref<google.maps.Map | undefined>();
 const infoWindowInstance = ref<google.maps.InfoWindow | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -99,12 +99,13 @@ const promise = mapPromise
       throw new Error('the map instance was not created');
     }
 
-    map = mapInstance;
+    map.value = mapInstance;
 
     const infoWindowOptions: Partial<IInfoWindowVueComponentProps> & {
       map: google.maps.Map | undefined;
+      [key: string]: any;
     } = {
-      map,
+      map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
     };
@@ -159,9 +160,9 @@ provide($infoWindowPromise, promise);
 function openInfoWindow(): void {
   if (props.opened) {
     if (markerOwner.value) {
-      infoWindowInstance.value?.open(map, markerOwner.value);
+      infoWindowInstance.value?.open(map.value, markerOwner.value);
     } else {
-      infoWindowInstance.value?.open(map);
+      infoWindowInstance.value?.open(map.value);
     }
   } else {
     infoWindowInstance.value?.close();
