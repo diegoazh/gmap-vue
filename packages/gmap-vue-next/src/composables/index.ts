@@ -1,4 +1,4 @@
-import { getMapPromise } from './google-maps-promise';
+import { getMapPromise } from './map-promise';
 import { useResizeBus } from './resize-bus';
 
 // TODO: Finish this doc statement

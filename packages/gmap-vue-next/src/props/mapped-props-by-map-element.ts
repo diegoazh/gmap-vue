@@ -96,46 +96,46 @@ export const heatMapLayerMappedProps = {
 //   },
 // };
 
-export const kmlLayerMappedProps = {
-  clickable: {
-    type: Boolean,
-    twoWay: true,
-    noBind: true,
-  },
-  map: {
-    type: Object,
-    twoWay: true,
-  },
-  preserveViewport: {
-    type: Boolean,
-    twoWay: true,
-    noBind: true,
-  },
-  screenOverlays: {
-    type: Boolean,
-    twoWay: true,
-    noBind: true,
-  },
-  suppressInfoWindows: {
-    type: Boolean,
-    twoWay: true,
-    noBind: true,
-  },
-  url: {
-    type: String,
-    twoWay: false,
-  },
-  zIndex: {
-    type: Number,
-    twoWay: true,
-  },
-  options: {
-    type: Object,
-    default() {
-      return {};
-    },
-  },
-};
+// export const kmlLayerMappedProps = {
+//   clickable: {
+//     type: Boolean,
+//     twoWay: true,
+//     noBind: true,
+//   },
+//   map: {
+//     type: Object,
+//     twoWay: true,
+//   },
+//   preserveViewport: {
+//     type: Boolean,
+//     twoWay: true,
+//     noBind: true,
+//   },
+//   screenOverlays: {
+//     type: Boolean,
+//     twoWay: true,
+//     noBind: true,
+//   },
+//   suppressInfoWindows: {
+//     type: Boolean,
+//     twoWay: true,
+//     noBind: true,
+//   },
+//   url: {
+//     type: String,
+//     twoWay: false,
+//   },
+//   zIndex: {
+//     type: Number,
+//     twoWay: true,
+//   },
+//   options: {
+//     type: Object,
+//     default() {
+//       return {};
+//     },
+//   },
+// };
 
 // export const mapMappedProps = {
 //   center: {
@@ -518,7 +518,7 @@ export default {
   drawingManagerMappedProps,
   heatMapLayerMappedProps,
   // infoWindowMappedProps,
-  kmlLayerMappedProps,
+  // kmlLayerMappedProps,
   // mapMappedProps,
   // markerMappedProps,
   streetViewPanoramaMappedProps,

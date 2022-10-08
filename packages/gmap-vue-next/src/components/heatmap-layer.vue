@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useGoogleMapsPromise } from '../composables/google-maps-promise';
+import { useGoogleMapsPromise } from '../composables/map-promise';
 import {
   bindEvents,
   bindProps,

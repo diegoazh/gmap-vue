@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import * as googleMapsPromise from '../src/composables/google-maps-promise';
+import * as googleMapsPromise from '../src/composables/map-promise';
 import * as vue from 'vue';
 
-describe('google-maps-promise.ts', () => {
+describe('map-promise.ts', () => {
   beforeEach(() => {
     vi.mock('vue', () => ({
       inject: vi.fn(() => Promise.resolve(undefined)),

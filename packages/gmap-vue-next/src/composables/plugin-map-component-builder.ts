@@ -1,6 +1,6 @@
 import type { IGmapVueElementOptions } from '@/interfaces/gmap-vue.interface';
 import type { ComponentOptions } from 'vue';
-import { injectMapPromise } from './google-maps-promise';
+import { injectMapPromise } from './map-promise';
 import {
   bindEvents,
   bindProps,

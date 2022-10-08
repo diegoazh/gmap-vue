@@ -41,7 +41,7 @@ import {
   getMap,
   getMapPromise,
   getMapPromiseDeferred,
-} from '@/composables/google-maps-promise';
+} from '@/composables/map-promise';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
