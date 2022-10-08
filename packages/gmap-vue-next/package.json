@@ -142,7 +142,7 @@
     "vue-docgen-api": "^4.52.0",
     "vue-loader": "^17.0.0",
     "vue-template-compiler": "^2.7.10",
-    "vue-tsc": "^1.0.0",
+    "vue-tsc": "^1.0.1",
     "vuepress-jsdoc": "4.3.1"
   },
   "author": "Diego A. Zapata Häntsch, Daniel Sim, Guillaume Leclerc",
