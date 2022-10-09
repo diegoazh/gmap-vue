@@ -318,41 +318,41 @@ export const drawingManagerMappedProps = {
 //   },
 // };
 
-export const polylineMappedProps = {
-  clickable: {
-    type: Boolean,
-    noBind: true,
-  },
-  draggable: {
-    type: Boolean,
-  },
-  editable: {
-    type: Boolean,
-  },
-  strokeColor: {
-    type: String,
-    noBind: true,
-  },
-  strokeOpacity: {
-    type: Number,
-    noBind: true,
-  },
-  strokeWeight: {
-    type: Number,
-    noBind: true,
-  },
-  visible: {
-    type: Boolean,
-  },
-  options: {
-    twoWay: false,
-    type: Object,
-  },
-  path: {
-    type: Array,
-    twoWay: true,
-  },
-};
+// export const polylineMappedProps = {
+//   clickable: {
+//     type: Boolean,
+//     noBind: true,
+//   },
+//   draggable: {
+//     type: Boolean,
+//   },
+//   editable: {
+//     type: Boolean,
+//   },
+//   strokeColor: {
+//     type: String,
+//     noBind: true,
+//   },
+//   strokeOpacity: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   strokeWeight: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   visible: {
+//     type: Boolean,
+//   },
+//   options: {
+//     twoWay: false,
+//     type: Object,
+//   },
+//   path: {
+//     type: Array,
+//     twoWay: true,
+//   },
+// };
 
 export const rectangleMappedProps = {
   bounds: {
@@ -523,7 +523,7 @@ export default {
   // markerMappedProps,
   // streetViewPanoramaMappedProps,
   // polygonMappedProps,
-  polylineMappedProps,
+  // polylineMappedProps,
   rectangleMappedProps,
   // placeInputMappedProps,
   // clusterIconMappedProps,

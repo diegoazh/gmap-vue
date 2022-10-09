@@ -248,6 +248,30 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
+  GmvPolyline: {
+    noBind: ['clickable', 'strokeColor', 'strokeOpacity', 'strokeWeight'],
+    twoWay: ['path'],
+    trackProperties: {},
+    events: {
+      /**
+       * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline-Events
+       */
+      auto: [
+        'click',
+        'contextmenu',
+        'dblclick',
+        'drag',
+        'dragend',
+        'dragstart',
+        'mousedown',
+        'mousemove',
+        'mouseout',
+        'mouseover',
+        'mouseup',
+      ],
+      manual: [],
+    },
+  },
 };
 
 /**

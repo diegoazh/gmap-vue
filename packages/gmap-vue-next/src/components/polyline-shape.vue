@@ -1,209 +1,209 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-import {
-  bindEvents,
-  bindProps,
-  getPropsValuesWithoutOptionsProp,
-} from '../composables/helpers';
-import mapElementMixin from '../composables/map-element';
-import { polylineMappedProps } from '../props/mapped-props-by-map-element';
-
+<script lang="ts" setup>
 /**
  * PolyLine component
- * @displayName GmapPolyline
+ * @displayName GmvPolyline
  * @see [source code](/guide/polyline.html#source-code)
  * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline)
  * @see [official reference](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Polyline)
  */
-export default defineComponent({
-  name: 'PolylineShape',
-  mixins: [mapElementMixin],
-  render() {
-    return '';
-  },
-  provide() {
-    const events = [
-      'click',
-      'dblclick',
-      'drag',
-      'dragend',
-      'dragstart',
-      'mousedown',
-      'mousemove',
-      'mouseout',
-      'mouseover',
-      'mouseup',
-      'rightclick',
-    ];
 
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
+import {
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+import { inject, onUnmounted, provide, ref, watch } from 'vue';
+import { $mapPromise, $polylineShapePromise } from '@/keys/gmap-vue.keys';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getPropsValuesWithoutOptionsProp,
+} from '@/composables/helpers';
+import { useShapesHelpers } from '@/composables/shapes-helpers';
 
-        // Initialize the maps with the given options
-        const initialOptions = {
-          ...this.options,
-          map,
-          ...getPropsValuesWithoutOptionsProp(this, polylineMappedProps),
-        };
-        const { options: extraOptions, ...finalOptions } = initialOptions;
+/**
+ * Marker Google Maps properties documentation
+ *
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.clickable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.draggable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.editable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.geodesic
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.icons
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.path
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeColor
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeOpacity
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeWeight
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.visible
+ * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.zIndex
+ */
+interface IPolylineShapeVueComponentProps {
+  clickable?: boolean;
+  draggable?: boolean;
+  editable?: boolean;
+  geodesic?: boolean;
+  icons?: Array<google.maps.IconSequence>;
+  path?:
+    | google.maps.MVCArray<google.maps.LatLng>
+    | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
+  strokeColor?: string;
+  strokeOpacity?: number;
+  strokeWeight?: number;
+  visible?: boolean;
+  zIndex?: number;
+  deepWatch?: boolean;
+  options?: Record<string, unknown>;
+}
 
-        this.$polylineObject = new google.maps.Polyline(finalOptions);
+/*******************************************************************************
+ * DEFINE COMPONENT PROPS
+ ******************************************************************************/
+const props = withDefaults(defineProps<IPolylineShapeVueComponentProps>(), {
+  clickable: true,
+  draggable: false,
+  editable: false,
+  geodesic: false,
+  visible: true,
+  deepWatch: false,
+});
 
-        bindProps(this, this.$polylineObject, polylineMappedProps);
-        bindEvents(this, this.$polylineObject, events);
+/*******************************************************************************
+ * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
+ ******************************************************************************/
+const emits = defineEmits(getComponentEventsConfig('GmvPolyline'));
 
-        let clearEvents = () => {};
+/*******************************************************************************
+ * INJECT
+ ******************************************************************************/
+const mapPromise = inject($mapPromise);
 
-        this.$watch(
-          'path',
-          (path) => {
-            if (path) {
-              clearEvents();
+/*******************************************************************************
+ * POLYLINE SHAPE
+ ******************************************************************************/
+const polylineShapeInstance = ref<google.maps.Polyline | undefined>();
+const promise = mapPromise
+  ?.then((mapInstance) => {
+    if (!mapInstance) {
+      throw new Error('the map instance was not created');
+    }
 
-              this.$polylineObject.setPath(path);
+    const polylineOptions = {
+      map: mapInstance,
+      ...getPropsValuesWithoutOptionsProp(props),
+      ...props.options,
+    };
 
-              const mvcPath = this.$polylineObject.getPath();
-              const eventListeners = [];
+    polylineShapeInstance.value = new google.maps.Polyline(polylineOptions);
 
-              const updatePaths = () => {
-                /**
-                 * An event to detect when a path change
-                 * @property {array} path `this.$polygonObject.getPath()`
-                 */
-                this.$emit('path_changed', this.$polylineObject.getPath());
-              };
+    const polylineShapePropsConfig = getComponentPropsConfig('GmvPolyline');
+    const polylineShapeEventsConfig = getComponentEventsConfig(
+      'GmvPolyline',
+      'auto'
+    );
 
-              eventListeners.push([
-                mvcPath,
-                mvcPath.addListener('insert_at', updatePaths),
-              ]);
-              eventListeners.push([
-                mvcPath,
-                mvcPath.addListener('remove_at', updatePaths),
-              ]);
-              eventListeners.push([
-                mvcPath,
-                mvcPath.addListener('set_at', updatePaths),
-              ]);
+    bindPropsWithGoogleMapsSettersAndGettersOnSetup(
+      polylineShapeInstance.value,
+      props,
+      polylineShapePropsConfig,
+      emits
+    );
+    bindGoogleMapsEventsToVueEventsOnSetup(
+      polylineShapeEventsConfig,
+      polylineShapeInstance.value,
+      emits
+    );
 
-              clearEvents = () => {
-                // TODO: analyze, we change map to forEach because clearEvents is a void function and the returned array is not used
-                eventListeners.forEach(([, listenerHandle]) => {
-                  google.maps.event.removeListener(listenerHandle);
-                });
-              };
-            }
-          },
-          {
-            deep: this.deepWatch,
-            immediate: true,
-          }
-        );
+    return polylineShapeInstance.value;
+  })
+  .catch((error) => {
+    throw error;
+  });
 
-        return this.$polylineObject;
-      })
-      .catch((error) => {
-        throw error;
-      });
+provide($polylineShapePromise, promise);
 
-    // TODO: analyze the efects of only returns the instance and remove completely the promise
-    this.$polylinePromise = promise;
-    return { $polylinePromise: promise };
-  },
-  props: {
-    /**
-     * If set true the object will be deep watched
-     * @value boolean
-     */
-    deepWatch: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * Indicates whether this Polygon handles mouse events. Defaults to true.
-     * @value true, false
-     * @see [Polyline draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.clickable)
-     */
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * Indicates if the polyline is draggable
-     * @value true, false
-     * @see [Polyline draggable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.draggable)
-     */
-    draggable: {
-      type: Boolean,
-    },
-    /**
-     * Indicates if the polygon is editable
-     * @value true, false
-     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.editable)
-     */
-    editable: {
-      type: Boolean,
-    },
-    /**
-     * The stroke color. All CSS3 colors are supported except for extended named colors.
-     * @value '#000'
-     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeColor)
-     */
-    strokeColor: {
-      type: String,
-      default: '',
-    },
-    /**
-     * The stroke opacity between 0.0 and 1.0.
-     * @value 1
-     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeOpacity)
-     */
-    strokeOpacity: {
-      type: Number,
-      default: 1,
-    },
-    /**
-     * The stroke width in pixels.
-     * @value 1
-     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.strokeWeight)
-     */
-    strokeWeight: {
-      type: Number,
-      default: 1,
-    },
-    /**
-     * Whether this polyline is visible on the map. Defaults to true.
-     * @value 1
-     * @see [Polyline editable](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.visible)
-     */
-    visible: {
-      type: Boolean,
-      default: true,
-    },
-    /**
-     * More options that you can pass to the component
-     * @value boolean
-     */
-    options: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * Indicates if the polygon is editable
-     * @value Array
-     * @see [Polyline path](https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolylineOptions.path)
-     */
-    path: {
-      type: Array,
-      default: undefined,
-    },
-  },
-  unmounted() {
-    // Note: not all Google Maps components support maps
-    if (this.$polylineObject && this.$polylineObject.setMap) {
-      this.$polylineObject.setMap(null);
+/*******************************************************************************
+ * COMPUTED
+ ******************************************************************************/
+
+/*******************************************************************************
+ * FUNCTIONS
+ ******************************************************************************/
+const { clearEvents, updatePathOrPaths } = useShapesHelpers();
+
+/*******************************************************************************
+ * WATCHERS
+ ******************************************************************************/
+const pathEventListeners: [
+  google.maps.MVCArray<google.maps.LatLng>,
+  google.maps.MapsEventListener
+][] = [];
+
+watch(
+  () => props.path,
+  (newValue, oldValue) => {
+    if (!polylineShapeInstance.value) {
+      throw new Error('the polyline instance was not created');
+    }
+
+    if (props.path && newValue && newValue !== oldValue) {
+      clearEvents(pathEventListeners);
+
+      polylineShapeInstance.value.setPath(newValue);
+
+      const mvcPath = polylineShapeInstance.value.getPath();
+
+      pathEventListeners.push([
+        mvcPath,
+        mvcPath.addListener(
+          'insert_at',
+          updatePathOrPaths(
+            'path_changed',
+            polylineShapeInstance.value.getPath,
+            emits
+          )
+        ),
+      ]);
+      pathEventListeners.push([
+        mvcPath,
+        mvcPath.addListener(
+          'remove_at',
+          updatePathOrPaths(
+            'path_changed',
+            polylineShapeInstance.value.getPath,
+            emits
+          )
+        ),
+      ]);
+      pathEventListeners.push([
+        mvcPath,
+        mvcPath.addListener(
+          'set_at',
+          updatePathOrPaths(
+            'path_changed',
+            polylineShapeInstance.value.getPath,
+            emits
+          )
+        ),
+      ]);
     }
   },
+  { deep: props.deepWatch, immediate: true }
+);
+/*******************************************************************************
+ * HOOKS
+ ******************************************************************************/
+onUnmounted(() => {
+  if (polylineShapeInstance.value) {
+    polylineShapeInstance.value.setMap(null);
+  }
 });
+
+/*******************************************************************************
+ * RENDERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * EXPOSE
+ ******************************************************************************/
 </script>

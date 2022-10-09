@@ -28,3 +28,6 @@ export const $circleShapePromise = Symbol('circleShapePromise') as InjectionKey<
 export const $polygonShapePromise = Symbol(
   'polygonShapePromise'
 ) as InjectionKey<Promise<google.maps.Polygon | undefined>>;
+export const $polylineShapePromise = Symbol(
+  'polylineShapePromise'
+) as InjectionKey<Promise<google.maps.Polyline | undefined>>;

@@ -10,6 +10,7 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
+import { useShapesHelpers } from '@/composables/shapes-helpers';
 
 /**
  * Polygon component
@@ -146,34 +147,7 @@ provide($polygonShapePromise, promise);
 /*******************************************************************************
  * FUNCTIONS
  ******************************************************************************/
-function clearEvents(
-  eventListeners: [
-    (
-      | google.maps.MVCArray<google.maps.LatLng>
-      | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
-    ),
-    google.maps.MapsEventListener
-  ][]
-) {
-  eventListeners.forEach(([, listenerHandle]) => {
-    google.maps.event.removeListener(listenerHandle);
-  });
-}
-
-function updatePathOrPaths<
-  T extends 'paths_changed' | 'path_changed',
-  U extends
-    | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
-    | google.maps.MVCArray<google.maps.LatLng> = T extends 'paths_changed'
-    ? google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
-    : google.maps.MVCArray<google.maps.LatLng>
->(eventName: T, fn: () => U): () => void {
-  /**
-   * An event to detect when a paths change
-   * @property {array} paths `this.$polygonObject.getPaths()` |
-   */
-  return () => emits(eventName, fn());
-}
+const { clearEvents, updatePathOrPaths } = useShapesHelpers();
 
 /*******************************************************************************
  * WATCHERS
@@ -200,7 +174,7 @@ watch(
     if (props.paths && newValue && newValue !== oldValue) {
       clearEvents(pathsEventListeners);
 
-      polygonShapeInstance.value.setPaths(props.paths);
+      polygonShapeInstance.value.setPaths(newValue);
 
       const mvcArray = polygonShapeInstance.value.getPaths();
 
@@ -212,7 +186,8 @@ watch(
             'insert_at',
             updatePathOrPaths(
               'paths_changed',
-              polygonShapeInstance.value.getPaths
+              polygonShapeInstance.value.getPaths,
+              emits
             )
           ),
         ]);
@@ -222,7 +197,8 @@ watch(
             'remove_at',
             updatePathOrPaths(
               'paths_changed',
-              polygonShapeInstance.value.getPaths
+              polygonShapeInstance.value.getPaths,
+              emits
             )
           ),
         ]);
@@ -232,7 +208,8 @@ watch(
             'set_at',
             updatePathOrPaths(
               'paths_changed',
-              polygonShapeInstance.value.getPaths
+              polygonShapeInstance.value.getPaths,
+              emits
             )
           ),
         ]);
@@ -244,7 +221,8 @@ watch(
           'insert_at',
           updatePathOrPaths(
             'paths_changed',
-            polygonShapeInstance.value.getPaths
+            polygonShapeInstance.value.getPaths,
+            emits
           )
         ),
       ]);
@@ -254,7 +232,8 @@ watch(
           'remove_at',
           updatePathOrPaths(
             'paths_changed',
-            polygonShapeInstance.value.getPaths
+            polygonShapeInstance.value.getPaths,
+            emits
           )
         ),
       ]);
@@ -264,7 +243,8 @@ watch(
           'set_at',
           updatePathOrPaths(
             'paths_changed',
-            polygonShapeInstance.value.getPaths
+            polygonShapeInstance.value.getPaths,
+            emits
           )
         ),
       ]);
@@ -294,21 +274,33 @@ watch(
         mvcPath,
         mvcPath.addListener(
           'insert_at',
-          updatePathOrPaths('path_changed', polygonShapeInstance.value.getPath)
+          updatePathOrPaths(
+            'path_changed',
+            polygonShapeInstance.value.getPath,
+            emits
+          )
         ),
       ]);
       pathEventListeners.push([
         mvcPath,
         mvcPath.addListener(
           'remove_at',
-          updatePathOrPaths('path_changed', polygonShapeInstance.value.getPath)
+          updatePathOrPaths(
+            'path_changed',
+            polygonShapeInstance.value.getPath,
+            emits
+          )
         ),
       ]);
       pathEventListeners.push([
         mvcPath,
         mvcPath.addListener(
           'set_at',
-          updatePathOrPaths('path_changed', polygonShapeInstance.value.getPath)
+          updatePathOrPaths(
+            'path_changed',
+            polygonShapeInstance.value.getPath,
+            emits
+          )
         ),
       ]);
     }
