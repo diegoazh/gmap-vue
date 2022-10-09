@@ -11,7 +11,7 @@ import MapLayer from './components/map-layer.vue';
 import Marker from './components/marker-icon.vue';
 import Polygon from './components/polygon-shape.vue';
 import Polyline from './components/polyline-shape.vue';
-// import Rectangle from './components/rectangle-shape.vue';
+import Rectangle from './components/rectangle-shape.vue';
 import StreetViewPanorama from './components/street-view-panorama.vue';
 import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
 import { pluginComponentBuilder } from './composables/plugin-component-builder';
@@ -115,7 +115,7 @@ const components = {
   Marker,
   Polyline,
   Polygon,
-  // Rectangle,
+  Rectangle,
   StreetViewPanorama,
 };
 
@@ -204,7 +204,7 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
       .component('GmvPolyline', Polyline)
       .component('GmvPolygon', Polygon)
       .component('GmvCircle', Circle)
-      // .component('GmvRectangle', Rectangle)
+      .component('GmvRectangle', Rectangle)
       // .component('GmvDrawingManager', DrawingManager)
       .component('GmvAutocomplete', Autocomplete)
       .component('GmvStreetViewPanorama', StreetViewPanorama);

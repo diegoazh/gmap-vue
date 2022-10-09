@@ -272,6 +272,39 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
+  GmvRectangle: {
+    noBind: [
+      'clickable',
+      'fillColor',
+      'fillOpacity',
+      'strokeColor',
+      'strokeOpacity',
+      'strokePosition',
+      'strokeWeight',
+    ],
+    twoWay: ['bounds', ''],
+    trackProperties: {},
+    events: {
+      /**
+       * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#Rectangle-Events
+       */
+      auto: [
+        'bounds_changed',
+        'click',
+        'contextmenu',
+        'dblclick',
+        'drag',
+        'dragend',
+        'dragstart',
+        'mousedown',
+        'mousemove',
+        'mouseout',
+        'mouseover',
+        'mouseup',
+      ],
+      manual: [],
+    },
+  },
 };
 
 /**

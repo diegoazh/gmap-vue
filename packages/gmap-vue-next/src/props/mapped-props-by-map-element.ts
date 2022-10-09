@@ -354,55 +354,55 @@ export const drawingManagerMappedProps = {
 //   },
 // };
 
-export const rectangleMappedProps = {
-  bounds: {
-    type: Object,
-    twoWay: true,
-  },
-  clickable: {
-    type: Boolean,
-    noBind: true,
-  },
-  draggable: {
-    type: Boolean,
-    default: false,
-  },
-  editable: {
-    type: Boolean,
-    default: false,
-  },
-  fillColor: {
-    type: String,
-    noBind: true,
-  },
-  fillOpacity: {
-    type: Number,
-    noBind: true,
-  },
-  strokeColor: {
-    type: String,
-    noBind: true,
-  },
-  strokeOpacity: {
-    type: Number,
-    noBind: true,
-  },
-  strokePosition: {
-    type: Number,
-    noBind: true,
-  },
-  strokeWeight: {
-    type: Number,
-    noBind: true,
-  },
-  visible: {
-    type: Boolean,
-  },
-  options: {
-    type: Object,
-    twoWay: false,
-  },
-};
+// export const rectangleMappedProps = {
+//   bounds: {
+//     type: Object,
+//     twoWay: true,
+//   },
+//   clickable: {
+//     type: Boolean,
+//     noBind: true,
+//   },
+//   draggable: {
+//     type: Boolean,
+//     default: false,
+//   },
+//   editable: {
+//     type: Boolean,
+//     default: false,
+//   },
+//   fillColor: {
+//     type: String,
+//     noBind: true,
+//   },
+//   fillOpacity: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   strokeColor: {
+//     type: String,
+//     noBind: true,
+//   },
+//   strokeOpacity: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   strokePosition: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   strokeWeight: {
+//     type: Number,
+//     noBind: true,
+//   },
+//   visible: {
+//     type: Boolean,
+//   },
+//   options: {
+//     type: Object,
+//     twoWay: false,
+//   },
+// };
 
 // export const circleMappedProps = {
 //   center: {
@@ -524,7 +524,7 @@ export default {
   // streetViewPanoramaMappedProps,
   // polygonMappedProps,
   // polylineMappedProps,
-  rectangleMappedProps,
+  // rectangleMappedProps,
   // placeInputMappedProps,
   // clusterIconMappedProps,
 };

@@ -16,7 +16,8 @@ export type PluginComponentNames =
   | 'GmvHeatmapLayer'
   | 'GmvCircle'
   | 'GmvPolygon'
-  | 'GmvPolyline';
+  | 'GmvPolyline'
+  | 'GmvRectangle';
 /**
  * @typedef {Object} SinglePluginComponentConfig
  * @property {string[]} noBind - Props with should not be bind to Google Maps. Has precedence over twoWay
