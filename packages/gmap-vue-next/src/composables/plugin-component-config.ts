@@ -305,6 +305,32 @@ const componentConfigs: PluginComponentConfig = {
       manual: [],
     },
   },
+  GmvDrawingManager: {
+    noBind: [
+      'circleOptions',
+      'markerOptions',
+      'polygonOptions',
+      'polylineOptions',
+      'rectangleOptions',
+    ],
+    twoWay: [],
+    trackProperties: {},
+    events: {
+      auto: [
+        'circlecomplete',
+        'markercomplete',
+        'polygoncomplete',
+        'polylinecomplete',
+        'rectanglecomplete',
+      ],
+      manual: [
+        'overlaycomplete',
+        'update:shapes',
+        'added:shape',
+        'removed:shape',
+      ],
+    },
+  },
 };
 
 /**

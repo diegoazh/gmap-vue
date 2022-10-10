@@ -34,3 +34,6 @@ export const $polylineShapePromise = Symbol(
 export const $rectangleShapePromise = Symbol(
   'rectangleShapePromise'
 ) as InjectionKey<Promise<google.maps.Rectangle | undefined>>;
+export const $drawingManagerPromise = Symbol(
+  'drawingManagerPromise'
+) as InjectionKey<Promise<google.maps.drawing.DrawingManager | undefined>>;

@@ -3,7 +3,7 @@ import type { App, Plugin } from 'vue';
 import Autocomplete from './components/autocomplete-input.vue';
 import Circle from './components/circle-shape.vue';
 import Cluster from './components/cluster-icon.vue';
-// import DrawingManager from './components/drawing-manager.vue';
+import DrawingManager from './components/drawing-manager.vue';
 import HeatmapLayer from './components/heatmap-layer.vue';
 import InfoWindow from './components/info-window.vue';
 import KmlLayer from './components/kml-layer.vue';
@@ -107,7 +107,7 @@ const components = {
   Autocomplete,
   Circle,
   Cluster,
-  // DrawingManager,
+  DrawingManager,
   HeatmapLayer,
   InfoWindow,
   KmlLayer,
@@ -199,15 +199,15 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
       .component('GmvMap', MapLayer)
       .component('GmvMarker', Marker)
       .component('GmvInfoWindow', InfoWindow)
-      .component('GmvHeatmapLayer', HeatmapLayer)
       .component('GmvKmlLayer', KmlLayer)
-      .component('GmvPolyline', Polyline)
-      .component('GmvPolygon', Polygon)
-      .component('GmvCircle', Circle)
-      .component('GmvRectangle', Rectangle)
-      // .component('GmvDrawingManager', DrawingManager)
       .component('GmvAutocomplete', Autocomplete)
-      .component('GmvStreetViewPanorama', StreetViewPanorama);
+      .component('GmvStreetViewPanorama', StreetViewPanorama)
+      .component('GmvHeatmapLayer', HeatmapLayer)
+      .component('GmvCircle', Circle)
+      .component('GmvPolygon', Polygon)
+      .component('GmvPolyline', Polyline)
+      .component('GmvRectangle', Rectangle)
+      .component('GmvDrawingManager', DrawingManager);
   }
 }
 

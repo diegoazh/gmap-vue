@@ -8,301 +8,325 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { inject, onUnmounted, provide, ref, useSlots, watch } from 'vue';
 import {
-  bindProps,
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+} from '@/composables/plugin-component-config';
+import { $drawingManagerPromise, $mapPromise } from '@/keys/gmap-vue.keys';
+import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '../composables/helpers';
-import MapElementMixin from '../composables/map-element';
-import { drawingManagerMappedProps } from '../props/mapped-props-by-map-element';
+} from '@/composables/helpers';
 
 /**
  * DrawingManager component
- * @displayName GmapDrawingManager
+ * @displayName GmvDrawingManager
  * @see [source code](/guide/drawing-manager.html#source-code)
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/drawinglayer)
  * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/drawing)
  */
-export default defineComponent({
-  name: 'DrawingManager',
-  mixins: [MapElementMixin],
-  provide() {
-    // Infowindow needs this to be immediately available
-    const promise = this.$mapPromise
-      .then((map) => {
-        this.$map = map;
 
-        // Initialize the maps with the given options
-        const initialOptions = {
-          // TODO: analyze the below line because I think it can be removed
-          ...this.options,
-          map,
-          ...getPropsValuesWithoutOptionsProp(this, drawingManagerMappedProps),
-        };
+/*******************************************************************************
+ * INTERFACES
+ ******************************************************************************/
+/**
+ * Drawing manager Google Maps properties documentation
+ *
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.circleOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.drawingControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.drawingControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.drawingMode
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.markerOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.polygonOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.polylineOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.rectangleOptions
+ */
+interface IDrawingManagerVueComponentProps {
+  circleOptions?: google.maps.CircleOptions;
+  drawingControl?: boolean;
+  drawingControlOptions?: google.maps.drawing.DrawingControlOptions;
+  drawingMode?: google.maps.drawing.OverlayType | null;
+  markerOptions?: google.maps.MarkerOptions;
+  polygonOptions?: google.maps.PolygonOptions;
+  polylineOptions?: google.maps.PolylineOptions;
+  rectangleOptions?: google.maps.RectangleOptions;
+  shapes?: google.maps.drawing.OverlayCompleteEvent[];
+  options?: Record<string, unknown>;
+}
 
-        const { options: extraOptions, ...finalOptions } = initialOptions;
-
-        this.drawingModes = Object.keys(finalOptions).reduce((modes, opt) => {
-          const val = opt.split('Options');
-
-          if (val.length > 1) {
-            modes.push(val[0]);
-          }
-
-          return modes;
-        }, []);
-
-        const position =
-          this.position && google.maps.ControlPosition[this.position]
-            ? google.maps.ControlPosition[this.position]
-            : google.maps.ControlPosition.TOP_LEFT;
-
-        finalOptions.drawingMode = null;
-        finalOptions.drawingControl = !this.$slots.default;
-        finalOptions.drawingControlOptions = {
-          drawingModes: this.drawingModes,
-          position,
-        };
-
-        // https://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible
-        this.$drawingManagerObject = new google.maps.drawing.DrawingManager(
-          finalOptions
-        );
-
-        bindProps(this, this.$drawingManagerObject, drawingManagerMappedProps);
-
-        this.$drawingManagerObject.addListener('overlaycomplete', (e) =>
-          this.addShape(e)
-        );
-
-        this.$map.addListener('click', this.clearSelection);
-
-        if (this?.finalShapes?.length) {
-          this.drawAll();
-        }
-
-        return this.$drawingManagerObject;
-      })
-      .catch((error) => {
-        throw error;
-      });
-
-    // TODO: analyze the efects of only returns the instance and remove completely the promise
-    this.$drawingManagerPromise = promise;
-    return { $drawingManagerPromise: promise };
-  },
-  props: {
-    /**
-     * The circle options
-     * @see [circleOptions interface](https://developers.google.com/maps/documentation/javascript/reference/polygon#CircleOptions)
-     */
-    circleOptions: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * The marker options
-     * @see [markerOptions interface](https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions)
-     */
-    markerOptions: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * The polygon options
-     * @see [polygonOptions interface](https://developers.google.com/maps/documentation/javascript/reference/polygon#PolygonOptions)
-     */
-    polygonOptions: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * The polyline options
-     * @see [polylineOptions interface](https://developers.google.com/maps/documentation/javascript/reference/polygon#PolylineOptions)
-     */
-    polylineOptions: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * The rectangle options
-     * @see [rectangleOptions interface](https://developers.google.com/maps/documentation/javascript/reference/polygon#RectangleOptions)
-     */
-    rectangleOptions: {
-      type: Object,
-      default: undefined,
-    },
-    /**
-     * The position of the toolbar
-     * **Possible values**: `'TOP_CENTER', 'TOP_LEFT', 'TOP_RIGHT', 'LEFT_TOP', 'RIGHT_TOP', 'LEFT_CENTER',
-     * 'RIGHT_CENTER', 'LEFT_BOTTOM', 'RIGHT_BOTTOM', 'BOTTOM_CENTER', 'BOTTOM_LEFT', 'BOTTOM_RIGHT'`
-     */
-    position: {
-      type: String,
-      default: '',
-    },
-    /**
-     * An array of shapes that you can set to render in the map and saves on it the new shapes that you add.
-     */
-    shapes: {
-      type: Array,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      selectedShape: null,
-      drawingModes: [],
-      options: {
-        drawingMode: null,
-        drawingControl: true,
-        drawingControlOptions: {},
-      },
-      finalShapes: [],
-    };
-  },
-  watch: {
-    position(position) {
-      if (this.$drawingManagerObject) {
-        const drawingControlOptions = {
-          position:
-            position && google.maps.ControlPosition[position]
-              ? google.maps.ControlPosition[position]
-              : google.maps.ControlPosition.TOP_LEFT,
-          drawingModes: this.drawingModes,
-        };
-        this.$drawingManagerObject.setOptions({ drawingControlOptions });
-      }
-    },
-    circleOptions(circleOptions) {
-      if (this.$drawingManagerObject) {
-        this.$drawingManagerObject.setOptions({ circleOptions });
-      }
-    },
-    markerOptions(markerOptions) {
-      if (this.$drawingManagerObject) {
-        this.$drawingManagerObject.setOptions({ markerOptions });
-      }
-    },
-    polygonOptions(polygonOptions) {
-      if (this.$drawingManagerObject) {
-        this.$drawingManagerObject.setOptions({ polygonOptions });
-      }
-    },
-    polylineOptions(polylineOptions) {
-      if (this.$drawingManagerObject) {
-        this.$drawingManagerObject.setOptions({ polylineOptions });
-      }
-    },
-    rectangleOptions(rectangleOptions) {
-      if (this.$drawingManagerObject) {
-        this.$drawingManagerObject.setOptions({ rectangleOptions });
-      }
-    },
-  },
-  mounted() {
-    this.finalShapes = [...this.shapes];
-  },
-  unmounted() {
-    this.clearAll();
-
-    // Note: not all Google Maps components support maps
-    if (this.$drawingManagerObject && this.$drawingManagerObject.setMap) {
-      this.$drawingManagerObject.setMap(null);
-    }
-  },
-  methods: {
-    /**
-     * The setDrawingMode method is binded into the default component slot
-     *
-     * @method setDrawingMode
-     * @param {string} mode - mode - Possible values 'marker', 'circle', 'polygon', 'polyline', 'rectangle', null
-     * @returns {void}
-     * @public
-     */
-    setDrawingMode(mode) {
-      this.$drawingManagerObject.setDrawingMode(mode);
-    },
-    drawAll() {
-      const shapeType = {
-        circle: google.maps.Circle,
-        marker: google.maps.Marker,
-        polygon: google.maps.Polygon,
-        polyline: google.maps.Polyline,
-        rectangle: google.maps.Rectangle,
-      };
-
-      const self = this;
-      this.finalShapes.forEach((shape) => {
-        const shapeDrawing = new shapeType[shape.type](shape.overlay);
-        shapeDrawing.setMap(this.$map);
-        shape.overlay = shapeDrawing;
-        google.maps.event.addListener(shapeDrawing, 'click', () => {
-          self.setSelection(shape);
-        });
-      });
-    },
-    clearAll() {
-      this.clearSelection();
-      this.finalShapes.forEach((shape) => {
-        shape.overlay.setMap(null);
-      });
-    },
-    clearSelection() {
-      if (this.selectedShape) {
-        this.selectedShape.overlay.set('fillColor', '#777');
-        this.selectedShape.overlay.set('strokeColor', '#999');
-        this.selectedShape.overlay.setEditable(false);
-        this.selectedShape.overlay.setDraggable(false);
-        this.selectedShape = null;
-      }
-    },
-    setSelection(shape) {
-      this.clearSelection();
-      this.selectedShape = shape;
-      shape.overlay.setEditable(true);
-      shape.overlay.setDraggable(true);
-      this.selectedShape.overlay.set('fillColor', '#555');
-      this.selectedShape.overlay.set('strokeColor', '#777');
-    },
-    /**
-     * The deleteSelection method is binded into the default component slot
-     *
-     * @method deleteSelection
-     * @param - It doesn't requires any parameter
-     * @returns {void}
-     * @public
-     */
-    deleteSelection() {
-      if (this.selectedShape) {
-        this.selectedShape.overlay.setMap(null);
-        const index = this.finalShapes.indexOf(this.selectedShape);
-        if (index > -1) {
-          this.finalShapes.splice(index, 1);
-        }
-      }
-    },
-    addShape(shape) {
-      this.setDrawingMode(null);
-      this.finalShapes.push(shape);
-
-      /**
-       * update:shapes event
-       * @event update:shapes
-       * @property {array} place `this.finalShapes`
-       */
-      this.$emit('update:shapes', [...this.finalShapes]);
-
-      const self = this;
-      google.maps.event.addListener(shape.overlay, 'click', () => {
-        self.setSelection(shape);
-      });
-      google.maps.event.addListener(shape.overlay, 'rightclick', () => {
-        self.deleteSelection();
-      });
-      this.setSelection(shape);
-    },
-  },
+/*******************************************************************************
+ * DEFINE COMPONENT PROPS
+ ******************************************************************************/
+const props = withDefaults(defineProps<IDrawingManagerVueComponentProps>(), {
+  drawingControl: true,
+  drawingMode: null,
+  // shapes: [] as any,
 });
+
+/*******************************************************************************
+ * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
+ ******************************************************************************/
+const emits = defineEmits(getComponentEventsConfig('GmvDrawingManager'));
+const $slots = useSlots();
+
+/*******************************************************************************
+ * INJECT
+ ******************************************************************************/
+const mapPromise = inject($mapPromise);
+
+/*******************************************************************************
+ * DRAWING MANAGER
+ ******************************************************************************/
+const drawingManagerInstance = ref<
+  google.maps.drawing.DrawingManager | undefined
+>();
+const map = ref<google.maps.Map | undefined>();
+const selectedShape = ref<
+  google.maps.drawing.OverlayCompleteEvent | undefined
+>();
+const promise = mapPromise
+  ?.then((mapInstance) => {
+    if (!mapInstance) {
+      throw new Error('the map instance was not created');
+    }
+
+    map.value = mapInstance;
+
+    const drawingManagerOptions = {
+      map: mapInstance,
+      ...getPropsValuesWithoutOptionsProp(props),
+      ...props.options,
+    };
+
+    drawingManagerInstance.value = new google.maps.drawing.DrawingManager({
+      ...drawingManagerOptions,
+      drawingControl: !$slots.default,
+    });
+
+    const drawingManagerPropsConfig =
+      getComponentPropsConfig('GmvDrawingManager');
+    const drawingManagerEventsConfig = getComponentEventsConfig(
+      'GmvDrawingManager',
+      'auto'
+    );
+
+    bindPropsWithGoogleMapsSettersAndGettersOnSetup(
+      drawingManagerInstance.value,
+      props,
+      drawingManagerPropsConfig,
+      emits
+    );
+    bindGoogleMapsEventsToVueEventsOnSetup(
+      drawingManagerEventsConfig,
+      drawingManagerInstance.value,
+      emits
+    );
+
+    drawingManagerInstance.value.addListener(
+      'overlaycomplete',
+      (event: google.maps.drawing.OverlayCompleteEvent) => addShape(event)
+    );
+
+    // TODO: check this event if it is needed or is the expected or best behaviour for all common cases
+    mapInstance.addListener('click', clearSelection);
+
+    if (props.shapes?.length) {
+      drawAll();
+    }
+
+    return drawingManagerInstance.value;
+  })
+  .catch((error) => {
+    throw error;
+  });
+
+provide($drawingManagerPromise, promise);
+
+/*******************************************************************************
+ * COMPUTED
+ ******************************************************************************/
+
+/*******************************************************************************
+ * FUNCTIONS
+ ******************************************************************************/
+const drawAll = () => {
+  props.shapes?.forEach((shape) => {
+    if (shape.overlay) {
+      if (!map.value) {
+        throw new Error('the map instance was not created');
+      }
+
+      shape.overlay.setMap(map.value);
+      google.maps.event.addListener(shape.overlay, 'click', () => {
+        setSelection(shape);
+      });
+    }
+  });
+};
+
+const clearSelection = () => {
+  if (selectedShape.value && selectedShape.value.overlay) {
+    selectedShape.value.overlay.set('fillColor', '#777');
+    selectedShape.value.overlay.set('strokeColor', '#999');
+    selectedShape.value.overlay.setOptions({ editable: false });
+    selectedShape.value.overlay.setDraggable(false);
+    selectedShape.value = undefined;
+  }
+};
+
+const setSelection = (shape: google.maps.drawing.OverlayCompleteEvent) => {
+  if (shape.overlay) {
+    clearSelection();
+
+    shape.overlay.setOptions({ editable: true });
+    shape.overlay.setDraggable(true);
+    selectedShape.value = shape;
+
+    if (selectedShape.value && selectedShape.value.overlay) {
+      selectedShape.value.overlay.set('fillColor', '#555');
+      selectedShape.value.overlay.set('strokeColor', '#777');
+    }
+  }
+};
+
+const addShape = (shape: google.maps.drawing.OverlayCompleteEvent) => {
+  setDrawingMode(null);
+  emits('added:shape', shape);
+  emits('update:shapes', [
+    ...(props.shapes?.length ? props.shapes : []),
+    shape,
+  ]);
+
+  if (shape.overlay) {
+    google.maps.event.addListener(shape.overlay, 'click', () => {
+      setSelection(shape);
+    });
+    google.maps.event.addListener(shape.overlay, 'rightclick', () => {
+      deleteSelection();
+    });
+
+    setSelection(shape);
+  }
+};
+
+/**
+ * The setDrawingMode method is binded into the default component slot
+ *
+ * @method setDrawingMode
+ * @param {string} mode - mode - Possible values 'marker', 'circle', 'polygon', 'polyline', 'rectangle', null
+ * @returns {void}
+ * @public
+ */
+const setDrawingMode = (mode: google.maps.drawing.OverlayType | null) => {
+  drawingManagerInstance.value?.setDrawingMode(mode);
+};
+
+/**
+ * The deleteSelection method is bound into the default component slot
+ *
+ * @method deleteSelection
+ * @returns {void}
+ * @public
+ */
+const deleteSelection = () => {
+  if (selectedShape.value && selectedShape.value.overlay) {
+    selectedShape.value.overlay.setMap(null);
+    const index = props.shapes?.indexOf(selectedShape.value);
+    if (index) {
+      const oldShapes = [...(props.shapes?.length ? props.shapes : [])];
+      const [shape] = oldShapes.splice(index, 1);
+      emits('removed:shape', shape);
+      emits('update:shapes', oldShapes);
+    }
+  }
+};
+
+/**
+ * The clearAll method set map to null in all shapes inside shapes prop
+ *
+ * @method clearAll
+ * @returns {void}
+ * @public
+ */
+const clearAll = () => {
+  clearSelection();
+
+  props.shapes?.forEach((shape) => {
+    if (shape.overlay) {
+      shape.overlay.setMap(null);
+    }
+  });
+};
+
+/*******************************************************************************
+ * WATCHERS
+ ******************************************************************************/
+watch(
+  () => props.drawingControlOptions,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value && value && value !== oldValue) {
+      drawingManagerInstance.value.setOptions({ drawingControlOptions: value });
+    }
+  }
+);
+watch(
+  () => props.circleOptions,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value && value && value !== oldValue) {
+      drawingManagerInstance.value.setOptions({ circleOptions: value });
+    }
+  }
+);
+watch(
+  () => props.markerOptions,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value && value && value !== oldValue) {
+      drawingManagerInstance.value.setOptions({ markerOptions: value });
+    }
+  }
+);
+watch(
+  () => props.polygonOptions,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value && value && value !== oldValue) {
+      drawingManagerInstance.value.setOptions({ polygonOptions: value });
+    }
+  }
+);
+watch(
+  () => props.polylineOptions,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value && value && value !== oldValue) {
+      drawingManagerInstance.value.setOptions({ polylineOptions: value });
+    }
+  }
+);
+watch(
+  () => props.rectangleOptions,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value && value && value !== oldValue) {
+      drawingManagerInstance.value.setOptions({ rectangleOptions: value });
+    }
+  }
+);
+/*******************************************************************************
+ * HOOKS
+ ******************************************************************************/
+onUnmounted(() => {
+  if (drawingManagerInstance.value) {
+    drawingManagerInstance.value.setMap(null);
+  }
+});
+
+/*******************************************************************************
+ * RENDERS
+ ******************************************************************************/
+
+/*******************************************************************************
+ * EXPOSE
+ ******************************************************************************/
+defineExpose({ setDrawingMode, deleteSelection, clearAll });
 </script>
