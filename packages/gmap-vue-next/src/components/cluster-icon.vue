@@ -116,10 +116,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      clusterInstance.value,
-      props,
       clusterIconPropsConfig,
-      emits
+      clusterInstance.value,
+      emits,
+      props
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(

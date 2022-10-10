@@ -114,10 +114,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      drawingManagerInstance.value,
-      props,
       drawingManagerPropsConfig,
-      emits
+      drawingManagerInstance.value,
+      emits,
+      props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       drawingManagerEventsConfig,

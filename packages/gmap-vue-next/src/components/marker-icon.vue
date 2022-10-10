@@ -142,10 +142,10 @@ const promise = mapPromise
 
     // bind prop events of google maps
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      markerInstance.value,
-      props,
       markerIconPropsConfig,
-      emits
+      markerInstance.value,
+      emits,
+      props
     );
 
     // binding events

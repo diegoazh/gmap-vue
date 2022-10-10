@@ -166,10 +166,10 @@ onMounted(() => {
       );
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-        autoCompleteInstance.value,
-        props,
         autoCompletePropsConfig,
-        emits
+        autoCompleteInstance.value,
+        emits,
+        props
       );
 
       bindGoogleMapsEventsToVueEventsOnSetup(

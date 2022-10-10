@@ -121,10 +121,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      polygonShapeInstance.value,
-      props,
       polygonShapePropsConfig,
-      emits
+      polygonShapeInstance.value,
+      emits,
+      props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polygonShapeEventsConfig,

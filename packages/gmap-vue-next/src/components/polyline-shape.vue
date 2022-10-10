@@ -103,10 +103,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      polylineShapeInstance.value,
-      props,
       polylineShapePropsConfig,
-      emits
+      polylineShapeInstance.value,
+      emits,
+      props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polylineShapeEventsConfig,

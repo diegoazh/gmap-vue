@@ -120,10 +120,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      infoWindowInstance,
-      props,
       infoWindowPropsConfig,
-      emits
+      infoWindowInstance,
+      emits,
+      props
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(

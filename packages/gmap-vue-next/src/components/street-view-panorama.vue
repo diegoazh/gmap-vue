@@ -212,10 +212,10 @@ onMounted(() => {
       );
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-        streetViewPanoramaInstance.value,
-        props,
         streetViewPanoramaPropsConfig,
-        emits
+        streetViewPanoramaInstance.value,
+        emits,
+        props
       );
       bindGoogleMapsEventsToVueEventsOnSetup(
         streetViewPanoramaEventsConfig,

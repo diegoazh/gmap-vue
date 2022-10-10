@@ -100,10 +100,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      rectangleShapeInstance.value,
-      props,
       rectangleShapePropsConfig,
-      emits
+      rectangleShapeInstance.value,
+      emits,
+      props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       rectangleShapeEventsConfig,

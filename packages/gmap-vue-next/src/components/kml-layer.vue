@@ -85,10 +85,10 @@ const promise = mapPromise
     const kmlLayerEventsConig = getComponentEventsConfig('GmvKmlLayer', 'auto');
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      kmlLayerInstance.value,
-      props,
       kmlLayerPropsConfig,
-      emits
+      kmlLayerInstance.value,
+      emits,
+      props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       kmlLayerEventsConig,

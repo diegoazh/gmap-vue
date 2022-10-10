@@ -359,10 +359,10 @@ onMounted(() => {
 
       // binding properties (two and one way)
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-        mapInstance.value,
-        props,
         mapLayerPropsConfig,
-        emits
+        mapInstance.value,
+        emits,
+        props
       );
 
       // Auto bind all events by default

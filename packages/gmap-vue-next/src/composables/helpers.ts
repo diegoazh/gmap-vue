@@ -385,17 +385,17 @@ export function bindProps(
  *
  * Note: For composition API. This function should be used on setup script.
  *
- * @param  {string[]} events - An array of string with all events that you want to bind
+ * @param  {string[]} eventsComponentConfig - An array of string with all events that you want to bind
  * @param  {Object} AnyGoogleMapsClassInstance - Any Google Maps instance
  * @param {() => void} emits - The Vue emit object built with defineEmits function
  * @returns {void}
  */
 export function bindGoogleMapsEventsToVueEventsOnSetup(
-  events: string[],
+  eventsComponentConfig: string[],
   AnyGoogleMapsClassInstance: Record<string, any>,
   emits: (ev: string, value: any) => void
 ): void {
-  events.forEach((eventName) => {
+  eventsComponentConfig.forEach((eventName) => {
     AnyGoogleMapsClassInstance?.addListener(eventName, (ev: any) => {
       emits(eventName, ev);
     });
@@ -411,17 +411,17 @@ export function bindGoogleMapsEventsToVueEventsOnSetup(
  *
  * Note: For composition API. This function should be used on setup script.
  *
- * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
- * @param  {Object} props - Vue component props  of the component that should be synced with the Google Maps instances props
  * @param {SinglePluginComponentConfig} propsComponentConfig - The plugin component configuration for this Google Maps instance
+ * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
  * @param {() => void} emits - The Vue emit object built with defineEmits function
+ * @param  {Object} props - Vue component props  of the component that should be synced with the Google Maps instances props
  * @returns {void} The object which contain all event names to and params that should be used to add listener to the Google Maps instance
  */
 export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-  AnyGoogleMapsClassInstance: Record<string, any>,
-  props: Record<any, any>,
   propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
-  emits: (ev: string, value: any) => void
+  AnyGoogleMapsClassInstance: Record<string, any>,
+  emits: (ev: string, value: any) => void,
+  props: Record<any, any>
 ): void {
   Object.entries(props).forEach(([propKey, propValue]) => {
     if (!propsComponentConfig.noBind.includes(propKey)) {

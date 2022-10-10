@@ -104,10 +104,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      circleShapeInstance.value,
-      props,
       circleShapePropsConfig,
-      emits
+      circleShapeInstance.value,
+      emits,
+      props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       circleShapeEventsConfig,

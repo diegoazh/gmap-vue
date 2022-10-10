@@ -95,10 +95,10 @@ const promise = mapPromise
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-      heatMapLayerInstance.value,
-      props,
       heatmapLayerPropsConfig,
-      emits
+      heatMapLayerInstance.value,
+      emits,
+      props
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
