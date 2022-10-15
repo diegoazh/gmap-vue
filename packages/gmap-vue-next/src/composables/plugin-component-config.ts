@@ -337,6 +337,7 @@ const componentConfigs: PluginComponentConfig = {
  * Return the configuration for props on every component
  *
  * @param {string} componentName - The name of the component that should be found
+ * @returns {SinglePluginComponentConfigWithoutEvents}
  */
 export function getComponentPropsConfig(
   componentName: PluginComponentNames
@@ -350,7 +351,7 @@ export function getComponentPropsConfig(
  *
  * @param {string} componentName - The name of the component that should be found
  * @param {'auto'|'manual'} type
- * @return {string[]}
+ * @returns {string[]}
  */
 export function getComponentEventsConfig(
   componentName: PluginComponentNames,

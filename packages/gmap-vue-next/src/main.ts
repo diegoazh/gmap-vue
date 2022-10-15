@@ -2,7 +2,6 @@ import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
 import Autocomplete from './components/autocomplete-input.vue';
 import Circle from './components/circle-shape.vue';
-import Cluster from './components/cluster-icon.vue';
 import DrawingManager from './components/drawing-manager.vue';
 import HeatmapLayer from './components/heatmap-layer.vue';
 import InfoWindow from './components/info-window.vue';
@@ -63,9 +62,9 @@ declare global {
  * Therefore we use babel-plugin-transform-inline-environment-variables to
  * set BUILD_DEV to truthy / falsy
  */
-// const Cluster = ((s) => s.default || s)(
-//   require('./components/cluster-icon.vue')
-// );
+const Cluster = ((s) => s.default || s)(
+  require('./components/cluster-icon.vue')
+);
 
 /**
  * @var
@@ -123,13 +122,13 @@ const components = {
  * Export all helpers
  * @constant
  * @type  {Object} object containing all helpers
- * @property  {Function}  initGoogleMapsApi - function to initialize the Google Maps API
+ * @property  {Function}  googleMapsApiInitializer - function to initialize the Google Maps API
  * @property  {Function}  pluginComponentBuilder - function to initialize the Google Maps API
  * @property  {Function}  getGoogleMapsAPI - function to get the original Google Maps API
  */
 const helpers = {
   googleMapsApiInitializer,
-  pluginMapComponentBuilder: pluginComponentBuilder,
+  pluginComponentBuilder,
   getGoogleMapsAPI,
 };
 

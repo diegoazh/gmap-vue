@@ -1,3 +1,8 @@
+/**
+ * INTERNAL
+ *
+ * @param { [Array<Object>, Object][] } eventListeners
+ */
 function clearEvents(
   eventListeners: [
     (
@@ -6,12 +11,20 @@ function clearEvents(
     ),
     google.maps.MapsEventListener
   ][]
-) {
+): void {
   eventListeners.forEach(([, listenerHandle]) => {
     google.maps.event.removeListener(listenerHandle);
   });
 }
 
+/**
+ * INTERNAL
+ *
+ * @param { 'paths_changes'|'path_change' } eventName
+ * @param { Function } fn
+ * @param { Function } emits
+ * @returns void
+ */
 function updatePathOrPaths<
   T extends 'paths_changed' | 'path_changed',
   U extends
@@ -27,6 +40,15 @@ function updatePathOrPaths<
   return () => emits(eventName, fn());
 }
 
+/**
+ * INTERNAL
+ *
+ * @typedef ShapeHelpers
+ * @property {Function} clearEvents
+ * @property {Function} updatePathOrPaths
+ *
+ * @returns {ShapeHelpers}
+ */
 export function useShapesHelpers() {
   return { clearEvents, updatePathOrPaths };
 }

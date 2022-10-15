@@ -13,9 +13,11 @@ const promise: Promise<google.maps.Map | undefined> = new Promise(
 );
 
 /**
- * INTERNAL
+ * This function returns a promise when resolved returns the map-layer component
+ * object
  *
- * @returns void
+ * @public
+ * @returns {Promise}
  */
 export function getMapPromise(): Promise<google.maps.Map | undefined> {
   return promise;
@@ -24,7 +26,7 @@ export function getMapPromise(): Promise<google.maps.Map | undefined> {
 /**
  * INTERNAL
  *
- * @returns void
+ * @returns {Promise}
  */
 export function getMapPromiseDeferred(): PromiseDeferred<google.maps.Map> {
   return mapPromiseDeferred;

@@ -1,3 +1,5 @@
+import type { SinglePluginComponentConfig } from '@/types/gmap-vue.types';
+
 export interface IGoogleMapsApiObject {
   isReady: boolean;
 }
@@ -57,7 +59,7 @@ export interface IGoogleMapProp {
 }
 
 export interface IGmapVueElementOptions {
-  mappedProps: { [key: string]: IVueProp & IGoogleMapProp };
+  mappedProps: Omit<SinglePluginComponentConfig, 'events'>;
   props: { [key: string]: IVueProp };
   events: string[];
   name: string;

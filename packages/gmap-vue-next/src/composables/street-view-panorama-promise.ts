@@ -13,9 +13,11 @@ const promise: Promise<google.maps.StreetViewPanorama | undefined> =
   });
 
 /**
- * INTERNAL
+ * This function returns a promise when resolved returns the street-view-panorama
+ * component object
  *
- * @returns void
+ * @public
+ * @returns {Promise}
  */
 export function getStreetViewPanoramaPromise(): Promise<
   google.maps.StreetViewPanorama | undefined
@@ -26,7 +28,7 @@ export function getStreetViewPanoramaPromise(): Promise<
 /**
  * INTERNAL
  *
- * @returns void
+ * @returns {Promise}
  */
 export function getStreetViewPanoramaPromiseDeferred(): PromiseDeferred<google.maps.StreetViewPanorama> {
   return streetViewPanoramaPromiseDeferred;

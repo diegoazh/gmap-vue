@@ -1,13 +1,11 @@
 import type { IGmapVueElementOptions } from '@/interfaces/gmap-vue.interface';
 import type { ComponentOptions } from 'vue';
-import { inject } from 'vue';
 import {
   bindEvents,
   bindProps,
-  filterVuePropsOptions,
   getPropsValuesWithoutOptionsProp,
 } from './helpers';
-import { $mapPromise } from '@/keys/gmap-vue.keys';
+import { getMapPromise } from '@/composables/map-promise';
 
 /**
  * Custom assert for local validation
@@ -96,31 +94,28 @@ export function pluginComponentBuilder(
   return {
     props: {
       ...props,
-      ...filterVuePropsOptions(mappedProps),
     },
-    async setup() {
-      const mapPromise = inject($mapPromise);
-
-      return { mapPromise };
-    },
+    async setup() {},
     render() {
       return '';
     },
     provide() {
-      const promise = this.mapPromise
-        .then((map: google.maps.Map) => {
+      const promise = getMapPromise()
+        ?.then((map) => {
+          if (!map) {
+            throw new Error('the map instance was not created');
+          }
+
           // Infowindow needs this to be immediately available
           this.$map = map;
 
           // Initialize the maps with the given options
-          const initialOptions = {
+          const options = {
             map,
-            ...getPropsValuesWithoutOptionsProp(mappedProps, this),
+            ...getPropsValuesWithoutOptionsProp(props, this),
             ...this.options,
           };
           // don't use delete keyword in order to create a more predictable code for the engine
-          const { options: extraOptions, ...finalOptions } = initialOptions; // delete the extra options
-          const options = finalOptions;
 
           if (beforeCreate) {
             const result = beforeCreate.bind(this)(options);
@@ -145,8 +140,8 @@ export function pluginComponentBuilder(
               ))()
             : new ConstructorObject(options);
 
-          bindProps(this, this[instanceName], mappedProps);
-          bindEvents(this, this[instanceName], events);
+          bindProps(mappedProps, this[instanceName], this);
+          bindEvents(events, this[instanceName], this);
 
           if (afterCreate) {
             afterCreate.bind(this)(this[instanceName]);

@@ -12,7 +12,7 @@ import type { GoogleMapsAPIInitializerFn } from '@/types/gmap-vue.types';
  *
  * @returns {Function} The initializer function
  */
-function createGoogleMapsAPIInitializer(): GoogleMapsAPIInitializerFn {
+function googleMapsAPIInitializerFactory(): GoogleMapsAPIInitializerFn {
   let isApiSetUp = false;
 
   /**
@@ -93,6 +93,6 @@ function createGoogleMapsAPIInitializer(): GoogleMapsAPIInitializerFn {
   return googleMapsAPIInitializerFn;
 }
 
-const googleMapsApiInitializer = createGoogleMapsAPIInitializer();
+const googleMapsApiInitializer = googleMapsAPIInitializerFactory();
 
 export { googleMapsApiInitializer };

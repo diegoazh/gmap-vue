@@ -22,7 +22,8 @@
       ]
     },
     "types": [
-      "google.maps"
+      "google.maps",
+      "node"
     ],
     "outDir": "dist/types",
     "declaration": true,

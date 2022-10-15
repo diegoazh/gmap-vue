@@ -94,8 +94,8 @@ function createCallbackAndChecksIfMapIsLoaded(
     }
   };
 
-  let timeoutId: number | undefined = globalThis.setTimeout(() => {
-    let intervalId: number | undefined = globalThis.setInterval(() => {
+  let timeoutId: number | undefined = window.setTimeout(() => {
+    let intervalId: number | undefined = window.setInterval(() => {
       if (timeoutId) {
         globalThis.clearTimeout(timeoutId);
         timeoutId = undefined;
@@ -161,6 +161,14 @@ export function saveLazyPromiseAndFinalOptions(
   }
 }
 
+/**
+ * This function returns a promise when is resolved returns the original Google
+ * Maps API. With this promise you can wait until the Google Maps API is fully
+ * loaded.
+ *
+ * @public
+ * @returns {Promise<any>}
+ */
 export function useGmapApiPromiseLazy(): Promise<any> {
   if (!$gmapApiPromiseLazy) {
     globalThis.console.warn('$gmapApiPromiseLazy was not created yet...');

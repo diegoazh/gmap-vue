@@ -19,6 +19,15 @@ export type PluginComponentNames =
   | 'GmvPolyline'
   | 'GmvRectangle'
   | 'GmvDrawingManager';
+
+/**
+ * @typedef {Object} SinglePluginComponentConfigWithoutEvents
+ * @property {string[]} noBind - Props with should not be bind to Google Maps. Has precedence over twoWay
+ * @property {string[]} twoWay - Props that should be bind in two-way data binding
+ * @property {Object} trackProperties - Object with nested properties of a prop that should be watched
+ * @property {string} trackProperties.key - Should be a string
+ * @property {string[]} trackProperties.value - Should be an array of nested properties of the prop that should be watched
+ */
 /**
  * @typedef {Object} SinglePluginComponentConfig
  * @property {string[]} noBind - Props with should not be bind to Google Maps. Has precedence over twoWay

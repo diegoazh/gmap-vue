@@ -97,6 +97,7 @@ export function getDefaultResizeBus() {
 /**
  * this function returns the rezise bus functions
  *
+ * @public
  * @returns {ResizeBus}
  */
 export function useResizeBus() {
