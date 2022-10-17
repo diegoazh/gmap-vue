@@ -2,6 +2,7 @@ import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
 import Autocomplete from './components/autocomplete-input.vue';
 import Circle from './components/circle-shape.vue';
+import Cluster from './components/cluster-icon.vue';
 import DrawingManager from './components/drawing-manager.vue';
 import HeatmapLayer from './components/heatmap-layer.vue';
 import InfoWindow from './components/info-window.vue';
@@ -54,6 +55,7 @@ declare global {
   }
 }
 
+// TODO: this should be removed if all works well
 /**
  * HACK: Cluster should be loaded conditionally
  * However in the web version, it's not possible to write
@@ -62,9 +64,9 @@ declare global {
  * Therefore we use babel-plugin-transform-inline-environment-variables to
  * set BUILD_DEV to truthy / falsy
  */
-const Cluster = ((s) => s.default || s)(
-  require('./components/cluster-icon.vue')
-);
+// const Cluster = ((s) => s.default || s)(
+//   require('./components/cluster-icon.vue')
+// );
 
 /**
  * @var
@@ -154,10 +156,11 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
   const finalOptions: IPluginOptions = {
     dynamicLoad: false,
     installComponents: true,
+    ...options,
     load: {
       libraries: 'places',
+      ...options?.load,
     } as any,
-    ...options,
   };
 
   /**
