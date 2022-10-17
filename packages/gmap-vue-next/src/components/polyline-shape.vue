@@ -21,7 +21,7 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
-import { useShapesHelpers } from '@/composables/shapes-helpers';
+import { useShapesHelpers } from '@/composables/shapes-helper';
 
 /**
  * Marker Google Maps properties documentation

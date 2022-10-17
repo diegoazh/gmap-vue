@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import * as mapPromise from '../src/composables/map-promise';
+import * as streetViewPanoramaPromise from '../src/composables/street-view-panorama-promise';
 import * as vue from 'vue';
 
-describe('map-promise.ts', () => {
+describe('street-view-panorama-promise.ts', () => {
   beforeEach(() => {
     vi.mock('vue', () => ({
       inject: vi.fn(() => Promise.resolve(undefined)),
@@ -18,18 +18,19 @@ describe('map-promise.ts', () => {
   test('should export two function when is called', () => {
     // Arrange
     // Act
-    const keys = Object.keys(mapPromise);
+    const keys = Object.keys(streetViewPanoramaPromise);
 
     // Assert
     expect(keys.length).toBe(2);
-    expect(keys.includes('getMapPromise')).toBeTruthy();
-    expect(keys.includes('getMapPromiseDeferred')).toBeTruthy();
+    expect(keys.includes('getStreetViewPanoramaPromise')).toBeTruthy();
+    expect(keys.includes('getStreetViewPanoramaPromiseDeferred')).toBeTruthy();
   });
 
   test('should return a object with resolve and reject properties when is called', () => {
     // Arrange
     // Act
-    const result = mapPromise.getMapPromiseDeferred();
+    const result =
+      streetViewPanoramaPromise.getStreetViewPanoramaPromiseDeferred();
     const keys = Object.keys(result);
 
     // Assert
@@ -40,7 +41,7 @@ describe('map-promise.ts', () => {
   test('should return a promise object when is called', () => {
     // Arrange
     // Act
-    const result = mapPromise.getMapPromise();
+    const result = streetViewPanoramaPromise.getStreetViewPanoramaPromise();
 
     // Assert
     expect(typeof result).toBe('object');

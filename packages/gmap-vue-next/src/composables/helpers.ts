@@ -12,7 +12,7 @@ import { type ComponentPublicInstance, nextTick, watch } from 'vue';
  *
  * Note: For options API. This function should not be used on setup script.
  *
- * @param  {string[]} events an array of string with all events that you want to bind
+ * @param  {string[]} eventsConfig an array of string with all events that you want to bind
  * @param  {Object} googleMapsInst the Google Maps instance
  * @param  {Object} vueInst the Vue instance
  * @returns {void}

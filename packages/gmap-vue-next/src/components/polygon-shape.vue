@@ -10,7 +10,7 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
-import { useShapesHelpers } from '@/composables/shapes-helpers';
+import { useShapesHelpers } from '@/composables/shapes-helper';
 
 /**
  * Polygon component
