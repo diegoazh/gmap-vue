@@ -31,7 +31,7 @@ If you want to use a CDN it is available on unpkg and jsdelivr, the above is an 
 
     document.addEventListener('DOMContentLoaded', function() {
       Vue.component('google-map', GmapVue.Map);
-      Vue.component('ground-overlay', GmapVue.mapElementFactory({
+      Vue.component('ground-overlay', GmapVue.MapElementFactory({
         mappedProps: {
           'opacity': {}
         },
