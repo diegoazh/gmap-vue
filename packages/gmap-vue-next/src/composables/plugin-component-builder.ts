@@ -5,7 +5,7 @@ import {
   bindProps,
   getPropsValuesWithoutOptionsProp,
 } from './helpers';
-import { getMapPromise } from '@/composables/map-promise';
+import { useMapPromise } from '@/composables/map-promise';
 
 /**
  * Custom assert for local validation
@@ -100,7 +100,7 @@ export function pluginComponentBuilder(
       return '';
     },
     provide() {
-      const promise = getMapPromise()
+      const promise = useMapPromise()
         ?.then((map) => {
           if (!map) {
             throw new Error('the map instance was not created');

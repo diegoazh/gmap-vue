@@ -10,6 +10,7 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * KmlLayer component
@@ -63,6 +64,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * KML LAYER
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const kmlLayerInstance = ref<google.maps.KmlLayer | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -93,7 +95,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       kmlLayerEventsConig,
       kmlLayerInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     return kmlLayerInstance.value;
@@ -109,7 +112,7 @@ provide($kmlLayerPromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 
 /*******************************************************************************
@@ -131,4 +134,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
+defineExpose({ kmlLayerInstance });
 </script>

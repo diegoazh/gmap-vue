@@ -4,11 +4,12 @@ import AUTWindow = Cypress.AUTWindow;
 
 describe('MapLayer component', () => {
   it('visits the app root url', () => {
-    const newCenter = { lat: 88, lng: 100 };
+    const newCenter = { lat: -31.4196, lng: -64.1939 };
     cy.visit('/');
     cy.get('button[name=map]').click();
     cy.contains('h2', 'Test E2E: Map layer');
-    cy.get('.gmap-vue-container > .gmap-vue-map > div');
+    cy.get('.gmv-map-container > .gmv-map > div');
+    cy.get('.gmv-map-container > .gmv-map-hidden');
     cy.get('input[name=lat]')
       .clear()
       .type(`${newCenter.lat}`)

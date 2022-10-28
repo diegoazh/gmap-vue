@@ -30,6 +30,7 @@ import {
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
 import { $clusterPromise, $mapPromise } from '@/keys/gmap-vue.keys';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * Cluster component
@@ -77,6 +78,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * MARKER CLUSTER
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const clusterInstance = ref<MarkerClusterer | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -125,7 +127,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       clusterIconEventsConfig,
       clusterInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     return clusterInstance.value;
@@ -141,7 +144,7 @@ provide($clusterPromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 
 /*******************************************************************************

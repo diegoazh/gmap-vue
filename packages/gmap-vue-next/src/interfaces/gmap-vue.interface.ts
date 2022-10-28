@@ -6,7 +6,7 @@ export interface IGoogleMapsApiObject {
 
 /**
  * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
- * @typedef {Object} ILoadPluginOptions
+ * @typedef {Object} LoadPluginOptions
  * @property {string} key - The Google Maps key
  * @property {string} libraries - The Google Maps libraries that should be loaded
  * @property {string?} v - The Google Maps version that should be loaded
@@ -22,19 +22,23 @@ export interface ILoadPluginOptions {
 }
 
 /**
+ * @typedef {() => string[]} ExcludeEvents
+ *
+ *
  * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
- * @typedef {Object} IPluginOptions
- * @property {boolean} dynamicLoad - The plugin should be loaded dynamically
- * @property {boolean} installComponents - The plugin should install all components
- * @property {boolean} autoBindAllEvents - The plugin should auto bind all events
- * @property {ILoadPluginOptions?} load - All load plugin options
- * @property {boolean} loadCn - The plugin should be loaded using the cn url
+ * @typedef {object} PluginOptions - The options requred to configure the plugin
+ * @property {boolean} [dynamicLoad=false] - The plugin should be loaded dynamically
+ * @property {boolean} [installComponents=true] - The plugin should install all components
+ * @property {LoadPluginOptions} [load] - All load plugin options
+ * @property {boolean} [loadCn=false] - The plugin should be loaded using the cn url
+ * @property {ExcludeEvents} [excludeEventsOnAllComponents] - A function that should return an array of events that should not be fired
  */
 export interface IPluginOptions {
-  dynamicLoad: boolean;
-  installComponents: boolean;
+  dynamicLoad?: boolean;
+  installComponents?: boolean;
   load?: ILoadPluginOptions;
   loadCn?: boolean;
+  excludeEventsOnAllComponents?: () => string[];
 }
 
 export interface IVueProp {

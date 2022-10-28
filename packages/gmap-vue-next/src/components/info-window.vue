@@ -24,6 +24,7 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * InfoWindow component
@@ -50,6 +51,7 @@ import {
  */
 interface IInfoWindowVueComponentProps {
   ariaLabel?: string;
+  content?: string | Element | Text;
   disableAutoPan?: boolean;
   maxWidth?: number;
   minWidth?: number;
@@ -57,6 +59,7 @@ interface IInfoWindowVueComponentProps {
   position?: google.maps.LatLng | google.maps.LatLngLiteral;
   zIndex?: number;
   opened?: boolean;
+  marker?: google.maps.Marker;
   options?: Record<string | number | symbol, unknown>;
 }
 
@@ -77,13 +80,14 @@ const emits = defineEmits(getComponentEventsConfig('GmvInfoWindow'));
  * INJECT
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
-const markerPromise = inject($markerPromise);
-const markerOwner = ref<google.maps.Marker | undefined>();
+const markerPromise = inject($markerPromise, undefined);
 
 /*******************************************************************************
  * INFO WINDOW
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const map = ref<google.maps.Map | undefined>();
+const markerOwner = ref<google.maps.Marker | undefined>();
 const infoWindowInstance = ref<google.maps.InfoWindow | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -121,15 +125,16 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       infoWindowPropsConfig,
-      infoWindowInstance,
+      infoWindowInstance.value,
       emits,
       props
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       infoWindowEventsConfig,
-      infoWindowInstance,
-      emits
+      infoWindowInstance.value,
+      emits,
+      excludedEvents
     );
 
     openInfoWindow();
@@ -147,12 +152,14 @@ provide($infoWindowPromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 function openInfoWindow(): void {
   if (props.opened) {
     if (markerOwner.value) {
       infoWindowInstance.value?.open(map.value, markerOwner.value);
+    } else if (props.marker) {
+      infoWindowInstance.value?.open(map.value, props.marker);
     } else {
       infoWindowInstance.value?.open(map.value);
     }
@@ -168,6 +175,23 @@ watch(
   () => props.opened,
   () => {
     openInfoWindow();
+  }
+);
+
+watch(
+  () => props.position,
+  (value, oldValue) => {
+    if (value && value !== oldValue) {
+      infoWindowInstance.value?.setPosition(value);
+    }
+  }
+);
+watch(
+  () => props.content,
+  (value, oldValue) => {
+    if (value && value !== oldValue) {
+      infoWindowInstance.value?.setContent(value);
+    }
   }
 );
 

@@ -19,7 +19,7 @@ const promise: Promise<google.maps.StreetViewPanorama | undefined> =
  * @public
  * @returns {Promise}
  */
-export function getStreetViewPanoramaPromise(): Promise<
+export function useStreetViewPanoramaPromise(): Promise<
   google.maps.StreetViewPanorama | undefined
 > {
   return promise;
@@ -30,6 +30,6 @@ export function getStreetViewPanoramaPromise(): Promise<
  *
  * @returns {Promise}
  */
-export function getStreetViewPanoramaPromiseDeferred(): PromiseDeferred<google.maps.StreetViewPanorama> {
+export function useStreetViewPanoramaPromiseDeferred(): PromiseDeferred<google.maps.StreetViewPanorama> {
   return streetViewPanoramaPromiseDeferred;
 }

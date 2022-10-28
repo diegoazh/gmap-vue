@@ -29,6 +29,7 @@ import {
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * Marker component
@@ -111,6 +112,7 @@ const clusterOwner = ref<MarkerClusterer | undefined>();
 /*******************************************************************************
  * MARKER
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const markerInstance = ref<google.maps.Marker | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -152,7 +154,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       markerIconEventsConfig,
       markerInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     markerInstance.value?.addListener('dragend', () => {
@@ -187,7 +190,7 @@ provide($markerPromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 
 /*******************************************************************************

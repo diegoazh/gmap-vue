@@ -9,7 +9,15 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onUnmounted, provide, ref, useSlots, watch } from 'vue';
+import {
+  computed,
+  inject,
+  onUnmounted,
+  provide,
+  ref,
+  useSlots,
+  watch,
+} from 'vue';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
@@ -20,6 +28,7 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * DrawingManager component
@@ -53,6 +62,20 @@ interface IDrawingManagerVueComponentProps {
   polygonOptions?: google.maps.PolygonOptions;
   polylineOptions?: google.maps.PolylineOptions;
   rectangleOptions?: google.maps.RectangleOptions;
+  position?:
+    | 'TOP_CENTER'
+    | 'TOP_LEFT'
+    | 'TOP_RIGHT'
+    | 'LEFT_TOP'
+    | 'RIGHT_TOP'
+    | 'LEFT_CENTER'
+    | 'RIGHT_CENTER'
+    | 'LEFT_BOTTOM'
+    | 'RIGHT_BOTTOM'
+    | 'BOTTOM_CENTER'
+    | 'BOTTOM_LEFT'
+    | 'BOTTOM_RIGHT';
+  drawingModes?: google.maps.drawing.OverlayType[] | null;
   shapes?: google.maps.drawing.OverlayCompleteEvent[];
   options?: Record<string, unknown>;
 }
@@ -80,6 +103,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * DRAWING MANAGER
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const drawingManagerInstance = ref<
   google.maps.drawing.DrawingManager | undefined
 >();
@@ -95,7 +119,21 @@ const promise = mapPromise
 
     map.value = mapInstance;
 
-    const drawingManagerOptions = {
+    const defaultDrawingControlOptions = {
+      drawingModes: [
+        google.maps.drawing.OverlayType.MARKER,
+        google.maps.drawing.OverlayType.CIRCLE,
+        google.maps.drawing.OverlayType.POLYGON,
+        google.maps.drawing.OverlayType.POLYLINE,
+        google.maps.drawing.OverlayType.RECTANGLE,
+      ],
+      position: google.maps.ControlPosition.TOP_CENTER,
+    };
+
+    const drawingManagerOptions: IDrawingManagerVueComponentProps & {
+      map: google.maps.Map;
+      [key: string]: unknown;
+    } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
@@ -103,6 +141,10 @@ const promise = mapPromise
 
     drawingManagerInstance.value = new google.maps.drawing.DrawingManager({
       ...drawingManagerOptions,
+      drawingControlOptions: {
+        ...defaultDrawingControlOptions,
+        ...drawingManagerOptions.drawingControlOptions,
+      },
       drawingControl: !$slots.default,
     });
 
@@ -122,7 +164,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       drawingManagerEventsConfig,
       drawingManagerInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     drawingManagerInstance.value.addListener(
@@ -148,9 +191,39 @@ provide($drawingManagerPromise, promise);
 /*******************************************************************************
  * COMPUTED
  ******************************************************************************/
+const evaluatedPosition = computed(() => {
+  switch (props.position) {
+    case 'TOP_CENTER':
+      return google.maps.ControlPosition.TOP_CENTER;
+    case 'TOP_LEFT':
+      return google.maps.ControlPosition.TOP_LEFT;
+    case 'TOP_RIGHT':
+      return google.maps.ControlPosition.TOP_RIGHT;
+    case 'BOTTOM_CENTER':
+      return google.maps.ControlPosition.BOTTOM_CENTER;
+    case 'BOTTOM_LEFT':
+      return google.maps.ControlPosition.BOTTOM_LEFT;
+    case 'BOTTOM_RIGHT':
+      return google.maps.ControlPosition.BOTTOM_RIGHT;
+    case 'LEFT_BOTTOM':
+      return google.maps.ControlPosition.LEFT_BOTTOM;
+    case 'LEFT_CENTER':
+      return google.maps.ControlPosition.LEFT_CENTER;
+    case 'LEFT_TOP':
+      return google.maps.ControlPosition.LEFT_TOP;
+    case 'RIGHT_BOTTOM':
+      return google.maps.ControlPosition.RIGHT_BOTTOM;
+    case 'RIGHT_CENTER':
+      return google.maps.ControlPosition.RIGHT_CENTER;
+    case 'RIGHT_TOP':
+      return google.maps.ControlPosition.RIGHT_TOP;
+    default:
+      return google.maps.ControlPosition.TOP_CENTER;
+  }
+});
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 const drawAll = () => {
   props.shapes?.forEach((shape) => {
@@ -267,47 +340,86 @@ const clearAll = () => {
 watch(
   () => props.drawingControlOptions,
   (value, oldValue) => {
-    if (drawingManagerInstance.value && value && value !== oldValue) {
+    if (drawingManagerInstance.value) {
+      if (value && value !== oldValue) {
+        drawingManagerInstance.value.setOptions({
+          drawingControlOptions: { ...oldValue, ...value },
+        });
+      }
+    }
+  }
+);
+
+watch(
+  () => props.position,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value) {
+      if (value && value !== oldValue) {
+        drawingManagerInstance.value.setOptions({
+          drawingControlOptions: { position: evaluatedPosition.value },
+        });
+      }
+    }
+  }
+);
+
+watch(
+  () => props.drawingModes,
+  (value, oldValue) => {
+    if (drawingManagerInstance.value) {
+      if (value && value !== oldValue) {
+        drawingManagerInstance.value.setOptions({
+          drawingControlOptions: { drawingModes: value },
+        });
+      }
+    }
+  }
+);
+
+watch(
+  () => props.drawingControlOptions,
+  (value) => {
+    if (drawingManagerInstance.value && value) {
       drawingManagerInstance.value.setOptions({ drawingControlOptions: value });
     }
   }
 );
 watch(
   () => props.circleOptions,
-  (value, oldValue) => {
-    if (drawingManagerInstance.value && value && value !== oldValue) {
+  (value) => {
+    if (drawingManagerInstance.value && value) {
       drawingManagerInstance.value.setOptions({ circleOptions: value });
     }
   }
 );
 watch(
   () => props.markerOptions,
-  (value, oldValue) => {
-    if (drawingManagerInstance.value && value && value !== oldValue) {
+  (value) => {
+    if (drawingManagerInstance.value && value) {
       drawingManagerInstance.value.setOptions({ markerOptions: value });
     }
   }
 );
 watch(
   () => props.polygonOptions,
-  (value, oldValue) => {
-    if (drawingManagerInstance.value && value && value !== oldValue) {
+  (value) => {
+    if (drawingManagerInstance.value && value) {
       drawingManagerInstance.value.setOptions({ polygonOptions: value });
     }
   }
 );
 watch(
   () => props.polylineOptions,
-  (value, oldValue) => {
-    if (drawingManagerInstance.value && value && value !== oldValue) {
+  (value) => {
+    if (drawingManagerInstance.value && value) {
       drawingManagerInstance.value.setOptions({ polylineOptions: value });
     }
   }
 );
 watch(
   () => props.rectangleOptions,
-  (value, oldValue) => {
-    if (drawingManagerInstance.value && value && value !== oldValue) {
+  (value) => {
+    if (drawingManagerInstance.value && value) {
       drawingManagerInstance.value.setOptions({ rectangleOptions: value });
     }
   }
@@ -328,5 +440,10 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ setDrawingMode, deleteSelection, clearAll });
+defineExpose({
+  setDrawingMode,
+  deleteSelection,
+  clearAll,
+  drawingManagerInstance,
+});
 </script>

@@ -22,15 +22,15 @@ describe('street-view-panorama-promise.ts', () => {
 
     // Assert
     expect(keys.length).toBe(2);
-    expect(keys.includes('getStreetViewPanoramaPromise')).toBeTruthy();
-    expect(keys.includes('getStreetViewPanoramaPromiseDeferred')).toBeTruthy();
+    expect(keys.includes('useStreetViewPanoramaPromise')).toBeTruthy();
+    expect(keys.includes('useStreetViewPanoramaPromiseDeferred')).toBeTruthy();
   });
 
   test('should return a object with resolve and reject properties when is called', () => {
     // Arrange
     // Act
     const result =
-      streetViewPanoramaPromise.getStreetViewPanoramaPromiseDeferred();
+      streetViewPanoramaPromise.useStreetViewPanoramaPromiseDeferred();
     const keys = Object.keys(result);
 
     // Assert
@@ -41,7 +41,7 @@ describe('street-view-panorama-promise.ts', () => {
   test('should return a promise object when is called', () => {
     // Arrange
     // Act
-    const result = streetViewPanoramaPromise.getStreetViewPanoramaPromise();
+    const result = streetViewPanoramaPromise.useStreetViewPanoramaPromise();
 
     // Assert
     expect(typeof result).toBe('object');

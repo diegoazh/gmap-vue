@@ -10,6 +10,7 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * Circle component
@@ -61,7 +62,7 @@ const props = withDefaults(defineProps<ICircleShapeVueComponentProps>(), {
   clickable: true,
   draggable: false,
   editable: false,
-  strokePosition: google.maps.StrokePosition.CENTER,
+  strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
   visible: true,
 });
 
@@ -78,6 +79,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * CIRCLE SHAPE
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const circleShapeInstance = ref<google.maps.Circle | undefined>();
 
 const promise = mapPromise
@@ -112,7 +114,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       circleShapeEventsConfig,
       circleShapeInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     return circleShapeInstance.value;
@@ -128,7 +131,7 @@ provide($circleShapePromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 
 /*******************************************************************************
@@ -150,4 +153,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
+defineExpose({ circleShapeInstance });
 </script>

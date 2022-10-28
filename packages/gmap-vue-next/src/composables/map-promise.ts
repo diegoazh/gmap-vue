@@ -19,7 +19,7 @@ const promise: Promise<google.maps.Map | undefined> = new Promise(
  * @public
  * @returns {Promise}
  */
-export function getMapPromise(): Promise<google.maps.Map | undefined> {
+export function useMapPromise(): Promise<google.maps.Map | undefined> {
   return promise;
 }
 
@@ -28,6 +28,6 @@ export function getMapPromise(): Promise<google.maps.Map | undefined> {
  *
  * @returns {Promise}
  */
-export function getMapPromiseDeferred(): PromiseDeferred<google.maps.Map> {
+export function useMapPromiseDeferred(): PromiseDeferred<google.maps.Map> {
   return mapPromiseDeferred;
 }

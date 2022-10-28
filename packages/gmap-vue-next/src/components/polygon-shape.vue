@@ -11,6 +11,7 @@ import {
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
 import { useShapesHelpers } from '@/composables/shapes-helper';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * Polygon component
@@ -47,9 +48,6 @@ interface IPolygonShapeVueComponentProps {
   fillColor?: string;
   fillOpacity?: number;
   geodesic?: boolean;
-  path?:
-    | google.maps.MVCArray<google.maps.LatLng>
-    | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
   paths?:
     | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
     | google.maps.MVCArray<google.maps.LatLng>
@@ -73,7 +71,7 @@ const props = withDefaults(defineProps<IPolygonShapeVueComponentProps>(), {
   draggable: false,
   editable: false,
   geodesic: false,
-  strokePosition: google.maps.StrokePosition.CENTER,
+  strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
   visible: true,
   deepWatch: false,
 });
@@ -90,6 +88,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * POLYGON SHAPE
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const polygonShapeInstance = ref<google.maps.Polygon | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -106,13 +105,7 @@ const promise = mapPromise
       ...props.options,
     };
 
-    const {
-      path: pathProp,
-      paths: pathsProp,
-      ...finalOptions
-    } = polygonShapeOptions;
-
-    polygonShapeInstance.value = new google.maps.Polygon(finalOptions);
+    polygonShapeInstance.value = new google.maps.Polygon(polygonShapeOptions);
 
     const polygonShapePropsConfig = getComponentPropsConfig('GmvPolygon');
     const polygonShapeEventsConfig = getComponentEventsConfig(
@@ -129,7 +122,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       polygonShapeEventsConfig,
       polygonShapeInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     return polygonShapeInstance.value;
@@ -145,7 +139,7 @@ provide($polygonShapePromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 const { clearEvents, updatePathOrPaths } = useShapesHelpers();
 
@@ -159,30 +153,58 @@ const pathsEventListeners: [
   ),
   google.maps.MapsEventListener
 ][] = [];
-const pathEventListeners: [
-  google.maps.MVCArray<google.maps.LatLng>,
-  google.maps.MapsEventListener
-][] = [];
 
 watch(
   () => props.paths,
   (newValue, oldValue) => {
-    if (!polygonShapeInstance.value) {
-      throw new Error('the polygon instance was not created');
-    }
+    if (polygonShapeInstance.value) {
+      if (props.paths && newValue && newValue !== oldValue) {
+        clearEvents(pathsEventListeners);
 
-    if (props.paths && newValue && newValue !== oldValue) {
-      clearEvents(pathsEventListeners);
+        polygonShapeInstance.value.setPaths(newValue);
 
-      polygonShapeInstance.value.setPaths(newValue);
+        const mvcArray = polygonShapeInstance.value.getPaths();
 
-      const mvcArray = polygonShapeInstance.value.getPaths();
+        for (let i = 0; i < mvcArray.getLength(); i += 1) {
+          const mvcPath = mvcArray.getAt(i);
+          pathsEventListeners.push([
+            mvcPath,
+            mvcPath.addListener(
+              'insert_at',
+              updatePathOrPaths(
+                'paths_changed',
+                polygonShapeInstance.value.getPaths,
+                emits
+              )
+            ),
+          ]);
+          pathsEventListeners.push([
+            mvcPath,
+            mvcPath.addListener(
+              'remove_at',
+              updatePathOrPaths(
+                'paths_changed',
+                polygonShapeInstance.value.getPaths,
+                emits
+              )
+            ),
+          ]);
+          pathsEventListeners.push([
+            mvcPath,
+            mvcPath.addListener(
+              'set_at',
+              updatePathOrPaths(
+                'paths_changed',
+                polygonShapeInstance.value.getPaths,
+                emits
+              )
+            ),
+          ]);
+        }
 
-      for (let i = 0; i < mvcArray.getLength(); i += 1) {
-        const mvcPath = mvcArray.getAt(i);
         pathsEventListeners.push([
-          mvcPath,
-          mvcPath.addListener(
+          mvcArray,
+          mvcArray.addListener(
             'insert_at',
             updatePathOrPaths(
               'paths_changed',
@@ -192,8 +214,8 @@ watch(
           ),
         ]);
         pathsEventListeners.push([
-          mvcPath,
-          mvcPath.addListener(
+          mvcArray,
+          mvcArray.addListener(
             'remove_at',
             updatePathOrPaths(
               'paths_changed',
@@ -203,8 +225,8 @@ watch(
           ),
         ]);
         pathsEventListeners.push([
-          mvcPath,
-          mvcPath.addListener(
+          mvcArray,
+          mvcArray.addListener(
             'set_at',
             updatePathOrPaths(
               'paths_changed',
@@ -214,40 +236,6 @@ watch(
           ),
         ]);
       }
-
-      pathsEventListeners.push([
-        mvcArray,
-        mvcArray.addListener(
-          'insert_at',
-          updatePathOrPaths(
-            'paths_changed',
-            polygonShapeInstance.value.getPaths,
-            emits
-          )
-        ),
-      ]);
-      pathsEventListeners.push([
-        mvcArray,
-        mvcArray.addListener(
-          'remove_at',
-          updatePathOrPaths(
-            'paths_changed',
-            polygonShapeInstance.value.getPaths,
-            emits
-          )
-        ),
-      ]);
-      pathsEventListeners.push([
-        mvcArray,
-        mvcArray.addListener(
-          'set_at',
-          updatePathOrPaths(
-            'paths_changed',
-            polygonShapeInstance.value.getPaths,
-            emits
-          )
-        ),
-      ]);
     }
   },
   {
@@ -256,60 +244,6 @@ watch(
   }
 );
 
-watch(
-  () => props.path,
-  (newValue, oldValue) => {
-    if (!polygonShapeInstance.value) {
-      throw new Error('the polygon instance was not created');
-    }
-
-    if (props.path && newValue && newValue !== oldValue) {
-      clearEvents(pathEventListeners);
-
-      polygonShapeInstance.value.setPaths(props.path);
-
-      const mvcPath = polygonShapeInstance.value.getPath();
-
-      pathEventListeners.push([
-        mvcPath,
-        mvcPath.addListener(
-          'insert_at',
-          updatePathOrPaths(
-            'path_changed',
-            polygonShapeInstance.value.getPath,
-            emits
-          )
-        ),
-      ]);
-      pathEventListeners.push([
-        mvcPath,
-        mvcPath.addListener(
-          'remove_at',
-          updatePathOrPaths(
-            'path_changed',
-            polygonShapeInstance.value.getPath,
-            emits
-          )
-        ),
-      ]);
-      pathEventListeners.push([
-        mvcPath,
-        mvcPath.addListener(
-          'set_at',
-          updatePathOrPaths(
-            'path_changed',
-            polygonShapeInstance.value.getPath,
-            emits
-          )
-        ),
-      ]);
-    }
-  },
-  {
-    deep: props.deepWatch,
-    immediate: true,
-  }
-);
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
@@ -326,4 +260,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
+defineExpose({ polygonShapeInstance });
 </script>

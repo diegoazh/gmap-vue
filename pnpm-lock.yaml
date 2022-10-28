@@ -151,6 +151,7 @@ importers:
       '@types/google.maps': ^3.50.4
       '@types/jest': ^29.1.2
       '@types/jsdom': ^20.0.0
+      '@types/lodash.isequal': ^4.5.6
       '@types/node': ^18.8.3
       '@typescript-eslint/eslint-plugin': ^5.39.0
       '@typescript-eslint/parser': ^5.39.0
@@ -190,6 +191,8 @@ importers:
       jest: ^29.1.2
       jsdoc: ^3.6.11
       jsdom: ^20.0.1
+      lint-staged: ^13.0.3
+      lodash.isequal: ^4.5.0
       mitt: ^3.0.0
       npm-run-all: ^4.1.5
       prettier: ^2.7.1
@@ -217,6 +220,7 @@ importers:
       vuepress-jsdoc: 4.3.1
     dependencies:
       '@googlemaps/markerclusterer': 2.0.11
+      lodash.isequal: 4.5.0
       mitt: 3.0.0
       vue: 3.2.40
     devDependencies:
@@ -238,6 +242,7 @@ importers:
       '@types/google.maps': 3.50.4
       '@types/jest': 29.1.2
       '@types/jsdom': 20.0.0
+      '@types/lodash.isequal': 4.5.6
       '@types/node': 18.8.3
       '@typescript-eslint/eslint-plugin': 5.39.0_cfd7h3iktziq6hcwahu2qxhjhy
       '@typescript-eslint/parser': 5.39.0_z4bbprzjrhnsfa24uvmcbu7f5q
@@ -277,6 +282,7 @@ importers:
       jest: 29.1.2_@types+node@18.8.3
       jsdoc: 3.6.11
       jsdom: 20.0.1
+      lint-staged: 13.0.3
       npm-run-all: 4.1.5
       prettier: 2.7.1
       rimraf: 3.0.2
@@ -3193,7 +3199,17 @@ packages:
   /@types/linkify-it@3.0.2:
     resolution: {integrity: sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==}
 
-  /@types/markdown-it@10.0.3:
+  /@types/lodash.isequal/4.5.6:
+    resolution: {integrity: sha512-Ww4UGSe3DmtvLLJm2F16hDwEQSv7U0Rr8SujLUA2wHI2D2dm8kPu6Et+/y303LfjTIwSBKXB/YTUcAKpem/XEg==}
+    dependencies:
+      '@types/lodash': 4.14.186
+    dev: true
+
+  /@types/lodash/4.14.186:
+    resolution: {integrity: sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw==}
+    dev: true
+
+  /@types/markdown-it/10.0.3:
     resolution: {integrity: sha512-daHJk22isOUvNssVGF2zDnnSyxHhFYhtjeX4oQaKD6QzL3ZR1QSgiD1g+Q6/WSWYVogNXYDXODtbgW/WiFCtyw==}
     dependencies:
       '@types/highlight.js': 9.12.4
@@ -6981,12 +6997,7 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /commander/9.4.0:
-    resolution: {integrity: sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw==}
-    engines: {node: ^12.20.0 || >=14}
-    dev: true
-
-  /commander@9.4.1:
+  /commander/9.4.1:
     resolution: {integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==}
     engines: {node: ^12.20.0 || >=14}
     dev: true
@@ -13140,8 +13151,8 @@ packages:
     dependencies:
       cli-truncate: 3.1.0
       colorette: 2.0.19
-      commander: 9.4.0
-      debug: 4.3.4(supports-color@6.1.0)
+      commander: 9.4.1
+      debug: 4.3.4
       execa: 6.1.0
       lilconfig: 2.0.5
       listr2: 4.0.5
@@ -13320,7 +13331,6 @@ packages:
 
   /lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-    dev: true
 
   /lodash.ismatch@4.4.0:
     resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==}

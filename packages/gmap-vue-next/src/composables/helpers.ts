@@ -6,28 +6,7 @@ import type {
   SinglePluginComponentConfig,
 } from '@/types/gmap-vue.types';
 import { type ComponentPublicInstance, nextTick, watch } from 'vue';
-
-/**
- * This function helps you to bind events from Google Maps API to Vue events
- *
- * Note: For options API. This function should not be used on setup script.
- *
- * @param  {string[]} eventsConfig an array of string with all events that you want to bind
- * @param  {Object} googleMapsInst the Google Maps instance
- * @param  {Object} vueInst the Vue instance
- * @returns {void}
- */
-export function bindEvents(
-  eventsConfig: string[],
-  googleMapsInst: Record<string, any>,
-  vueInst: ComponentPublicInstance & { $gmapOptions: IPluginOptions }
-): void {
-  eventsConfig.forEach((eventName) => {
-    googleMapsInst.addListener(eventName, (ev: any) => {
-      vueInst.$emit(eventName, ev);
-    });
-  });
-}
+import isEqual from 'lodash.isequal';
 
 /**
  * Function that helps you to capitalize the first letter on a word
@@ -253,6 +232,8 @@ export function twoWayBindingWrapper(
 }
 
 /**
+ * This function should be used on normal options API but never inside setup function.
+ *
  * Watch the individual properties of a PoD object, instead of the object
  * per se. This is different from a deep watch where both the reference
  * and the individual values are watched.
@@ -262,14 +243,14 @@ export function twoWayBindingWrapper(
  * @param  {string[]} propertiesToTrack string array with all properties that you want to track
  * @param  {Function} handler function to be fired when the prop change
  * @param  {boolean} immediate=false
- * @param  {Object?} vueInst the component instance
+ * @param  {Object} vueInst the component instance
  * @returns {void}
  */
 export function watchPrimitiveProperties(
   propertiesToTrack: string[],
   handler: () => any,
-  immediate = false,
-  vueInst?: ComponentPublicInstance
+  vueInst: ComponentPublicInstance,
+  immediate = false
 ): void {
   let isHandled = false;
 
@@ -281,26 +262,86 @@ export function watchPrimitiveProperties(
   function requestHandle(): void {
     if (!isHandled) {
       isHandled = true;
-      if (vueInst) {
-        vueInst.$nextTick(() => {
-          isHandled = false;
-          handler();
-        });
-      } else {
-        nextTick(() => {
-          isHandled = false;
-          handler();
-        });
-      }
+      vueInst.$nextTick(() => {
+        isHandled = false;
+        handler();
+      });
     }
   }
 
   propertiesToTrack.forEach((prop) => {
-    if (vueInst) {
-      vueInst.$watch(prop, requestHandle, { immediate });
-    } else {
-      // TODO: check if this watch works, I think it needs to receive the variable not only the name of the variable
-      watch(() => prop, requestHandle, { immediate });
+    vueInst.$watch(prop, requestHandle, { immediate });
+  });
+}
+
+/**
+ * This function should be used inside setup function or script.
+ *
+ * Watch the individual properties of a PoD object, instead of the object
+ * per se. This is different from a deep watch where both the reference
+ * and the individual values are watched.
+ *
+ * In effect, it throttles the multiple $watch to execute at most once per tick.
+ *
+ * @param  {string[]} propertiesToTrack string array with all properties that you want to track
+ * @param  {Function} handler function to be fired when the prop change
+ * @param  {boolean} immediate=false
+ * @param  {Object} props the props object that is set on setup script
+ * @returns {void}
+ */
+export function watchPrimitivePropertiesOnSetup(
+  propertiesToTrack: string[],
+  handler: () => any,
+  props: Record<any, any>,
+  immediate = false
+): void {
+  let isHandled = false;
+
+  /**
+   * Function in charge to execute the handler function if it was not fired
+   *
+   * @returns void
+   */
+  function requestHandle(value: any, oldValue: any): void {
+    if (!isHandled) {
+      isHandled = true;
+
+      nextTick(() => {
+        isHandled = false;
+        if (value && !isEqual(value, oldValue)) {
+          handler();
+        }
+      });
+    }
+  }
+
+  propertiesToTrack.forEach((prop) => {
+    watch(() => props[prop], requestHandle, { immediate });
+  });
+}
+
+/**
+ * This function helps you to bind events from Google Maps API to Vue events
+ *
+ * Note: For options API. This function should not be used on setup script.
+ *
+ * @param  {string[]} eventsConfig an array of string with all events that you want to bind
+ * @param  {Object} googleMapsInst the Google Maps instance
+ * @param  {Object} vueInst the Vue instance
+ * @param {string[]} [excludedEvents=[]] - List of events that shouldn't be bind
+ * @returns {void}
+ */
+export function bindEvents(
+  eventsConfig: string[],
+  googleMapsInst: Record<string, any>,
+  vueInst: ComponentPublicInstance & { $gmapOptions: IPluginOptions },
+  excludedEvents: string[] = []
+): void {
+  eventsConfig.forEach((eventName) => {
+    if (!excludedEvents.includes(eventName) && !/_changed/.test(eventName)) {
+      googleMapsInst.addListener(eventName, (ev: any) => {
+        vueInst.$emit(eventName, ev);
+      });
     }
   });
 }
@@ -354,13 +395,14 @@ export function bindProps(
             }
           );
         } else {
-          watchPrimitiveProperties(
+          watchPrimitivePropertiesOnSetup(
             propsComponentConfig.trackProperties[propKey].map(
               (prop) => `${propKey}.${prop}`
             ),
             () => {
               AnyGoogleMapsClassInstance[setMethodName](propValue);
             },
+            vueInst.$props,
             propValue != undefined
           );
         }
@@ -372,10 +414,14 @@ export function bindProps(
           typeof AnyGoogleMapsClassInstance[getMethodName] === 'function'
         ) {
           AnyGoogleMapsClassInstance?.addListener(eventName, () => {
-            vueInst.$emit(
-              eventName,
-              AnyGoogleMapsClassInstance[getMethodName]()
-            );
+            const value = AnyGoogleMapsClassInstance[getMethodName]();
+
+            if (value && !isEqual(value, (vueInst.$props as any)[propKey])) {
+              vueInst.$emit(
+                eventName,
+                AnyGoogleMapsClassInstance[getMethodName]()
+              );
+            }
           });
         }
       }
@@ -391,17 +437,21 @@ export function bindProps(
  * @param  {string[]} eventsComponentConfig - An array of string with all events that you want to bind
  * @param  {Object} AnyGoogleMapsClassInstance - Any Google Maps instance
  * @param {() => void} emits - The Vue emit object built with defineEmits function
+ * @param {string[]} [excludedEvents=[]] - List of events that shouldn't be bind
  * @returns {void}
  */
 export function bindGoogleMapsEventsToVueEventsOnSetup(
   eventsComponentConfig: string[],
   AnyGoogleMapsClassInstance: Record<string, any>,
-  emits: (ev: string, value: any) => void
+  emits: (ev: string, value: any) => void,
+  excludedEvents: string[] = []
 ): void {
   eventsComponentConfig.forEach((eventName) => {
-    AnyGoogleMapsClassInstance?.addListener(eventName, (ev: any) => {
-      emits(eventName, ev);
-    });
+    if (!excludedEvents.includes(eventName) && !/_changed/.test(eventName)) {
+      AnyGoogleMapsClassInstance?.addListener(eventName, (ev: any) => {
+        emits(eventName, ev);
+      });
+    }
   });
 }
 
@@ -426,12 +476,12 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
   emits: (ev: string, value: any) => void,
   props: Record<any, any>
 ): void {
-  Object.entries(props).forEach(([propKey, propValue]) => {
+  Object.keys(props).forEach((propKey) => {
     if (!propsComponentConfig.noBind.includes(propKey)) {
       const { eventName, getMethodName } =
         bindVuePropsWithGoogleMapsPropsSetters(
           propKey,
-          propValue,
+          props,
           propsComponentConfig.trackProperties[propKey],
           AnyGoogleMapsClassInstance
         );
@@ -442,7 +492,11 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
           typeof AnyGoogleMapsClassInstance[getMethodName] === 'function'
         ) {
           AnyGoogleMapsClassInstance?.addListener(eventName, () => {
-            emits(eventName, AnyGoogleMapsClassInstance[getMethodName]());
+            const value = AnyGoogleMapsClassInstance[getMethodName]();
+
+            if (value && !isEqual(value, props[propKey])) {
+              emits(eventName, value);
+            }
           });
         }
       }
@@ -452,7 +506,7 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
 
 function bindVuePropsWithGoogleMapsPropsSetters(
   propKey: string,
-  propValue: IVueProp,
+  props: Record<any, any>,
   trackProperties: string[],
   AnyGoogleMapsClassInstance: Record<string, any>
 ): { eventName: string; getMethodName: string } {
@@ -468,28 +522,31 @@ function bindVuePropsWithGoogleMapsPropsSetters(
     // propChanged -> event emitted -> propChanged -> event emitted loop
     // although this may really be the user's responsibility
     if (
-      (typeof propValue !== 'object' && !Array.isArray(propValue)) ||
+      (typeof props[propKey] !== 'object' && !Array.isArray(props[propKey])) ||
       !trackProperties?.length
     ) {
       // Track the object deeply
       watch(
-        // TODO: confirm this watch works, because I think it needs the variable not only the name of the variable
-        () => propKey,
-        () => {
-          AnyGoogleMapsClassInstance[setMethodName](propValue);
+        () => props[propKey],
+        (value, oldValue) => {
+          if (value && !isEqual(value, oldValue))
+            AnyGoogleMapsClassInstance[setMethodName](value);
         },
         {
-          immediate: propValue != undefined,
-          deep: typeof propValue !== 'object' && !Array.isArray(propValue),
+          immediate: props[propKey] != undefined,
+          deep:
+            typeof props[propKey] !== 'object' &&
+            !Array.isArray(props[propKey]),
         }
       );
     } else {
-      watchPrimitiveProperties(
+      watchPrimitivePropertiesOnSetup(
         trackProperties.map((prop) => `${propKey}.${prop}`),
         () => {
-          AnyGoogleMapsClassInstance[setMethodName](propValue);
+          AnyGoogleMapsClassInstance[setMethodName](props[propKey]);
         },
-        propValue != undefined
+        props,
+        props[propKey] != undefined
       );
     }
   }

@@ -22,6 +22,7 @@ import {
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
 import { useShapesHelpers } from '@/composables/shapes-helper';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * Marker Google Maps properties documentation
@@ -81,6 +82,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * POLYLINE SHAPE
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const polylineShapeInstance = ref<google.maps.Polyline | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -111,7 +113,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       polylineShapeEventsConfig,
       polylineShapeInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     return polylineShapeInstance.value;
@@ -127,7 +130,7 @@ provide($polylineShapePromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 const { clearEvents, updatePathOrPaths } = useShapesHelpers();
 
@@ -142,50 +145,48 @@ const pathEventListeners: [
 watch(
   () => props.path,
   (newValue, oldValue) => {
-    if (!polylineShapeInstance.value) {
-      throw new Error('the polyline instance was not created');
-    }
+    if (polylineShapeInstance.value) {
+      if (props.path && newValue && newValue !== oldValue) {
+        clearEvents(pathEventListeners);
 
-    if (props.path && newValue && newValue !== oldValue) {
-      clearEvents(pathEventListeners);
+        polylineShapeInstance.value.setPath(newValue);
 
-      polylineShapeInstance.value.setPath(newValue);
+        const mvcPath = polylineShapeInstance.value.getPath();
 
-      const mvcPath = polylineShapeInstance.value.getPath();
-
-      pathEventListeners.push([
-        mvcPath,
-        mvcPath.addListener(
-          'insert_at',
-          updatePathOrPaths(
-            'path_changed',
-            polylineShapeInstance.value.getPath,
-            emits
-          )
-        ),
-      ]);
-      pathEventListeners.push([
-        mvcPath,
-        mvcPath.addListener(
-          'remove_at',
-          updatePathOrPaths(
-            'path_changed',
-            polylineShapeInstance.value.getPath,
-            emits
-          )
-        ),
-      ]);
-      pathEventListeners.push([
-        mvcPath,
-        mvcPath.addListener(
-          'set_at',
-          updatePathOrPaths(
-            'path_changed',
-            polylineShapeInstance.value.getPath,
-            emits
-          )
-        ),
-      ]);
+        pathEventListeners.push([
+          mvcPath,
+          mvcPath.addListener(
+            'insert_at',
+            updatePathOrPaths(
+              'path_changed',
+              polylineShapeInstance.value.getPath,
+              emits
+            )
+          ),
+        ]);
+        pathEventListeners.push([
+          mvcPath,
+          mvcPath.addListener(
+            'remove_at',
+            updatePathOrPaths(
+              'path_changed',
+              polylineShapeInstance.value.getPath,
+              emits
+            )
+          ),
+        ]);
+        pathEventListeners.push([
+          mvcPath,
+          mvcPath.addListener(
+            'set_at',
+            updatePathOrPaths(
+              'path_changed',
+              polylineShapeInstance.value.getPath,
+              emits
+            )
+          ),
+        ]);
+      }
     }
   },
   { deep: props.deepWatch, immediate: true }
@@ -206,4 +207,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
+defineExpose({ polylineShapeInstance });
 </script>

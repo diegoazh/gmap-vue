@@ -20,7 +20,10 @@ export default {
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
-import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import {
+  useGoogleMapsApiPromiseLazy,
+  usePluginOptions,
+} from '@/composables/promise-lazy-builder';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
@@ -98,6 +101,7 @@ const emits = defineEmits(getComponentEventsConfig('GmvAutocomplete'));
 /*******************************************************************************
  * AUTOCOMPLETE
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const autoCompleteInstance = ref<google.maps.places.Autocomplete | undefined>();
 
 /*******************************************************************************
@@ -105,7 +109,7 @@ const autoCompleteInstance = ref<google.maps.places.Autocomplete | undefined>();
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 
 /*******************************************************************************
@@ -124,7 +128,7 @@ watch(
  * HOOKS
  ******************************************************************************/
 onMounted(() => {
-  useGmapApiPromiseLazy()
+  useGoogleMapsApiPromiseLazy()
     .then(() => {
       let scopedInput = props.slotRef
         ? props.slotRef
@@ -175,7 +179,8 @@ onMounted(() => {
       bindGoogleMapsEventsToVueEventsOnSetup(
         autoCompleteEventsConfig,
         autoCompleteInstance.value,
-        emits
+        emits,
+        excludedEvents
       );
 
       if (props.setFieldsTo) {
@@ -210,4 +215,5 @@ onMounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
+defineExpose({ autoCompleteInstance });
 </script>

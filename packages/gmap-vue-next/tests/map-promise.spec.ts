@@ -22,14 +22,14 @@ describe('map-promise.ts', () => {
 
     // Assert
     expect(keys.length).toBe(2);
-    expect(keys.includes('getMapPromise')).toBeTruthy();
-    expect(keys.includes('getMapPromiseDeferred')).toBeTruthy();
+    expect(keys.includes('useMapPromise')).toBeTruthy();
+    expect(keys.includes('useMapPromiseDeferred')).toBeTruthy();
   });
 
   test('should return a object with resolve and reject properties when is called', () => {
     // Arrange
     // Act
-    const result = mapPromise.getMapPromiseDeferred();
+    const result = mapPromise.useMapPromiseDeferred();
     const keys = Object.keys(result);
 
     // Assert
@@ -40,7 +40,7 @@ describe('map-promise.ts', () => {
   test('should return a promise object when is called', () => {
     // Arrange
     // Act
-    const result = mapPromise.getMapPromise();
+    const result = mapPromise.useMapPromise();
 
     // Assert
     expect(typeof result).toBe('object');

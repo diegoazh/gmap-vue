@@ -16,10 +16,10 @@ import StreetViewPanorama from './components/street-view-panorama.vue';
 import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
 import { pluginComponentBuilder } from './composables/plugin-component-builder';
 import {
-  getPromiseLazyBuilderFn,
   saveLazyPromiseAndFinalOptions,
+  usePromiseLazyBuilderFn,
 } from './composables/promise-lazy-builder';
-import { getDefaultResizeBus } from './composables/resize-bus';
+import { useDefaultResizeBus } from './composables/resize-bus';
 import type {
   IGoogleMapsApiObject,
   IPluginOptions,
@@ -138,18 +138,7 @@ const helpers = {
  * GmapVue install function
  *
  * @param  {Object} app the vue app instance
- * @param  {Object|undefined} options=undefined configuration object to initialize the GmapVue plugin
- * @param  {boolean} options.dynamicLoad=false load the Google Maps API dynamically, if you set this to `true` the plugin doesn't load the Google Maps API
- * @param  {boolean} options.installComponents=true install all components
- * @param  {boolean} options.autoBindAllEvents=false auto bind all Google Maps API events
- * @param  {Object|undefined} options.load=undefined options to configure the Google Maps API
- * @param  {string} options.load.key your Google Maps API key
- * @param  {string} options.load.libraries=places the Google Maps libraries that you will use eg: 'places,drawing,visualization'
- * @param  {string|undefined} options.load.v=undefined the Google Maps API version, default latest
- * @param  {string|undefined} options.load.callback=GoogleMapsCallback This must be ignored if have another callback that you need to run when Google Maps API is ready please use the `customCallback` option.
- * @param  {string|undefined} options.load.customCallback=undefined DEPRECATED - This option was added on v3.0.0 but will be removed in the next major release. If you already have an script tag that loads Google Maps API and you want to use it set you callback in the `customCallback` option and our `GoogleMapsCallback` callback will execute your custom callback at the end; it must attached to the `window` object, is the only requirement.
- * @param {boolean} loadCn=false    Boolean. If set to true, the map will be loaded from google maps China
- *                  (@see https://developers.google.com/maps/documentation/javascript/basics#GoogleMapsChina)
+ * @param  {PluginOptions} [options] configuration object to initialize the GmapVue plugin
  */
 function pluginInstallFn(app: App, options?: IPluginOptions): void {
   // see defaults
@@ -170,18 +159,18 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
    * @constant
    * @type {Function} the promise lazy creator function
    */
-  const promiseLazyCreator = getPromiseLazyBuilderFn(
+  const promiseLazyCreator = usePromiseLazyBuilderFn(
     googleMapsApiInitializer,
     globalThis.GoogleMapsApi
   );
   /**
-   * The gmapApiPromiseLazy function to can wait until Google Maps API is ready
+   * The googleMapsApiPromiseLazy function to can wait until Google Maps API is ready
    *
    * @constant
    * @type {Function}
    */
-  const gmapApiPromiseLazy = promiseLazyCreator(finalOptions);
-  saveLazyPromiseAndFinalOptions(finalOptions, gmapApiPromiseLazy);
+  const googleMapsApiPromiseLazy = promiseLazyCreator(finalOptions);
+  saveLazyPromiseAndFinalOptions(finalOptions, googleMapsApiPromiseLazy);
 
   /**
    * Static properties
@@ -189,11 +178,11 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
    * These properties are the same references that you can find in the instance,
    * but they are static because they are attached to the main Vue object.
    * app.config.globalProperties.$gmapDefaultResizeBus - function to use the default resize bus
-   * app.config.globalProperties.$gmapApiPromiseLazy - function that you can use to wait until Google Maps API is ready
+   * app.config.globalProperties.$googleMapsApiPromiseLazy - function that you can use to wait until Google Maps API is ready
    * app.config.globalProperties.$gmapOptions - object with the final options passed to Google Maps API to configure it
    */
-  app.config.globalProperties.$gmapDefaultResizeBus = getDefaultResizeBus();
-  app.config.globalProperties.$gmapApiPromiseLazy = gmapApiPromiseLazy;
+  app.config.globalProperties.$gmapDefaultResizeBus = useDefaultResizeBus();
+  app.config.globalProperties.$gmapApiPromiseLazy = googleMapsApiPromiseLazy;
   app.config.globalProperties.$gmapOptions = finalOptions;
 
   if (finalOptions.installComponents) {

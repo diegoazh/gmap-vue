@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, onUnmounted, provide, ref } from 'vue';
+import { inject, onUnmounted, provide, ref, watch } from 'vue';
 import { $heatmapLayerPromise, $mapPromise } from '@/keys/gmap-vue.keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
@@ -10,6 +10,7 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * HeatmapLayer component
@@ -65,6 +66,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * HEATMAP
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const heatMapLayerInstance = ref<
   google.maps.visualization.HeatmapLayer | undefined
 >();
@@ -104,7 +106,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       heatmapLayerEventsConfig,
       heatMapLayerInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     return heatMapLayerInstance.value;
@@ -119,12 +122,22 @@ provide($heatmapLayerPromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 
 /*******************************************************************************
  * WATCHERS
  ******************************************************************************/
+watch(
+  () => props.data,
+  (value, oldValue) => {
+    if (heatMapLayerInstance.value) {
+      if (value && value !== oldValue) {
+        heatMapLayerInstance.value.setData(value);
+      }
+    }
+  }
+);
 
 /*******************************************************************************
  * HOOKS
@@ -141,4 +154,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
+defineExpose({ heatMapLayerInstance });
 </script>

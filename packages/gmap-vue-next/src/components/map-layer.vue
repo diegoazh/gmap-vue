@@ -25,9 +25,12 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
-  watchPrimitiveProperties,
+  watchPrimitivePropertiesOnSetup,
 } from '@/composables/helpers';
-import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
+import {
+  useGoogleMapsApiPromiseLazy,
+  usePluginOptions,
+} from '@/composables/promise-lazy-builder';
 import {
   onMountedResizeBusHook,
   onUnmountedResizeBusHook,
@@ -35,8 +38,8 @@ import {
 } from '@/composables/resize-bus';
 import { $mapPromise } from '@/keys/gmap-vue.keys';
 import {
-  getMapPromise,
-  getMapPromiseDeferred,
+  useMapPromise,
+  useMapPromiseDeferred,
 } from '@/composables/map-promise';
 import {
   getComponentEventsConfig,
@@ -177,13 +180,14 @@ function getRecycleKey(): string {
 /*******************************************************************************
  * MAP
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const mapInstance = ref<google.maps.Map | undefined>();
 
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const mapPromiseDeferred = getMapPromiseDeferred();
-const promise = getMapPromise();
+const mapPromiseDeferred = useMapPromiseDeferred();
+const promise = useMapPromise();
 provide($mapPromise, promise);
 
 /*******************************************************************************
@@ -250,7 +254,7 @@ const finalLatLng = computed(
 );
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 /**
  * Changes the center of the map by the given distance in pixels. If the distance is less than both the width and height of the map, the transition will be smoothly animated. Note that the map coordinate system increases from west to east (for x values) and north to south (for y values).
@@ -330,7 +334,7 @@ watch(
  * HOOKS
  ******************************************************************************/
 onMounted(() => {
-  useGmapApiPromiseLazy()
+  useGoogleMapsApiPromiseLazy()
     .then(() => {
       if (!gmvMap.value) {
         throw new Error(`we can find the template ref: 'gmvMap'`);
@@ -369,7 +373,8 @@ onMounted(() => {
       bindGoogleMapsEventsToVueEventsOnSetup(
         mapLayerEventsConfig,
         mapInstance.value,
-        emits
+        emits,
+        excludedEvents
       );
 
       // manually trigger center and zoom
@@ -399,7 +404,11 @@ onMounted(() => {
             mapInstance.value?.setCenter(finalLatLng.value);
           };
 
-          watchPrimitiveProperties(['finalLat', 'finalLng'], updateCenter);
+          watchPrimitivePropertiesOnSetup(
+            ['finalLat', 'finalLng'],
+            updateCenter,
+            { finalLat, finalLng }
+          );
         }
       );
 
@@ -444,6 +453,10 @@ onBeforeUnmount(() => {
 onUnmounted(() => {
   onUnmountedResizeBusHook();
 });
+
+/*******************************************************************************
+ * RENDERS
+ ******************************************************************************/
 
 /*******************************************************************************
  * EXPOSE

@@ -10,6 +10,76 @@
             Marker
           </button>
         </li>
+        <li>
+          <button name="cluster" @click="loadTestComponent('ClusterTest')">
+            Cluster
+          </button>
+        </li>
+        <li>
+          <button
+            name="autocomplete"
+            @click="loadTestComponent('AutocompleteTest')"
+          >
+            Autocomplete
+          </button>
+        </li>
+        <li>
+          <button
+            name="info-window"
+            @click="loadTestComponent('InfoWindowTest')"
+          >
+            InfoWindow
+          </button>
+        </li>
+        <li>
+          <button name="kml-layer" @click="loadTestComponent('KmlLayerTest')">
+            KmlLayer
+          </button>
+        </li>
+        <li>
+          <button name="circle" @click="loadTestComponent('CircleTest')">
+            Circle
+          </button>
+        </li>
+        <li>
+          <button name="polygon" @click="loadTestComponent('PolygonTest')">
+            Polygon
+          </button>
+        </li>
+        <li>
+          <button name="polyline" @click="loadTestComponent('PolylineTest')">
+            Polyline
+          </button>
+        </li>
+        <li>
+          <button name="rectangle" @click="loadTestComponent('RectangleTest')">
+            Rectangle
+          </button>
+        </li>
+        <li>
+          <button
+            name="heatmap-layer"
+            @click="loadTestComponent('HeatmapLayerTest')"
+          >
+            HeatmapLayer
+          </button>
+        </li>
+        <li>
+          <button
+            name="drawing-manager"
+            @click="loadTestComponent('DrawingManagerTest')"
+          >
+            DrawingManager
+          </button>
+        </li>
+        <li>
+          <button
+            name="street-view-panorama"
+            @click="loadTestComponent('StreetViewPanoramaTest')"
+          >
+            StreetViewPanorama
+          </button>
+        </li>
       </ul>
     </aside>
     <br />
@@ -20,8 +90,19 @@
 </template>
 
 <script>
-import MapTest from '@/components/MapTest.vue';
-import MarkerTest from '@/components/MarkerTest.vue';
+import MapTest from './MapTest.vue';
+import MarkerTest from './MarkerTest.vue';
+import AutocompleteTest from './AutocompleteTest.vue';
+import ClusterTest from './ClusterTest.vue';
+import InfoWindowTest from './InfoWindowTest.vue';
+import KmlLayerTest from './KmlLayerTest.vue';
+import CircleTest from './CircleTest.vue';
+import PolygonTest from './PolygonTest.vue';
+import PolylineTest from './PolylineTest.vue';
+import RectangleTest from './RectangleTest.vue';
+import HeatmapLayerTest from './HeatmapLayerTest.vue';
+import DrawingManagerTest from './DrawingManagerTest.vue';
+import StreetViewPanoramaTest from './StreetViewPanoramaTest.vue';
 
 export default {
   name: 'App',
@@ -38,6 +119,17 @@ export default {
   components: {
     MapTest,
     MarkerTest,
+    AutocompleteTest,
+    ClusterTest,
+    InfoWindowTest,
+    KmlLayerTest,
+    CircleTest,
+    PolygonTest,
+    PolylineTest,
+    RectangleTest,
+    HeatmapLayerTest,
+    DrawingManagerTest,
+    StreetViewPanoramaTest,
   },
 };
 </script>

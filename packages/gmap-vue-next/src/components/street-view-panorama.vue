@@ -1,9 +1,6 @@
 <template>
   <div class="gmv-street-view-panorama-container">
-    <div
-      ref="gmvStreetViewPanoramaContainer"
-      class="gmv-street-view-panorama"
-    ></div>
+    <div ref="gmvStreetViewPanorama" class="gmv-street-view-panorama"></div>
     <!-- @slot A default slot to render the street view panorama -->
     <slot></slot>
   </div>
@@ -17,23 +14,30 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
-  watchPrimitiveProperties,
+  watchPrimitivePropertiesOnSetup,
 } from '@/composables/helpers';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
-import { useGmapApiPromiseLazy } from '@/composables/promise-lazy-builder';
 import {
-  getStreetViewPanoramaPromise,
-  getStreetViewPanoramaPromiseDeferred,
+  useGoogleMapsApiPromiseLazy,
+  usePluginOptions,
+} from '@/composables/promise-lazy-builder';
+import {
+  useStreetViewPanoramaPromise,
+  useStreetViewPanoramaPromiseDeferred,
 } from '@/composables/street-view-panorama-promise';
+import { useResizeBus } from '@/composables/resize-bus';
+import { useMapPromise } from '@/composables/map-promise';
+import isEqual from 'lodash.isequal';
 
 /**
  * Street View Panorama component
  * @displayName GmvStreetViewPanorama
  * @see [source code](/guide/street-view-panorama.html#source-code)
- * @see [official docs](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanorama)
+ * @see [official guide](https://developers.google.com/maps/documentation/javascript/streetview?hl=es)
+ * @see [official reference](https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanorama)
  */
 
 /*******************************************************************************
@@ -114,12 +118,13 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvStreetViewPanoramaContainer = ref<HTMLElement | null>(null);
+const gmvStreetViewPanorama = ref<HTMLElement | null>(null);
 const emits = defineEmits(getComponentEventsConfig('GmvStreetViewPanorama'));
 
 /*******************************************************************************
  * STREET VIEW PANORAMA
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const streetViewPanoramaInstance = ref<
   google.maps.StreetViewPanorama | undefined
 >();
@@ -128,11 +133,48 @@ const streetViewPanoramaInstance = ref<
  * PROVIDE
  ******************************************************************************/
 const streetViewPanoramaPromiseDeferred =
-  getStreetViewPanoramaPromiseDeferred();
-const promise = getStreetViewPanoramaPromise();
+  useStreetViewPanoramaPromiseDeferred();
+const promise = useStreetViewPanoramaPromise();
 provide($streetViewPanoramaPromise, promise);
 // TODO: find a way to implement this in order to use with markers
 // provide($mapPromise, promise); // so that we can use it with markers
+
+/*******************************************************************************
+ * RESIZE BUS
+ ******************************************************************************/
+const { currentResizeBus, _delayedResizeCallback } = useResizeBus();
+let { _resizeCallback } = useResizeBus();
+
+/**
+ * This method trigger the resize event of Google Maps
+ * @method resize
+ * @returns {void}
+ * @public
+ */
+function resize(): void {
+  if (streetViewPanoramaInstance.value) {
+    google.maps.event.trigger(streetViewPanoramaInstance.value, 'resize');
+  }
+}
+
+/**
+ * Preserve the previous center when resize the map
+ * @method resizePreserveCenter
+ * @returns {void}
+ * @public
+ */
+function resizePreserveCenter(): void {
+  if (!streetViewPanoramaInstance.value) {
+    return;
+  }
+
+  const oldCenter = streetViewPanoramaInstance.value.getPosition();
+  google.maps.event.trigger(streetViewPanoramaInstance.value, 'resize');
+
+  if (oldCenter) {
+    streetViewPanoramaInstance.value.setPosition(oldCenter);
+  }
+}
 
 /*******************************************************************************
  * COMPUTED
@@ -161,13 +203,8 @@ const finalLatLng = computed(
 );
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
-function resize() {
-  if (streetViewPanoramaInstance.value) {
-    google.maps.event.trigger(streetViewPanoramaInstance.value, 'resize');
-  }
-}
 
 /*******************************************************************************
  * WATCHERS
@@ -175,8 +212,38 @@ function resize() {
 watch(
   () => props.zoom,
   (newValue, oldValue) => {
-    if (streetViewPanoramaInstance.value && newValue && newValue !== oldValue) {
+    if (
+      streetViewPanoramaInstance.value &&
+      newValue &&
+      !isEqual(newValue, oldValue)
+    ) {
       streetViewPanoramaInstance.value.setZoom(newValue);
+    }
+  }
+);
+
+watch(
+  () => props.pov,
+  (newValue, oldValue) => {
+    if (
+      streetViewPanoramaInstance.value &&
+      newValue &&
+      !isEqual(newValue, oldValue)
+    ) {
+      streetViewPanoramaInstance.value.setPov(newValue);
+    }
+  }
+);
+
+watch(
+  () => props.pano,
+  (newValue, oldValue) => {
+    if (
+      streetViewPanoramaInstance.value &&
+      newValue &&
+      !isEqual(newValue, oldValue)
+    ) {
+      streetViewPanoramaInstance.value.setPano(newValue);
     }
   }
 );
@@ -185,11 +252,12 @@ watch(
  * HOOKS
  ******************************************************************************/
 onMounted(() => {
-  useGmapApiPromiseLazy()
-    .then(() => {
-      if (!gmvStreetViewPanoramaContainer.value) {
+  useGoogleMapsApiPromiseLazy()
+    .then(() => useMapPromise())
+    .then((map) => {
+      if (!gmvStreetViewPanorama.value) {
         throw new Error(
-          `we can find the template ref: 'gmvStreetViewPanoramaContainer'`
+          `we can find the template ref: 'gmvStreetViewPanorama'`
         );
       }
 
@@ -199,7 +267,7 @@ onMounted(() => {
       };
 
       streetViewPanoramaInstance.value = new google.maps.StreetViewPanorama(
-        gmvStreetViewPanoramaContainer.value,
+        gmvStreetViewPanorama.value,
         streetViewOptions
       );
 
@@ -220,7 +288,8 @@ onMounted(() => {
       bindGoogleMapsEventsToVueEventsOnSetup(
         streetViewPanoramaEventsConfig,
         streetViewPanoramaInstance.value,
-        emits
+        emits,
+        excludedEvents
       );
 
       // manually trigger position
@@ -260,13 +329,21 @@ onMounted(() => {
           streetViewPanoramaInstance.value.setPosition(finalLatLng.value);
         };
 
-        watchPrimitiveProperties(['finalLat', 'finalLng'], updateCenter);
+        watchPrimitivePropertiesOnSetup(
+          ['finalLat', 'finalLng'],
+          updateCenter,
+          { finalLat, finalLng }
+        );
       });
 
       if (!streetViewPanoramaPromiseDeferred.resolve) {
         throw new Error(
           'streetViewPanoramaPromiseDeferred.resolve is undefined'
         );
+      }
+
+      if (map) {
+        map.setStreetView(streetViewPanoramaInstance.value);
       }
 
       streetViewPanoramaPromiseDeferred.resolve(
@@ -286,7 +363,14 @@ onMounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ resize });
+defineExpose({
+  streetViewPanoramaInstance,
+  currentResizeBus,
+  _resizeCallback,
+  _delayedResizeCallback,
+  resize,
+  resizePreserveCenter,
+});
 </script>
 
 <style lang="css">

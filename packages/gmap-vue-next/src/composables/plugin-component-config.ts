@@ -181,7 +181,7 @@ const componentConfigs: PluginComponentConfig = {
     twoWay: ['data'],
     trackProperties: {},
     events: {
-      auto: [],
+      auto: ['data_changed'],
       manual: [],
     },
   },

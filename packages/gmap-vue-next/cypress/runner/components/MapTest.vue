@@ -34,23 +34,23 @@
 
     <div class="flex-container">
       <div>
-        <gmap-map
+        <gmv-map
           :center="mapCenter"
           :zoom="12"
           class="map-container"
           @center_changed="updateCenter"
           @idle="sync"
         >
-        </gmap-map>
+        </gmv-map>
       </div>
       <div>
-        <!--        <gmap-street-view-panorama-->
+        <!--        <gmv-street-view-panorama-->
         <!--          ref="pano"-->
         <!--          :position="mapCenter"-->
         <!--          :pov="pov"-->
         <!--          class="map-container"-->
         <!--          @position_changed="updateCenter">-->
-        <!--        </gmap-street-view-panorama>-->
+        <!--        </gmv-street-view-panorama>-->
       </div>
     </div>
   </div>

@@ -10,6 +10,7 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
+import { usePluginOptions } from '@/composables/promise-lazy-builder';
 
 /**
  * Rectangle component
@@ -61,7 +62,7 @@ const props = withDefaults(defineProps<IRectangleShapeVueComponentProps>(), {
   clickable: true,
   draggable: false,
   editable: false,
-  strokePosition: google.maps.StrokePosition.CENTER,
+  strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
   visible: true,
 });
 
@@ -78,6 +79,7 @@ const mapPromise = inject($mapPromise);
 /*******************************************************************************
  * RECTANGLE SHAPE
  ******************************************************************************/
+const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 const rectangleShapeInstance = ref<google.maps.Rectangle | undefined>();
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -108,7 +110,8 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       rectangleShapeEventsConfig,
       rectangleShapeInstance.value,
-      emits
+      emits,
+      excludedEvents
     );
 
     return rectangleShapeInstance.value;
@@ -124,7 +127,7 @@ provide($rectangleShapePromise, promise);
  ******************************************************************************/
 
 /*******************************************************************************
- * FUNCTIONS
+ * METHODS
  ******************************************************************************/
 
 /*******************************************************************************
@@ -147,4 +150,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
+defineExpose({ rectangleShapeInstance });
 </script>

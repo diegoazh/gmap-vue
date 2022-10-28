@@ -84,7 +84,7 @@ export function onUnmountedResizeBusHook() {
  *
  * @returns {() => void}
  */
-export function getDefaultResizeBus() {
+export function useDefaultResizeBus() {
   return defaultResizeBus;
 }
 
