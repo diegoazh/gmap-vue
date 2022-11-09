@@ -17,7 +17,7 @@ describe('promise-lazy-builder', () => {
     vi.spyOn(console, 'warn');
 
     // Act
-    promiseLazyBuilder.getPluginOptions();
+    promiseLazyBuilder.usePluginOptions();
 
     // Assert
     expect(console.warn).toBeCalledTimes(1);
@@ -33,7 +33,7 @@ describe('promise-lazy-builder', () => {
     );
 
     // Act
-    const result = promiseLazyBuilder.getPluginOptions();
+    const result = promiseLazyBuilder.usePluginOptions();
 
     // Assert
     expect(result).toEqual(optionsMock);
@@ -47,8 +47,8 @@ describe('promise-lazy-builder', () => {
     // Act
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock, fnMock);
 
-    expect(promiseLazyBuilder.getPluginOptions()).toEqual(optionsMock);
-    expect(promiseLazyBuilder.useGmapApiPromiseLazy()).toEqual(fnMock());
+    expect(promiseLazyBuilder.usePluginOptions()).toEqual(optionsMock);
+    expect(promiseLazyBuilder.useGoogleMapsApiPromiseLazy()).toEqual(fnMock());
   });
 
   test('should only save once the options and the API promise lazy when its called', () => {
@@ -62,17 +62,17 @@ describe('promise-lazy-builder', () => {
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock2, fnMock2);
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock, fnMock);
 
-    expect(promiseLazyBuilder.getPluginOptions()).toEqual(optionsMock2);
-    expect(promiseLazyBuilder.useGmapApiPromiseLazy()).toEqual(fnMock2());
+    expect(promiseLazyBuilder.usePluginOptions()).toEqual(optionsMock2);
+    expect(promiseLazyBuilder.useGoogleMapsApiPromiseLazy()).toEqual(fnMock2());
   });
 
-  test('should print a message when gmapAppiPromiseLazy is not define', () => {
+  test('should print a message when gmapApiPromiseLazy is not define', () => {
     // Arrange
     vi.spyOn(console, 'warn');
-    const message = '$gmapApiPromiseLazy was not created yet...';
+    const message = '$googleMapsApiPromiseLazy was not created yet...';
 
     // Act
-    promiseLazyBuilder.useGmapApiPromiseLazy();
+    promiseLazyBuilder.useGoogleMapsApiPromiseLazy();
 
     // Assert
     expect(console.warn).toHaveBeenCalledTimes(1);
