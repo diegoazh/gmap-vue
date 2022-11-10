@@ -8,7 +8,13 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [
     vue(),
-    dts({ outputDir: 'dist/types', exclude: ['./env.d.ts', 'node_modules'] }),
+    // dts({
+    //   outputDir: 'dist/types',
+    //   tsConfigFilePath: resolve('./tsconfig.app.json'),
+    //   exclude: ['./env.d.ts', 'node_modules'],
+    //   include: ['env.d.ts', 'src/**/*', 'src/**/*.vue'],
+    //   logDiagnostics: true,
+    // }),
   ],
   resolve: {
     alias: {
