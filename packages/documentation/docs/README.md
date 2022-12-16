@@ -6,7 +6,7 @@ This project has all features added to `vue2-google-maps` plugin up to [v0.10.8]
 
 Because of that we fork the project and plain to continue working and adding new features to this great plugin.
 
-## Braking changes
+## Breaking changes
 
 ::: warning
 

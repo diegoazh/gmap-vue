@@ -30,7 +30,7 @@ What's urgently needed are:
 
 The above three will go a long way to keeping the project maintainable and contributable, and will address many of the open issues.
 
-## Braking changes
+## Breaking changes
 
 ### v3.0.0
 

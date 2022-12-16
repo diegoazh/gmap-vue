@@ -6,7 +6,7 @@ For more information read the Google Maps documentation for [autocomplete](https
 
 It is exported with the name `GmapAutocomplete`.
 
-:::warning Braking changes
+:::warning Breaking changes
 
 From `v2.x.x` we change the slot used in this component until `v1.5.0` and below it was named `input` from `v2.x.x` we use the `default` slot and its fallback content if you don't provide a slot content.
 
