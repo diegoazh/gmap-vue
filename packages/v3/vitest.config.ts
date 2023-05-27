@@ -15,6 +15,7 @@ export default defineConfig({
     },
     environment: 'happy-dom', // or 'jsdom', 'node'
     coverage: {
+      provider: 'c8', // 'istanbul' or 'c8'
       reporter: ['text', 'json', 'html'],
     },
   },
