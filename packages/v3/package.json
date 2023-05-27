@@ -1,6 +1,6 @@
 {
   "name": "gmap-vue-next",
-  "version": "3.5.2",
+  "version": "4.0.0",
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
   "main": "dist/main.umd.js",
   "module": "dist/main.es.js",
