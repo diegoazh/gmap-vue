@@ -1,31 +1,31 @@
 import type { Emitter, EventType } from 'mitt';
 import type { App, Plugin } from 'vue';
-import Autocomplete from './components/autocomplete-input.vue';
-import Circle from './components/circle-shape.vue';
-import Cluster from './components/cluster-icon.vue';
-import DrawingManager from './components/drawing-manager.vue';
-import HeatmapLayer from './components/heatmap-layer.vue';
-import InfoWindow from './components/info-window.vue';
-import KmlLayer from './components/kml-layer.vue';
-import MapLayer from './components/map-layer.vue';
-import Marker from './components/marker-icon.vue';
-import Polygon from './components/polygon-shape.vue';
-import Polyline from './components/polyline-shape.vue';
-import Rectangle from './components/rectangle-shape.vue';
-import StreetViewPanorama from './components/street-view-panorama.vue';
-import { googleMapsApiInitializer } from './composables/google-maps-api-initializer';
-import { pluginComponentBuilder } from './composables/plugin-component-builder';
+import Autocomplete from '@/components/autocomplete-input.vue';
+import Circle from '@/components/circle-shape.vue';
+import Cluster from '@/components/cluster-icon.vue';
+import DrawingManager from '@/components/drawing-manager.vue';
+import HeatmapLayer from '@/components/heatmap-layer.vue';
+import InfoWindow from '@/components/info-window.vue';
+import KmlLayer from '@/components/kml-layer.vue';
+import MapLayer from '@/components/map-layer.vue';
+import Marker from '@/components/marker-icon.vue';
+import Polygon from '@/components/polygon-shape.vue';
+import Polyline from '@/components/polyline-shape.vue';
+import Rectangle from '@/components/rectangle-shape.vue';
+import StreetViewPanorama from '@/components/street-view-panorama.vue';
+import { googleMapsApiInitializer } from '@/composables/google-maps-api-initializer';
+import { pluginComponentBuilder } from '@/composables/plugin-component-builder';
 import {
   saveLazyPromiseAndFinalOptions,
   usePromiseLazyBuilderFn,
-} from './composables/promise-lazy-builder';
-import { useDefaultResizeBus } from './composables/resize-bus';
+} from '@/composables/promise-lazy-builder';
+import { useDefaultResizeBus } from '@/composables/resize-bus';
 import type {
   IGoogleMapsApiObject,
   IPluginOptions,
-} from './interfaces/gmap-vue.interface';
-import type { GlobalGoogleObject } from './types/gmap-vue.types';
-import composables from './composables';
+} from '@/interfaces/gmap-vue.interface';
+import type { GlobalGoogleObject } from '@/types/gmap-vue.type';
+import composables from '@/composables';
 
 /**
  * Vue augmentations
