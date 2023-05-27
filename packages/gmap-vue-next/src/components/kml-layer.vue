@@ -11,6 +11,7 @@ import {
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
 import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import type { IKmlLayerVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * KmlLayer component
@@ -21,35 +22,24 @@ import { usePluginOptions } from '@/composables/promise-lazy-builder';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Kml layer Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.clickable
- * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.preserveViewport
- * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.screenOverlays
- * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.suppressInfoWindows
- * @see https://developers.google.com/maps/documentation/javascript/reference/kml#KmlLayerOptions.url
- */
-interface IKmlLayerVueComponentProps {
-  clickable?: boolean;
-  preserveViewport?: boolean;
-  screenOverlays?: boolean;
-  suppressInfoWindows?: boolean;
-  url?: string;
-  zIndex?: number;
-  options?: Record<string, unknown>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IKmlLayerVueComponentProps>(), {
-  clickable: true,
-  preserveViewport: false,
-  screenOverlays: true,
-});
+const props = withDefaults(
+  defineProps<{
+    clickable?: boolean;
+    preserveViewport?: boolean;
+    screenOverlays?: boolean;
+    suppressInfoWindows?: boolean;
+    url?: string;
+    zIndex?: number;
+    options?: Record<string, unknown>;
+  }>(),
+  {
+    clickable: true,
+    preserveViewport: false,
+    screenOverlays: true,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
@@ -60,6 +50,10 @@ const emits = defineEmits(getComponentEventsConfig('GmvKmlLayer'));
  * INJECT
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
+
+if (!mapPromise) {
+  throw new Error('The map promise was not built');
+}
 
 /*******************************************************************************
  * KML LAYER

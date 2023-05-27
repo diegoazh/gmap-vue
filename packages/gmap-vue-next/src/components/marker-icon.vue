@@ -1,19 +1,5 @@
-<template>
-  <VNodeMarkerIcon />
-</template>
-
 <script lang="tsx" setup>
-import {
-  h,
-  inject,
-  onUnmounted,
-  provide,
-  ref,
-  type RendererElement,
-  type RendererNode,
-  useSlots,
-  type VNode,
-} from 'vue';
+import { h, inject, onUnmounted, provide, ref, useSlots } from 'vue';
 import {
   $clusterPromise,
   $mapPromise,
@@ -30,6 +16,7 @@ import {
 } from '@/composables/plugin-component-config';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import type { IMarkerIconVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Marker component
@@ -40,61 +27,42 @@ import { usePluginOptions } from '@/composables/promise-lazy-builder';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Marker Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.anchorPoint
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.animation
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.clickable
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.cursor
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.draggable
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.icon
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.label
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.opacity
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.position
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.shape
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.title
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.visible
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.zIndex
- */
-interface IMarkerIconVueComponentProps {
-  anchorPoint?: google.maps.Point;
-  animation?: google.maps.Animation;
-  clickable?: boolean;
-  crossOnDrag?: boolean;
-  cursor?: string;
-  draggable?: boolean;
-  icon?: string | google.maps.Icon | google.maps.Symbol | null;
-  label?: string | google.maps.MarkerLabel;
-  opacity?: number;
-  optimized?: boolean;
-  position?: google.maps.LatLng | google.maps.LatLngLiteral;
-  shape?: google.maps.MarkerShape;
-  title?: string;
-  visible?: boolean;
-  zIndex?: number;
-  options?: Record<string, unknown>;
-  place?: Record<string, unknown>; // TODO: Define properties of this object
-  /**
-   *  This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
-   */
-  attribution?: Record<string, unknown>; // TODO: Define properties of this object, or remove it if it's not used
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IMarkerIconVueComponentProps>(), {
-  clickable: true,
-  crossOnDrag: true,
-  cursor: 'pointer',
-  draggable: false,
-  opacity: 1,
-  optimized: false,
-  visible: true,
-});
+const props = withDefaults(
+  defineProps<{
+    anchorPoint?: google.maps.Point;
+    animation?: google.maps.Animation;
+    clickable?: boolean;
+    crossOnDrag?: boolean;
+    cursor?: string;
+    draggable?: boolean;
+    icon?: string | google.maps.Icon | google.maps.Symbol | null;
+    label?: string | google.maps.MarkerLabel;
+    opacity?: number;
+    optimized?: boolean;
+    position?: google.maps.LatLng | google.maps.LatLngLiteral;
+    shape?: google.maps.MarkerShape;
+    title?: string;
+    visible?: boolean;
+    zIndex?: number;
+    options?: Record<string, unknown>;
+    place?: Record<string, unknown>; // TODO: Define properties of this object
+    /**
+     *  This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
+     */
+    attribution?: Record<string, unknown>; // TODO: Define properties of this object, or remove it if it's not used
+  }>(),
+  {
+    clickable: true,
+    crossOnDrag: true,
+    cursor: 'pointer',
+    draggable: false,
+    opacity: 1,
+    optimized: false,
+    visible: true,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
@@ -108,6 +76,10 @@ const slots = useSlots();
 const mapPromise = inject($mapPromise);
 const clusterPromise = inject($clusterPromise, undefined);
 const clusterOwner = ref<MarkerClusterer | undefined>();
+
+if (!mapPromise) {
+  throw new Error('The map promise was not built');
+}
 
 /*******************************************************************************
  * MARKER
@@ -221,11 +193,7 @@ onUnmounted(() => {
 /**
  * @slot Default slot of the component.
  */
-let VNodeMarkerIcon: VNode<
-  RendererNode,
-  RendererElement,
-  { [p: string]: any }
-> = h('div', slots?.default?.());
+let VNodeMarkerIcon = h('div', null, slots?.default?.());
 
 if (
   slots.default &&

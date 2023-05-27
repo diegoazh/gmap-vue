@@ -34,6 +34,7 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
+import type { IAutoCompleteInputVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Autocomplete component
@@ -42,51 +43,40 @@ import {
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Autocomplete input Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/places-widget#AutocompleteOptions.bounds
- * @see https://developers.google.com/maps/documentation/javascript/reference/places-widget#AutocompleteOptions.componentRestrictions
- * @see https://developers.google.com/maps/documentation/javascript/reference/places-widget#AutocompleteOptions.fields
- * @see https://developers.google.com/maps/documentation/javascript/reference/places-widget#AutocompleteOptions.strictBounds
- * @see https://developers.google.com/maps/documentation/javascript/reference/places-widget#AutocompleteOptions.types
- */
-interface IAutoCompleteInputVueComponentProps {
-  bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral;
-  componentRestrictions?: google.maps.places.ComponentRestrictions;
-  fields?: string[];
-  strictBounds?: boolean;
-  types?: string[];
-  /**
-   * Select the first result in the list when press enter keyboard
-   * @values true, false
-   */
-  selectFirstOnEnter?: boolean;
-  /**
-   * the unique ref set to the component passed in the slot input
-   */
-  slotRef?: HTMLInputElement;
-  /**
-   * To avoid paying for data that you don't need,
-   * be sure to use Autocomplete.setFields() to specify
-   * only the place data that you will use.
-   *
-   * @see [Place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
-   * @see [setFields](https://developers.google.com/maps/documentation/javascript/reference/places-widget#Autocomplete.setFields)
-   * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
-   */
-  setFieldsTo?: string[];
-  options?: Record<string, unknown>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IAutoCompleteInputVueComponentProps>(), {
-  selectFirstOnEnter: true,
-});
+const props = withDefaults(
+  defineProps<{
+    bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral;
+    componentRestrictions?: google.maps.places.ComponentRestrictions;
+    fields?: string[];
+    strictBounds?: boolean;
+    types?: string[];
+    /**
+     * Select the first result in the list when press enter keyboard
+     * @values true, false
+     */
+    selectFirstOnEnter?: boolean;
+    /**
+     * the unique ref set to the component passed in the slot input
+     */
+    slotRef?: HTMLInputElement;
+    /**
+     * To avoid paying for data that you don't need,
+     * be sure to use Autocomplete.setFields() to specify
+     * only the place data that you will use.
+     *
+     * @see [Place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
+     * @see [setFields](https://developers.google.com/maps/documentation/javascript/reference/places-widget#Autocomplete.setFields)
+     * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
+     */
+    setFieldsTo?: string[];
+    options?: Record<string, unknown>;
+  }>(),
+  {
+    selectFirstOnEnter: true,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS

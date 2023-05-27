@@ -12,6 +12,7 @@ import {
 } from '@/composables/helpers';
 import { useShapesHelpers } from '@/composables/shapes-helper';
 import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import type { IPolygonShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Polygon component
@@ -22,59 +23,40 @@ import { usePluginOptions } from '@/composables/promise-lazy-builder';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Polygon Shape Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.clickable
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.draggable
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.editable
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.fillColor
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.fillOpacity
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.geodesic
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.paths
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokeColor
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokeOpacity
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokePosition
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.strokeWeight
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.visible
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#PolygonOptions.zIndex
- */
-interface IPolygonShapeVueComponentProps {
-  clickable?: boolean;
-  draggable?: boolean;
-  editable?: boolean;
-  fillColor?: string;
-  fillOpacity?: number;
-  geodesic?: boolean;
-  paths?:
-    | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
-    | google.maps.MVCArray<google.maps.LatLng>
-    | Array<Array<google.maps.LatLng | google.maps.LatLngLiteral>>
-    | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
-  strokeColor?: string;
-  strokeOpacity?: number;
-  strokePosition?: google.maps.StrokePosition;
-  strokeWeight?: number;
-  visible?: boolean;
-  zIndex?: number;
-  deepWatch?: boolean;
-  options?: Record<string, unknown>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IPolygonShapeVueComponentProps>(), {
-  clickable: true,
-  draggable: false,
-  editable: false,
-  geodesic: false,
-  strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
-  visible: true,
-  deepWatch: false,
-});
+const props = withDefaults(
+  defineProps<{
+    clickable?: boolean;
+    draggable?: boolean;
+    editable?: boolean;
+    fillColor?: string;
+    fillOpacity?: number;
+    geodesic?: boolean;
+    paths?:
+      | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
+      | google.maps.MVCArray<google.maps.LatLng>
+      | Array<Array<google.maps.LatLng | google.maps.LatLngLiteral>>
+      | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
+    strokeColor?: string;
+    strokeOpacity?: number;
+    strokePosition?: google.maps.StrokePosition;
+    strokeWeight?: number;
+    visible?: boolean;
+    zIndex?: number;
+    deepWatch?: boolean;
+    options?: Record<string, unknown>;
+  }>(),
+  {
+    clickable: true,
+    draggable: false,
+    editable: false,
+    geodesic: false,
+    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
+    visible: true,
+    deepWatch: false,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
@@ -85,6 +67,11 @@ const emits = defineEmits(getComponentEventsConfig('GmvPolygon'));
  * INJECT
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
+
+if (!mapPromise) {
+  throw new Error('The map promise was not built');
+}
+
 /*******************************************************************************
  * POLYGON SHAPE
  ******************************************************************************/

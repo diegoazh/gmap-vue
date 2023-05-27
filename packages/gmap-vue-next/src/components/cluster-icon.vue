@@ -31,6 +31,7 @@ import {
 } from '@/composables/helpers';
 import { $clusterPromise, $mapPromise } from '@/keys/gmap-vue.keys';
 import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import type { IMarkerClusterVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Cluster component
@@ -41,29 +42,18 @@ import { usePluginOptions } from '@/composables/promise-lazy-builder';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-
-/**
- * Marker Google Maps properties documentation
- *
- * @see [algorithm](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#algorithm)
- * @see [markers](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#markers)
- * @see [onClusterClick](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#onClusterClick)
- * @see [renderer](https://googlemaps.github.io/js-markerclusterer/interfaces/MarkerClustererOptions.html#renderer)
- */
-interface IMarkerClusterVueComponentProps {
-  algorithm?: Algorithm;
-  markers?: google.maps.Marker[];
-  onClusterClick?: onClusterClickHandler;
-  renderer?: Renderer;
-  options?: Record<string, any>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IMarkerClusterVueComponentProps>(), {});
+const props = withDefaults(
+  defineProps<{
+    algorithm?: Algorithm;
+    markers?: google.maps.Marker[];
+    onClusterClick?: onClusterClickHandler;
+    renderer?: Renderer;
+    options?: Record<string, any>;
+  }>(),
+  {}
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
@@ -74,6 +64,10 @@ const emits = defineEmits(getComponentEventsConfig('GmvCluster'));
  * INJECT
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
+
+if (!mapPromise) {
+  throw new Error('The map promise was not built');
+}
 
 /*******************************************************************************
  * MARKER CLUSTER

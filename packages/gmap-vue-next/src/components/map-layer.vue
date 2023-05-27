@@ -46,6 +46,7 @@ import {
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
 import type { Emitter, EventType } from 'mitt';
+import type { IMapLayerVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Map component
@@ -56,103 +57,61 @@ import type { Emitter, EventType } from 'mitt';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * MapOptions interface
- *
- * MapOptions object used to define the properties that can be set on a Map.
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.backgroundColor
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.center
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.clickableIcons
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.controlSize
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.disableDefaultUI
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.draggableCursor
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.draggingCursor
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.fullscreenControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.fullscreenControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.gestureHandling
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.heading
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.isFractionalZoomEnabled
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.keyboardShortcuts
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeId
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.maxZoom
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.minZoom
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.noClear
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.panControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.panControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.restriction
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.rotateControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.rotateControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.scaleControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.scaleControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.streetView
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.streetViewControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.styles
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.tilt
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.zoom
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.zoomControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.zoomControlOptions
- */
-interface IMapLayerVueComponentProps {
-  backgroundColor?: string;
-  center: google.maps.LatLng | google.maps.LatLngLiteral;
-  clickableIcons?: boolean;
-  controlSize?: number;
-  disableDefaultUI?: boolean;
-  draggableCursor?: string;
-  draggingCursor?: string;
-  fullscreenControl?: boolean;
-  fullscreenControlOptions?: google.maps.FullscreenControlOptions;
-  gestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
-  heading?: number;
-  isFractionalZoomEnabled?: boolean;
-  keyboardShortcuts?: boolean;
-  mapTypeControl?: boolean;
-  mapTypeControlOptions?: google.maps.MapTypeControlOptions;
-  mapTypeId?: google.maps.MapTypeId;
-  maxZoom?: number;
-  minZoom?: number;
-  noClear?: boolean;
-  panControl?: boolean;
-  panControlOptions?: google.maps.PanControlOptions;
-  restriction?: google.maps.MapRestriction;
-  rotateControl?: boolean;
-  rotateControlOptions?: google.maps.RotateControlOptions;
-  scaleControl?: boolean;
-  scaleControlOptions?: google.maps.ScaleControlOptions;
-  streetView?: google.maps.StreetViewPanorama;
-  streetViewControl?: boolean;
-  styles?: google.maps.MapTypeStyle[];
-  tilt?: number;
-  zoom?: number;
-  zoomControl?: boolean;
-  zoomControlOptions?: google.maps.ZoomControlOptions;
-  resizeBus?: Emitter<Record<EventType, unknown>>;
-  options?: { [key: string]: any };
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IMapLayerVueComponentProps>(), {
-  mapTypeId: globalThis?.google?.maps?.MapTypeId?.ROADMAP || 'roadmap',
-  clickableIcons: true,
-  disableDefaultUI: false,
-  fullscreenControl: true,
-  gestureHandling: 'auto',
-  keyboardShortcuts: true,
-  mapTypeControl: true,
-  panControl: true,
-  rotateControl: true,
-  scaleControl: true,
-  streetViewControl: true,
-  zoomControl: true,
-});
+const props = withDefaults(
+  defineProps<{
+    backgroundColor?: string;
+    center: google.maps.LatLng | google.maps.LatLngLiteral;
+    clickableIcons?: boolean;
+    controlSize?: number;
+    disableDefaultUI?: boolean;
+    draggableCursor?: string;
+    draggingCursor?: string;
+    fullscreenControl?: boolean;
+    fullscreenControlOptions?: google.maps.FullscreenControlOptions;
+    gestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
+    heading?: number;
+    isFractionalZoomEnabled?: boolean;
+    keyboardShortcuts?: boolean;
+    mapTypeControl?: boolean;
+    mapTypeControlOptions?: google.maps.MapTypeControlOptions;
+    mapTypeId?: google.maps.MapTypeId;
+    maxZoom?: number;
+    minZoom?: number;
+    noClear?: boolean;
+    panControl?: boolean;
+    panControlOptions?: google.maps.PanControlOptions;
+    restriction?: google.maps.MapRestriction;
+    rotateControl?: boolean;
+    rotateControlOptions?: google.maps.RotateControlOptions;
+    scaleControl?: boolean;
+    scaleControlOptions?: google.maps.ScaleControlOptions;
+    streetView?: google.maps.StreetViewPanorama;
+    streetViewControl?: boolean;
+    styles?: google.maps.MapTypeStyle[];
+    tilt?: number;
+    zoom?: number;
+    zoomControl?: boolean;
+    zoomControlOptions?: google.maps.ZoomControlOptions;
+    resizeBus?: Emitter<Record<EventType, unknown>>;
+    options?: { [key: string]: any };
+  }>(),
+  {
+    mapTypeId: globalThis?.google?.maps?.MapTypeId?.ROADMAP || 'roadmap',
+    clickableIcons: true,
+    disableDefaultUI: false,
+    fullscreenControl: true,
+    gestureHandling: 'auto',
+    keyboardShortcuts: true,
+    mapTypeControl: true,
+    panControl: true,
+    rotateControl: true,
+    scaleControl: true,
+    streetViewControl: true,
+    zoomControl: true,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES AND EMITTERS

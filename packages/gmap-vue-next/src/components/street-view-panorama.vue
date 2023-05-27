@@ -31,6 +31,7 @@ import {
 import { useResizeBus } from '@/composables/resize-bus';
 import { useMapPromise } from '@/composables/map-promise';
 import isEqual from 'lodash.isequal';
+import type { IStreetViewPanoramaVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Street View Panorama component
@@ -41,71 +42,37 @@ import isEqual from 'lodash.isequal';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Street View Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.addressControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.addressControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.clickToGo
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.controlSize
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.disableDefaultUI
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.disableDoubleClickZoom
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.enableCloseButton
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.fullscreenControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.fullscreenControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.imageDateControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.linksControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTracking
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTrackingControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.motionTrackingControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.panControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.panControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.pano
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.position
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.pov
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.scrollwheel
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.showRoadLabels
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.visible
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.zoom
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.zoomControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/street-view?hl=es#StreetViewPanoramaOptions.zoomControlOptions
- */
-interface IStreetViewPanoramaVueComponentProps {
-  addressControl?: boolean;
-  addressControlOptions?: google.maps.StreetViewAddressControlOptions;
-  clickToGo?: boolean;
-  controlSize?: number;
-  disableDefaultUI?: boolean;
-  disableDoubleClickZoom?: boolean;
-  enableCloseButton?: boolean;
-  fullscreenControl?: boolean;
-  fullscreenControlOptions?: google.maps.FullscreenControlOptions;
-  imageDateControl?: boolean;
-  linksControl?: boolean;
-  motionTracking?: boolean;
-  motionTrackingControl?: boolean;
-  motionTrackingControlOptions?: google.maps.MotionTrackingControlOptions;
-  panControl?: boolean;
-  panControlOptions?: google.maps.PanControlOptions;
-  pano?: string;
-  position?: google.maps.LatLng | google.maps.LatLngLiteral;
-  pov?: google.maps.StreetViewPov;
-  scrollwheel?: boolean;
-  showRoadLabels?: boolean;
-  visible?: boolean;
-  zoom?: number;
-  zoomControl?: boolean;
-  zoomControlOptions?: google.maps.ZoomControlOptions;
-  options: Record<string, unknown>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
 const props = withDefaults(
-  defineProps<IStreetViewPanoramaVueComponentProps>(),
+  defineProps<{
+    addressControl?: boolean;
+    addressControlOptions?: google.maps.StreetViewAddressControlOptions;
+    clickToGo?: boolean;
+    controlSize?: number;
+    disableDefaultUI?: boolean;
+    disableDoubleClickZoom?: boolean;
+    enableCloseButton?: boolean;
+    fullscreenControl?: boolean;
+    fullscreenControlOptions?: google.maps.FullscreenControlOptions;
+    imageDateControl?: boolean;
+    linksControl?: boolean;
+    motionTracking?: boolean;
+    motionTrackingControl?: boolean;
+    motionTrackingControlOptions?: google.maps.MotionTrackingControlOptions;
+    panControl?: boolean;
+    panControlOptions?: google.maps.PanControlOptions;
+    pano?: string;
+    position?: google.maps.LatLng | google.maps.LatLngLiteral;
+    pov?: google.maps.StreetViewPov;
+    scrollwheel?: boolean;
+    showRoadLabels?: boolean;
+    visible?: boolean;
+    zoom?: number;
+    zoomControl?: boolean;
+    zoomControlOptions?: google.maps.ZoomControlOptions;
+    options: Record<string, unknown>;
+  }>(),
   {
     clickToGo: true,
     disableDoubleClickZoom: true,
@@ -261,7 +228,9 @@ onMounted(() => {
         );
       }
 
-      const streetViewOptions = {
+      const streetViewOptions: Partial<IStreetViewPanoramaVueComponentProps> & {
+        [key: string]: any;
+      } = {
         ...getPropsValuesWithoutOptionsProp(props),
         ...props.options,
       };

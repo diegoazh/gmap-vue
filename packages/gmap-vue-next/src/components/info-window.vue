@@ -25,6 +25,7 @@ import {
   getComponentPropsConfig,
 } from '@/composables/plugin-component-config';
 import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import type { IInfoWindowVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * InfoWindow component
@@ -35,40 +36,26 @@ import { usePluginOptions } from '@/composables/promise-lazy-builder';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Info Window Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.ariaLabel
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.content
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.disableAutoPan
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.maxWidth
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.minWidth
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.pixelOffset
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.position
- * @see https://developers.google.com/maps/documentation/javascript/reference/info-window#InfoWindowOptions.zIndex
- */
-interface IInfoWindowVueComponentProps {
-  ariaLabel?: string;
-  content?: string | Element | Text;
-  disableAutoPan?: boolean;
-  maxWidth?: number;
-  minWidth?: number;
-  pixelOffset?: google.maps.Size;
-  position?: google.maps.LatLng | google.maps.LatLngLiteral;
-  zIndex?: number;
-  opened?: boolean;
-  marker?: google.maps.Marker;
-  options?: Record<string | number | symbol, unknown>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IInfoWindowVueComponentProps>(), {
-  disableAutoPan: false,
-});
+const props = withDefaults(
+  defineProps<{
+    ariaLabel?: string;
+    content?: string | Element | Text;
+    disableAutoPan?: boolean;
+    maxWidth?: number;
+    minWidth?: number;
+    pixelOffset?: google.maps.Size;
+    position?: google.maps.LatLng | google.maps.LatLngLiteral;
+    zIndex?: number;
+    opened?: boolean;
+    marker?: google.maps.Marker;
+    options?: Record<string | number | symbol, unknown>;
+  }>(),
+  {
+    disableAutoPan: false,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
@@ -81,6 +68,10 @@ const emits = defineEmits(getComponentEventsConfig('GmvInfoWindow'));
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
 const markerPromise = inject($markerPromise, undefined);
+
+if (!mapPromise) {
+  throw new Error('The map promise was not built');
+}
 
 /*******************************************************************************
  * INFO WINDOW

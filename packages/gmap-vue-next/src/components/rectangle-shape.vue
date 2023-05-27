@@ -11,6 +11,7 @@ import {
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
 import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import type { IRectangleShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Rectangle component
@@ -21,50 +22,32 @@ import { usePluginOptions } from '@/composables/promise-lazy-builder';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Rectangle shape Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.bounds
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.clickable
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.draggable
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.editable
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.fillColor
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.fillOpacity
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokeColor
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokeOpacity
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokePosition
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.strokeWeight
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.visible
- * @see https://developers.google.com/maps/documentation/javascript/reference/polygon?hl=es#RectangleOptions.zIndex
- */
-interface IRectangleShapeVueComponentProps {
-  bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral;
-  clickable?: boolean;
-  draggable?: boolean;
-  editable?: boolean;
-  fillColor?: string;
-  fillOpacity?: number;
-  strokeColor?: string;
-  strokeOpacity?: number;
-  strokePosition?: google.maps.StrokePosition;
-  strokeWeight?: number;
-  visible?: boolean;
-  zIndex?: number;
-  options?: Record<string, unknown>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IRectangleShapeVueComponentProps>(), {
-  clickable: true,
-  draggable: false,
-  editable: false,
-  strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
-  visible: true,
-});
+const props = withDefaults(
+  defineProps<{
+    bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral;
+    clickable?: boolean;
+    draggable?: boolean;
+    editable?: boolean;
+    fillColor?: string;
+    fillOpacity?: number;
+    strokeColor?: string;
+    strokeOpacity?: number;
+    strokePosition?: google.maps.StrokePosition;
+    strokeWeight?: number;
+    visible?: boolean;
+    zIndex?: number;
+    options?: Record<string, unknown>;
+  }>(),
+  {
+    clickable: true,
+    draggable: false,
+    editable: false,
+    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
+    visible: true,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
@@ -75,6 +58,10 @@ const emits = defineEmits(getComponentEventsConfig('GmvRectangle'));
  * INJECT
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
+
+if (!mapPromise) {
+  throw new Error('The map promise was not built');
+}
 
 /*******************************************************************************
  * RECTANGLE SHAPE
@@ -87,7 +74,10 @@ const promise = mapPromise
       throw new Error('the map instance was not created');
     }
 
-    const rectangleOptions = {
+    const rectangleOptions: IRectangleShapeVueComponentProps & {
+      map: google.maps.Map | undefined;
+      [key: string]: any;
+    } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,

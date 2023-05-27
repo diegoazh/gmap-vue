@@ -29,6 +29,7 @@ import {
   getPropsValuesWithoutOptionsProp,
 } from '@/composables/helpers';
 import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import type { IDrawingManagerVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * DrawingManager component
@@ -39,55 +40,41 @@ import { usePluginOptions } from '@/composables/promise-lazy-builder';
  */
 
 /*******************************************************************************
- * INTERFACES
- ******************************************************************************/
-/**
- * Drawing manager Google Maps properties documentation
- *
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.circleOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.drawingControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.drawingControlOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.drawingMode
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.markerOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.polygonOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.polylineOptions
- * @see https://developers.google.com/maps/documentation/javascript/reference/drawing#DrawingManagerOptions.rectangleOptions
- */
-interface IDrawingManagerVueComponentProps {
-  circleOptions?: google.maps.CircleOptions;
-  drawingControl?: boolean;
-  drawingControlOptions?: google.maps.drawing.DrawingControlOptions;
-  drawingMode?: google.maps.drawing.OverlayType | null;
-  markerOptions?: google.maps.MarkerOptions;
-  polygonOptions?: google.maps.PolygonOptions;
-  polylineOptions?: google.maps.PolylineOptions;
-  rectangleOptions?: google.maps.RectangleOptions;
-  position?:
-    | 'TOP_CENTER'
-    | 'TOP_LEFT'
-    | 'TOP_RIGHT'
-    | 'LEFT_TOP'
-    | 'RIGHT_TOP'
-    | 'LEFT_CENTER'
-    | 'RIGHT_CENTER'
-    | 'LEFT_BOTTOM'
-    | 'RIGHT_BOTTOM'
-    | 'BOTTOM_CENTER'
-    | 'BOTTOM_LEFT'
-    | 'BOTTOM_RIGHT';
-  drawingModes?: google.maps.drawing.OverlayType[] | null;
-  shapes?: google.maps.drawing.OverlayCompleteEvent[];
-  options?: Record<string, unknown>;
-}
-
-/*******************************************************************************
  * DEFINE COMPONENT PROPS
  ******************************************************************************/
-const props = withDefaults(defineProps<IDrawingManagerVueComponentProps>(), {
-  drawingControl: true,
-  drawingMode: null,
-  // shapes: [] as any,
-});
+const props = withDefaults(
+  defineProps<{
+    circleOptions?: google.maps.CircleOptions;
+    drawingControl?: boolean;
+    drawingControlOptions?: google.maps.drawing.DrawingControlOptions;
+    drawingMode?: google.maps.drawing.OverlayType | null;
+    markerOptions?: google.maps.MarkerOptions;
+    polygonOptions?: google.maps.PolygonOptions;
+    polylineOptions?: google.maps.PolylineOptions;
+    rectangleOptions?: google.maps.RectangleOptions;
+    position?:
+      | 'TOP_CENTER'
+      | 'TOP_LEFT'
+      | 'TOP_RIGHT'
+      | 'LEFT_TOP'
+      | 'RIGHT_TOP'
+      | 'LEFT_CENTER'
+      | 'RIGHT_CENTER'
+      | 'LEFT_BOTTOM'
+      | 'RIGHT_BOTTOM'
+      | 'BOTTOM_CENTER'
+      | 'BOTTOM_LEFT'
+      | 'BOTTOM_RIGHT';
+    drawingModes?: google.maps.drawing.OverlayType[];
+    shapes?: google.maps.drawing.OverlayCompleteEvent[];
+    options?: Record<string, unknown>;
+  }>(),
+  {
+    drawingControl: true,
+    drawingMode: null,
+    // shapes: [] as any,
+  }
+);
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
@@ -99,6 +86,10 @@ const $slots = useSlots();
  * INJECT
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
+
+if (!mapPromise) {
+  throw new Error('The map promise was not built');
+}
 
 /*******************************************************************************
  * DRAWING MANAGER
@@ -226,7 +217,7 @@ const evaluatedPosition = computed(() => {
  * METHODS
  ******************************************************************************/
 const drawAll = () => {
-  props.shapes?.forEach((shape) => {
+  props.shapes?.forEach((shape: google.maps.drawing.OverlayCompleteEvent) => {
     if (shape.overlay) {
       if (!map.value) {
         throw new Error('the map instance was not created');
@@ -327,7 +318,7 @@ const deleteSelection = () => {
 const clearAll = () => {
   clearSelection();
 
-  props.shapes?.forEach((shape) => {
+  props.shapes?.forEach((shape: google.maps.drawing.OverlayCompleteEvent) => {
     if (shape.overlay) {
       shape.overlay.setMap(null);
     }
