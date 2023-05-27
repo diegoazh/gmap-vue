@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as mapPromise from '../src/composables/map-promise';
-import * as vue from 'vue';
 
 describe('map-promise.ts', () => {
   beforeEach(() => {

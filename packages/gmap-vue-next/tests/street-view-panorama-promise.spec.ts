@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as streetViewPanoramaPromise from '../src/composables/street-view-panorama-promise';
-import * as vue from 'vue';
 
 describe('street-view-panorama-promise.ts', () => {
   beforeEach(() => {

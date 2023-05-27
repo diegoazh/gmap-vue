@@ -1,7 +1,5 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-import AUTWindow = Cypress.AUTWindow;
-
 describe('MapLayer component', () => {
   it('visits the app root url', () => {
     const newCenter = { lat: -31.4196, lng: -64.1939 };
@@ -10,19 +8,21 @@ describe('MapLayer component', () => {
     cy.contains('h2', 'Test E2E: Map layer');
     cy.get('.gmv-map-container > .gmv-map > div');
     cy.get('.gmv-map-container > .gmv-map-hidden');
-    cy.get('input[name=lat]')
-      .clear()
-      .type(`${newCenter.lat}`)
-      .tab()
-      .clear()
-      .type(`${newCenter.lng}{enter}`)
-      .tab();
+    const inputLat = () => cy.get('input[name=lat]');
+    const inputLng = () => cy.get('input[name=lng]');
+    inputLat().clear();
+    inputLat().type(`${newCenter.lat}`);
+    inputLat().tab();
+    inputLng().clear();
+    inputLng().type(`${newCenter.lng}{enter}`);
+    inputLng().tab();
     cy.window().then((win) => {
-      const { google, GoogleMapsCallback, __gmc__ } = win as AUTWindow & {
-        google: Record<any, any>;
-        GoogleMapsCallback: string;
-        __gmc__: { map: Record<any, any> };
-      };
+      const { google, GoogleMapsCallback, __gmc__ } =
+        win as Cypress.AUTWindow & {
+          google: Record<any, any>;
+          GoogleMapsCallback: string;
+          __gmc__: { map: Record<any, any> };
+        };
       const center = __gmc__.map.getCenter();
       const rawCenter = { lat: center.lat(), lng: center.lng() };
 
