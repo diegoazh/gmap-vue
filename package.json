@@ -15,10 +15,10 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.2.0",
-    "@commitlint/config-conventional": "^17.2.0",
-    "husky": "^8.0.2",
-    "lint-staged": "^13.0.3",
-    "rimraf": "^3.0.2"
+    "@commitlint/cli": "^17.6.3",
+    "@commitlint/config-conventional": "^17.6.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "rimraf": "^5.0.1"
   }
 }
