@@ -8,7 +8,7 @@ import {
   vi,
 } from 'vitest';
 import { IPluginOptions } from '../src/interfaces/gmap-vue.interface';
-import { GoogleMapsAPIInitializerFn } from '../src/types/gmap-vue.types';
+import { GoogleMapsAPIInitializerFn } from '../src/types/gmap-vue.type';
 
 describe('google-maps-api-initializer.ts', () => {
   let initializer: { googleMapsApiInitializer: GoogleMapsAPIInitializerFn };
