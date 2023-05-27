@@ -6,15 +6,16 @@ import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  root: '.',
   plugins: [
     vue(),
-    // dts({
-    //   outputDir: 'dist/types',
-    //   tsConfigFilePath: resolve('./tsconfig.app.json'),
-    //   exclude: ['./env.d.ts', 'node_modules'],
-    //   include: ['env.d.ts', 'src/**/*', 'src/**/*.vue'],
-    //   logDiagnostics: true,
-    // }),
+    dts({
+      outputDir: 'dist/types',
+      tsConfigFilePath: resolve('./tsconfig.app.json'),
+      insertTypesEntry: true,
+      noEmitOnError: true,
+      skipDiagnostics: false,
+    }),
   ],
   resolve: {
     alias: {
