@@ -47,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build package
-        working-directory: ./packages/gmap-vue
+        working-directory: ./packages/v3
         run: pnpm run build
       - name: Configure git credentials
         uses: OleksiyRudenko/gha-git-credentials@v2-latest
@@ -62,7 +62,7 @@ jobs:
           git remote set-url origin "https://${{ secrets.GH_TOKEN_LERNA }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
           git checkout master
       - name: Semantic Release
-        working-directory: ./packages/gmap-vue
+        working-directory: ./packages/v3
         run: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -71,4 +71,4 @@ jobs:
         uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
-          package: ./packages/gmap-vue/package.json
+          package: ./packages/v3/package.json

@@ -1,3 +1,5 @@
+# Upgrade from plugin for Vue v1 to plugin for Vue v2
+
 By and large, unless you are using two-way binding,
 you should be able to re-use the code you wrote for Vue 1.x.
 The main exceptions is markers' click events triggering info windows.
@@ -10,7 +12,7 @@ usually, `mapInstance.center` (vue-google-maps property) and
 (Google Maps API method) were be returning different values, and some
 hackery was needed to avoid endless update loops.
 
-# Important changes
+## Important changes
 
 1. (v0.4.0) The installation method for gmap-vue has changed.
 You use the library by calling:

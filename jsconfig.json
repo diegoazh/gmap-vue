@@ -1,5 +1,3 @@
 {
-  "include": [
-    "./packages/gmap-vue/src/**/*"
-  ]
+  "include": ["./packages/v2/src/**/*"]
 }

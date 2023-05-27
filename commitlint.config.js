@@ -19,11 +19,7 @@ module.exports = {
     ],
     "type-case": [2, "always", "lowerCase"],
     "type-empty": [2, "never"],
-    "scope-enum": [
-      2,
-      "always",
-      ["gmap-vue", "gmap-vue-next", "docs", "root", "all"],
-    ],
+    "scope-enum": [2, "always", ["v2", "v3", "next", "docs", "root", "all"]],
     "scope-case": [2, "always", "lowerCase"],
     "scope-empty": [2, "never"],
     "subject-case": [2, "always", "lowerCase"],
