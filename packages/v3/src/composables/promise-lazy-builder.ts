@@ -1,13 +1,10 @@
-import type {
-  IGoogleMapsApiObject,
-  IPluginOptions,
-} from '@/interfaces/gmap-vue.interface';
+import type { IGoogleMapsApiObject, IPluginOptions } from '@/interfaces';
 import type {
   GlobalGoogleObject,
   GoogleMapsAPIInitializerFn,
   LazyValueGetterFn,
   PromiseLazyCreatorFn,
-} from '@/types/gmap-vue.type';
+} from '@/types';
 import { getLazyValue } from './helpers';
 
 let $finalOptions: IPluginOptions;

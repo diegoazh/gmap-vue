@@ -4,14 +4,6 @@ import type { Emitter, EventType } from 'mitt';
 import mitt from 'mitt';
 import { nextTick, ref, watch } from 'vue';
 
-// not used yet
-type Events = {};
-
-interface Props {
-  resizeBus?: Emitter<Record<EventType, unknown>>;
-}
-// end not used
-
 const defaultResizeBus = mitt();
 const currentResizeBus = ref<Emitter<Record<EventType, unknown>> | undefined>();
 let _resizeCallback: () => void;

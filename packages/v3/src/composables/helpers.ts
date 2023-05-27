@@ -1,10 +1,10 @@
-import type { IPluginOptions, IVueProp } from '@/interfaces/gmap-vue.interface';
+import type { IPluginOptions, IVueProp } from '@/interfaces';
 import type {
   GmapVuePluginProps,
   LazyValueGetterFn,
   OldHtmlInputElement,
   SinglePluginComponentConfig,
-} from '@/types/gmap-vue.type';
+} from '@/types';
 import { type ComponentPublicInstance, nextTick, watch } from 'vue';
 import isEqual from 'lodash.isequal';
 

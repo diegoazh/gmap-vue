@@ -26,25 +26,19 @@ import {
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
   watchPrimitivePropertiesOnSetup,
-} from '@/composables/helpers';
-import {
-  useGoogleMapsApiPromiseLazy,
-  usePluginOptions,
-} from '@/composables/promise-lazy-builder';
+} from '@/composables';
+import { useGoogleMapsApiPromiseLazy, usePluginOptions } from '@/composables';
 import {
   onMountedResizeBusHook,
   onUnmountedResizeBusHook,
   useResizeBus,
-} from '@/composables/resize-bus';
-import { $mapPromise } from '@/keys/gmap-vue.keys';
-import {
-  useMapPromise,
-  useMapPromiseDeferred,
-} from '@/composables/map-promise';
+} from '@/composables';
+import { $mapPromise } from '@/keys';
+import { useMapPromise, useMapPromiseDeferred } from '@/composables';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
+} from '@/composables';
 import type { Emitter, EventType } from 'mitt';
 import type { IMapLayerVueComponentProps } from '../interfaces/gmap-vue.interface';
 

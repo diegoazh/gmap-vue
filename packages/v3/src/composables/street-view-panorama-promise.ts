@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import type { PromiseDeferred } from '@/interfaces/gmap-vue.interface';
+import type { PromiseDeferred } from '@/interfaces';
 
 const streetViewPanoramaPromiseDeferred: PromiseDeferred<google.maps.StreetViewPanorama> =
   reactive({

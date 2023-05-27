@@ -21,14 +21,14 @@ import {
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-import { $drawingManagerPromise, $mapPromise } from '@/keys/gmap-vue.keys';
+} from '@/composables';
+import { $drawingManagerPromise, $mapPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables/helpers';
-import { usePluginOptions } from '@/composables/promise-lazy-builder';
+} from '@/composables';
+import { usePluginOptions } from '@/composables';
 import type { IDrawingManagerVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**

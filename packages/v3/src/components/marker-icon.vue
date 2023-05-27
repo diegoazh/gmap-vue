@@ -1,21 +1,17 @@
 <script lang="tsx" setup>
 import { h, inject, onUnmounted, provide, ref, useSlots } from 'vue';
-import {
-  $clusterPromise,
-  $mapPromise,
-  $markerPromise,
-} from '@/keys/gmap-vue.keys';
+import { $clusterPromise, $mapPromise, $markerPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables/helpers';
+} from '@/composables';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
+} from '@/composables';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { usePluginOptions } from '@/composables/promise-lazy-builder';
+import { usePluginOptions } from '@/composables';
 import type { IMarkerIconVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**

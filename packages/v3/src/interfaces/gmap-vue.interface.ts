@@ -1,4 +1,4 @@
-import type { SinglePluginComponentConfig } from '@/types/gmap-vue.type';
+import type { SinglePluginComponentConfig } from '@/types';
 import type {
   Algorithm,
   onClusterClickHandler,

@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { inject, onUnmounted, provide, ref } from 'vue';
-import { $circleShapePromise, $mapPromise } from '@/keys/gmap-vue.keys';
+import { $circleShapePromise, $mapPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables/helpers';
+} from '@/composables';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-import { usePluginOptions } from '@/composables/promise-lazy-builder';
+} from '@/composables';
+import { usePluginOptions } from '@/composables';
 import type { ICircleShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**

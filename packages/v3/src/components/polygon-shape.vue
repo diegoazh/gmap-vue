@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { inject, onUnmounted, provide, ref, watch } from 'vue';
-import { $mapPromise, $polygonShapePromise } from '@/keys/gmap-vue.keys';
+import { $mapPromise, $polygonShapePromise } from '@/keys';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
+} from '@/composables';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables/helpers';
-import { useShapesHelpers } from '@/composables/shapes-helper';
-import { usePluginOptions } from '@/composables/promise-lazy-builder';
+} from '@/composables';
+import { useShapesHelpers } from '@/composables';
+import { usePluginOptions } from '@/composables';
 import type { IPolygonShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**

@@ -1,11 +1,11 @@
-import type { IGmapVueElementOptions } from '@/interfaces/gmap-vue.interface';
+import type { IGmapVueElementOptions } from '@/interfaces';
 import type { ComponentOptions } from 'vue';
 import {
   bindEvents,
   bindProps,
   getPropsValuesWithoutOptionsProp,
 } from './helpers';
-import { useMapPromise } from '@/composables/map-promise';
+import { useMapPromise } from '@/composables';
 
 /**
  * Custom assert for local validation

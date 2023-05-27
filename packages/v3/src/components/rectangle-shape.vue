@@ -2,15 +2,15 @@
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
+} from '@/composables';
 import { inject, onUnmounted, provide, ref } from 'vue';
-import { $mapPromise, $rectangleShapePromise } from '@/keys/gmap-vue.keys';
+import { $mapPromise, $rectangleShapePromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables/helpers';
-import { usePluginOptions } from '@/composables/promise-lazy-builder';
+} from '@/composables';
+import { usePluginOptions } from '@/composables';
 import type { IRectangleShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**

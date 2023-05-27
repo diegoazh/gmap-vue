@@ -20,20 +20,17 @@ export default {
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
-import {
-  useGoogleMapsApiPromiseLazy,
-  usePluginOptions,
-} from '@/composables/promise-lazy-builder';
+import { useGoogleMapsApiPromiseLazy, usePluginOptions } from '@/composables';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   downArrowSimulator,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables/helpers';
+} from '@/composables';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
+} from '@/composables';
 import type { IAutoCompleteInputVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**

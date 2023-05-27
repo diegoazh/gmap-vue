@@ -13,19 +13,16 @@ import Polygon from '@/components/polygon-shape.vue';
 import Polyline from '@/components/polyline-shape.vue';
 import Rectangle from '@/components/rectangle-shape.vue';
 import StreetViewPanorama from '@/components/street-view-panorama.vue';
-import { googleMapsApiInitializer } from '@/composables/google-maps-api-initializer';
-import { pluginComponentBuilder } from '@/composables/plugin-component-builder';
 import {
+  googleMapsApiInitializer,
+  pluginComponentBuilder,
   saveLazyPromiseAndFinalOptions,
   usePromiseLazyBuilderFn,
-} from '@/composables/promise-lazy-builder';
-import { useDefaultResizeBus } from '@/composables/resize-bus';
-import type {
-  IGoogleMapsApiObject,
-  IPluginOptions,
-} from '@/interfaces/gmap-vue.interface';
-import type { GlobalGoogleObject } from '@/types/gmap-vue.type';
-import composables from '@/composables';
+  useDefaultResizeBus,
+  sharedComposables,
+} from '@/composables';
+import type { IGoogleMapsApiObject, IPluginOptions } from '@/interfaces';
+import type { GlobalGoogleObject } from '@/types';
 
 /**
  * Vue augmentations
@@ -43,8 +40,6 @@ declare global {
   var GoogleMapsApi: IGoogleMapsApiObject;
   // eslint-disable-next-line no-var
   var GoogleMapsCallback: () => void;
-
-  // eslint-disable-next-line no-var
 
   interface Window {
     GoogleMapsApi: IGoogleMapsApiObject;
@@ -218,6 +213,6 @@ export default {
   install: pluginInstallFn,
   getGoogleMapsAPI,
   components,
-  composables,
+  composables: sharedComposables,
   helpers,
 } as Plugin;

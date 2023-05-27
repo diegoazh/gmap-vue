@@ -2,16 +2,16 @@
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
+} from '@/composables';
 import { inject, onUnmounted, provide, ref, watch } from 'vue';
-import { $mapPromise, $polylineShapePromise } from '@/keys/gmap-vue.keys';
+import { $mapPromise, $polylineShapePromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables/helpers';
-import { useShapesHelpers } from '@/composables/shapes-helper';
-import { usePluginOptions } from '@/composables/promise-lazy-builder';
+} from '@/composables';
+import { useShapesHelpers } from '@/composables';
+import { usePluginOptions } from '@/composables';
 import type { IPolylineShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**

@@ -8,28 +8,25 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, provide, ref, watch } from 'vue';
-import { $streetViewPanoramaPromise } from '@/keys/gmap-vue.keys';
+import { $streetViewPanoramaPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
   watchPrimitivePropertiesOnSetup,
-} from '@/composables/helpers';
+} from '@/composables';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables/plugin-component-config';
-import {
-  useGoogleMapsApiPromiseLazy,
-  usePluginOptions,
-} from '@/composables/promise-lazy-builder';
+} from '@/composables';
+import { useGoogleMapsApiPromiseLazy, usePluginOptions } from '@/composables';
 import {
   useStreetViewPanoramaPromise,
   useStreetViewPanoramaPromiseDeferred,
-} from '@/composables/street-view-panorama-promise';
-import { useResizeBus } from '@/composables/resize-bus';
-import { useMapPromise } from '@/composables/map-promise';
+} from '@/composables';
+import { useResizeBus } from '@/composables';
+import { useMapPromise } from '@/composables';
 import isEqual from 'lodash.isequal';
 import type { IStreetViewPanoramaVueComponentProps } from '../interfaces/gmap-vue.interface';
 

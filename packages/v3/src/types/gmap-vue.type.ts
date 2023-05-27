@@ -3,7 +3,7 @@ import type {
   ILoadPluginOptions,
   IPluginOptions,
   IVueProp,
-} from '@/interfaces/gmap-vue.interface';
+} from '@/interfaces';
 
 export type PluginComponentNames =
   | 'GmvMap'

@@ -2,7 +2,7 @@ import type {
   PluginComponentConfig,
   PluginComponentNames,
   SinglePluginComponentConfig,
-} from '@/types/gmap-vue.type';
+} from '@/types';
 
 const componentConfigs: PluginComponentConfig = {
   GmvMap: {

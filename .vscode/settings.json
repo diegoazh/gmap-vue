@@ -3,6 +3,7 @@
   "files.trimTrailingWhitespace": true,
   "workbench.colorCustomizations": {
     "titleBar.activeBackground": "#bd3232",
-    "titleBar.inactiveBackground": "#7c7c7c",
-  }
+    "titleBar.inactiveBackground": "#7c7c7c"
+  },
+  "cSpell.words": ["composables", "gmap"]
 }

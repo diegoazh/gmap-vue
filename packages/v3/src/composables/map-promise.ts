@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import type { PromiseDeferred } from '@/interfaces/gmap-vue.interface';
+import type { PromiseDeferred } from '@/interfaces';
 
 const mapPromiseDeferred: PromiseDeferred<google.maps.Map> = reactive({
   resolve: undefined,

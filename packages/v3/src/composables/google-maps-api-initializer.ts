@@ -1,5 +1,5 @@
-import type { ILoadPluginOptions } from '@/interfaces/gmap-vue.interface';
-import type { GoogleMapsAPIInitializerFn } from '@/types/gmap-vue.type';
+import type { ILoadPluginOptions } from '@/interfaces';
+import type { GoogleMapsAPIInitializerFn } from '@/types';
 
 /**
  * This function returns the initializer function, it is exported
