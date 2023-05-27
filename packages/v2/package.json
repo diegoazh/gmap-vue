@@ -1,5 +1,5 @@
 {
-  "name": "gmap-vue",
+  "name": "gmap-vue-v2",
   "version": "3.5.4",
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
   "type": "module",

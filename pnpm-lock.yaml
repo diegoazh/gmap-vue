@@ -24,7 +24,7 @@ importers:
     dependencies:
       gmap-vue:
         specifier: ^3.5.4
-        version: link:../gmap-vue
+        version: link:../v2
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -35,7 +35,7 @@ importers:
         specifier: ^1.9.7
         version: 1.9.7(lodash@4.17.21)
 
-  packages/gmap-vue:
+  packages/v2:
     dependencies:
       '@googlemaps/markerclusterer':
         specifier: ^2.0.11
@@ -168,7 +168,7 @@ importers:
         specifier: 4.3.1
         version: 4.3.1(vue@3.3.4)
 
-  packages/gmap-vue-next:
+  packages/v3:
     dependencies:
       '@googlemaps/markerclusterer':
         specifier: ^2.1.4
@@ -6350,7 +6350,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001489
-      electron-to-chromium: 1.4.410
+      electron-to-chromium: 1.4.411
     dev: true
 
   /browserslist@4.21.5:
@@ -6359,7 +6359,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001489
-      electron-to-chromium: 1.4.410
+      electron-to-chromium: 1.4.411
       node-releases: 2.0.12
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
 
@@ -8460,7 +8460,7 @@ packages:
       yargs: 17.7.2
     optionalDependencies:
       '@vue/compiler-sfc': 3.3.4
-      vue-template-compiler: 2.7.14
+      vue-template-compiler: 2.7.10
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8595,8 +8595,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
 
-  /electron-to-chromium@1.4.410:
-    resolution: {integrity: sha512-Zz3WQOHepTpdUXt6h6LG1qAY0Tb1yh91YYHa4M63Hr6AJ4n/OVnANfP5dhYx2ZQLEL/T0Qeyebjz3kELUc32zQ==}
+  /electron-to-chromium@1.4.411:
+    resolution: {integrity: sha512-5VXLW4Qw89vM2WTICHua/y8v7fKGDRVa2VPOtBB9IpLvW316B+xd8yD1wTmLPY2ot/00P/qt87xdolj4aG/Lzg==}
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -20651,7 +20651,7 @@ packages:
   /wide-align@1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 4.2.3
+      string-width: 1.0.2
     dev: true
 
   /widest-line@2.0.1:
