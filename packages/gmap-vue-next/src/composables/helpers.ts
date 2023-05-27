@@ -4,7 +4,7 @@ import type {
   LazyValueGetterFn,
   OldHtmlInputElement,
   SinglePluginComponentConfig,
-} from '@/types/gmap-vue.types';
+} from '@/types/gmap-vue.type';
 import { type ComponentPublicInstance, nextTick, watch } from 'vue';
 import isEqual from 'lodash.isequal';
 

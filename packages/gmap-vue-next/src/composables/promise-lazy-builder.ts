@@ -7,7 +7,7 @@ import type {
   GoogleMapsAPIInitializerFn,
   LazyValueGetterFn,
   PromiseLazyCreatorFn,
-} from '@/types/gmap-vue.types';
+} from '@/types/gmap-vue.type';
 import { getLazyValue } from './helpers';
 
 let $finalOptions: IPluginOptions;

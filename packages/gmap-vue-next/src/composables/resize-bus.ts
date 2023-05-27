@@ -10,7 +10,6 @@ type Events = {};
 interface Props {
   resizeBus?: Emitter<Record<EventType, unknown>>;
 }
-
 // end not used
 
 const defaultResizeBus = mitt();
