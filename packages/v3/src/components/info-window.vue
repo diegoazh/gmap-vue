@@ -15,13 +15,11 @@ import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables';
-import {
   getComponentEventsConfig,
   getComponentPropsConfig,
+  usePluginOptions,
 } from '@/composables';
-import { usePluginOptions } from '@/composables';
-import type { IInfoWindowVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { IInfoWindowVueComponentProps } from '@/interfaces';
 
 /**
  * InfoWindow component

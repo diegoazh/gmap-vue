@@ -40,7 +40,7 @@ export default {
       infoOptions: {
         content: '',
         marker: undefined,
-        //optional: offset infowindow so it visually sits nicely on top of our marker
+        //optional: offset info-window so it visually sits nicely on top of our marker
         pixelOffset: {
           width: 0,
           height: 0,
@@ -72,7 +72,7 @@ export default {
     };
   },
   methods: {
-    toggleInfoWindow: function (marker, idx, markerInstance) {
+    toggleInfoWindow(marker, idx, markerInstance) {
       this.infoWindowPos = marker.position;
       this.infoOptions.content = marker.infoText;
       this.infoOptions.marker = markerInstance;
@@ -81,7 +81,7 @@ export default {
       if (this.currentMidx === idx) {
         this.infoWinOpen = !this.infoWinOpen;
       }
-      // if different marker set infowindow to open and reset current marker index
+      // if different marker set info-window to open and reset current marker index
       else {
         this.infoWinOpen = true;
         this.currentMidx = idx;

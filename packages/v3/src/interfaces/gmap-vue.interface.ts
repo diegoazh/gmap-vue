@@ -32,7 +32,7 @@ export interface ILoadPluginOptions {
  *
  *
  * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
- * @typedef {object} PluginOptions - The options requred to configure the plugin
+ * @typedef {object} PluginOptions - The options required to configure the plugin
  * @property {boolean} [dynamicLoad=false] - The plugin should be loaded dynamically
  * @property {boolean} [installComponents=true] - The plugin should install all components
  * @property {LoadPluginOptions} [load] - All load plugin options
@@ -261,7 +261,7 @@ export interface IHeatmapLayerVueComponentProps {
  */
 export interface IInfoWindowVueComponentProps {
   ariaLabel?: string;
-  content?: string | Element | Text;
+  content?: string | Element | Text | null;
   disableAutoPan?: boolean;
   maxWidth?: number;
   minWidth?: number;
@@ -406,7 +406,7 @@ export interface IMarkerIconVueComponentProps {
   options?: Record<string, unknown>;
   place?: Record<string, unknown>; // TODO: Define properties of this object
   /**
-   *  This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
+   *  This property was not found on the Google Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
    */
   attribution?: Record<string, unknown>; // TODO: Define properties of this object, or remove it if it's not used
 }

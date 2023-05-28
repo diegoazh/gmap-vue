@@ -5,15 +5,7 @@ import App from './components/App.vue';
 window.app = createApp(App)
   .use(GmapVue, {
     excludeEventsOnAllComponents() {
-      return [
-        'click',
-        'dblclick',
-        'mousedown',
-        'mousemove',
-        'mouseout',
-        'mouseover',
-        'mouseup',
-      ];
+      return ['mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup'];
     },
     load: {
       key: import.meta.env.VITE_GOOGLE_API_KEY,

@@ -5,5 +5,15 @@
     "titleBar.activeBackground": "#bd3232",
     "titleBar.inactiveBackground": "#7c7c7c"
   },
-  "cSpell.words": ["composables", "gmap"]
+  "cSpell.words": [
+    "closeclick",
+    "Clusterer",
+    "composables",
+    "gmap",
+    "markerclusterer",
+    "Midx",
+    "pano",
+    "rightclick",
+    "zindex"
+  ]
 }
