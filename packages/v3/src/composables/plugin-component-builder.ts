@@ -1,3 +1,4 @@
+import { useMapPromise } from '@/composables';
 import type { IGmapVueElementOptions } from '@/interfaces';
 import type { ComponentOptions } from 'vue';
 import {
@@ -5,7 +6,6 @@ import {
   bindProps,
   getPropsValuesWithoutOptionsProp,
 } from './helpers';
-import { useMapPromise } from '@/composables';
 
 /**
  * Custom assert for local validation

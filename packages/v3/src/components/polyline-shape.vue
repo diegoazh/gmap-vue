@@ -1,18 +1,16 @@
 <script lang="ts" setup>
 import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables';
-import { inject, onUnmounted, provide, ref, watch } from 'vue';
-import { $mapPromise, $polylineShapePromise } from '@/keys';
-import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getComponentEventsConfig,
+  getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  usePluginOptions,
+  useShapesHelpers,
 } from '@/composables';
-import { useShapesHelpers } from '@/composables';
-import { usePluginOptions } from '@/composables';
-import type { IPolylineShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { IPolylineShapeVueComponentProps } from '@/interfaces';
+import { $mapPromise, $polylineShapePromise } from '@/keys';
+import { inject, onUnmounted, provide, ref, watch } from 'vue';
 
 /**
  * PolyLine component

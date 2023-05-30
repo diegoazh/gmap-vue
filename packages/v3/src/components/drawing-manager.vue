@@ -10,6 +10,16 @@
 
 <script lang="ts" setup>
 import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+  getPropsValuesWithoutOptionsProp,
+  usePluginOptions,
+} from '@/composables';
+import type { IDrawingManagerVueComponentProps } from '@/interfaces';
+import { $drawingManagerPromise, $mapPromise } from '@/keys';
+import {
   computed,
   inject,
   onUnmounted,
@@ -18,18 +28,6 @@ import {
   useSlots,
   watch,
 } from 'vue';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables';
-import { $drawingManagerPromise, $mapPromise } from '@/keys';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValuesWithoutOptionsProp,
-} from '@/composables';
-import { usePluginOptions } from '@/composables';
-import type { IDrawingManagerVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * DrawingManager component

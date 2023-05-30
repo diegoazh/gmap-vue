@@ -12,6 +12,25 @@
 
 <script lang="ts" setup>
 import {
+  bindGoogleMapsEventsToVueEventsOnSetup,
+  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getComponentEventsConfig,
+  getComponentPropsConfig,
+  getPropsValuesWithoutOptionsProp,
+  onMountedResizeBusHook,
+  onUnmountedResizeBusHook,
+  twoWayBindingWrapper,
+  useGoogleMapsApiPromiseLazy,
+  useMapPromise,
+  useMapPromiseDeferred,
+  usePluginOptions,
+  useResizeBus,
+  watchPrimitivePropertiesOnSetup,
+} from '@/composables';
+import type { IMapLayerVueComponentProps } from '@/interfaces';
+import { $mapPromise } from '@/keys';
+import type { Emitter, EventType } from 'mitt';
+import {
   computed,
   onBeforeUnmount,
   onMounted,
@@ -20,27 +39,6 @@ import {
   ref,
   watch,
 } from 'vue';
-import {
-  bindGoogleMapsEventsToVueEventsOnSetup,
-  bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValuesWithoutOptionsProp,
-  twoWayBindingWrapper,
-  watchPrimitivePropertiesOnSetup,
-} from '@/composables';
-import { useGoogleMapsApiPromiseLazy, usePluginOptions } from '@/composables';
-import {
-  onMountedResizeBusHook,
-  onUnmountedResizeBusHook,
-  useResizeBus,
-} from '@/composables';
-import { $mapPromise } from '@/keys';
-import { useMapPromise, useMapPromiseDeferred } from '@/composables';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables';
-import type { Emitter, EventType } from 'mitt';
-import type { IMapLayerVueComponentProps } from '../interfaces/gmap-vue.interface';
 
 /**
  * Map component

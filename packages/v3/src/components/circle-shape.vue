@@ -5,13 +5,11 @@ import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables';
-import {
   getComponentEventsConfig,
   getComponentPropsConfig,
+  usePluginOptions,
 } from '@/composables';
-import { usePluginOptions } from '@/composables';
-import type { ICircleShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { ICircleShapeVueComponentProps } from '@/interfaces';
 
 /**
  * Circle component

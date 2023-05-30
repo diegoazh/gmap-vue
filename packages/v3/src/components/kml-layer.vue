@@ -3,15 +3,13 @@ import { inject, onUnmounted, provide, ref } from 'vue';
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables';
-import { $kmlLayerPromise, $mapPromise } from '@/keys';
-import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
+  usePluginOptions,
 } from '@/composables';
-import { usePluginOptions } from '@/composables';
-import type { IKmlLayerVueComponentProps } from '../interfaces/gmap-vue.interface';
+import { $kmlLayerPromise, $mapPromise } from '@/keys';
+import type { IKmlLayerVueComponentProps } from '@/interfaces';
 
 /**
  * KmlLayer component

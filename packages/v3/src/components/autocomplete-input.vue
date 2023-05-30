@@ -26,12 +26,10 @@ import {
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   downArrowSimulator,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables';
-import {
   getComponentEventsConfig,
   getComponentPropsConfig,
 } from '@/composables';
-import type { IAutoCompleteInputVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { IAutoCompleteInputVueComponentProps } from '@/interfaces';
 
 /**
  * Autocomplete component

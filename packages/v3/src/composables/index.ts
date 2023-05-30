@@ -23,8 +23,8 @@ export * from './street-view-panorama-promise';
  * @property  {Function}  useStreetViewPanoramaPromise - Function that returns a promise when is resolved returns the street-view-panorama component object
  */
 export const sharedComposables = {
-  getMapPromise: useMapPromise,
+  useMapPromise,
   useResizeBus,
-  useGmapApiPromiseLazy: useGoogleMapsApiPromiseLazy,
-  getStreetViewPanoramaPromise: useStreetViewPanoramaPromise,
+  useGoogleMapsApiPromiseLazy,
+  useStreetViewPanoramaPromise,
 };

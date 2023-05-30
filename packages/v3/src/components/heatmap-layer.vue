@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import { inject, onUnmounted, provide, ref, watch } from 'vue';
-import { $heatmapLayerPromise, $mapPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValuesWithoutOptionsProp,
-} from '@/composables';
-import {
   getComponentEventsConfig,
   getComponentPropsConfig,
+  getPropsValuesWithoutOptionsProp,
+  usePluginOptions,
 } from '@/composables';
-import { usePluginOptions } from '@/composables';
-import type { IHeatmapLayerVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { IHeatmapLayerVueComponentProps } from '@/interfaces';
+import { $heatmapLayerPromise, $mapPromise } from '@/keys';
+import { inject, onUnmounted, provide, ref, watch } from 'vue';
 
 /**
  * HeatmapLayer component

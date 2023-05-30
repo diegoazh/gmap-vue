@@ -5,14 +5,12 @@ import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
-} from '@/composables';
-import {
   getComponentEventsConfig,
   getComponentPropsConfig,
+  usePluginOptions,
 } from '@/composables';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { usePluginOptions } from '@/composables';
-import type { IMarkerIconVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { IMarkerIconVueComponentProps } from '@/interfaces';
 
 /**
  * Marker component

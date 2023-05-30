@@ -23,15 +23,13 @@ import {
 import {
   getComponentEventsConfig,
   getComponentPropsConfig,
-} from '@/composables';
-import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   getPropsValuesWithoutOptionsProp,
+  usePluginOptions,
 } from '@/composables';
 import { $clusterPromise, $mapPromise } from '@/keys';
-import { usePluginOptions } from '@/composables';
-import type { IMarkerClusterVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { IMarkerClusterVueComponentProps } from '@/interfaces';
 
 /**
  * Cluster component

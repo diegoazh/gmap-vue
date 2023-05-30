@@ -1,17 +1,15 @@
 <script lang="ts" setup>
 import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
-} from '@/composables';
-import { inject, onUnmounted, provide, ref } from 'vue';
-import { $mapPromise, $rectangleShapePromise } from '@/keys';
-import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getComponentEventsConfig,
+  getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  usePluginOptions,
 } from '@/composables';
-import { usePluginOptions } from '@/composables';
-import type { IRectangleShapeVueComponentProps } from '../interfaces/gmap-vue.interface';
+import type { IRectangleShapeVueComponentProps } from '@/interfaces';
+import { $mapPromise, $rectangleShapePromise } from '@/keys';
+import { inject, onUnmounted, provide, ref } from 'vue';
 
 /**
  * Rectangle component

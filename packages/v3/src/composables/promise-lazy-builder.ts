@@ -112,14 +112,14 @@ function createFinalPromise(
 
 export function saveLazyPromiseAndFinalOptions(
   finalOptions: IPluginOptions,
-  gmapApiPromiseLazy: LazyValueGetterFn
+  googleMapsApiPromiseLazy: LazyValueGetterFn
 ): void {
   if (!$finalOptions) {
     $finalOptions = finalOptions;
   }
 
   if (!$googleMapsApiPromiseLazy) {
-    $googleMapsApiPromiseLazy = gmapApiPromiseLazy;
+    $googleMapsApiPromiseLazy = googleMapsApiPromiseLazy;
   }
 }
 
