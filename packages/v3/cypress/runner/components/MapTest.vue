@@ -60,7 +60,7 @@
 import GmapVue from '../../../dist/main.es';
 
 const {
-  composables: { getMapPromise },
+  composables: { useMapPromise },
 } = GmapVue;
 
 export default {
@@ -96,7 +96,7 @@ export default {
       this.mapCenter.lng = this.reportedMapCenter.lng;
     },
     async setCenter() {
-      const map = await getMapPromise();
+      const map = await useMapPromise();
       this.mapCenter.lat = this.reportedMapCenter.lat;
       this.mapCenter.lng = this.reportedMapCenter.lng;
       map.setCenter(this.mapCenter);

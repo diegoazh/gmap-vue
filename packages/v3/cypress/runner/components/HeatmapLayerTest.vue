@@ -33,7 +33,7 @@ export default {
     };
   },
   async mounted() {
-    await this.$googleMapsApiPromiseLazy();
+    await this.$gmapApiPromiseLazy();
     this.markers = [
       {
         location: new google.maps.LatLng({ lat: 3, lng: 101 }),
