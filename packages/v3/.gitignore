@@ -4,10 +4,7 @@ node_modules
 /build
 /coverage
 
-/tests/e2e/videos/
-/tests/e2e/screenshots/
 /cypress/runner/dist
-
 
 # local env files
 .env.local
