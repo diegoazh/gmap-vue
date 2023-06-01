@@ -22,7 +22,7 @@
     "lint": "prettier --write ./src && eslint --fix --ext .vue,.js,.html ./src",
     "test": "echo 'not implemented yet'",
     "lint-staged": "lint-staged",
-    "gen:api:docs": "rimraf ../documentation/docs/code && npx vuepress-jsdoc -d ../documentation/docs -t \"GmapVue API\" -r ./README.md",
+    "gen:api:docs": "rimraf ../documentation/docs/code && npx vuepress-jsdoc --dist ../documentation/docs --title \"GmapVue API\" --readme ./README.md",
     "release": "semantic-release"
   },
   "exports": {

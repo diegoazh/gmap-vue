@@ -5,8 +5,8 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "command": "npm run gen:docs",
-      "name": "Run npm gen:docs",
+      "command": "npm run gen:api:docs",
+      "name": "Run npm gen:api:docs",
       "request": "launch",
       "type": "node-terminal"
     },
