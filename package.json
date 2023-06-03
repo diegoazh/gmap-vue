@@ -9,6 +9,7 @@
     "serve:docs": "pnpm run --recursive gen:api:docs && pnpm run --recursive serve:docs",
     "build:all": "pnpm run --recursive gen:api:docs && pnpm run --recursive build && pnpm run --recursive build:docs",
     "test": "pnpm run --recursive test",
+    "test:e2e": "pnpm run --recursive test:e2e:ci",
     "lint": "pnpm run --recursive lint",
     "gen:api:docs": "pnpm run --recursive gen:api:docs",
     "clean": "rimraf ./packages/**/node_modules && rimraf ./packages/**/package-lock.json && rimraf ./pnpm-lock.yaml && rimraf ./node_modules",

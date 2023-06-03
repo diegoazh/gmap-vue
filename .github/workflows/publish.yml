@@ -26,8 +26,14 @@ jobs:
         run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm install
+      - name: create env file
+        run: |
+          touch ./packages/v3/cypress/runner/.env
+          echo VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }} >> ./packages/v3/cypress/runner/.env
       - name: Run tests
         run: pnpm run test
+      - name: Run e2e tests
+        run: pnpm run test:e2e
 
   publish:
 
