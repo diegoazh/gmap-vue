@@ -57,11 +57,9 @@
 </template>
 
 <script>
-import GmapVue from '../../../dist/main.es';
+import { composables } from '../../../dist/main.es';
 
-const {
-  composables: { useMapPromise },
-} = GmapVue;
+const { useMapPromise } = composables;
 
 export default {
   name: 'MapTest',

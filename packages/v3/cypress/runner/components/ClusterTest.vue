@@ -16,11 +16,9 @@
 </template>
 
 <script>
-import GmapVue from '../../../dist/main.es';
+import { components } from '../../../dist/main.es';
 
-const {
-  components: { Cluster },
-} = GmapVue;
+const { Cluster } = components;
 
 export default {
   data() {

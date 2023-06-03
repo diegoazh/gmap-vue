@@ -1,9 +1,9 @@
 import { createApp } from 'vue';
-import GmapVue from '../../dist/main.es';
+import { GmapVuePlugin } from '../../dist/main.es';
 import App from './components/App.vue';
 
 window.app = createApp(App)
-  .use(GmapVue, {
+  .use(GmapVuePlugin, {
     excludeEventsOnAllComponents() {
       return ['mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup'];
     },
