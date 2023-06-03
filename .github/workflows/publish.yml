@@ -29,6 +29,7 @@ jobs:
         run: |
           touch ./packages/v3/cypress/runner/.env
           echo VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }} >> ./packages/v3/cypress/runner/.env
+          ls -la ./packages/v3/cypress/runner
       - name: Run tests
         run: pnpm run test
       - name: Run e2e tests
