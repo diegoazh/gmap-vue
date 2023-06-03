@@ -1,11 +1,11 @@
 # GmapVue for Vue 3
 
 [![Build Status](https://travis-ci.org/diegoazh/gmap-vue.svg?branch=master)](https://travis-ci.org/diegoazh/gmap-vue)
-[![jsdelivr](https://data.jsdelivr.com/v1/package/npm/gmap-vue/badge)](https://www.jsdelivr.com/package/npm/gmap-vue)
+[![](https://data.jsdelivr.com/v1/package/npm/@gmap-vue/v3/badge)](https://www.jsdelivr.com/package/npm/@gmap-vue/v3)
 
 ## Documentation
 
-Please follow next link to our [documentation](https://diegoazh.github.io/gmap-vue/).
+Please follow next link to our [documentation](https://diegoazh.github.io/gmap-vue/). **NOT UPDATED YET**
 
 ## CONTRIBUTORS NEEDED
 
@@ -45,10 +45,10 @@ yarn add @gmap-vue/v3
 
 ### Manually
 
-Just download `dist/gmap-vue.js` file and include it from your HTML.
+Just download `dist/main.umd.js` file and include it from your HTML.
 
 ```html
-<script src="./gmap-vue.js"></script>
+<script src="./main.umd.js"></script>
 ```
 
 ### jsdelivr
@@ -56,7 +56,7 @@ Just download `dist/gmap-vue.js` file and include it from your HTML.
 You can use a free CDN like [jsdelivr](https://www.jsdelivr.com) to include this plugin in your html file
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/gmap-vue@1.2.2/dist/gmap-vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@gmap-vue/v3/dist/main.umd.js"></script>
 ```
 
 ### unpkg
@@ -64,7 +64,7 @@ You can use a free CDN like [jsdelivr](https://www.jsdelivr.com) to include this
 You can use a free CDN like [unpkg](https://unpkg.com) to include this plugin in your html file
 
 ```html
-<script src="https://unpkg.com/gmap-vue@1.2.2/dist/gmap-vue.js"></script>
+<script src="https://unpkg.com/@gmap-vue/v3/dist/main.umd.js"></script>
 ```
 
 ::: warning
