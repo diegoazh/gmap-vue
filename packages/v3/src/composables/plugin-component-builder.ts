@@ -9,6 +9,7 @@ import {
 
 /**
  * Custom assert for local validation
+ * @internal
  *
  * @param  {boolean} v The expression that should return a boolean value, if false the assertion fails
  * @param  {string} message Error message to be displayed

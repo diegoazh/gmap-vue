@@ -26,7 +26,7 @@ export function useStreetViewPanoramaPromise(): Promise<
 }
 
 /**
- * INTERNAL
+ * @internal
  *
  * @returns {Promise}
  */

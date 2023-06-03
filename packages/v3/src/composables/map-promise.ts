@@ -24,7 +24,7 @@ export function useMapPromise(): Promise<google.maps.Map | undefined> {
 }
 
 /**
- * INTERNAL
+ * @internal
  *
  * @returns {Promise}
  */

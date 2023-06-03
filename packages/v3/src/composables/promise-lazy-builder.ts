@@ -18,6 +18,8 @@ let $googleMapsApiPromiseLazy: LazyValueGetterFn;
  * @param  {Function} googleMapsApiInitializer function that initialize the Google Maps API
  * @param  {Object} GoogleMapsApi Vue app instance that will help to know if the Google API object is ready
  * @returns {(options: IPluginOptions) => LazyValueGetterFn}
+ *
+ * @internal
  */
 export function usePromiseLazyBuilderFn(
   googleMapsApiInitializer: GoogleMapsAPIInitializerFn,
@@ -45,6 +47,8 @@ export function usePromiseLazyBuilderFn(
  * or load it dynamically from our component.
  *
  * @param  {Function} resolveFn the function that indicates to the plugin that Google Maps is loaded
+ *
+ * @internal
  */
 function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
   let callbackExecuted = false;
@@ -86,6 +90,8 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
  * @param  {IPluginOptions} options
  * @param  {GoogleMapsAPIInitializerFn} googleMapsApiInitializer
  * @param  {()=>GlobalGoogleObject} onMapsReady
+ *
+ * @internal
  */
 function createFinalPromise(
   options: IPluginOptions,
@@ -110,6 +116,17 @@ function createFinalPromise(
   }).then(onMapsReady);
 }
 
+/**
+ * This function helps to save the final options passed to the plugin and
+ * the function to get the promise useful to wait until the Google Maps API
+ * is loaded and ready to use it
+ *
+ * @param  {IPluginOptions} finalOptions
+ * @param  {LazyValueGetterFn} googleMapsApiPromiseLazy
+ * @returns void
+ *
+ * @internal
+ */
 export function saveLazyPromiseAndFinalOptions(
   finalOptions: IPluginOptions,
   googleMapsApiPromiseLazy: LazyValueGetterFn
@@ -139,6 +156,11 @@ export function useGoogleMapsApiPromiseLazy(): Promise<any> {
   return $googleMapsApiPromiseLazy?.();
 }
 
+/**
+ * This function returns the configuration passed to the plugin
+ *
+ * @returns IPluginOptions
+ */
 export function usePluginOptions(): IPluginOptions {
   if (!$finalOptions) {
     globalThis.console.warn('$finalOptions was not defined yet...');

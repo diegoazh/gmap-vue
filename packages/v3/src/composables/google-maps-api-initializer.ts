@@ -10,6 +10,8 @@ import type { GoogleMapsAPIInitializerFn } from '@/types';
  * promise-lazy file to initialize the Google Maps API if it is required.
  *
  * @returns {(options: ILoadPluginOptions, loadCn?: boolean) => void} The initializer function
+ *
+ * @internal
  */
 function googleMapsAPIInitializerFactory(): GoogleMapsAPIInitializerFn {
   let isApiSetUp = false;
@@ -74,6 +76,7 @@ function googleMapsAPIInitializerFactory(): GoogleMapsAPIInitializerFn {
   };
 }
 
+/** @internal */
 const googleMapsApiInitializer = googleMapsAPIInitializerFactory();
 
 export { googleMapsApiInitializer };

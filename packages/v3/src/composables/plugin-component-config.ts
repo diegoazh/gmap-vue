@@ -335,6 +335,7 @@ const componentConfigs: PluginComponentConfig = {
 
 /**
  * Return the configuration for props on every component
+ * @internal
  *
  * @param {string} componentName - The name of the component that should be found
  * @returns {SinglePluginComponentConfigWithoutEvents}
@@ -348,6 +349,7 @@ export function getComponentPropsConfig(
 
 /**
  * Return the map events attached to the Google Maps Instance
+ * @internal
  *
  * @param {string} componentName - The name of the component that should be found
  * @param {'auto'|'manual'} type

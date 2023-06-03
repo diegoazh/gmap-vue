@@ -16,6 +16,8 @@ let _delayedResizeCallback: () => Promise<void>;
  * @param {google.maps.Map} map - The Google Maps instance
  * @param {Object} props - The Vue props of MapLayer component
  * @param {() => void} resizeFn - The resize function that _resizeCallback function should use
+ *
+ * @internal
  */
 export function onMountedResizeBusHook(
   map: google.maps.Map,
@@ -63,6 +65,8 @@ export function onMountedResizeBusHook(
  * Function that should be used on MapLayer component on unmount hook
  *
  * @returns void
+ *
+ * @internal
  */
 export function onUnmountedResizeBusHook() {
   if (currentResizeBus.value) {
@@ -74,6 +78,8 @@ export function onUnmountedResizeBusHook() {
  * This function return the defaultResizeBus function
  *
  * @returns {() => void}
+ *
+ * @internal
  */
 export function useDefaultResizeBus() {
   return defaultResizeBus;

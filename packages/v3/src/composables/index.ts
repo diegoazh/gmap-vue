@@ -1,3 +1,4 @@
+import type { GmvSharedComposables } from '../types';
 import { useMapPromise } from './map-promise';
 import { useGoogleMapsApiPromiseLazy } from './promise-lazy-builder';
 import { useResizeBus } from './resize-bus';
@@ -22,7 +23,7 @@ export * from './street-view-panorama-promise';
  * @property  {Function}  useGoogleMapsApiPromiseLazy - Function that returns a promise when is resolve returns the original Google Maps API
  * @property  {Function}  useStreetViewPanoramaPromise - Function that returns a promise when is resolved returns the street-view-panorama component object
  */
-export const sharedComposables = {
+export const sharedComposables: GmvSharedComposables = {
   useMapPromise,
   useResizeBus,
   useGoogleMapsApiPromiseLazy,

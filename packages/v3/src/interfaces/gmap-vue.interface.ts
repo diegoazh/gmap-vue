@@ -6,6 +6,9 @@ import type {
 } from '@googlemaps/markerclusterer';
 import type { Emitter, EventType } from 'mitt';
 
+/**
+ * @internal
+ */
 export interface IGoogleMapsApiObject {
   isReady: boolean;
 }
@@ -32,6 +35,7 @@ export interface ILoadPluginOptions {
  *
  *
  * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
+ * @public
  * @typedef {object} PluginOptions - The options required to configure the plugin
  * @property {boolean} [dynamicLoad=false] - The plugin should be loaded dynamically
  * @property {boolean} [installComponents=true] - The plugin should install all components
@@ -47,6 +51,9 @@ export interface IPluginOptions {
   excludeEventsOnAllComponents?: () => string[];
 }
 
+/**
+ * @internal
+ */
 export interface IVueProp {
   type?:
     | StringConstructor
@@ -62,6 +69,9 @@ export interface IVueProp {
   validator?: () => boolean;
 }
 
+/**
+ * @internal
+ */
 export interface IGoogleMapProp {
   twoWay?: boolean;
   noBind?: boolean;
@@ -82,16 +92,7 @@ export interface IGmapVueElementOptions {
   afterCreate: (mapElementInstance: { [key: string]: any }) => any;
 }
 
-export interface IMapPromiseFactory {
-  $mapPromise: Promise<google.maps.Map | null>;
-  $mapPromiseDeferred:
-    | {
-        resolve: Function;
-        reject: Function;
-      }
-    | undefined;
-}
-
+/** @internal */
 export interface PromiseDeferred<T> {
   resolve: ((value: T | undefined) => void) | undefined;
   reject: ((reason?: any) => void) | undefined;

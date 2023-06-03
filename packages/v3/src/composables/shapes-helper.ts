@@ -1,5 +1,5 @@
 /**
- * INTERNAL
+ * @internal
  *
  * @param { [Array<Object>, Object][] } eventListeners
  */
@@ -18,7 +18,7 @@ function clearEvents(
 }
 
 /**
- * INTERNAL
+ * @internal
  *
  * @param { 'paths_changes'|'path_change' } eventName
  * @param { Function } fn
@@ -41,7 +41,7 @@ function updatePathOrPaths<
 }
 
 /**
- * INTERNAL
+ * @internal
  *
  * @typedef ShapeHelpers
  * @property {Function} clearEvents

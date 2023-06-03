@@ -1,28 +1,30 @@
-import type { Emitter, EventType } from 'mitt';
-import type { App, Plugin } from 'vue';
-import Autocomplete from '@/components/autocomplete-input.vue';
-import Circle from '@/components/circle-shape.vue';
-import Cluster from '@/components/cluster-icon.vue';
-import DrawingManager from '@/components/drawing-manager.vue';
-import HeatmapLayer from '@/components/heatmap-layer.vue';
-import InfoWindow from '@/components/info-window.vue';
-import KmlLayer from '@/components/kml-layer.vue';
-import MapLayer from '@/components/map-layer.vue';
-import Marker from '@/components/marker-icon.vue';
-import Polygon from '@/components/polygon-shape.vue';
-import Polyline from '@/components/polyline-shape.vue';
-import Rectangle from '@/components/rectangle-shape.vue';
-import StreetViewPanorama from '@/components/street-view-panorama.vue';
+import {
+  Autocomplete,
+  Circle,
+  Cluster,
+  DrawingManager,
+  HeatmapLayer,
+  InfoWindow,
+  KmlLayer,
+  MapLayer,
+  Marker,
+  Polygon,
+  Polyline,
+  Rectangle,
+  StreetViewPanorama,
+} from '@/components';
 import {
   googleMapsApiInitializer,
   pluginComponentBuilder,
   saveLazyPromiseAndFinalOptions,
-  usePromiseLazyBuilderFn,
-  useDefaultResizeBus,
   sharedComposables,
+  useDefaultResizeBus,
+  usePromiseLazyBuilderFn,
 } from '@/composables';
 import type { IGoogleMapsApiObject, IPluginOptions } from '@/interfaces';
-import type { GlobalGoogleObject } from '@/types';
+import type { GlobalGoogleObject, GmvComponents, GmvUtilities } from '@/types';
+import type { Emitter, EventType } from 'mitt';
+import type { App, Plugin } from 'vue';
 
 /**
  * Vue augmentations
@@ -76,14 +78,14 @@ globalThis.GoogleMapsApi = { isReady: false };
  * when its ready on the window object
  * @function
  */
-function getGoogleMapsAPI() {
+function getGoogleMapsAPI(): false | typeof google {
   return globalThis.GoogleMapsApi.isReady && globalThis.google;
 }
 
 /**
- * Export all components and mixins
+ * Export all components
  * @constant
- * @type  {Object} components and mixins object
+ * @type  {Object} components object
  * @property  {Object}  HeatmapLayer - Vue component HeatmapLayer
  * @property  {Object}  KmlLayer - Vue component KmlLayer
  * @property  {Object}  Marker - Vue component Marker
@@ -99,7 +101,7 @@ function getGoogleMapsAPI() {
  * @property  {Object}  Autocomplete - Vue component Autocomplete
  * @property  {Object}  StreetViewPanorama - Vue component StreetViewPanorama
  */
-const components = {
+const components: GmvComponents = {
   Autocomplete,
   Circle,
   Cluster,
@@ -116,14 +118,15 @@ const components = {
 };
 
 /**
- * Export all helpers
+ * Export all utilities
+ *
  * @constant
- * @type  {Object} object containing all helpers
+ * @type  {Object} object containing all utilities
  * @property  {Function}  googleMapsApiInitializer - function to initialize the Google Maps API
  * @property  {Function}  pluginComponentBuilder - function to initialize the Google Maps API
  * @property  {Function}  getGoogleMapsAPI - function to get the original Google Maps API
  */
-const helpers = {
+const utilities: GmvUtilities = {
   googleMapsApiInitializer,
   pluginComponentBuilder,
   getGoogleMapsAPI,
@@ -198,21 +201,18 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
 }
 
 /**
- * Export default of the default Vue object for plugins
+ * Export the default Vue object for plugins
  * Export for ESM modules
  *
  * @see pluginInstallFn
  * @type GmapVue
  * @property {Function} install function to install the plugin
- * @property {Function} getGoogleMapsAPI function to get the Google Maps API
- * @property {Object} components all exported components
- * @property {Composables} composables function to install the plugin
- * @property {Object} helpers all exported helpers
  */
-export default {
-  install: pluginInstallFn,
-  getGoogleMapsAPI,
+const GmapVuePlugin: Plugin = { install: pluginInstallFn };
+
+export {
+  GmapVuePlugin,
   components,
-  composables: sharedComposables,
-  helpers,
-} as Plugin;
+  sharedComposables as composables,
+  utilities,
+};

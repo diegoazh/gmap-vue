@@ -13,6 +13,8 @@ import isEqual from 'lodash.isequal';
  *
  * @param  {string} text the text that you want to capitalize
  * @returns {string}
+ *
+ * @internal
  */
 export function capitalizeFirstLetter(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -24,6 +26,8 @@ export function capitalizeFirstLetter(text: string): string {
  * @param  {Object} vueInst the Vue component instance
  * @param  {Object} props the props object
  * @returns {Object}
+ *
+ * @internal
  */
 export function getPropsValuesWithoutOptionsProp(
   props: { [key: string | number | symbol]: unknown },
@@ -54,8 +58,10 @@ export function getPropsValuesWithoutOptionsProp(
  * This piece of code was orignally written by sindresorhus and can be seen here
  * @see https://github.com/sindresorhus/lazy-value/blob/master/index.js
  *
- *  @param  {Function} fn a function that actually return the promise or async value
+ * @param  {Function} fn a function that actually return the promise or async value
  * @returns {Function} anonymous function that returns the value returned by the fn parameter
+ *
+ * @internal
  */
 export function getLazyValue(fn: () => Promise<any>): LazyValueGetterFn {
   let called = false;
@@ -77,6 +83,8 @@ export function getLazyValue(fn: () => Promise<any>): LazyValueGetterFn {
  *
  * @param {Object} mappedProps the mapped props object
  * @returns {Object}
+ *
+ * @internal
  */
 export function filterVuePropsOptions<T extends GmapVuePluginProps>(
   mappedProps: T
@@ -111,6 +119,8 @@ export function filterVuePropsOptions<T extends GmapVuePluginProps>(
  *
  * @param  {Object} input the HTML input node element reference
  * @returns {void}
+ *
+ * @internal
  */
 export function downArrowSimulator(input: HTMLInputElement | null): void {
   if (!input) {
@@ -211,6 +221,7 @@ export function downArrowSimulator(input: HTMLInputElement | null): void {
       })
     })
  */
+/** @internal */
 export function twoWayBindingWrapper(
   fn: (
     increment: () => void,
@@ -245,6 +256,8 @@ export function twoWayBindingWrapper(
  * @param  {boolean} immediate=false
  * @param  {Object} vueInst the component instance
  * @returns {void}
+ *
+ * @internal
  */
 export function watchPrimitiveProperties(
   propertiesToTrack: string[],
@@ -288,6 +301,8 @@ export function watchPrimitiveProperties(
  * @param  {boolean} immediate=false
  * @param  {Object} props the props object that is set on setup script
  * @returns {void}
+ *
+ * @internal
  */
 export function watchPrimitivePropertiesOnSetup(
   propertiesToTrack: string[],
@@ -330,6 +345,8 @@ export function watchPrimitivePropertiesOnSetup(
  * @param  {Object} vueInst the Vue instance
  * @param {string[]} [excludedEvents=[]] - List of events that shouldn't be bind
  * @returns {void}
+ *
+ * @internal
  */
 export function bindEvents(
   eventsConfig: string[],
@@ -359,6 +376,8 @@ export function bindEvents(
  * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
  * @param  {Object} vueInst the component instance
  * @returns {void}
+ *
+ * @internal
  */
 export function bindProps(
   propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
@@ -439,6 +458,8 @@ export function bindProps(
  * @param {() => void} emits - The Vue emit object built with defineEmits function
  * @param {string[]} [excludedEvents=[]] - List of events that shouldn't be bind
  * @returns {void}
+ *
+ * @internal
  */
 export function bindGoogleMapsEventsToVueEventsOnSetup(
   eventsComponentConfig: string[],
@@ -469,6 +490,8 @@ export function bindGoogleMapsEventsToVueEventsOnSetup(
  * @param {() => void} emits - The Vue emit object built with defineEmits function
  * @param  {Object} props - Vue component props  of the component that should be synced with the Google Maps instances props
  * @returns {void} The object which contain all event names to and params that should be used to add listener to the Google Maps instance
+ *
+ * @internal
  */
 export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
   propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
@@ -504,6 +527,7 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
   });
 }
 
+/** @internal */
 function bindVuePropsWithGoogleMapsPropsSetters(
   propKey: string,
   props: Record<any, any>,
@@ -554,6 +578,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
   return { eventName, getMethodName };
 }
 
+/** @internal */
 function oldHtmlInputElementGuard(
   input: HTMLInputElement | OldHtmlInputElement
 ): input is OldHtmlInputElement {
