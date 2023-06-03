@@ -1,7 +1,11 @@
-# GmapVue
+# GmapVue fro Vue v2
 
 [![Build Status](https://travis-ci.org/diegoazh/gmap-vue.svg?branch=master)](https://travis-ci.org/diegoazh/gmap-vue)
 [![](https://data.jsdelivr.com/v1/package/npm/gmap-vue/badge)](https://www.jsdelivr.com/package/npm/gmap-vue)
+
+## Deprecated
+
+This plugin for Vue v2 is not longer maintained, please use Vue v3 and use the version of this plugin for it.
 
 ## Documentation
 
