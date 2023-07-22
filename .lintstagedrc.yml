@@ -1,2 +1,2 @@
-"*.{vue,js,vue,html,js}":
+"*.{vue,js,ts,jsx,tsx}":
   - "pnpm run lint"
