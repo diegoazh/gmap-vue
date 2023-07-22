@@ -1,4 +1,6 @@
 <template>
+  <button type="button" @click="visible = !visible">{{ btnTxt }}</button>
+  <br /><br />
   <gmv-map :center="center" :zoom="7" style="width: 100%; height: 500px">
     <gmv-marker
       v-for="(m, i) in markers"
@@ -7,6 +9,7 @@
       :draggable="true"
       :position="m.position"
       @click="center = m.position"
+      :visible="visible"
     ></gmv-marker>
   </gmv-map>
 </template>
@@ -15,6 +18,7 @@
 export default {
   data() {
     return {
+      visible: true,
       center: {
         lat: 10.0,
         lng: 10.0,
@@ -34,6 +38,11 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    btnTxt() {
+      return this.visible ? 'Hide markers' : 'Show markers';
+    },
   },
 };
 </script>
