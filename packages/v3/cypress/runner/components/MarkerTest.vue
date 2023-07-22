@@ -1,5 +1,7 @@
 <template>
-  <button type="button" @click="visible = !visible">{{ btnTxt }}</button>
+  <button id="visibility" type="button" @click="visible = !visible">
+    {{ btnTxt }}
+  </button>
   <br /><br />
   <gmv-map :center="center" :zoom="7" style="width: 100%; height: 500px">
     <gmv-marker
