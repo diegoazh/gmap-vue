@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import throttle from 'lodash.throttle';
+
 export default {
   data() {
     return {
@@ -50,7 +52,7 @@ export default {
     };
   },
   watch: {
-    polylinePath: window?._.throttle(function (path) {
+    polylinePath: throttle(function (path) {
       if (path) {
         this.path = path;
         this.polylineGeojson = JSON.stringify(

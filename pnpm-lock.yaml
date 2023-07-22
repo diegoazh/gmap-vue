@@ -205,6 +205,9 @@ importers:
       '@types/lodash.isequal':
         specifier: ^4.5.6
         version: 4.5.6
+      '@types/lodash.throttle':
+        specifier: ^4.1.7
+        version: 4.1.7
       '@types/node':
         specifier: ^20.2.5
         version: 20.2.5
@@ -259,6 +262,9 @@ importers:
       lint-staged:
         specifier: ^13.2.2
         version: 13.2.2
+      lodash.throttle:
+        specifier: ^4.1.1
+        version: 4.1.1
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
@@ -2758,6 +2764,12 @@ packages:
 
   /@types/lodash.isequal@4.5.6:
     resolution: {integrity: sha512-Ww4UGSe3DmtvLLJm2F16hDwEQSv7U0Rr8SujLUA2wHI2D2dm8kPu6Et+/y303LfjTIwSBKXB/YTUcAKpem/XEg==}
+    dependencies:
+      '@types/lodash': 4.14.195
+    dev: true
+
+  /@types/lodash.throttle@4.1.7:
+    resolution: {integrity: sha512-znwGDpjCHQ4FpLLx19w4OXDqq8+OvREa05H89obtSyXyOFKL3dDjCslsmfBz0T2FU8dmf5Wx1QvogbINiGIu9g==}
     dependencies:
       '@types/lodash': 4.14.195
     dev: true
@@ -11730,6 +11742,10 @@ packages:
     dependencies:
       lodash._reinterpolate: 3.0.0
     dev: false
+
+  /lodash.throttle@4.1.1:
+    resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
+    dev: true
 
   /lodash.uniq@4.5.0:
     resolution: {integrity: sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==}
