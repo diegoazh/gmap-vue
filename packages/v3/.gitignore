@@ -7,6 +7,7 @@ node_modules
 /cypress/runner/dist
 
 # local env files
+.env
 .env.local
 .env.*.local
 
