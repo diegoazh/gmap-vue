@@ -553,7 +553,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
       watch(
         () => props[propKey],
         (value, oldValue) => {
-          if (value && !isEqual(value, oldValue))
+          if (value != null && !isEqual(value, oldValue))
             AnyGoogleMapsClassInstance[setMethodName](value);
         },
         {
