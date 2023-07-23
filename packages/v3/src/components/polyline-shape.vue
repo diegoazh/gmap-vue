@@ -10,7 +10,7 @@ import {
 } from '@/composables';
 import type { IPolylineShapeVueComponentProps } from '@/interfaces';
 import { $mapPromise, $polylineShapePromise } from '@/keys';
-import { inject, onUnmounted, provide, ref, watch } from 'vue';
+import { inject, onUnmounted, provide, watch } from 'vue';
 
 /**
  * PolyLine component
@@ -69,7 +69,7 @@ if (!mapPromise) {
  * POLYLINE SHAPE
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const polylineShapeInstance = ref<google.maps.Polyline | undefined>();
+let polylineShapeInstance: google.maps.Polyline | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -85,7 +85,7 @@ const promise = mapPromise
       ...props.options,
     };
 
-    polylineShapeInstance.value = new google.maps.Polyline(polylineOptions);
+    polylineShapeInstance = new google.maps.Polyline(polylineOptions);
 
     const polylineShapePropsConfig = getComponentPropsConfig('GmvPolyline');
     const polylineShapeEventsConfig = getComponentEventsConfig(
@@ -95,18 +95,18 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polylineShapePropsConfig,
-      polylineShapeInstance.value,
+      polylineShapeInstance,
       emits,
       props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polylineShapeEventsConfig,
-      polylineShapeInstance.value,
+      polylineShapeInstance,
       emits,
       excludedEvents
     );
 
-    return polylineShapeInstance.value;
+    return polylineShapeInstance;
   })
   .catch((error) => {
     throw error;
@@ -134,13 +134,13 @@ const pathEventListeners: [
 watch(
   () => props.path,
   (newValue, oldValue) => {
-    if (polylineShapeInstance.value) {
+    if (polylineShapeInstance) {
       if (props.path && newValue && newValue !== oldValue) {
         clearEvents(pathEventListeners);
 
-        polylineShapeInstance.value.setPath(newValue);
+        polylineShapeInstance.setPath(newValue);
 
-        const mvcPath = polylineShapeInstance.value.getPath();
+        const mvcPath = polylineShapeInstance.getPath();
 
         pathEventListeners.push([
           mvcPath,
@@ -148,7 +148,7 @@ watch(
             'insert_at',
             updatePathOrPaths(
               'path_changed',
-              polylineShapeInstance.value.getPath,
+              polylineShapeInstance.getPath,
               emits
             )
           ),
@@ -159,7 +159,7 @@ watch(
             'remove_at',
             updatePathOrPaths(
               'path_changed',
-              polylineShapeInstance.value.getPath,
+              polylineShapeInstance.getPath,
               emits
             )
           ),
@@ -170,7 +170,7 @@ watch(
             'set_at',
             updatePathOrPaths(
               'path_changed',
-              polylineShapeInstance.value.getPath,
+              polylineShapeInstance.getPath,
               emits
             )
           ),
@@ -184,8 +184,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (polylineShapeInstance.value) {
-    polylineShapeInstance.value.setMap(null);
+  if (polylineShapeInstance) {
+    polylineShapeInstance.setMap(null);
   }
 });
 

@@ -19,17 +19,18 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
-import { useGoogleMapsApiPromiseLazy, usePluginOptions } from '@/composables';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
   downArrowSimulator,
-  getPropsValuesWithoutOptionsProp,
   getComponentEventsConfig,
   getComponentPropsConfig,
+  getPropsValuesWithoutOptionsProp,
+  useGoogleMapsApiPromiseLazy,
+  usePluginOptions,
 } from '@/composables';
 import type { IAutoCompleteInputVueComponentProps } from '@/interfaces';
+import { onMounted, ref, watch } from 'vue';
 
 /**
  * Autocomplete component
@@ -87,7 +88,7 @@ const emits = defineEmits(getComponentEventsConfig('GmvAutocomplete'));
  * AUTOCOMPLETE
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const autoCompleteInstance = ref<google.maps.places.Autocomplete | undefined>();
+let autoCompleteInstance: google.maps.places.Autocomplete | undefined;
 
 /*******************************************************************************
  * COMPUTED
@@ -104,7 +105,7 @@ watch(
   () => props.componentRestrictions,
   (newValue, oldValue) => {
     if (newValue && newValue !== oldValue) {
-      autoCompleteInstance.value?.setComponentRestrictions(newValue);
+      autoCompleteInstance?.setComponentRestrictions(newValue);
     }
   }
 );
@@ -142,7 +143,7 @@ onMounted(() => {
         ...props.options,
       };
 
-      autoCompleteInstance.value = new google.maps.places.Autocomplete(
+      autoCompleteInstance = new google.maps.places.Autocomplete(
         scopedInput,
         autocompleteOptions
       );
@@ -156,35 +157,35 @@ onMounted(() => {
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         autoCompletePropsConfig,
-        autoCompleteInstance.value,
+        autoCompleteInstance,
         emits,
         props
       );
 
       bindGoogleMapsEventsToVueEventsOnSetup(
         autoCompleteEventsConfig,
-        autoCompleteInstance.value,
+        autoCompleteInstance,
         emits,
         excludedEvents
       );
 
       if (props.setFieldsTo) {
-        autoCompleteInstance.value.setFields(props.setFieldsTo);
+        autoCompleteInstance.setFields(props.setFieldsTo);
       }
 
       /**
        * Not using `bindEvents` because we also want
        * to return the result of `getPlace()`
        */
-      autoCompleteInstance.value.addListener('place_changed', () => {
-        if (autoCompleteInstance.value) {
+      autoCompleteInstance.addListener('place_changed', () => {
+        if (autoCompleteInstance) {
           /**
            * Place change event
            * @event place_changed
            * @property {object} place `this.$autocomplete.getPlace()`
            * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
            */
-          emits('place_changed', autoCompleteInstance.value.getPlace());
+          emits('place_changed', autoCompleteInstance.getPlace());
         }
       });
     })

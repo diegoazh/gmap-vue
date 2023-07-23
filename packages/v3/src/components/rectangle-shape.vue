@@ -9,7 +9,7 @@ import {
 } from '@/composables';
 import type { IRectangleShapeVueComponentProps } from '@/interfaces';
 import { $mapPromise, $rectangleShapePromise } from '@/keys';
-import { inject, onUnmounted, provide, ref } from 'vue';
+import { inject, onUnmounted, provide } from 'vue';
 
 /**
  * Rectangle component
@@ -65,7 +65,7 @@ if (!mapPromise) {
  * RECTANGLE SHAPE
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const rectangleShapeInstance = ref<google.maps.Rectangle | undefined>();
+let rectangleShapeInstance: google.maps.Rectangle | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -81,7 +81,7 @@ const promise = mapPromise
       ...props.options,
     };
 
-    rectangleShapeInstance.value = new google.maps.Rectangle(rectangleOptions);
+    rectangleShapeInstance = new google.maps.Rectangle(rectangleOptions);
 
     const rectangleShapePropsConfig = getComponentPropsConfig('GmvRectangle');
     const rectangleShapeEventsConfig = getComponentEventsConfig(
@@ -91,18 +91,18 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       rectangleShapePropsConfig,
-      rectangleShapeInstance.value,
+      rectangleShapeInstance,
       emits,
       props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       rectangleShapeEventsConfig,
-      rectangleShapeInstance.value,
+      rectangleShapeInstance,
       emits,
       excludedEvents
     );
 
-    return rectangleShapeInstance.value;
+    return rectangleShapeInstance;
   })
   .catch((error) => {
     throw error;
@@ -126,8 +126,8 @@ provide($rectangleShapePromise, promise);
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (rectangleShapeInstance.value) {
-    rectangleShapeInstance.value.setMap(null);
+  if (rectangleShapeInstance) {
+    rectangleShapeInstance.setMap(null);
   }
 });
 

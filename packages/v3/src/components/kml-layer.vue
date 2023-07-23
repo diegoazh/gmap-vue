@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { inject, onUnmounted, provide, ref } from 'vue';
 import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getComponentEventsConfig,
+  getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
   usePluginOptions,
 } from '@/composables';
-import { $kmlLayerPromise, $mapPromise } from '@/keys';
 import type { IKmlLayerVueComponentProps } from '@/interfaces';
+import { $kmlLayerPromise, $mapPromise } from '@/keys';
+import { inject, onUnmounted, provide } from 'vue';
 
 /**
  * KmlLayer component
@@ -57,7 +57,7 @@ if (!mapPromise) {
  * KML LAYER
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const kmlLayerInstance = ref<google.maps.KmlLayer | undefined>();
+let kmlLayerInstance: google.maps.KmlLayer | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -73,25 +73,25 @@ const promise = mapPromise
       ...props.options,
     };
 
-    kmlLayerInstance.value = new google.maps.KmlLayer(kmlLayerOptions);
+    kmlLayerInstance = new google.maps.KmlLayer(kmlLayerOptions);
 
     const kmlLayerPropsConfig = getComponentPropsConfig('GmvKmlLayer');
     const kmlLayerEventsConig = getComponentEventsConfig('GmvKmlLayer', 'auto');
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       kmlLayerPropsConfig,
-      kmlLayerInstance.value,
+      kmlLayerInstance,
       emits,
       props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       kmlLayerEventsConig,
-      kmlLayerInstance.value,
+      kmlLayerInstance,
       emits,
       excludedEvents
     );
 
-    return kmlLayerInstance.value;
+    return kmlLayerInstance;
   })
   .catch((error) => {
     throw error;
@@ -115,8 +115,8 @@ provide($kmlLayerPromise, promise);
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (kmlLayerInstance.value) {
-    kmlLayerInstance.value.setMap(null);
+  if (kmlLayerInstance) {
+    kmlLayerInstance.setMap(null);
   }
 });
 /*******************************************************************************

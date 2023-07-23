@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { inject, onUnmounted, provide, ref } from 'vue';
-import { $circleShapePromise, $mapPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValuesWithoutOptionsProp,
   getComponentEventsConfig,
   getComponentPropsConfig,
+  getPropsValuesWithoutOptionsProp,
   usePluginOptions,
 } from '@/composables';
 import type { ICircleShapeVueComponentProps } from '@/interfaces';
+import { $circleShapePromise, $mapPromise } from '@/keys';
+import { inject, onUnmounted, provide } from 'vue';
 
 /**
  * Circle component
@@ -65,7 +65,7 @@ if (!mapPromise) {
  * CIRCLE SHAPE
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const circleShapeInstance = ref<google.maps.Circle | undefined>();
+let circleShapeInstance: google.maps.Circle | undefined;
 
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -82,7 +82,7 @@ const promise = mapPromise
       ...props.options,
     };
 
-    circleShapeInstance.value = new google.maps.Circle(circleShapeOptions);
+    circleShapeInstance = new google.maps.Circle(circleShapeOptions);
 
     const circleShapePropsConfig = getComponentPropsConfig('GmvCircle');
     const circleShapeEventsConfig = getComponentEventsConfig(
@@ -92,18 +92,18 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       circleShapePropsConfig,
-      circleShapeInstance.value,
+      circleShapeInstance,
       emits,
       props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       circleShapeEventsConfig,
-      circleShapeInstance.value,
+      circleShapeInstance,
       emits,
       excludedEvents
     );
 
-    return circleShapeInstance.value;
+    return circleShapeInstance;
   })
   .catch((error) => {
     throw error;
@@ -127,8 +127,8 @@ provide($circleShapePromise, promise);
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (circleShapeInstance.value) {
-    circleShapeInstance.value.setMap(null);
+  if (circleShapeInstance) {
+    circleShapeInstance.setMap(null);
   }
 });
 /*******************************************************************************

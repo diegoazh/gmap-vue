@@ -7,29 +7,22 @@
 
 <script lang="ts" setup>
 import {
-  inject,
-  onBeforeUnmount,
-  onUnmounted,
-  onUpdated,
-  provide,
-  ref,
-} from 'vue';
-import {
-  type Algorithm,
-  MarkerClusterer,
-  type onClusterClickHandler,
-  type Renderer,
-} from '@googlemaps/markerclusterer';
-import {
-  getComponentEventsConfig,
-  getComponentPropsConfig,
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  getComponentEventsConfig,
+  getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
   usePluginOptions,
 } from '@/composables';
-import { $clusterPromise, $mapPromise } from '@/keys';
 import type { IMarkerClusterVueComponentProps } from '@/interfaces';
+import { $clusterPromise, $mapPromise } from '@/keys';
+import {
+  MarkerClusterer,
+  type Algorithm,
+  type Renderer,
+  type onClusterClickHandler,
+} from '@googlemaps/markerclusterer';
+import { inject, onBeforeUnmount, onUnmounted, onUpdated, provide } from 'vue';
 
 /**
  * Cluster component
@@ -71,7 +64,7 @@ if (!mapPromise) {
  * MARKER CLUSTER
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const clusterInstance = ref<MarkerClusterer | undefined>();
+let clusterInstance: MarkerClusterer | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -95,7 +88,7 @@ const promise = mapPromise
       );
     }
 
-    clusterInstance.value = new MarkerClusterer({
+    clusterInstance = new MarkerClusterer({
       map: mapInstance,
       markers,
       onClusterClick,
@@ -111,19 +104,19 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       clusterIconPropsConfig,
-      clusterInstance.value,
+      clusterInstance,
       emits,
       props
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       clusterIconEventsConfig,
-      clusterInstance.value,
+      clusterInstance,
       emits,
       excludedEvents
     );
 
-    return clusterInstance.value;
+    return clusterInstance;
   })
   .catch((error) => {
     throw error;
@@ -147,20 +140,20 @@ provide($clusterPromise, promise);
  * HOOKS
  ******************************************************************************/
 onBeforeUnmount(() => {
-  if (clusterInstance.value) {
-    clusterInstance.value.clearMarkers();
+  if (clusterInstance) {
+    clusterInstance.clearMarkers();
   }
 });
 
 onUnmounted(() => {
-  if (clusterInstance.value) {
-    clusterInstance.value.setMap(null);
+  if (clusterInstance) {
+    clusterInstance.setMap(null);
   }
 });
 
 onUpdated(() => {
-  if (clusterInstance.value) {
-    clusterInstance.value.render();
+  if (clusterInstance) {
+    clusterInstance.render();
   }
 });
 

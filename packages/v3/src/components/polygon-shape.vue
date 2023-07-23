@@ -10,7 +10,7 @@ import {
 } from '@/composables';
 import type { IPolygonShapeVueComponentProps } from '@/interfaces';
 import { $mapPromise, $polygonShapePromise } from '@/keys';
-import { inject, onUnmounted, provide, ref, watch } from 'vue';
+import { inject, onUnmounted, provide, watch } from 'vue';
 
 /**
  * Polygon component
@@ -74,7 +74,7 @@ if (!mapPromise) {
  * POLYGON SHAPE
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const polygonShapeInstance = ref<google.maps.Polygon | undefined>();
+let polygonShapeInstance: google.maps.Polygon | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -90,7 +90,7 @@ const promise = mapPromise
       ...props.options,
     };
 
-    polygonShapeInstance.value = new google.maps.Polygon(polygonShapeOptions);
+    polygonShapeInstance = new google.maps.Polygon(polygonShapeOptions);
 
     const polygonShapePropsConfig = getComponentPropsConfig('GmvPolygon');
     const polygonShapeEventsConfig = getComponentEventsConfig(
@@ -100,18 +100,18 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polygonShapePropsConfig,
-      polygonShapeInstance.value,
+      polygonShapeInstance,
       emits,
       props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polygonShapeEventsConfig,
-      polygonShapeInstance.value,
+      polygonShapeInstance,
       emits,
       excludedEvents
     );
 
-    return polygonShapeInstance.value;
+    return polygonShapeInstance;
   })
   .catch((error) => {
     throw error;
@@ -142,13 +142,13 @@ const pathsEventListeners: [
 watch(
   () => props.paths,
   (newValue, oldValue) => {
-    if (polygonShapeInstance.value) {
+    if (polygonShapeInstance) {
       if (props.paths && newValue && newValue !== oldValue) {
         clearEvents(pathsEventListeners);
 
-        polygonShapeInstance.value.setPaths(newValue);
+        polygonShapeInstance.setPaths(newValue);
 
-        const mvcArray = polygonShapeInstance.value.getPaths();
+        const mvcArray = polygonShapeInstance.getPaths();
 
         for (let i = 0; i < mvcArray.getLength(); i += 1) {
           const mvcPath = mvcArray.getAt(i);
@@ -158,7 +158,7 @@ watch(
               'insert_at',
               updatePathOrPaths(
                 'paths_changed',
-                polygonShapeInstance.value.getPaths,
+                polygonShapeInstance.getPaths,
                 emits
               )
             ),
@@ -169,7 +169,7 @@ watch(
               'remove_at',
               updatePathOrPaths(
                 'paths_changed',
-                polygonShapeInstance.value.getPaths,
+                polygonShapeInstance.getPaths,
                 emits
               )
             ),
@@ -180,7 +180,7 @@ watch(
               'set_at',
               updatePathOrPaths(
                 'paths_changed',
-                polygonShapeInstance.value.getPaths,
+                polygonShapeInstance.getPaths,
                 emits
               )
             ),
@@ -193,7 +193,7 @@ watch(
             'insert_at',
             updatePathOrPaths(
               'paths_changed',
-              polygonShapeInstance.value.getPaths,
+              polygonShapeInstance.getPaths,
               emits
             )
           ),
@@ -204,7 +204,7 @@ watch(
             'remove_at',
             updatePathOrPaths(
               'paths_changed',
-              polygonShapeInstance.value.getPaths,
+              polygonShapeInstance.getPaths,
               emits
             )
           ),
@@ -215,7 +215,7 @@ watch(
             'set_at',
             updatePathOrPaths(
               'paths_changed',
-              polygonShapeInstance.value.getPaths,
+              polygonShapeInstance.getPaths,
               emits
             )
           ),
@@ -233,8 +233,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (polygonShapeInstance.value) {
-    polygonShapeInstance.value.setMap(null);
+  if (polygonShapeInstance) {
+    polygonShapeInstance.setMap(null);
   }
 });
 

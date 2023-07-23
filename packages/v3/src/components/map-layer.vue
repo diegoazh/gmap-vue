@@ -132,7 +132,7 @@ function getRecycleKey(): string {
  * MAP
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const mapInstance = ref<google.maps.Map | undefined>();
+let mapInstance: google.maps.Map | undefined;
 
 /*******************************************************************************
  * PROVIDE
@@ -154,8 +154,8 @@ let { _resizeCallback } = useResizeBus();
  * @public
  */
 function resize(): void {
-  if (mapInstance.value) {
-    google.maps.event.trigger(mapInstance.value, 'resize');
+  if (mapInstance) {
+    google.maps.event.trigger(mapInstance, 'resize');
   }
 }
 
@@ -166,15 +166,15 @@ function resize(): void {
  * @public
  */
 function resizePreserveCenter(): void {
-  if (!mapInstance.value) {
+  if (!mapInstance) {
     return;
   }
 
-  const oldCenter = mapInstance.value.getCenter();
-  google.maps.event.trigger(mapInstance.value, 'resize');
+  const oldCenter = mapInstance.getCenter();
+  google.maps.event.trigger(mapInstance, 'resize');
 
   if (oldCenter) {
-    mapInstance.value.setCenter(oldCenter);
+    mapInstance.setCenter(oldCenter);
   }
 }
 
@@ -216,8 +216,8 @@ const finalLatLng = computed(
  * @public
  */
 function panBy(x: number, y: number): void {
-  if (mapInstance.value) {
-    mapInstance.value.panBy(x, y);
+  if (mapInstance) {
+    mapInstance.panBy(x, y);
   }
 }
 
@@ -229,8 +229,8 @@ function panBy(x: number, y: number): void {
  * @public
  */
 function panTo(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
-  if (mapInstance.value) {
-    mapInstance.value.panTo(latLng);
+  if (mapInstance) {
+    mapInstance.panTo(latLng);
   }
 }
 
@@ -246,8 +246,8 @@ function panToBounds(
   latLngBounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
   padding: number | google.maps.Padding
 ): void {
-  if (mapInstance.value) {
-    mapInstance.value.panToBounds(latLngBounds, padding);
+  if (mapInstance) {
+    mapInstance.panToBounds(latLngBounds, padding);
   }
 }
 
@@ -264,8 +264,8 @@ function fitBounds(
   bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
   padding: number | google.maps.Padding
 ): void {
-  if (mapInstance.value) {
-    mapInstance.value.fitBounds(bounds, padding);
+  if (mapInstance) {
+    mapInstance.fitBounds(bounds, padding);
   }
 }
 
@@ -275,8 +275,8 @@ function fitBounds(
 watch(
   () => props.zoom,
   (newVal, oldValue) => {
-    if (mapInstance.value && newVal && newVal !== oldValue) {
-      mapInstance.value.setZoom(newVal);
+    if (mapInstance && newVal && newVal !== oldValue) {
+      mapInstance.setZoom(newVal);
     }
   }
 );
@@ -300,14 +300,14 @@ onMounted(() => {
 
       if (props?.options?.recycle && window[recycleKey]) {
         gmvMap.value.appendChild(window[recycleKey].div);
-        mapInstance.value = window[recycleKey].map as google.maps.Map;
-        mapInstance.value.setOptions(mapLayerOptions);
+        mapInstance = window[recycleKey].map as google.maps.Map;
+        mapInstance.setOptions(mapLayerOptions);
       } else {
-        mapInstance.value = new google.maps.Map(gmvMap.value, mapLayerOptions);
-        window[recycleKey] = { map: mapInstance.value };
+        mapInstance = new google.maps.Map(gmvMap.value, mapLayerOptions);
+        window[recycleKey] = { map: mapInstance };
       }
 
-      onMountedResizeBusHook(mapInstance.value, props, resizePreserveCenter);
+      onMountedResizeBusHook(mapInstance, props, resizePreserveCenter);
 
       const mapLayerPropsConfig = getComponentPropsConfig('GmvMap');
       const mapLayerEventsConfig = getComponentEventsConfig('GmvMap', 'auto');
@@ -315,7 +315,7 @@ onMounted(() => {
       // binding properties (two and one way)
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         mapLayerPropsConfig,
-        mapInstance.value,
+        mapInstance,
         emits,
         props
       );
@@ -323,7 +323,7 @@ onMounted(() => {
       // Auto bind all events by default
       bindGoogleMapsEventsToVueEventsOnSetup(
         mapLayerEventsConfig,
-        mapInstance.value,
+        mapInstance,
         emits,
         excludedEvents
       );
@@ -335,7 +335,7 @@ onMounted(() => {
           decrement: () => void,
           shouldUpdate: () => boolean
         ) => {
-          mapInstance.value?.addListener('center_changed', () => {
+          mapInstance?.addListener('center_changed', () => {
             if (shouldUpdate()) {
               /**
                * This event is fired when the map center property changes. It sends the position displayed at the center of the map. If the center or bounds have not been set then the result is undefined. (types: `LatLng|undefined`)
@@ -343,7 +343,7 @@ onMounted(() => {
                * @event center_changed
                * @type {(LatLng|undefined)}
                */
-              emits('center_changed', mapInstance.value?.getCenter());
+              emits('center_changed', mapInstance?.getCenter());
             }
 
             decrement();
@@ -352,7 +352,7 @@ onMounted(() => {
           const updateCenter = () => {
             increment();
 
-            mapInstance.value?.setCenter(finalLatLng.value);
+            mapInstance?.setCenter(finalLatLng.value);
           };
 
           watchPrimitivePropertiesOnSetup(
@@ -363,31 +363,31 @@ onMounted(() => {
         }
       );
 
-      mapInstance.value?.addListener('zoom_changed', () => {
+      mapInstance?.addListener('zoom_changed', () => {
         /**
          * This event is fired when the map zoom property changes. It sends the zoom of the map. If the zoom has not been set then the result is undefined. (types: `number|undefined`)
          *
          * @event zoom_changed
          * @type {(number|undefined)}
          */
-        emits('zoom_changed', mapInstance.value?.getZoom());
+        emits('zoom_changed', mapInstance?.getZoom());
       });
-      mapInstance.value?.addListener('bounds_changed', () => {
+      mapInstance?.addListener('bounds_changed', () => {
         /**
          * This event is fired when the viewport bounds have changed. It sends The lat/lng bounds of the current viewport.
          *
          * @event bounds_changed
          * @type {LatLngBounds}
          */
-        emits('bounds_changed', mapInstance.value?.getBounds());
+        emits('bounds_changed', mapInstance?.getBounds());
       });
 
       if (!mapPromiseDeferred.resolve) {
         throw new Error('mapPromiseDeferred.resolve is undefined');
       }
 
-      mapPromiseDeferred.resolve(mapInstance.value);
-      return mapInstance.value;
+      mapPromiseDeferred.resolve(mapInstance);
+      return mapInstance;
     })
     .catch((error) => {
       throw error;
@@ -397,7 +397,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   const recycleKey = getRecycleKey();
   if (window[recycleKey]) {
-    window[recycleKey].div = mapInstance.value?.getDiv();
+    window[recycleKey].div = mapInstance?.getDiv();
   }
 });
 

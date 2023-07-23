@@ -19,15 +19,7 @@ import {
 } from '@/composables';
 import type { IDrawingManagerVueComponentProps } from '@/interfaces';
 import { $drawingManagerPromise, $mapPromise } from '@/keys';
-import {
-  computed,
-  inject,
-  onUnmounted,
-  provide,
-  ref,
-  useSlots,
-  watch,
-} from 'vue';
+import { computed, inject, onUnmounted, provide, useSlots, watch } from 'vue';
 
 /**
  * DrawingManager component
@@ -93,20 +85,16 @@ if (!mapPromise) {
  * DRAWING MANAGER
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const drawingManagerInstance = ref<
-  google.maps.drawing.DrawingManager | undefined
->();
-const map = ref<google.maps.Map | undefined>();
-const selectedShape = ref<
-  google.maps.drawing.OverlayCompleteEvent | undefined
->();
+let drawingManagerInstance: google.maps.drawing.DrawingManager | undefined;
+let map: google.maps.Map | undefined;
+let selectedShape: google.maps.drawing.OverlayCompleteEvent | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
 
-    map.value = mapInstance;
+    map = mapInstance;
 
     const defaultDrawingControlOptions = {
       drawingModes: [
@@ -128,7 +116,7 @@ const promise = mapPromise
       ...props.options,
     };
 
-    drawingManagerInstance.value = new google.maps.drawing.DrawingManager({
+    drawingManagerInstance = new google.maps.drawing.DrawingManager({
       ...drawingManagerOptions,
       drawingControlOptions: {
         ...defaultDrawingControlOptions,
@@ -146,18 +134,18 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       drawingManagerPropsConfig,
-      drawingManagerInstance.value,
+      drawingManagerInstance,
       emits,
       props
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       drawingManagerEventsConfig,
-      drawingManagerInstance.value,
+      drawingManagerInstance,
       emits,
       excludedEvents
     );
 
-    drawingManagerInstance.value.addListener(
+    drawingManagerInstance.addListener(
       'overlaycomplete',
       (event: google.maps.drawing.OverlayCompleteEvent) => addShape(event)
     );
@@ -169,7 +157,7 @@ const promise = mapPromise
       drawAll();
     }
 
-    return drawingManagerInstance.value;
+    return drawingManagerInstance;
   })
   .catch((error) => {
     throw error;
@@ -217,11 +205,11 @@ const evaluatedPosition = computed(() => {
 const drawAll = () => {
   props.shapes?.forEach((shape: google.maps.drawing.OverlayCompleteEvent) => {
     if (shape.overlay) {
-      if (!map.value) {
+      if (!map) {
         throw new Error('the map instance was not created');
       }
 
-      shape.overlay.setMap(map.value);
+      shape.overlay.setMap(map);
       google.maps.event.addListener(shape.overlay, 'click', () => {
         setSelection(shape);
       });
@@ -230,12 +218,12 @@ const drawAll = () => {
 };
 
 const clearSelection = () => {
-  if (selectedShape.value && selectedShape.value.overlay) {
-    selectedShape.value.overlay.set('fillColor', '#777');
-    selectedShape.value.overlay.set('strokeColor', '#999');
-    selectedShape.value.overlay.setOptions({ editable: false });
-    selectedShape.value.overlay.setDraggable(false);
-    selectedShape.value = undefined;
+  if (selectedShape && selectedShape.overlay) {
+    selectedShape.overlay.set('fillColor', '#777');
+    selectedShape.overlay.set('strokeColor', '#999');
+    selectedShape.overlay.setOptions({ editable: false });
+    selectedShape.overlay.setDraggable(false);
+    selectedShape = undefined;
   }
 };
 
@@ -245,11 +233,11 @@ const setSelection = (shape: google.maps.drawing.OverlayCompleteEvent) => {
 
     shape.overlay.setOptions({ editable: true });
     shape.overlay.setDraggable(true);
-    selectedShape.value = shape;
+    selectedShape = shape;
 
-    if (selectedShape.value && selectedShape.value.overlay) {
-      selectedShape.value.overlay.set('fillColor', '#555');
-      selectedShape.value.overlay.set('strokeColor', '#777');
+    if (selectedShape && selectedShape.overlay) {
+      selectedShape.overlay.set('fillColor', '#555');
+      selectedShape.overlay.set('strokeColor', '#777');
     }
   }
 };
@@ -283,7 +271,7 @@ const addShape = (shape: google.maps.drawing.OverlayCompleteEvent) => {
  * @public
  */
 const setDrawingMode = (mode: google.maps.drawing.OverlayType | null) => {
-  drawingManagerInstance.value?.setDrawingMode(mode);
+  drawingManagerInstance?.setDrawingMode(mode);
 };
 
 /**
@@ -294,9 +282,9 @@ const setDrawingMode = (mode: google.maps.drawing.OverlayType | null) => {
  * @public
  */
 const deleteSelection = () => {
-  if (selectedShape.value && selectedShape.value.overlay) {
-    selectedShape.value.overlay.setMap(null);
-    const index = props.shapes?.indexOf(selectedShape.value);
+  if (selectedShape && selectedShape.overlay) {
+    selectedShape.overlay.setMap(null);
+    const index = props.shapes?.indexOf(selectedShape);
     if (index) {
       const oldShapes = [...(props.shapes?.length ? props.shapes : [])];
       const [shape] = oldShapes.splice(index, 1);
@@ -329,9 +317,9 @@ const clearAll = () => {
 watch(
   () => props.drawingControlOptions,
   (value, oldValue) => {
-    if (drawingManagerInstance.value) {
+    if (drawingManagerInstance) {
       if (value && value !== oldValue) {
-        drawingManagerInstance.value.setOptions({
+        drawingManagerInstance.setOptions({
           drawingControlOptions: { ...oldValue, ...value },
         });
       }
@@ -342,9 +330,9 @@ watch(
 watch(
   () => props.position,
   (value, oldValue) => {
-    if (drawingManagerInstance.value) {
+    if (drawingManagerInstance) {
       if (value && value !== oldValue) {
-        drawingManagerInstance.value.setOptions({
+        drawingManagerInstance.setOptions({
           drawingControlOptions: { position: evaluatedPosition.value },
         });
       }
@@ -355,9 +343,9 @@ watch(
 watch(
   () => props.drawingModes,
   (value, oldValue) => {
-    if (drawingManagerInstance.value) {
+    if (drawingManagerInstance) {
       if (value && value !== oldValue) {
-        drawingManagerInstance.value.setOptions({
+        drawingManagerInstance.setOptions({
           drawingControlOptions: { drawingModes: value },
         });
       }
@@ -368,48 +356,48 @@ watch(
 watch(
   () => props.drawingControlOptions,
   (value) => {
-    if (drawingManagerInstance.value && value) {
-      drawingManagerInstance.value.setOptions({ drawingControlOptions: value });
+    if (drawingManagerInstance && value) {
+      drawingManagerInstance.setOptions({ drawingControlOptions: value });
     }
   }
 );
 watch(
   () => props.circleOptions,
   (value) => {
-    if (drawingManagerInstance.value && value) {
-      drawingManagerInstance.value.setOptions({ circleOptions: value });
+    if (drawingManagerInstance && value) {
+      drawingManagerInstance.setOptions({ circleOptions: value });
     }
   }
 );
 watch(
   () => props.markerOptions,
   (value) => {
-    if (drawingManagerInstance.value && value) {
-      drawingManagerInstance.value.setOptions({ markerOptions: value });
+    if (drawingManagerInstance && value) {
+      drawingManagerInstance.setOptions({ markerOptions: value });
     }
   }
 );
 watch(
   () => props.polygonOptions,
   (value) => {
-    if (drawingManagerInstance.value && value) {
-      drawingManagerInstance.value.setOptions({ polygonOptions: value });
+    if (drawingManagerInstance && value) {
+      drawingManagerInstance.setOptions({ polygonOptions: value });
     }
   }
 );
 watch(
   () => props.polylineOptions,
   (value) => {
-    if (drawingManagerInstance.value && value) {
-      drawingManagerInstance.value.setOptions({ polylineOptions: value });
+    if (drawingManagerInstance && value) {
+      drawingManagerInstance.setOptions({ polylineOptions: value });
     }
   }
 );
 watch(
   () => props.rectangleOptions,
   (value) => {
-    if (drawingManagerInstance.value && value) {
-      drawingManagerInstance.value.setOptions({ rectangleOptions: value });
+    if (drawingManagerInstance && value) {
+      drawingManagerInstance.setOptions({ rectangleOptions: value });
     }
   }
 );
@@ -417,8 +405,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (drawingManagerInstance.value) {
-    drawingManagerInstance.value.setMap(null);
+  if (drawingManagerInstance) {
+    drawingManagerInstance.setMap(null);
   }
 });
 

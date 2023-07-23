@@ -1,16 +1,16 @@
 <script lang="tsx" setup>
-import { h, inject, onUnmounted, provide, ref, useSlots } from 'vue';
-import { $clusterPromise, $mapPromise, $markerPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValuesWithoutOptionsProp,
   getComponentEventsConfig,
   getComponentPropsConfig,
+  getPropsValuesWithoutOptionsProp,
   usePluginOptions,
 } from '@/composables';
-import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { IMarkerIconVueComponentProps } from '@/interfaces';
+import { $clusterPromise, $mapPromise, $markerPromise } from '@/keys';
+import type { MarkerClusterer } from '@googlemaps/markerclusterer';
+import { h, inject, onUnmounted, provide, useSlots } from 'vue';
 
 /**
  * Marker component
@@ -69,7 +69,7 @@ const slots = useSlots();
  ******************************************************************************/
 const mapPromise = inject($mapPromise);
 const clusterPromise = inject($clusterPromise, undefined);
-const clusterOwner = ref<MarkerClusterer | undefined>();
+let clusterOwner: MarkerClusterer | undefined;
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
@@ -79,7 +79,7 @@ if (!mapPromise) {
  * MARKER
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const markerInstance = ref<google.maps.Marker | undefined>();
+let markerInstance: google.maps.Marker | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
@@ -100,7 +100,7 @@ const promise = mapPromise
       markerIconOptions.map = undefined;
     }
 
-    markerInstance.value = new google.maps.Marker(markerIconOptions);
+    markerInstance = new google.maps.Marker(markerIconOptions);
 
     const markerIconPropsConfig = getComponentPropsConfig('GmvMarker');
     const markerIconEventsConfig = getComponentEventsConfig(
@@ -111,7 +111,7 @@ const promise = mapPromise
     // bind prop events of google maps
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       markerIconPropsConfig,
-      markerInstance.value,
+      markerInstance,
       emits,
       props
     );
@@ -119,13 +119,13 @@ const promise = mapPromise
     // binding events
     bindGoogleMapsEventsToVueEventsOnSetup(
       markerIconEventsConfig,
-      markerInstance.value,
+      markerInstance,
       emits,
       excludedEvents
     );
 
-    markerInstance.value?.addListener('dragend', () => {
-      const newPosition = markerInstance.value?.getPosition();
+    markerInstance?.addListener('dragend', () => {
+      const newPosition = markerInstance?.getPosition();
       /**
        * An event to detect when a position changes
        * @property {Object} position Object with lat and lng values, eg: { lat: 10.0, lng: 10.0 }
@@ -138,12 +138,12 @@ const promise = mapPromise
 
     if (clusterPromise) {
       clusterPromise.then((clusterInstance) => {
-        clusterInstance?.addMarker(markerInstance.value!);
-        clusterOwner.value = clusterInstance;
+        clusterInstance?.addMarker(markerInstance!);
+        clusterOwner = clusterInstance;
       });
     }
 
-    return markerInstance.value;
+    return markerInstance;
   })
   .catch((reason) => {
     throw reason;
@@ -167,17 +167,17 @@ provide($markerPromise, promise);
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (!markerInstance.value) {
+  if (!markerInstance) {
     return;
   }
 
-  if (clusterOwner.value) {
+  if (clusterOwner) {
     // Repaint will be performed in `updated()` of cluster
-    clusterOwner.value.removeMarker(markerInstance.value!, true);
+    clusterOwner.removeMarker(markerInstance!, true);
     /* Performance optimization when destroying a large number of markers */
-    clusterOwner.value = undefined;
-  } else if (markerInstance.value) {
-    markerInstance.value.setMap(null);
+    clusterOwner = undefined;
+  } else if (markerInstance) {
+    markerInstance.setMap(null);
   }
 });
 

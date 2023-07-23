@@ -9,17 +9,17 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, provide, ref, watch } from 'vue';
-import { $infoWindowPromise, $mapPromise, $markerPromise } from '@/keys';
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
-  getPropsValuesWithoutOptionsProp,
   getComponentEventsConfig,
   getComponentPropsConfig,
+  getPropsValuesWithoutOptionsProp,
   usePluginOptions,
 } from '@/composables';
 import type { IInfoWindowVueComponentProps } from '@/interfaces';
+import { $infoWindowPromise, $mapPromise, $markerPromise } from '@/keys';
+import { inject, onMounted, provide, ref, watch } from 'vue';
 
 /**
  * InfoWindow component
@@ -71,16 +71,16 @@ if (!mapPromise) {
  * INFO WINDOW
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const map = ref<google.maps.Map | undefined>();
-const markerOwner = ref<google.maps.Marker | undefined>();
-const infoWindowInstance = ref<google.maps.InfoWindow | undefined>();
+let map: google.maps.Map | undefined;
+let markerOwner: google.maps.Marker | undefined;
+let infoWindowInstance: google.maps.InfoWindow | undefined;
 const promise = mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
 
-    map.value = mapInstance;
+    map = mapInstance;
 
     const infoWindowOptions: Partial<IInfoWindowVueComponentProps> & {
       map: google.maps.Map | undefined;
@@ -93,11 +93,11 @@ const promise = mapPromise
 
     if (markerPromise) {
       markerPromise.then((markerInstance) => {
-        markerOwner.value = markerInstance;
+        markerOwner = markerInstance;
       });
     }
 
-    infoWindowInstance.value = new google.maps.InfoWindow({
+    infoWindowInstance = new google.maps.InfoWindow({
       ...infoWindowOptions,
       content: gmvInfoWindow.value,
     });
@@ -110,21 +110,21 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       infoWindowPropsConfig,
-      infoWindowInstance.value,
+      infoWindowInstance,
       emits,
       props
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       infoWindowEventsConfig,
-      infoWindowInstance.value,
+      infoWindowInstance,
       emits,
       excludedEvents
     );
 
     openInfoWindow();
 
-    return infoWindowInstance.value;
+    return infoWindowInstance;
   })
   .catch((error) => {
     throw error;
@@ -141,15 +141,15 @@ provide($infoWindowPromise, promise);
  ******************************************************************************/
 function openInfoWindow(): void {
   if (props.opened) {
-    if (markerOwner.value) {
-      infoWindowInstance.value?.open(map.value, markerOwner.value);
+    if (markerOwner) {
+      infoWindowInstance?.open(map, markerOwner);
     } else if (props.marker) {
-      infoWindowInstance.value?.open(map.value, props.marker);
+      infoWindowInstance?.open(map, props.marker);
     } else {
-      infoWindowInstance.value?.open(map.value);
+      infoWindowInstance?.open(map);
     }
   } else {
-    infoWindowInstance.value?.close();
+    infoWindowInstance?.close();
   }
 }
 
@@ -167,7 +167,7 @@ watch(
   () => props.position,
   (value, oldValue) => {
     if (value && value !== oldValue) {
-      infoWindowInstance.value?.setPosition(value);
+      infoWindowInstance?.setPosition(value);
     }
   }
 );
@@ -175,7 +175,7 @@ watch(
   () => props.content,
   (value, oldValue) => {
     if (value && value !== oldValue) {
-      infoWindowInstance.value?.setContent(value);
+      infoWindowInstance?.setContent(value);
     }
   }
 );

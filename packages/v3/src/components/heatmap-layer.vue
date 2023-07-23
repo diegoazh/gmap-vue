@@ -9,7 +9,7 @@ import {
 } from '@/composables';
 import type { IHeatmapLayerVueComponentProps } from '@/interfaces';
 import { $heatmapLayerPromise, $mapPromise } from '@/keys';
-import { inject, onUnmounted, provide, ref, watch } from 'vue';
+import { inject, onUnmounted, provide, watch } from 'vue';
 
 /**
  * HeatmapLayer component
@@ -58,9 +58,7 @@ if (!mapPromise) {
  * HEATMAP
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const heatMapLayerInstance = ref<
-  google.maps.visualization.HeatmapLayer | undefined
->();
+let heatMapLayerInstance: google.maps.visualization.HeatmapLayer | undefined;
 
 const promise = mapPromise
   ?.then((mapInstance) => {
@@ -77,7 +75,7 @@ const promise = mapPromise
       ...props.options,
     };
 
-    heatMapLayerInstance.value = new google.maps.visualization.HeatmapLayer(
+    heatMapLayerInstance = new google.maps.visualization.HeatmapLayer(
       heatmapLayerOptions
     );
 
@@ -89,19 +87,19 @@ const promise = mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       heatmapLayerPropsConfig,
-      heatMapLayerInstance.value,
+      heatMapLayerInstance,
       emits,
       props
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       heatmapLayerEventsConfig,
-      heatMapLayerInstance.value,
+      heatMapLayerInstance,
       emits,
       excludedEvents
     );
 
-    return heatMapLayerInstance.value;
+    return heatMapLayerInstance;
   })
   .catch((error) => {
     throw error;
@@ -122,9 +120,9 @@ provide($heatmapLayerPromise, promise);
 watch(
   () => props.data,
   (value, oldValue) => {
-    if (heatMapLayerInstance.value) {
+    if (heatMapLayerInstance) {
       if (value && value !== oldValue) {
-        heatMapLayerInstance.value.setData(value);
+        heatMapLayerInstance.setData(value);
       }
     }
   }
@@ -134,8 +132,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(() => {
-  if (heatMapLayerInstance.value) {
-    heatMapLayerInstance.value.setMap(null);
+  if (heatMapLayerInstance) {
+    heatMapLayerInstance.setMap(null);
   }
 });
 /*******************************************************************************

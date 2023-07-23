@@ -16,6 +16,9 @@
 </template>
 
 <script>
+// to use with `pnpm run dev` import from '../../../src/main'
+// to use with `pnpm run test:e2e` import from '../../../dist/main.es'
+// to use with `pnpm run test:e2e:ci` import from '../../../dist/main.es'
 import { components } from '../../../dist/main.es';
 
 const { Cluster } = components;

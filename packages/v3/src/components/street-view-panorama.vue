@@ -86,9 +86,7 @@ const emits = defineEmits(getComponentEventsConfig('GmvStreetViewPanorama'));
  * STREET VIEW PANORAMA
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-const streetViewPanoramaInstance = ref<
-  google.maps.StreetViewPanorama | undefined
->();
+let streetViewPanoramaInstance: google.maps.StreetViewPanorama | undefined;
 
 /*******************************************************************************
  * PROVIDE
@@ -113,8 +111,8 @@ let { _resizeCallback } = useResizeBus();
  * @public
  */
 function resize(): void {
-  if (streetViewPanoramaInstance.value) {
-    google.maps.event.trigger(streetViewPanoramaInstance.value, 'resize');
+  if (streetViewPanoramaInstance) {
+    google.maps.event.trigger(streetViewPanoramaInstance, 'resize');
   }
 }
 
@@ -125,15 +123,15 @@ function resize(): void {
  * @public
  */
 function resizePreserveCenter(): void {
-  if (!streetViewPanoramaInstance.value) {
+  if (!streetViewPanoramaInstance) {
     return;
   }
 
-  const oldCenter = streetViewPanoramaInstance.value.getPosition();
-  google.maps.event.trigger(streetViewPanoramaInstance.value, 'resize');
+  const oldCenter = streetViewPanoramaInstance.getPosition();
+  google.maps.event.trigger(streetViewPanoramaInstance, 'resize');
 
   if (oldCenter) {
-    streetViewPanoramaInstance.value.setPosition(oldCenter);
+    streetViewPanoramaInstance.setPosition(oldCenter);
   }
 }
 
@@ -174,11 +172,11 @@ watch(
   () => props.zoom,
   (newValue, oldValue) => {
     if (
-      streetViewPanoramaInstance.value &&
+      streetViewPanoramaInstance &&
       newValue &&
       !isEqual(newValue, oldValue)
     ) {
-      streetViewPanoramaInstance.value.setZoom(newValue);
+      streetViewPanoramaInstance.setZoom(newValue);
     }
   }
 );
@@ -187,11 +185,11 @@ watch(
   () => props.pov,
   (newValue, oldValue) => {
     if (
-      streetViewPanoramaInstance.value &&
+      streetViewPanoramaInstance &&
       newValue &&
       !isEqual(newValue, oldValue)
     ) {
-      streetViewPanoramaInstance.value.setPov(newValue);
+      streetViewPanoramaInstance.setPov(newValue);
     }
   }
 );
@@ -200,11 +198,11 @@ watch(
   () => props.pano,
   (newValue, oldValue) => {
     if (
-      streetViewPanoramaInstance.value &&
+      streetViewPanoramaInstance &&
       newValue &&
       !isEqual(newValue, oldValue)
     ) {
-      streetViewPanoramaInstance.value.setPano(newValue);
+      streetViewPanoramaInstance.setPano(newValue);
     }
   }
 );
@@ -229,7 +227,7 @@ onMounted(() => {
         ...props.options,
       };
 
-      streetViewPanoramaInstance.value = new google.maps.StreetViewPanorama(
+      streetViewPanoramaInstance = new google.maps.StreetViewPanorama(
         gmvStreetViewPanorama.value,
         streetViewOptions
       );
@@ -244,13 +242,13 @@ onMounted(() => {
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         streetViewPanoramaPropsConfig,
-        streetViewPanoramaInstance.value,
+        streetViewPanoramaInstance,
         emits,
         props
       );
       bindGoogleMapsEventsToVueEventsOnSetup(
         streetViewPanoramaEventsConfig,
-        streetViewPanoramaInstance.value,
+        streetViewPanoramaInstance,
         emits,
         excludedEvents
       );
@@ -260,22 +258,19 @@ onMounted(() => {
         // Panos take a while to load
         increment();
 
-        if (!streetViewPanoramaInstance.value) {
+        if (!streetViewPanoramaInstance) {
           throw new Error('the street view panorama instance was not created');
         }
 
-        streetViewPanoramaInstance.value.addListener('position_changed', () => {
+        streetViewPanoramaInstance.addListener('position_changed', () => {
           if (shouldUpdate()) {
-            if (!streetViewPanoramaInstance.value) {
+            if (!streetViewPanoramaInstance) {
               throw new Error(
                 'the street view panorama instance was not created'
               );
             }
 
-            emits(
-              'position_changed',
-              streetViewPanoramaInstance.value.getPosition()
-            );
+            emits('position_changed', streetViewPanoramaInstance.getPosition());
           }
 
           decrement();
@@ -283,13 +278,13 @@ onMounted(() => {
 
         const updateCenter = () => {
           increment();
-          if (!streetViewPanoramaInstance.value) {
+          if (!streetViewPanoramaInstance) {
             throw new Error(
               'the street view panorama instance was not created'
             );
           }
 
-          streetViewPanoramaInstance.value.setPosition(finalLatLng.value);
+          streetViewPanoramaInstance.setPosition(finalLatLng.value);
         };
 
         watchPrimitivePropertiesOnSetup(
@@ -306,14 +301,12 @@ onMounted(() => {
       }
 
       if (map) {
-        map.setStreetView(streetViewPanoramaInstance.value);
+        map.setStreetView(streetViewPanoramaInstance);
       }
 
-      streetViewPanoramaPromiseDeferred.resolve(
-        streetViewPanoramaInstance.value
-      );
+      streetViewPanoramaPromiseDeferred.resolve(streetViewPanoramaInstance);
 
-      return streetViewPanoramaInstance.value;
+      return streetViewPanoramaInstance;
     })
     .catch((error) => {
       throw error;
