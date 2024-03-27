@@ -17,7 +17,7 @@ import type {
   IGmapVueElementOptions,
   IGoogleMapProp,
   ILoadPluginOptions,
-  IPluginOptions,
+  IGmapVuePluginOptions,
   IVueProp,
 } from '@/interfaces';
 import type { Emitter, EventType } from 'mitt';
@@ -75,7 +75,7 @@ export type PluginComponentConfig = {
 };
 
 /** @internal */
-export type GlobalGoogleObject = { [key: string]: any };
+export type GlobalGoogleObject = typeof google;
 
 export type GoogleMapsAPIInitializerFn = (
   options: ILoadPluginOptions,
@@ -83,12 +83,12 @@ export type GoogleMapsAPIInitializerFn = (
 ) => void;
 
 /** @internal */
-export type LazyValueGetterFn = () => Promise<any>;
+export type LazyValueGetterFn<T> = () => Promise<T>;
 
 /** @internal */
 export type PromiseLazyCreatorFn = (
-  options: IPluginOptions
-) => LazyValueGetterFn;
+  options: IGmapVuePluginOptions
+) => LazyValueGetterFn<GlobalGoogleObject>;
 
 /** @internal */
 export type OldHtmlInputElement = HTMLInputElement & {
@@ -125,6 +125,7 @@ export type GmvSharedComposables = {
   useStreetViewPanoramaPromise: () => Promise<
     google.maps.StreetViewPanorama | undefined
   >;
+  usePluginOptions: () => IGmapVuePluginOptions;
 };
 
 export type GmvUtilities = {
@@ -132,5 +133,5 @@ export type GmvUtilities = {
   pluginComponentBuilder: (
     providedOptions: IGmapVueElementOptions
   ) => ComponentOptions;
-  getGoogleMapsAPI: () => false | typeof google;
+  getGoogleMapsAPI: () => false | GlobalGoogleObject;
 };

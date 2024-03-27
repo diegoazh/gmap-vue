@@ -4,7 +4,7 @@
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
   "main": "dist/main.umd.js",
   "module": "dist/main.es.js",
-  "typings": "dist/types/src/main.d.ts",
+  "typings": "dist/types",
   "unpkg": "dist/main.umd.js",
   "jsdelivr": "dist/main.umd.js",
   "browser": {
@@ -14,6 +14,25 @@
     "node": ">=12",
     "npm": ">6"
   },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/types/src/main.d.ts",
+        "default": "./dist/main.es.js"
+      },
+      "require": {
+        "types": "./dist/types/src/main.d.ts",
+        "default": "./dist/main.umd.js"
+      },
+      "default": {
+        "types": "./dist/types/src/main.d.ts",
+        "default": "./dist/main.es.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -40,16 +59,6 @@
     "copy:components": "cpx \"./src/components/*.vue\" \"./dist/components\" --verbose",
     "release": "semantic-release"
   },
-  "exports": {
-    ".": {
-      "import": "./dist/main.es.js",
-      "require": "./dist/main.umd.js",
-      "default": "./dist/main.es.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/diegoazh/gmap-vue.git"
@@ -59,10 +68,10 @@
   },
   "homepage": "https://github.com/diegoazh/gmap-vue#readme",
   "dependencies": {
-    "@googlemaps/markerclusterer": "^2.1.4",
+    "@googlemaps/markerclusterer": "^2.5.3",
     "lodash.isequal": "^4.5.0",
-    "mitt": "^3.0.0",
-    "vue": "^3.3.4"
+    "mitt": "^3.0.1",
+    "vue": "^3.4.21"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.0",

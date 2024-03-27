@@ -1,4 +1,4 @@
-import type { IPluginOptions, IVueProp } from '@/interfaces';
+import type { IGmapVuePluginOptions, IVueProp } from '@/interfaces';
 import type {
   GmapVuePluginProps,
   LazyValueGetterFn,
@@ -63,11 +63,13 @@ export function getPropsValuesWithoutOptionsProp(
  *
  * @internal
  */
-export function getLazyValue(fn: () => Promise<any>): LazyValueGetterFn {
+export function getLazyValue<T>(
+  fn: LazyValueGetterFn<T>
+): LazyValueGetterFn<T> {
   let called = false;
-  let ret: Promise<any>;
+  let ret: Promise<T>;
 
-  return (): Promise<any> => {
+  return (): Promise<T> => {
     if (!called) {
       called = true;
       ret = fn();
@@ -351,7 +353,7 @@ export function watchPrimitivePropertiesOnSetup(
 export function bindEvents(
   eventsConfig: string[],
   googleMapsInst: Record<string, any>,
-  vueInst: ComponentPublicInstance & { $gmapOptions: IPluginOptions },
+  vueInst: ComponentPublicInstance & { $gmapOptions: IGmapVuePluginOptions },
   excludedEvents: string[] = []
 ): void {
   eventsConfig.forEach((eventName) => {
@@ -382,7 +384,7 @@ export function bindEvents(
 export function bindProps(
   propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
   AnyGoogleMapsClassInstance: Record<string, any>,
-  vueInst: ComponentPublicInstance & { $gmapOptions: IPluginOptions }
+  vueInst: ComponentPublicInstance & { $gmapOptions: IGmapVuePluginOptions }
 ): void {
   Object.entries(vueInst.$props).forEach(([propKey, propValue]) => {
     if (!propsComponentConfig.noBind.includes(propKey)) {

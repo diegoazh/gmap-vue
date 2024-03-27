@@ -18,13 +18,12 @@ import {
   pluginComponentBuilder,
   saveLazyPromiseAndFinalOptions,
   sharedComposables,
-  useDefaultResizeBus,
   usePromiseLazyBuilderFn,
 } from '@/composables';
-import type { IGoogleMapsApiObject, IPluginOptions } from '@/interfaces';
+import type { IGmapVuePluginOptions, IGoogleMapsApiObject } from '@/interfaces';
 import type { GlobalGoogleObject, GmvComponents, GmvUtilities } from '@/types';
 import type { Emitter, EventType } from 'mitt';
-import type { App, Plugin } from 'vue';
+import type { App, FunctionPlugin, Plugin } from 'vue';
 
 /**
  * Vue augmentations
@@ -33,7 +32,7 @@ declare module 'vue' {
   interface ComponentCustomProperties {
     $gmapDefaultResizeBus: Emitter<Record<EventType, unknown>>;
     $gmapApiPromiseLazy: () => Promise<any>;
-    $gmapOptions: IPluginOptions;
+    $gmapOptions: IGmapVuePluginOptions;
   }
 }
 
@@ -78,7 +77,7 @@ globalThis.GoogleMapsApi = { isReady: false };
  * when its ready on the window object
  * @function
  */
-function getGoogleMapsAPI(): false | typeof google {
+function getGoogleMapsAPI(): false | GlobalGoogleObject {
   return globalThis.GoogleMapsApi.isReady && globalThis.google;
 }
 
@@ -136,11 +135,14 @@ const utilities: GmvUtilities = {
  * GmapVue install function
  *
  * @param  {Object} app the vue app instance
- * @param  {PluginOptions} [options] configuration object to initialize the GmapVue plugin
+ * @param  {IGmapVuePluginOptions} [options] configuration object to initialize the GmapVue plugin
  */
-function pluginInstallFn(app: App, options?: IPluginOptions): void {
+const pluginInstallFn: FunctionPlugin<IGmapVuePluginOptions> = (
+  app: App,
+  options?: IGmapVuePluginOptions
+): void => {
   // see defaults
-  const finalOptions: IPluginOptions = {
+  const finalOptions: IGmapVuePluginOptions = {
     dynamicLoad: false,
     installComponents: true,
     ...options,
@@ -175,11 +177,9 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
    *
    * These properties are the same references that you can find in the instance,
    * but they are static because they are attached to the main Vue object.
-   * app.config.globalProperties.$gmapDefaultResizeBus - function to use the default resize bus
    * app.config.globalProperties.$googleMapsApiPromiseLazy - function that you can use to wait until Google Maps API is ready
    * app.config.globalProperties.$gmapOptions - object with the final options passed to Google Maps API to configure it
    */
-  app.config.globalProperties.$gmapDefaultResizeBus = useDefaultResizeBus();
   app.config.globalProperties.$gmapApiPromiseLazy = googleMapsApiPromiseLazy;
   app.config.globalProperties.$gmapOptions = finalOptions;
 
@@ -198,7 +198,7 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
       .component('GmvRectangle', Rectangle)
       .component('GmvDrawingManager', DrawingManager);
   }
-}
+};
 
 /**
  * Export the default Vue object for plugins
@@ -206,9 +206,11 @@ function pluginInstallFn(app: App, options?: IPluginOptions): void {
  *
  * @see pluginInstallFn
  * @type GmapVue
- * @property {Function} install function to install the plugin
+ * @property {FunctionPlugin} install function to install the plugin
  */
-const GmapVuePlugin: Plugin = { install: pluginInstallFn };
+const GmapVuePlugin: Plugin<IGmapVuePluginOptions> = {
+  install: pluginInstallFn,
+};
 
 export {
   GmapVuePlugin,

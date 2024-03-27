@@ -19,12 +19,12 @@ export interface IGoogleMapsApiObject {
  * @property {string} key - The Google Maps key
  * @property {string} libraries - The Google Maps libraries that should be loaded
  * @property {string?} v - The Google Maps version that should be loaded
- * @property {string?} callback - The callback name that should be called when Google Maps is ready
- * @property {string?} customCallback - The custom callback name that should be called when Google Maps is ready this overrides the callback property
+ * @property {string?} callback - The callback name that should be called when Google Maps is ready, if you set this do not forget to call `globalThis.GoogleMapsCallback` function in your callback
+ * @property {string?} customCallback - The custom callback name that should be called when Google Maps is ready this overrides the callback property [DEPRECATED]
  */
 export interface ILoadPluginOptions {
-  key: string;
-  libraries: string;
+  key?: string;
+  libraries?: string;
   v?: string;
   callback?: string;
   customCallback?: string;
@@ -37,13 +37,13 @@ export interface ILoadPluginOptions {
  * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
  * @public
  * @typedef {object} PluginOptions - The options required to configure the plugin
- * @property {boolean} [dynamicLoad=false] - The plugin should be loaded dynamically
+ * @property {boolean} [dynamicLoad=false] - The plugin should be loaded dynamically, if you set this to `true` the plugin doesn't load the Google Maps API
  * @property {boolean} [installComponents=true] - The plugin should install all components
  * @property {LoadPluginOptions} [load] - All load plugin options
  * @property {boolean} [loadCn=false] - The plugin should be loaded using the cn url
  * @property {ExcludeEvents} [excludeEventsOnAllComponents] - A function that should return an array of events that should not be fired
  */
-export interface IPluginOptions {
+export interface IGmapVuePluginOptions {
   dynamicLoad?: boolean;
   installComponents?: boolean;
   load?: ILoadPluginOptions;

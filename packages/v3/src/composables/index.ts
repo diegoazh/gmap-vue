@@ -1,6 +1,9 @@
 import type { GmvSharedComposables } from '../types';
 import { useMapPromise } from './map-promise';
-import { useGoogleMapsApiPromiseLazy } from './promise-lazy-builder';
+import {
+  useGoogleMapsApiPromiseLazy,
+  usePluginOptions,
+} from './promise-lazy-builder';
 import { useResizeBus } from './resize-bus';
 import { useStreetViewPanoramaPromise } from './street-view-panorama-promise';
 
@@ -28,4 +31,5 @@ export const sharedComposables: GmvSharedComposables = {
   useResizeBus,
   useGoogleMapsApiPromiseLazy,
   useStreetViewPanoramaPromise,
+  usePluginOptions,
 };
