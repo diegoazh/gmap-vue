@@ -13,7 +13,7 @@ const promise: Promise<google.maps.Map | undefined> = new Promise(
 );
 
 /**
- * This function returns a promise when resolved returns the map-layer component
+ * This function returns a promise, when it is resolved returns the map-layer component
  * object
  *
  * @public
