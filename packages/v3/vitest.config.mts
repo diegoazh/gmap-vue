@@ -10,8 +10,10 @@ export default defineConfig({
     },
   },
   test: {
-    deps: {
-      external: ['google.maps'],
+    server: {
+      deps: {
+        external: ['google.maps'],
+      },
     },
     environment: 'happy-dom', // or 'jsdom', 'node'
     coverage: {

@@ -57,9 +57,7 @@
 </template>
 
 <script>
-import { composables } from '../../../dist/main.es';
-
-const { useMapPromise } = composables;
+import { useMapPromise } from '../../../dist/main.es';
 
 export default {
   name: 'MapTest',
