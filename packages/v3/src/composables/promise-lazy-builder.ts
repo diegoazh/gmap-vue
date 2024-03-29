@@ -23,10 +23,10 @@ let $googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>;
  */
 export function usePromiseLazyBuilderFn(
   googleMapsApiInitializer: GoogleMapsAPIInitializerFn,
-  GoogleMapsApi: IGoogleMapsApiObject
+  GoogleMapsApi: IGoogleMapsApiObject,
 ): PromiseLazyCreatorFn {
   return (
-    options: IGmapVuePluginOptions
+    options: IGmapVuePluginOptions,
   ): LazyValueGetterFn<GlobalGoogleObject> => {
     /**
      * Things to do once the API is loaded
@@ -39,7 +39,7 @@ export function usePromiseLazyBuilderFn(
     }
 
     return getLazyValue(() =>
-      createFinalPromise(options, googleMapsApiInitializer, onMapsReady)
+      createFinalPromise(options, googleMapsApiInitializer, onMapsReady),
     );
   };
 }
@@ -98,7 +98,7 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
 function createFinalPromise(
   options: IGmapVuePluginOptions,
   googleMapsApiInitializer: GoogleMapsAPIInitializerFn,
-  onMapsReady: () => GlobalGoogleObject
+  onMapsReady: () => GlobalGoogleObject,
 ): Promise<GlobalGoogleObject> {
   return new Promise((resolve, reject) => {
     if (typeof window === 'undefined') {
@@ -110,7 +110,7 @@ function createFinalPromise(
       createCallbackAndChecksIfMapIsLoaded(resolve);
 
       if (!options.dynamicLoad && options.load) {
-        googleMapsApiInitializer(options.load, options?.loadCn);
+        googleMapsApiInitializer(options.load);
       }
     } catch (err) {
       reject(err);
@@ -131,7 +131,7 @@ function createFinalPromise(
  */
 export function saveLazyPromiseAndFinalOptions(
   finalOptions: IGmapVuePluginOptions,
-  googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>
+  googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>,
 ): void {
   if (!$finalOptions) {
     $finalOptions = finalOptions;

@@ -1,17 +1,18 @@
-import type { InjectionKey } from 'vue';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
+import type { InjectionKey } from 'vue';
+import type { IGmapVuePluginOptions } from '../interfaces';
 
 export const $mapPromise = Symbol('mapPromise') as InjectionKey<
   Promise<google.maps.Map | undefined>
 >;
 export const $streetViewPanoramaPromise = Symbol(
-  'streetViewPanoramaPromise'
+  'streetViewPanoramaPromise',
 ) as InjectionKey<Promise<google.maps.StreetViewPanorama | undefined>>;
 export const $clusterPromise = Symbol('clusterPromise') as InjectionKey<
   Promise<MarkerClusterer | undefined>
 >;
 export const $markerPromise = Symbol('markerPromise') as InjectionKey<
-  Promise<google.maps.Marker | undefined>
+  Promise<google.maps.marker.AdvancedMarkerElement | undefined>
 >;
 export const $infoWindowPromise = Symbol('infoWindowPromise') as InjectionKey<
   Promise<google.maps.InfoWindow | undefined>
@@ -20,20 +21,23 @@ export const $kmlLayerPromise = Symbol('kmlLayerPromise') as InjectionKey<
   Promise<google.maps.KmlLayer | undefined>
 >;
 export const $heatmapLayerPromise = Symbol(
-  'heatmapLayerPromise'
+  'heatmapLayerPromise',
 ) as InjectionKey<Promise<google.maps.visualization.HeatmapLayer | undefined>>;
 export const $circleShapePromise = Symbol('circleShapePromise') as InjectionKey<
   Promise<google.maps.Circle | undefined>
 >;
 export const $polygonShapePromise = Symbol(
-  'polygonShapePromise'
+  'polygonShapePromise',
 ) as InjectionKey<Promise<google.maps.Polygon | undefined>>;
 export const $polylineShapePromise = Symbol(
-  'polylineShapePromise'
+  'polylineShapePromise',
 ) as InjectionKey<Promise<google.maps.Polyline | undefined>>;
 export const $rectangleShapePromise = Symbol(
-  'rectangleShapePromise'
+  'rectangleShapePromise',
 ) as InjectionKey<Promise<google.maps.Rectangle | undefined>>;
 export const $drawingManagerPromise = Symbol(
-  'drawingManagerPromise'
+  'drawingManagerPromise',
 ) as InjectionKey<Promise<google.maps.drawing.DrawingManager | undefined>>;
+export const $gmapOptions = Symbol('gmapOptions') as InjectionKey<
+  IGmapVuePluginOptions | undefined
+>;

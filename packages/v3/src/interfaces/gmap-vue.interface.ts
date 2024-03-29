@@ -1,13 +1,15 @@
 import type { SinglePluginComponentConfig } from '@/types';
 import type {
   Algorithm,
+  MarkerClusterer,
   onClusterClickHandler,
   Renderer,
 } from '@googlemaps/markerclusterer';
 import type { Emitter, EventType } from 'mitt';
+import type { Ref, RendererElement, RendererNode, VNode } from 'vue';
 
 /**
- * @internal
+ * @public
  */
 export interface IGoogleMapsApiObject {
   isReady: boolean;
@@ -17,17 +19,28 @@ export interface IGoogleMapsApiObject {
  * The object which contain all event names to and params that should be used to add listener to the Google Maps instance
  * @typedef {Object} LoadPluginOptions
  * @property {string} key - The Google Maps key
- * @property {string} libraries - The Google Maps libraries that should be loaded
- * @property {string?} v - The Google Maps version that should be loaded
  * @property {string?} callback - The callback name that should be called when Google Maps is ready, if you set this do not forget to call `globalThis.GoogleMapsCallback` function in your callback
- * @property {string?} customCallback - The custom callback name that should be called when Google Maps is ready this overrides the callback property [DEPRECATED]
+ * @property {string?} v - The version of the Maps JavaScript API to load.
+ * @property {string} libraries - A comma-separated list of additional Maps JavaScript API libraries to load. Specifying a fixed set of libraries is not generally recommended, but is available for developers who wish to finely tune the caching behavior on their website.
+ * @property {string} language - The language to use. This affects the names of controls, copyright notices, driving directions, and control labels, and the responses to service requests. See the list of supported languages.
+ * @property {string} region - The region code to use. This alters the map's behavior based on a given country or territory.
+ * @property {string} authReferrerPolicy - Maps JS customers can configure HTTP Referrer Restrictions in the Cloud Console to limit which URLs are allowed to use a particular API Key. By default, these restrictions can be configured to allow only certain paths to use an API Key. If any URL on the same domain or origin may use the API Key, you can set authReferrerPolicy: "origin" to limit the amount of data sent when authorizing requests from the Maps JavaScript API. When this parameter is specified and HTTP Referrer Restrictions are enabled on Cloud Console, Maps JavaScript API will only be able to load if there is an HTTP Referrer Restriction that matches the current website's domain without a path specified.
+ * @property {string} mapIds - An array of map Ids. Causes the configuration for the specified map Ids to be preloaded.
+ * @property {string} channel - See Usage tracking per channel.
+ * @property {string} solutionChannel - Google Maps Platform provides many types of sample code to help you get up and running quickly. To track adoption of our more complex code samples and improve solution quality, Google includes the solutionChannel query parameter in API calls in our sample code.
+ * @see https://developers.google.com/maps/documentation/javascript/load-maps-js-api#optional_parameters
  */
 export interface ILoadPluginOptions {
-  key?: string;
-  libraries?: string;
-  v?: string;
+  key: string;
   callback?: string;
-  customCallback?: string;
+  v?: string;
+  libraries?: string;
+  language?: string;
+  region?: string;
+  authReferrerPolicy?: string;
+  mapIds?: string[];
+  channel?: string;
+  solutionChannel?: string;
 }
 
 /**
@@ -38,16 +51,12 @@ export interface ILoadPluginOptions {
  * @public
  * @typedef {object} PluginOptions - The options required to configure the plugin
  * @property {boolean} [dynamicLoad=false] - The plugin should be loaded dynamically, if you set this to `true` the plugin doesn't load the Google Maps API
- * @property {boolean} [installComponents=true] - The plugin should install all components
  * @property {LoadPluginOptions} [load] - All load plugin options
- * @property {boolean} [loadCn=false] - The plugin should be loaded using the cn url
  * @property {ExcludeEvents} [excludeEventsOnAllComponents] - A function that should return an array of events that should not be fired
  */
 export interface IGmapVuePluginOptions {
   dynamicLoad?: boolean;
-  installComponents?: boolean;
-  load?: ILoadPluginOptions;
-  loadCn?: boolean;
+  load: ILoadPluginOptions;
   excludeEventsOnAllComponents?: () => string[];
 }
 
@@ -86,7 +95,7 @@ export interface IGmapVueElementOptions {
   ctr: () => any;
   ctrArgs: (
     options: { [key: string]: any },
-    props: { [key: string]: IVueProp }
+    props: { [key: string]: IVueProp },
   ) => any[];
   beforeCreate: (options: { [key: string]: any }) => any;
   afterCreate: (mapElementInstance: { [key: string]: any }) => any;
@@ -135,6 +144,10 @@ export interface IAutoCompleteInputVueComponentProps {
   options?: Record<string, unknown>;
 }
 
+export interface IAutoCompleteInputVueComponentExpose {
+  autoCompleteInstance: google.maps.places.Autocomplete | undefined;
+}
+
 /**
  * Circle shape Google Maps properties documentation
  *
@@ -168,6 +181,11 @@ export interface ICircleShapeVueComponentProps {
   options?: Record<string, unknown>;
 }
 
+export interface ICircleShapeVueComponentExpose {
+  circleShapeInstance: google.maps.Circle | undefined;
+  circleShapePromise: Promise<google.maps.Circle>;
+}
+
 /**
  * Marker Clusterer documentation
  *
@@ -178,10 +196,15 @@ export interface ICircleShapeVueComponentProps {
  */
 export interface IMarkerClusterVueComponentProps {
   algorithm?: Algorithm;
-  markers?: google.maps.Marker[];
+  markers?: google.maps.marker.AdvancedMarkerElement[];
   onClusterClick?: onClusterClickHandler;
   renderer?: Renderer;
   options?: Record<string, any>;
+}
+
+export interface IMarkerClusterVueComponentExpose {
+  clusterInstance: MarkerClusterer | undefined;
+  clusterPromise: Promise<MarkerClusterer>;
 }
 
 /**
@@ -224,6 +247,14 @@ export interface IDrawingManagerVueComponentProps
   options?: Record<string, unknown>;
 }
 
+export interface IDrawingManagerVueComponentExpose {
+  setDrawingMode: (mode: google.maps.drawing.OverlayType | null) => void;
+  deleteSelection: () => void;
+  clearAll: () => void;
+  drawingManagerInstance: google.maps.drawing.DrawingManager | undefined;
+  drawingManagerPromise: Promise<google.maps.drawing.DrawingManager>;
+}
+
 /**
  * Heatmap Layer Google Maps properties documentation
  *
@@ -248,6 +279,11 @@ export interface IHeatmapLayerVueComponentProps {
   options?: Record<string, unknown>;
 }
 
+export interface IHeatmapLayerVueComponentExpose {
+  heatMapLayerInstance: google.maps.visualization.HeatmapLayer | undefined;
+  heatmapLayerPromise: Promise<google.maps.visualization.HeatmapLayer>;
+}
+
 /**
  * Info Window Google Maps properties documentation
  *
@@ -270,8 +306,13 @@ export interface IInfoWindowVueComponentProps {
   position?: google.maps.LatLng | google.maps.LatLngLiteral;
   zIndex?: number;
   opened?: boolean;
-  marker?: google.maps.Marker;
+  marker?: google.maps.marker.AdvancedMarkerElement;
   options?: Record<string | number | symbol, unknown>;
+}
+
+export interface IInfoWindowVueComponentExpose {
+  infoWindowInstance: google.maps.InfoWindow | undefined;
+  infoWindowPromise: Promise<google.maps.InfoWindow>;
 }
 
 /**
@@ -291,6 +332,11 @@ export interface IKmlLayerVueComponentProps {
   url?: string;
   zIndex?: number;
   options?: Record<string, unknown>;
+}
+
+export interface IKmlLayerVueComponentExpose {
+  kmlLayerInstance: google.maps.KmlLayer | undefined;
+  kmlLayerPromise: Promise<google.maps.KmlLayer>;
 }
 
 /**
@@ -371,6 +417,27 @@ export interface IMapLayerVueComponentProps {
   options?: { [key: string]: any };
 }
 
+export interface IMapLayerVueComponentExpose {
+  mapPromise: Promise<google.maps.Map | undefined>;
+  mapInstance: google.maps.Map | undefined;
+  panBy: (x: number, y: number) => void;
+  panTo: (latLng: google.maps.LatLng | google.maps.LatLngLiteral) => void;
+  panToBounds: (
+    latLngBounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+    padding: number | google.maps.Padding,
+  ) => void;
+  fitBounds: (
+    bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+    padding: number | google.maps.Padding,
+  ) => void;
+  currentResizeBus: Ref<Emitter<Record<EventType, unknown>> | undefined>;
+  _resizeCallback: () => void;
+  _delayedResizeCallback: () => Promise<void>;
+  resize: () => void;
+  resizePreserveCenter: () => void;
+  getRecycleKey: () => string;
+}
+
 /**
  * Marker Google Maps properties documentation
  *
@@ -412,6 +479,18 @@ export interface IMarkerIconVueComponentProps {
   attribution?: Record<string, unknown>; // TODO: Define properties of this object, or remove it if it's not used
 }
 
+export interface IMarkerIconVueComponentExpose {
+  VNodeMarkerIcon: VNode<
+    RendererNode,
+    RendererElement,
+    {
+      [key: string]: any;
+    }
+  >;
+  markerInstance: google.maps.marker.AdvancedMarkerElement | undefined;
+  markerPromise: Promise<google.maps.marker.AdvancedMarkerElement>;
+}
+
 /**
  * Polygon Shape Google Maps properties documentation
  *
@@ -451,6 +530,11 @@ export interface IPolygonShapeVueComponentProps {
   options?: Record<string, unknown>;
 }
 
+export interface IPolygonShapeVueComponentExpose {
+  polygonShapeInstance: google.maps.Polygon | undefined;
+  polygonShapePromise: Promise<google.maps.Polygon>;
+}
+
 /**
  * Marker Google Maps properties documentation
  *
@@ -484,6 +568,11 @@ export interface IPolylineShapeVueComponentProps {
   options?: Record<string, unknown>;
 }
 
+export interface IPolylineShapeVueComponentExpose {
+  polylineShapeInstance: google.maps.Polyline | undefined;
+  polylineShapePromise: Promise<google.maps.Polyline>;
+}
+
 /**
  * Rectangle shape Google Maps properties documentation
  *
@@ -514,6 +603,11 @@ export interface IRectangleShapeVueComponentProps {
   visible?: boolean;
   zIndex?: number;
   options?: Record<string, unknown>;
+}
+
+export interface IRectangleShapeVueComponentExpose {
+  rectangleShapeInstance: google.maps.Rectangle | undefined;
+  rectangleShapePromise: Promise<google.maps.Rectangle>;
 }
 
 /**
@@ -572,4 +666,16 @@ export interface IStreetViewPanoramaVueComponentProps {
   zoomControl?: boolean;
   zoomControlOptions?: google.maps.ZoomControlOptions;
   options: Record<string, unknown>;
+}
+
+export interface IStreetViewPanoramaVueComponentExpose {
+  streetViewPanoramaInstance: google.maps.StreetViewPanorama | undefined;
+  currentResizeBus: Ref<Emitter<Record<EventType, unknown>> | undefined>;
+  _resizeCallback: () => void;
+  _delayedResizeCallback: () => Promise<void>;
+  resize: () => void;
+  resizePreserveCenter: () => void;
+  streetViewPanoramaPromise: Promise<
+    google.maps.StreetViewPanorama | undefined
+  >;
 }

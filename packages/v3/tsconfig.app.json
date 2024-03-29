@@ -8,16 +8,28 @@
     "src/**/*.type.ts",
     "src/**/*.interface.ts"
   ],
-  "exclude": ["src/tests/**/*", "src/cypress/**/*"],
+  "exclude": [
+    "src/tests/**/*",
+    "src/cypress/**/*"
+  ],
   "compilerOptions": {
-    "lib": ["ES2020", "DOM"],
+    "noEmit": false,
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
     "target": "ES2020",
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
-    "types": ["google.maps", "node"],
+    "types": [
+      "google.maps",
+      "node"
+    ],
     "outDir": "dist/types",
     "declaration": true,
     "declarationDir": "dist/types",
@@ -25,10 +37,12 @@
     "strict": true,
     "noImplicitThis": true,
     "jsx": "preserve",
+    "jsxImportSource": "vue",
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "stripInternal": true
+    "stripInternal": true,
+    "isolatedModules": true
   }
 }

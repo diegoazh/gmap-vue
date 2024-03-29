@@ -4,3 +4,4 @@
 node_modules
 packages/**/dist
 packages/**/gmap-vue.js
+.pack

@@ -4,7 +4,7 @@
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
   "main": "dist/main.umd.js",
   "module": "dist/main.es.js",
-  "typings": "dist/types",
+  "types": "dist/types/src/main.d.ts",
   "unpkg": "dist/main.umd.js",
   "jsdelivr": "dist/main.umd.js",
   "browser": {
@@ -23,15 +23,61 @@
       "require": {
         "types": "./dist/types/src/main.d.ts",
         "default": "./dist/main.umd.js"
-      },
-      "default": {
-        "types": "./dist/types/src/main.d.ts",
-        "default": "./dist/main.es.js"
       }
+    },
+    "./types": {
+      "import": {
+        "types": "./dist/types/src/types/index.d.ts"
+      },
+      "require": {
+        "types": "./dist/types/src/types/index.d.ts"
+      }
+    },
+    "./keys": {
+      "import": {
+        "types": "./dist/types/src/keys/index.d.ts",
+        "default": "./dist/keys.es.js"
+      },
+      "require": {
+        "types": "./dist/types/src/keys/index.d.ts",
+        "default": "./dist/keys.cjs.js"
+      }
+    },
+    "./interfaces": {
+      "import": {
+        "types": "./dist/types/src/interfaces/index.d.ts"
+      },
+      "require": {
+        "types": "./dist/types/src/interfaces/index.d.ts"
+      }
+    },
+    "./composables": {
+      "import": {
+        "types": "./dist/types/src/composables/index.d.ts",
+        "default": "./dist/composables.es.js"
+      },
+      "require": {
+        "types": "./dist/types/src/composables/index.d.ts",
+        "default": "./dist/composables.cjs.js"
+      }
+    },
+    "./components": {
+      "import": {
+        "types": "./dist/types/src/components/index.d.ts"
+
+      },
+      "require": {
+        "types": "./dist/types/src/components/index.d.ts"
+      }
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "dist/*.css"
   ],
   "publishConfig": {
     "access": "public"
@@ -41,10 +87,11 @@
     "dev": "cpx ./cypress/runner/.env ./ --verbose && vite",
     "dev:e2e": "pnpm run build && vite --config cypress/runner/vite.config.js",
     "preview": "vite preview --port 4173",
-    "build": "vite build && pnpm run copy:components",
+    "build": "vite build",
     "tsc:build": "tsc --project tsconfig.app.json",
     "vite:build": "run-p type-check build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
+    "type-gen": "vue-tsc -p tsconfig.app.json --declaration --emitDeclarationOnly",
     "test": "vitest",
     "test:unit": "vitest --environment jsdom",
     "coverage": "vitest run --coverage",
@@ -56,7 +103,7 @@
     "test:e2e:node:server": "pnpm run test:e2e:build && node cypress/runner/runner.cjs",
     "lint": "prettier --write ./src && eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "lint-staged": "lint-staged",
-    "copy:components": "cpx \"./src/components/*.vue\" \"./dist/components\" --verbose",
+    "emulate:package": "rimraf ./.pack && pnpm run build && cpx './dist/**/*.{js,mjs,css,ts,vue}' './.pack/dist' --verbose && cpx './CHANGELOG.md' './.pack' --verbose && cpx './LICENSE.md' './.pack' --verbose && cpx './package.json' './.pack' --verbose",
     "release": "semantic-release"
   },
   "repository": {
@@ -74,44 +121,44 @@
     "vue": "^3.4.21"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.3.0",
+    "@rushstack/eslint-patch": "^1.9.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/google.maps": "^3.53.2",
-    "@types/jsdom": "^21.1.1",
-    "@types/lodash.isequal": "^4.5.6",
-    "@types/lodash.throttle": "^4.1.7",
-    "@types/node": "^20.2.5",
-    "@vitejs/plugin-vue": "^4.2.3",
-    "@vitest/coverage-c8": "^0.31.1",
-    "@vitest/coverage-istanbul": "^0.31.1",
-    "@vue/eslint-config-prettier": "^7.1.0",
-    "@vue/eslint-config-typescript": "^11.0.3",
-    "@vue/tsconfig": "^0.4.0",
+    "@types/google.maps": "^3.55.5",
+    "@types/jsdom": "^21.1.6",
+    "@types/lodash.isequal": "^4.5.8",
+    "@types/lodash.throttle": "^4.1.9",
+    "@types/node": "^20.11.30",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/coverage-istanbul": "^1.4.0",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "@vue/tsconfig": "^0.5.1",
     "cpx": "^1.5.0",
-    "cypress": "^12.13.0",
+    "cypress": "^13.7.1",
     "cypress-plugin-tab": "^1.0.5",
-    "dotenv": "^16.0.3",
-    "eslint": "^8.41.0",
-    "eslint-plugin-cypress": "^2.13.3",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-eslint-comments": "^3.2.0",
-    "gh-pages": "^5.0.0",
-    "happy-dom": "^9.20.3",
-    "jsdom": "^22.0.0",
-    "lint-staged": "^13.2.2",
+    "gh-pages": "^6.1.1",
+    "happy-dom": "^14.3.9",
+    "jsdom": "^24.0.0",
+    "lint-staged": "^15.2.2",
     "lodash.throttle": "^4.1.1",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.8",
-    "rimraf": "^5.0.1",
-    "semantic-release": "^21.0.2",
-    "semantic-release-cli": "^5.4.4",
-    "start-server-and-test": "^2.0.0",
-    "stylus": "^0.59.0",
-    "typescript": "~5.0.4",
-    "vite": "^4.3.9",
-    "vite-plugin-dts": "^2.3.0",
-    "vitest": "^0.31.1",
-    "vue-tsc": "^1.6.5"
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "semantic-release": "^23.0.6",
+    "semantic-release-cli": "^5.4.6",
+    "start-server-and-test": "^2.0.3",
+    "stylus": "^0.63.0",
+    "typescript": "~5.4.3",
+    "vite": "^5.2.6",
+    "vite-plugin-dts": "^3.8.0",
+    "vitest": "^1.4.0",
+    "vue-tsc": "^2.0.7"
   },
   "author": "Diego A. Zapata Häntsch, Daniel Sim, Guillaume Leclerc",
   "license": "MIT"

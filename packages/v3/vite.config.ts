@@ -10,11 +10,9 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      outputDir: 'dist/types',
-      tsConfigFilePath: resolve('./tsconfig.app.json'),
+      outDir: 'dist/types',
+      tsconfigPath: resolve('./tsconfig.app.json'),
       insertTypesEntry: true,
-      noEmitOnError: true,
-      skipDiagnostics: false,
     }),
   ],
   resolve: {
@@ -25,10 +23,14 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     lib: {
-      entry: resolve(__dirname, './src/main.ts'),
+      entry: {
+        main: resolve(__dirname, './src/main.ts'),
+        composables: resolve(__dirname, './src/composables/index.ts'),
+        keys: resolve(__dirname, './src/keys/index.ts'),
+      },
       name: 'GmapVue',
-      fileName: (format) => `main.${format}.js`,
-      formats: ['cjs', 'es', 'iife', 'umd'],
+      fileName: (format, entryName) => `${entryName}.${format}.js`,
+      formats: ['cjs', 'es'],
     },
     rollupOptions: {
       external: ['vue', '@googlemaps/markerclusterer', 'google.maps'],

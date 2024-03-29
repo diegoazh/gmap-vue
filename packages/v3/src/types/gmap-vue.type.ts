@@ -77,17 +77,14 @@ export type PluginComponentConfig = {
 /** @internal */
 export type GlobalGoogleObject = typeof google;
 
-export type GoogleMapsAPIInitializerFn = (
-  options: ILoadPluginOptions,
-  loadCn?: boolean
-) => void;
+export type GoogleMapsAPIInitializerFn = (options: ILoadPluginOptions) => void;
 
 /** @internal */
 export type LazyValueGetterFn<T> = () => Promise<T>;
 
 /** @internal */
 export type PromiseLazyCreatorFn = (
-  options: IGmapVuePluginOptions
+  options: IGmapVuePluginOptions,
 ) => LazyValueGetterFn<GlobalGoogleObject>;
 
 /** @internal */
@@ -131,7 +128,7 @@ export type GmvSharedComposables = {
 export type GmvUtilities = {
   googleMapsApiInitializer: GoogleMapsAPIInitializerFn;
   pluginComponentBuilder: (
-    providedOptions: IGmapVueElementOptions
+    providedOptions: IGmapVueElementOptions,
   ) => ComponentOptions;
   getGoogleMapsAPI: () => false | GlobalGoogleObject;
 };

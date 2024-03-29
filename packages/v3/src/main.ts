@@ -1,7 +1,6 @@
-import {
+import type {
   Autocomplete,
   Circle,
-  Cluster,
   DrawingManager,
   HeatmapLayer,
   InfoWindow,
@@ -17,13 +16,13 @@ import {
   googleMapsApiInitializer,
   pluginComponentBuilder,
   saveLazyPromiseAndFinalOptions,
-  sharedComposables,
   usePromiseLazyBuilderFn,
 } from '@/composables';
 import type { IGmapVuePluginOptions, IGoogleMapsApiObject } from '@/interfaces';
-import type { GlobalGoogleObject, GmvComponents, GmvUtilities } from '@/types';
+import type { GlobalGoogleObject, GmvUtilities } from '@/types';
 import type { Emitter, EventType } from 'mitt';
-import type { App, FunctionPlugin, Plugin } from 'vue';
+import { defineAsyncComponent, type App, type FunctionPlugin } from 'vue';
+import { $gmapOptions } from './keys';
 
 /**
  * Vue augmentations
@@ -33,6 +32,20 @@ declare module 'vue' {
     $gmapDefaultResizeBus: Emitter<Record<EventType, unknown>>;
     $gmapApiPromiseLazy: () => Promise<any>;
     $gmapOptions: IGmapVuePluginOptions;
+  }
+  interface GlobalComponents {
+    GmvMap: typeof MapLayer;
+    GmvMarker: typeof Marker;
+    GmvInfoWindow: typeof InfoWindow;
+    GmvKmlLayer: typeof KmlLayer;
+    GmvAutocomplete: typeof Autocomplete;
+    GmvStreetViewPanorama: typeof StreetViewPanorama;
+    GmvHeatmapLayer: typeof HeatmapLayer;
+    GmvCircle: typeof Circle;
+    GmvPolygon: typeof Polygon;
+    GmvPolyline: typeof Polyline;
+    GmvRectangle: typeof Rectangle;
+    GmvDrawingManager: typeof DrawingManager;
   }
 }
 
@@ -82,41 +95,6 @@ function getGoogleMapsAPI(): false | GlobalGoogleObject {
 }
 
 /**
- * Export all components
- * @constant
- * @type  {Object} components object
- * @property  {Object}  HeatmapLayer - Vue component HeatmapLayer
- * @property  {Object}  KmlLayer - Vue component KmlLayer
- * @property  {Object}  Marker - Vue component Marker
- * @property  {Object}  Polyline - Vue component Polyline
- * @property  {Object}  Polygon - Vue component Polygon
- * @property  {Object}  Circle - Vue component Circle
- * @property  {Object}  Cluster - Vue component Cluster
- * @property  {Object}  Rectangle - Vue component Rectangle
- * @property  {Object}  DrawingManager - Vue component DrawingManager
- * @property  {Object}  InfoWindow - Vue component InfoWindow
- * @property  {Object}  MapLayer - Vue component MapLayer
- * @property  {Object}  PlaceInput - Vue component PlaceInput
- * @property  {Object}  Autocomplete - Vue component Autocomplete
- * @property  {Object}  StreetViewPanorama - Vue component StreetViewPanorama
- */
-const components: GmvComponents = {
-  Autocomplete,
-  Circle,
-  Cluster,
-  DrawingManager,
-  HeatmapLayer,
-  InfoWindow,
-  KmlLayer,
-  MapLayer,
-  Marker,
-  Polyline,
-  Polygon,
-  Rectangle,
-  StreetViewPanorama,
-};
-
-/**
  * Export all utilities
  *
  * @constant
@@ -132,89 +110,119 @@ const utilities: GmvUtilities = {
 };
 
 /**
- * GmapVue install function
+ * GmapVuePlugin factory function
  *
- * @param  {Object} app the vue app instance
  * @param  {IGmapVuePluginOptions} [options] configuration object to initialize the GmapVue plugin
  */
-const pluginInstallFn: FunctionPlugin<IGmapVuePluginOptions> = (
-  app: App,
-  options?: IGmapVuePluginOptions
-): void => {
-  // see defaults
-  const finalOptions: IGmapVuePluginOptions = {
-    dynamicLoad: false,
-    installComponents: true,
-    ...options,
-    load: {
-      libraries: 'places',
-      ...options?.load,
-    } as any,
-  };
-
+const createGmapVuePlugin = (
+  options: IGmapVuePluginOptions,
+): FunctionPlugin => {
   /**
-   * Use a lazy to only load the API when
-   * a GMap component is loaded
+   * install function
    *
-   * @constant
-   * @type {Function} the promise lazy creator function
+   * @param  {Object} app the vue app instance
    */
-  const promiseLazyCreator = usePromiseLazyBuilderFn(
-    googleMapsApiInitializer,
-    globalThis.GoogleMapsApi
-  );
-  /**
-   * The googleMapsApiPromiseLazy function to can wait until Google Maps API is ready
-   *
-   * @constant
-   * @type {Function}
-   */
-  const googleMapsApiPromiseLazy = promiseLazyCreator(finalOptions);
-  saveLazyPromiseAndFinalOptions(finalOptions, googleMapsApiPromiseLazy);
+  return (app: App): void => {
+    // see defaults
+    const finalOptions: IGmapVuePluginOptions = {
+      dynamicLoad: false,
+      ...options,
+      load: {
+        libraries: 'places',
+        ...options?.load,
+      } as any,
+    };
 
-  /**
-   * Static properties
-   *
-   * These properties are the same references that you can find in the instance,
-   * but they are static because they are attached to the main Vue object.
-   * app.config.globalProperties.$googleMapsApiPromiseLazy - function that you can use to wait until Google Maps API is ready
-   * app.config.globalProperties.$gmapOptions - object with the final options passed to Google Maps API to configure it
-   */
-  app.config.globalProperties.$gmapApiPromiseLazy = googleMapsApiPromiseLazy;
-  app.config.globalProperties.$gmapOptions = finalOptions;
+    /**
+     * Use a lazy to only load the API when
+     * a GMap component is loaded
+     *
+     * @constant
+     * @type {Function} the promise lazy creator function
+     */
+    const promiseLazyCreator = usePromiseLazyBuilderFn(
+      googleMapsApiInitializer,
+      globalThis.GoogleMapsApi,
+    );
+    /**
+     * The googleMapsApiPromiseLazy function to can wait until Google Maps API is ready
+     *
+     * @constant
+     * @type {Function}
+     */
+    const googleMapsApiPromiseLazy = promiseLazyCreator(finalOptions);
+    saveLazyPromiseAndFinalOptions(finalOptions, googleMapsApiPromiseLazy);
 
-  if (finalOptions.installComponents) {
+    /**
+     * Static properties
+     *
+     * These properties are the same references that you can find in the instance,
+     * but they are static because they are attached to the main Vue object.
+     * app.config.globalProperties.$googleMapsApiPromiseLazy - function that you can use to wait until Google Maps API is ready
+     * app.config.globalProperties.$gmapOptions - object with the final options passed to Google Maps API to configure it
+     */
+    app.config.globalProperties.$gmapApiPromiseLazy = googleMapsApiPromiseLazy;
+    app.config.globalProperties.$gmapOptions = finalOptions;
+    app.provide($gmapOptions, finalOptions);
+
     app
-      .component('GmvMap', MapLayer)
-      .component('GmvMarker', Marker)
-      .component('GmvInfoWindow', InfoWindow)
-      .component('GmvKmlLayer', KmlLayer)
-      .component('GmvAutocomplete', Autocomplete)
-      .component('GmvStreetViewPanorama', StreetViewPanorama)
-      .component('GmvHeatmapLayer', HeatmapLayer)
-      .component('GmvCircle', Circle)
-      .component('GmvPolygon', Polygon)
-      .component('GmvPolyline', Polyline)
-      .component('GmvRectangle', Rectangle)
-      .component('GmvDrawingManager', DrawingManager);
-  }
+      .component(
+        'GmvMap',
+        defineAsyncComponent(() => import('./components/map-layer.vue')),
+      )
+      .component(
+        'GmvMarker',
+        defineAsyncComponent(() => import('./components/marker-icon.vue')),
+      )
+      .component(
+        'GmvInfoWindow',
+        defineAsyncComponent(() => import('./components/info-window.vue')),
+      )
+      .component(
+        'GmvKmlLayer',
+        defineAsyncComponent(() => import('./components/kml-layer.vue')),
+      )
+      .component(
+        'GmvAutocomplete',
+        defineAsyncComponent(
+          () => import('./components/autocomplete-input.vue'),
+        ),
+      )
+      .component(
+        'GmvStreetViewPanorama',
+        defineAsyncComponent(
+          () => import('./components/street-view-panorama.vue'),
+        ),
+      )
+      .component(
+        'GmvHeatmapLayer',
+        defineAsyncComponent(() => import('./components/heatmap-layer.vue')),
+      )
+      .component(
+        'GmvCircle',
+        defineAsyncComponent(() => import('./components/circle-shape.vue')),
+      )
+      .component(
+        'GmvPolygon',
+        defineAsyncComponent(() => import('./components/polygon-shape.vue')),
+      )
+      .component(
+        'GmvPolyline',
+        defineAsyncComponent(() => import('./components/polyline-shape.vue')),
+      )
+      .component(
+        'GmvRectangle',
+        defineAsyncComponent(() => import('./components/rectangle-shape.vue')),
+      )
+      .component(
+        'GmvDrawingManager',
+        defineAsyncComponent(() => import('./components/drawing-manager.vue')),
+      )
+      .component(
+        'GmvCluster',
+        defineAsyncComponent(() => import('./components/cluster-icon.vue')),
+      );
+  };
 };
 
-/**
- * Export the default Vue object for plugins
- * Export for ESM modules
- *
- * @see pluginInstallFn
- * @type GmapVue
- * @property {FunctionPlugin} install function to install the plugin
- */
-const GmapVuePlugin: Plugin<IGmapVuePluginOptions> = {
-  install: pluginInstallFn,
-};
-
-export {
-  GmapVuePlugin,
-  components,
-  sharedComposables as composables,
-  utilities,
-};
+export { createGmapVuePlugin, utilities };
