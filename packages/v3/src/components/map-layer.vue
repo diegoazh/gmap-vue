@@ -102,7 +102,7 @@ const props = withDefaults(
     scaleControl: true,
     streetViewControl: true,
     zoomControl: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -201,7 +201,7 @@ const finalLng = computed(() => {
 });
 const finalLatLng = computed(
   () =>
-    ({ lat: finalLat.value, lng: finalLng.value } as google.maps.LatLngLiteral)
+    ({ lat: finalLat.value, lng: finalLng.value }) as google.maps.LatLngLiteral,
 );
 
 /*******************************************************************************
@@ -244,7 +244,7 @@ function panTo(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
  */
 function panToBounds(
   latLngBounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
-  padding: number | google.maps.Padding
+  padding: number | google.maps.Padding,
 ): void {
   if (mapInstance) {
     mapInstance.panToBounds(latLngBounds, padding);
@@ -262,7 +262,7 @@ function panToBounds(
  */
 function fitBounds(
   bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
-  padding: number | google.maps.Padding
+  padding: number | google.maps.Padding,
 ): void {
   if (mapInstance) {
     mapInstance.fitBounds(bounds, padding);
@@ -278,7 +278,7 @@ watch(
     if (mapInstance && newVal && newVal !== oldValue) {
       mapInstance.setZoom(newVal);
     }
-  }
+  },
 );
 
 /*******************************************************************************
@@ -286,7 +286,7 @@ watch(
  ******************************************************************************/
 onMounted(() => {
   useGoogleMapsApiPromiseLazy()
-    .then(() => {
+    .then(async () => {
       if (!gmvMap.value) {
         throw new Error(`we can find the template ref: 'gmvMap'`);
       }
@@ -303,7 +303,10 @@ onMounted(() => {
         mapInstance = window[recycleKey].map as google.maps.Map;
         mapInstance.setOptions(mapLayerOptions);
       } else {
-        mapInstance = new google.maps.Map(gmvMap.value, mapLayerOptions);
+        const { Map } = (await google.maps.importLibrary(
+          'maps',
+        )) as google.maps.MapsLibrary;
+        mapInstance = new Map(gmvMap.value, mapLayerOptions);
         window[recycleKey] = { map: mapInstance };
       }
 
@@ -317,7 +320,7 @@ onMounted(() => {
         mapLayerPropsConfig,
         mapInstance,
         emits,
-        props
+        props,
       );
 
       // Auto bind all events by default
@@ -325,7 +328,7 @@ onMounted(() => {
         mapLayerEventsConfig,
         mapInstance,
         emits,
-        excludedEvents
+        excludedEvents,
       );
 
       // manually trigger center and zoom
@@ -333,7 +336,7 @@ onMounted(() => {
         (
           increment: () => void,
           decrement: () => void,
-          shouldUpdate: () => boolean
+          shouldUpdate: () => boolean,
         ) => {
           mapInstance?.addListener('center_changed', () => {
             if (shouldUpdate()) {
@@ -358,9 +361,9 @@ onMounted(() => {
           watchPrimitivePropertiesOnSetup(
             ['finalLat', 'finalLng'],
             updateCenter,
-            { finalLat, finalLng }
+            { finalLat, finalLng },
           );
-        }
+        },
       );
 
       mapInstance?.addListener('zoom_changed', () => {
@@ -413,6 +416,7 @@ onUnmounted(() => {
  * EXPOSE
  ******************************************************************************/
 defineExpose({
+  mapPromise: promise,
   mapInstance,
   panBy,
   panTo,

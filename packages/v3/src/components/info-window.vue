@@ -48,7 +48,7 @@ const props = withDefaults(
   }>(),
   {
     disableAutoPan: false,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -72,10 +72,10 @@ if (!mapPromise) {
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let map: google.maps.Map | undefined;
-let markerOwner: google.maps.Marker | undefined;
+let markerOwner: google.maps.marker.AdvancedMarkerElement | undefined;
 let infoWindowInstance: google.maps.InfoWindow | undefined;
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -97,7 +97,10 @@ const promise = mapPromise
       });
     }
 
-    infoWindowInstance = new google.maps.InfoWindow({
+    const { InfoWindow } = (await google.maps.importLibrary(
+      'maps',
+    )) as google.maps.MapsLibrary;
+    infoWindowInstance = new InfoWindow({
       ...infoWindowOptions,
       content: gmvInfoWindow.value,
     });
@@ -105,21 +108,21 @@ const promise = mapPromise
     const infoWindowPropsConfig = getComponentPropsConfig('GmvInfoWindow');
     const infoWindowEventsConfig = getComponentEventsConfig(
       'GmvInfoWindow',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       infoWindowPropsConfig,
       infoWindowInstance,
       emits,
-      props
+      props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       infoWindowEventsConfig,
       infoWindowInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     openInfoWindow();
@@ -160,7 +163,7 @@ watch(
   () => props.opened,
   () => {
     openInfoWindow();
-  }
+  },
 );
 
 watch(
@@ -169,7 +172,7 @@ watch(
     if (value && value !== oldValue) {
       infoWindowInstance?.setPosition(value);
     }
-  }
+  },
 );
 watch(
   () => props.content,
@@ -177,7 +180,7 @@ watch(
     if (value && value !== oldValue) {
       infoWindowInstance?.setContent(value);
     }
-  }
+  },
 );
 
 /*******************************************************************************
@@ -198,5 +201,5 @@ onMounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ infoWindowInstance });
+defineExpose({ infoWindowInstance, infoWindowPromise: promise });
 </script>

@@ -71,7 +71,7 @@ const props = withDefaults(
   }>(),
   {
     selectFirstOnEnter: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -107,7 +107,7 @@ watch(
     if (newValue && newValue !== oldValue) {
       autoCompleteInstance?.setComponentRestrictions(newValue);
     }
-  }
+  },
 );
 
 /*******************************************************************************
@@ -115,14 +115,14 @@ watch(
  ******************************************************************************/
 onMounted(() => {
   useGoogleMapsApiPromiseLazy()
-    .then(() => {
+    .then(async () => {
       let scopedInput = props.slotRef
         ? props.slotRef
         : gmvAutoCompleteInput.value;
 
       if (!scopedInput) {
         throw new Error(
-          `we can find the template ref: 'gmvAutoCompleteInput' or we can't use the slotRef prop`
+          `we can find the template ref: 'gmvAutoCompleteInput' or we can't use the slotRef prop`,
         );
       }
 
@@ -132,7 +132,7 @@ onMounted(() => {
 
       if (typeof google.maps.places.Autocomplete !== 'function') {
         throw new Error(
-          "google.maps.places.Autocomplete is undefined. Did you add 'places' to libraries when loading Google Maps?"
+          "google.maps.places.Autocomplete is undefined. Did you add 'places' to libraries when loading Google Maps?",
         );
       }
 
@@ -143,30 +143,30 @@ onMounted(() => {
         ...props.options,
       };
 
-      autoCompleteInstance = new google.maps.places.Autocomplete(
-        scopedInput,
-        autocompleteOptions
-      );
+      const { Autocomplete } = (await google.maps.importLibrary(
+        'places',
+      )) as google.maps.PlacesLibrary;
+      autoCompleteInstance = new Autocomplete(scopedInput, autocompleteOptions);
 
       const autoCompletePropsConfig =
         getComponentPropsConfig('GmvAutocomplete');
       const autoCompleteEventsConfig = getComponentEventsConfig(
         'GmvAutocomplete',
-        'auto'
+        'auto',
       );
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         autoCompletePropsConfig,
         autoCompleteInstance,
         emits,
-        props
+        props,
       );
 
       bindGoogleMapsEventsToVueEventsOnSetup(
         autoCompleteEventsConfig,
         autoCompleteInstance,
         emits,
-        excludedEvents
+        excludedEvents,
       );
 
       if (props.setFieldsTo) {

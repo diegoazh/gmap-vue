@@ -55,7 +55,7 @@ const props = withDefaults(
     opacity: 1,
     optimized: false,
     visible: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -79,9 +79,9 @@ if (!mapPromise) {
  * MARKER
  ******************************************************************************/
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let markerInstance: google.maps.Marker | undefined;
+let markerInstance: google.maps.marker.AdvancedMarkerElement | undefined;
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -100,12 +100,15 @@ const promise = mapPromise
       markerIconOptions.map = undefined;
     }
 
-    markerInstance = new google.maps.Marker(markerIconOptions);
+    const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+      'marker',
+    )) as google.maps.MarkerLibrary;
+    markerInstance = new AdvancedMarkerElement(markerIconOptions);
 
     const markerIconPropsConfig = getComponentPropsConfig('GmvMarker');
     const markerIconEventsConfig = getComponentEventsConfig(
       'GmvMarker',
-      'auto'
+      'auto',
     );
 
     // bind prop events of google maps
@@ -113,7 +116,7 @@ const promise = mapPromise
       markerIconPropsConfig,
       markerInstance,
       emits,
-      props
+      props,
     );
 
     // binding events
@@ -121,18 +124,18 @@ const promise = mapPromise
       markerIconEventsConfig,
       markerInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     markerInstance?.addListener('dragend', () => {
-      const newPosition = markerInstance?.getPosition();
+      const newPosition = markerInstance?.position;
       /**
        * An event to detect when a position changes
        * @property {Object} position Object with lat and lng values, eg: { lat: 10.0, lng: 10.0 }
        */
       emits('update:position', {
-        lat: newPosition?.lat(),
-        lng: newPosition?.lng(),
+        lat: newPosition?.lat,
+        lng: newPosition?.lng,
       });
     });
 
@@ -177,7 +180,7 @@ onUnmounted(() => {
     /* Performance optimization when destroying a large number of markers */
     clusterOwner = undefined;
   } else if (markerInstance) {
-    markerInstance.setMap(null);
+    markerInstance.map = null;
   }
 });
 
@@ -203,5 +206,5 @@ if (
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ VNodeMarkerIcon, markerInstance });
+defineExpose({ VNodeMarkerIcon, markerInstance, markerPromise: promise });
 </script>

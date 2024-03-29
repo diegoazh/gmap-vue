@@ -36,7 +36,7 @@ const props = withDefaults(
     clickable: true,
     preserveViewport: false,
     screenOverlays: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -59,7 +59,7 @@ if (!mapPromise) {
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let kmlLayerInstance: google.maps.KmlLayer | undefined;
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -73,7 +73,10 @@ const promise = mapPromise
       ...props.options,
     };
 
-    kmlLayerInstance = new google.maps.KmlLayer(kmlLayerOptions);
+    const { KmlLayer } = (await google.maps.importLibrary(
+      'maps',
+    )) as google.maps.MapsLibrary;
+    kmlLayerInstance = new KmlLayer(kmlLayerOptions);
 
     const kmlLayerPropsConfig = getComponentPropsConfig('GmvKmlLayer');
     const kmlLayerEventsConig = getComponentEventsConfig('GmvKmlLayer', 'auto');
@@ -82,13 +85,13 @@ const promise = mapPromise
       kmlLayerPropsConfig,
       kmlLayerInstance,
       emits,
-      props
+      props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       kmlLayerEventsConig,
       kmlLayerInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     return kmlLayerInstance;
@@ -126,5 +129,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ kmlLayerInstance });
+defineExpose({ kmlLayerInstance, kmlLayerPromise: promise });
 </script>

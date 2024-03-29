@@ -37,7 +37,7 @@ const props = withDefaults(
   }>(),
   {
     opacity: 0.6,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -61,7 +61,7 @@ const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let heatMapLayerInstance: google.maps.visualization.HeatmapLayer | undefined;
 
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -75,28 +75,29 @@ const promise = mapPromise
       ...props.options,
     };
 
-    heatMapLayerInstance = new google.maps.visualization.HeatmapLayer(
-      heatmapLayerOptions
-    );
+    const { HeatmapLayer } = (await google.maps.importLibrary(
+      'visualization',
+    )) as google.maps.VisualizationLibrary;
+    heatMapLayerInstance = new HeatmapLayer(heatmapLayerOptions);
 
     const heatmapLayerPropsConfig = getComponentPropsConfig('GmvHeatmapLayer');
     const heatmapLayerEventsConfig = getComponentEventsConfig(
       'GmvHeatmapLayer',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       heatmapLayerPropsConfig,
       heatMapLayerInstance,
       emits,
-      props
+      props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       heatmapLayerEventsConfig,
       heatMapLayerInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     return heatMapLayerInstance;
@@ -125,7 +126,7 @@ watch(
         heatMapLayerInstance.setData(value);
       }
     }
-  }
+  },
 );
 
 /*******************************************************************************
@@ -143,5 +144,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ heatMapLayerInstance });
+defineExpose({ heatMapLayerInstance, heatmapLayerPromise: promise });
 </script>

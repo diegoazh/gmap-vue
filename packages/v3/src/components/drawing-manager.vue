@@ -63,7 +63,7 @@ const props = withDefaults(
     drawingControl: true,
     drawingMode: null,
     // shapes: [] as any,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -89,7 +89,7 @@ let drawingManagerInstance: google.maps.drawing.DrawingManager | undefined;
 let map: google.maps.Map | undefined;
 let selectedShape: google.maps.drawing.OverlayCompleteEvent | undefined;
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -116,7 +116,10 @@ const promise = mapPromise
       ...props.options,
     };
 
-    drawingManagerInstance = new google.maps.drawing.DrawingManager({
+    const { DrawingManager } = (await google.maps.importLibrary(
+      'drawing',
+    )) as google.maps.DrawingLibrary;
+    drawingManagerInstance = new DrawingManager({
       ...drawingManagerOptions,
       drawingControlOptions: {
         ...defaultDrawingControlOptions,
@@ -129,25 +132,25 @@ const promise = mapPromise
       getComponentPropsConfig('GmvDrawingManager');
     const drawingManagerEventsConfig = getComponentEventsConfig(
       'GmvDrawingManager',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       drawingManagerPropsConfig,
       drawingManagerInstance,
       emits,
-      props
+      props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       drawingManagerEventsConfig,
       drawingManagerInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     drawingManagerInstance.addListener(
       'overlaycomplete',
-      (event: google.maps.drawing.OverlayCompleteEvent) => addShape(event)
+      (event: google.maps.drawing.OverlayCompleteEvent) => addShape(event),
     );
 
     // TODO: check this event if it is needed or is the expected or best behaviour for all common cases
@@ -324,7 +327,7 @@ watch(
         });
       }
     }
-  }
+  },
 );
 
 watch(
@@ -337,7 +340,7 @@ watch(
         });
       }
     }
-  }
+  },
 );
 
 watch(
@@ -350,7 +353,7 @@ watch(
         });
       }
     }
-  }
+  },
 );
 
 watch(
@@ -359,7 +362,7 @@ watch(
     if (drawingManagerInstance && value) {
       drawingManagerInstance.setOptions({ drawingControlOptions: value });
     }
-  }
+  },
 );
 watch(
   () => props.circleOptions,
@@ -367,7 +370,7 @@ watch(
     if (drawingManagerInstance && value) {
       drawingManagerInstance.setOptions({ circleOptions: value });
     }
-  }
+  },
 );
 watch(
   () => props.markerOptions,
@@ -375,7 +378,7 @@ watch(
     if (drawingManagerInstance && value) {
       drawingManagerInstance.setOptions({ markerOptions: value });
     }
-  }
+  },
 );
 watch(
   () => props.polygonOptions,
@@ -383,7 +386,7 @@ watch(
     if (drawingManagerInstance && value) {
       drawingManagerInstance.setOptions({ polygonOptions: value });
     }
-  }
+  },
 );
 watch(
   () => props.polylineOptions,
@@ -391,7 +394,7 @@ watch(
     if (drawingManagerInstance && value) {
       drawingManagerInstance.setOptions({ polylineOptions: value });
     }
-  }
+  },
 );
 watch(
   () => props.rectangleOptions,
@@ -399,7 +402,7 @@ watch(
     if (drawingManagerInstance && value) {
       drawingManagerInstance.setOptions({ rectangleOptions: value });
     }
-  }
+  },
 );
 /*******************************************************************************
  * HOOKS
@@ -422,5 +425,6 @@ defineExpose({
   deleteSelection,
   clearAll,
   drawingManagerInstance,
+  drawingManagerPromise: promise,
 });
 </script>

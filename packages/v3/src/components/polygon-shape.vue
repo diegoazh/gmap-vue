@@ -53,7 +53,7 @@ const props = withDefaults(
     strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
     visible: true,
     deepWatch: false,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -76,7 +76,7 @@ if (!mapPromise) {
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let polygonShapeInstance: google.maps.Polygon | undefined;
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -90,25 +90,28 @@ const promise = mapPromise
       ...props.options,
     };
 
-    polygonShapeInstance = new google.maps.Polygon(polygonShapeOptions);
+    const { Polygon } = (await google.maps.importLibrary(
+      'maps',
+    )) as google.maps.MapsLibrary;
+    polygonShapeInstance = new Polygon(polygonShapeOptions);
 
     const polygonShapePropsConfig = getComponentPropsConfig('GmvPolygon');
     const polygonShapeEventsConfig = getComponentEventsConfig(
       'GmvPolygon',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polygonShapePropsConfig,
       polygonShapeInstance,
       emits,
-      props
+      props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polygonShapeEventsConfig,
       polygonShapeInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     return polygonShapeInstance;
@@ -136,7 +139,7 @@ const pathsEventListeners: [
     | google.maps.MVCArray<google.maps.LatLng>
     | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
   ),
-  google.maps.MapsEventListener
+  google.maps.MapsEventListener,
 ][] = [];
 
 watch(
@@ -159,8 +162,8 @@ watch(
               updatePathOrPaths(
                 'paths_changed',
                 polygonShapeInstance.getPaths,
-                emits
-              )
+                emits,
+              ),
             ),
           ]);
           pathsEventListeners.push([
@@ -170,8 +173,8 @@ watch(
               updatePathOrPaths(
                 'paths_changed',
                 polygonShapeInstance.getPaths,
-                emits
-              )
+                emits,
+              ),
             ),
           ]);
           pathsEventListeners.push([
@@ -181,8 +184,8 @@ watch(
               updatePathOrPaths(
                 'paths_changed',
                 polygonShapeInstance.getPaths,
-                emits
-              )
+                emits,
+              ),
             ),
           ]);
         }
@@ -194,8 +197,8 @@ watch(
             updatePathOrPaths(
               'paths_changed',
               polygonShapeInstance.getPaths,
-              emits
-            )
+              emits,
+            ),
           ),
         ]);
         pathsEventListeners.push([
@@ -205,8 +208,8 @@ watch(
             updatePathOrPaths(
               'paths_changed',
               polygonShapeInstance.getPaths,
-              emits
-            )
+              emits,
+            ),
           ),
         ]);
         pathsEventListeners.push([
@@ -216,8 +219,8 @@ watch(
             updatePathOrPaths(
               'paths_changed',
               polygonShapeInstance.getPaths,
-              emits
-            )
+              emits,
+            ),
           ),
         ]);
       }
@@ -226,7 +229,7 @@ watch(
   {
     deep: props.deepWatch,
     immediate: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -245,5 +248,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ polygonShapeInstance });
+defineExpose({ polygonShapeInstance, polygonShapePromise: promise });
 </script>

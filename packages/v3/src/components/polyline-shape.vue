@@ -48,7 +48,7 @@ const props = withDefaults(
     geodesic: false,
     visible: true,
     deepWatch: false,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -71,7 +71,7 @@ if (!mapPromise) {
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let polylineShapeInstance: google.maps.Polyline | undefined;
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -85,25 +85,28 @@ const promise = mapPromise
       ...props.options,
     };
 
-    polylineShapeInstance = new google.maps.Polyline(polylineOptions);
+    const { Polyline } = (await google.maps.importLibrary(
+      'maps',
+    )) as google.maps.MapsLibrary;
+    polylineShapeInstance = new Polyline(polylineOptions);
 
     const polylineShapePropsConfig = getComponentPropsConfig('GmvPolyline');
     const polylineShapeEventsConfig = getComponentEventsConfig(
       'GmvPolyline',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polylineShapePropsConfig,
       polylineShapeInstance,
       emits,
-      props
+      props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polylineShapeEventsConfig,
       polylineShapeInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     return polylineShapeInstance;
@@ -128,7 +131,7 @@ const { clearEvents, updatePathOrPaths } = useShapesHelpers();
  ******************************************************************************/
 const pathEventListeners: [
   google.maps.MVCArray<google.maps.LatLng>,
-  google.maps.MapsEventListener
+  google.maps.MapsEventListener,
 ][] = [];
 
 watch(
@@ -149,8 +152,8 @@ watch(
             updatePathOrPaths(
               'path_changed',
               polylineShapeInstance.getPath,
-              emits
-            )
+              emits,
+            ),
           ),
         ]);
         pathEventListeners.push([
@@ -160,8 +163,8 @@ watch(
             updatePathOrPaths(
               'path_changed',
               polylineShapeInstance.getPath,
-              emits
-            )
+              emits,
+            ),
           ),
         ]);
         pathEventListeners.push([
@@ -171,14 +174,14 @@ watch(
             updatePathOrPaths(
               'path_changed',
               polylineShapeInstance.getPath,
-              emits
-            )
+              emits,
+            ),
           ),
         ]);
       }
     }
   },
-  { deep: props.deepWatch, immediate: true }
+  { deep: props.deepWatch, immediate: true },
 );
 /*******************************************************************************
  * HOOKS
@@ -196,5 +199,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ polylineShapeInstance });
+defineExpose({ polylineShapeInstance, polylineShapePromise: promise });
 </script>

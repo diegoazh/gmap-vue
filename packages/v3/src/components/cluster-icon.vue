@@ -38,12 +38,12 @@ import { inject, onBeforeUnmount, onUnmounted, onUpdated, provide } from 'vue';
 const props = withDefaults(
   defineProps<{
     algorithm?: Algorithm;
-    markers?: google.maps.Marker[];
+    markers?: google.maps.marker.AdvancedMarkerElement[];
     onClusterClick?: onClusterClickHandler;
     renderer?: Renderer;
     options?: Record<string, any>;
   }>(),
-  {}
+  {},
 );
 
 /*******************************************************************************
@@ -84,7 +84,7 @@ const promise = mapPromise
 
     if (!MarkerClusterer && typeof MarkerClusterer !== 'function') {
       throw new Error(
-        'MarkerClusterer is not installed! Import it or include it from https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js'
+        'MarkerClusterer is not installed! Import it or include it from https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js',
       );
     }
 
@@ -99,21 +99,21 @@ const promise = mapPromise
     const clusterIconPropsConfig = getComponentPropsConfig('GmvCluster');
     const clusterIconEventsConfig = getComponentEventsConfig(
       'GmvCluster',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       clusterIconPropsConfig,
       clusterInstance,
       emits,
-      props
+      props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       clusterIconEventsConfig,
       clusterInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     return clusterInstance;
@@ -164,5 +164,5 @@ onUpdated(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ clusterInstance });
+defineExpose({ clusterInstance, clusterPromise: promise });
 </script>

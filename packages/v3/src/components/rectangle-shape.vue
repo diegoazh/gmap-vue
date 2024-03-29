@@ -44,7 +44,7 @@ const props = withDefaults(
     editable: false,
     strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
     visible: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -67,7 +67,7 @@ if (!mapPromise) {
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let rectangleShapeInstance: google.maps.Rectangle | undefined;
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
     }
@@ -81,25 +81,28 @@ const promise = mapPromise
       ...props.options,
     };
 
-    rectangleShapeInstance = new google.maps.Rectangle(rectangleOptions);
+    const { Rectangle } = (await google.maps.importLibrary(
+      'maps',
+    )) as google.maps.MapsLibrary;
+    rectangleShapeInstance = new Rectangle(rectangleOptions);
 
     const rectangleShapePropsConfig = getComponentPropsConfig('GmvRectangle');
     const rectangleShapeEventsConfig = getComponentEventsConfig(
       'GmvRectangle',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       rectangleShapePropsConfig,
       rectangleShapeInstance,
       emits,
-      props
+      props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       rectangleShapeEventsConfig,
       rectangleShapeInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     return rectangleShapeInstance;
@@ -138,5 +141,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ rectangleShapeInstance });
+defineExpose({ rectangleShapeInstance, rectangleShapePromise: promise });
 </script>

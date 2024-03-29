@@ -73,7 +73,7 @@ const props = withDefaults(
     enableCloseButton: false,
     scrollwheel: true,
     showRoadLabels: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -158,7 +158,7 @@ const finalLng = computed(() => {
 });
 const finalLatLng = computed(
   () =>
-    ({ lat: finalLat.value, lng: finalLng.value } as google.maps.LatLngLiteral)
+    ({ lat: finalLat.value, lng: finalLng.value }) as google.maps.LatLngLiteral,
 );
 
 /*******************************************************************************
@@ -178,7 +178,7 @@ watch(
     ) {
       streetViewPanoramaInstance.setZoom(newValue);
     }
-  }
+  },
 );
 
 watch(
@@ -191,7 +191,7 @@ watch(
     ) {
       streetViewPanoramaInstance.setPov(newValue);
     }
-  }
+  },
 );
 
 watch(
@@ -204,7 +204,7 @@ watch(
     ) {
       streetViewPanoramaInstance.setPano(newValue);
     }
-  }
+  },
 );
 
 /*******************************************************************************
@@ -213,10 +213,10 @@ watch(
 onMounted(() => {
   useGoogleMapsApiPromiseLazy()
     .then(() => useMapPromise())
-    .then((map) => {
+    .then(async (map) => {
       if (!gmvStreetViewPanorama.value) {
         throw new Error(
-          `we can find the template ref: 'gmvStreetViewPanorama'`
+          `we can find the template ref: 'gmvStreetViewPanorama'`,
         );
       }
 
@@ -227,30 +227,33 @@ onMounted(() => {
         ...props.options,
       };
 
-      streetViewPanoramaInstance = new google.maps.StreetViewPanorama(
+      const { StreetViewPanorama } = (await google.maps.importLibrary(
+        'streetView',
+      )) as google.maps.StreetViewLibrary;
+      streetViewPanoramaInstance = new StreetViewPanorama(
         gmvStreetViewPanorama.value,
-        streetViewOptions
+        streetViewOptions,
       );
 
       const streetViewPanoramaPropsConfig = getComponentPropsConfig(
-        'GmvStreetViewPanorama'
+        'GmvStreetViewPanorama',
       );
       const streetViewPanoramaEventsConfig = getComponentEventsConfig(
         'GmvStreetViewPanorama',
-        'auto'
+        'auto',
       );
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         streetViewPanoramaPropsConfig,
         streetViewPanoramaInstance,
         emits,
-        props
+        props,
       );
       bindGoogleMapsEventsToVueEventsOnSetup(
         streetViewPanoramaEventsConfig,
         streetViewPanoramaInstance,
         emits,
-        excludedEvents
+        excludedEvents,
       );
 
       // manually trigger position
@@ -266,7 +269,7 @@ onMounted(() => {
           if (shouldUpdate()) {
             if (!streetViewPanoramaInstance) {
               throw new Error(
-                'the street view panorama instance was not created'
+                'the street view panorama instance was not created',
               );
             }
 
@@ -280,7 +283,7 @@ onMounted(() => {
           increment();
           if (!streetViewPanoramaInstance) {
             throw new Error(
-              'the street view panorama instance was not created'
+              'the street view panorama instance was not created',
             );
           }
 
@@ -290,13 +293,13 @@ onMounted(() => {
         watchPrimitivePropertiesOnSetup(
           ['finalLat', 'finalLng'],
           updateCenter,
-          { finalLat, finalLng }
+          { finalLat, finalLng },
         );
       });
 
       if (!streetViewPanoramaPromiseDeferred.resolve) {
         throw new Error(
-          'streetViewPanoramaPromiseDeferred.resolve is undefined'
+          'streetViewPanoramaPromiseDeferred.resolve is undefined',
         );
       }
 
@@ -326,6 +329,7 @@ defineExpose({
   _delayedResizeCallback,
   resize,
   resizePreserveCenter,
+  streetViewPanoramaPromise: promise,
 });
 </script>
 

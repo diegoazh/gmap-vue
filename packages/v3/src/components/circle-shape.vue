@@ -44,7 +44,7 @@ const props = withDefaults(
     editable: false,
     strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
     visible: true,
-  }
+  },
 );
 
 /*******************************************************************************
@@ -68,7 +68,7 @@ const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let circleShapeInstance: google.maps.Circle | undefined;
 
 const promise = mapPromise
-  ?.then((mapInstance) => {
+  ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('The map instance was not created');
     }
@@ -82,25 +82,28 @@ const promise = mapPromise
       ...props.options,
     };
 
-    circleShapeInstance = new google.maps.Circle(circleShapeOptions);
+    const { Circle } = (await google.maps.importLibrary(
+      'maps',
+    )) as google.maps.MapsLibrary;
+    circleShapeInstance = new Circle(circleShapeOptions);
 
     const circleShapePropsConfig = getComponentPropsConfig('GmvCircle');
     const circleShapeEventsConfig = getComponentEventsConfig(
       'GmvCircle',
-      'auto'
+      'auto',
     );
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       circleShapePropsConfig,
       circleShapeInstance,
       emits,
-      props
+      props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       circleShapeEventsConfig,
       circleShapeInstance,
       emits,
-      excludedEvents
+      excludedEvents,
     );
 
     return circleShapeInstance;
@@ -138,5 +141,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ circleShapeInstance });
+defineExpose({ circleShapeInstance, circleShapePromise: promise });
 </script>
