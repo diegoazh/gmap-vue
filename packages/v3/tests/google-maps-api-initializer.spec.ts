@@ -3,17 +3,17 @@ import {
   beforeEach,
   describe,
   expect,
-  SpyInstance,
+  MockInstance,
   test,
   vi,
 } from 'vitest';
-import { IPluginOptions } from '../src/interfaces/gmap-vue.interface';
+import { IGmapVuePluginOptions } from '../src/interfaces/gmap-vue.interface';
 import { GoogleMapsAPIInitializerFn } from '../src/types/gmap-vue.type';
 
 describe('google-maps-api-initializer.ts', () => {
   let initializer: { googleMapsApiInitializer: GoogleMapsAPIInitializerFn };
-  let spy: SpyInstance<[node: Node], Node>;
-  let options: Partial<IPluginOptions>;
+  let spy: MockInstance<[node: Node], Node>;
+  let options: Partial<IGmapVuePluginOptions>;
   let googleMapScript: HTMLElement;
 
   beforeEach(async () => {
@@ -27,6 +27,7 @@ describe('google-maps-api-initializer.ts', () => {
       load: {
         key: 'test-key',
         libraries: 'roadmap',
+        callback: 'GoogleMapsCallback',
       },
     };
     googleMapScript = document.createElement('SCRIPT');
@@ -78,71 +79,100 @@ describe('google-maps-api-initializer.ts', () => {
 
   test('should initialize the google maps api when is called with load options', () => {
     // Arrange
-    googleMapScript.setAttribute(
-      'src',
-      'https://maps.googleapis.com/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback',
-    );
+    googleMapScript.innerHTML = `
+      ((g) => {
+        var h,
+          a,
+          k,
+          p = 'The Google Maps JavaScript API',
+          c = 'google',
+          l = 'importLibrary',
+          q = '__ib__',
+          m = document,
+          b = window;
+        b = b[c] || (b[c] = {});
+        var d = b.maps || (b.maps = {}),
+          r = new Set(),
+          e = new URLSearchParams(),
+          u = () =>
+            h ||
+            (h = new Promise(async (f, n) => {
+              await (a = m.createElement('script'));
+              e.set('libraries', [...r] + '');
+              for (k in g)
+                e.set(
+                  k.replace(/[A-Z]/g, (t) => '_' + t[0].toLowerCase()),
+                  g[k]
+                );
+              e.set('callback', c + '.maps.' + q);
+              a.src = \`https://maps.\${c}apis.com/maps/api/js?\` + e;
+              d[q] = f;
+              a.onerror = () => (h = n(Error(p + ' could not load.')));
+              a.nonce = m.querySelector('script[nonce]')?.nonce || '';
+              m.head.append(a);
+            }));
+        d[l]
+          ? console.warn(p + ' only loads once. Ignoring:', g)
+          : (d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)));
+      })(${JSON.stringify(options.load)});`;
 
     // Act
     initializer.googleMapsApiInitializer(options.load);
 
     // Assert
     expect(spy).toHaveBeenCalledTimes(1);
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('src')).toBe(
-      googleMapScript.getAttribute('src'),
-    );
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('async')).toBe(
-      googleMapScript.getAttribute('async'),
-    );
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('defer')).toBe(
-      googleMapScript.getAttribute('defer'),
-    );
-  });
-
-  test('should build a different url when use loadCn option', () => {
-    // Arrange
-    googleMapScript.setAttribute(
-      'src',
-      'https://maps.google.cn/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback',
-    );
-
-    // Act
-    initializer.googleMapsApiInitializer(options.load, true);
-
-    // Assert
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('src')).toBe(
-      googleMapScript.getAttribute('src'),
-    );
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('async')).toBe(
-      googleMapScript.getAttribute('async'),
-    );
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('defer')).toBe(
-      googleMapScript.getAttribute('defer'),
+    expect((spy.mock.calls[0][0] as HTMLElement).innerHTML).toBe(
+      googleMapScript.innerHTML,
     );
   });
 
   test('should initialize once the google api when is called', async () => {
     // Arrange
-    googleMapScript.setAttribute(
-      'src',
-      'https://maps.googleapis.com/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback',
-    );
+    googleMapScript.innerHTML = `
+      ((g) => {
+        var h,
+          a,
+          k,
+          p = 'The Google Maps JavaScript API',
+          c = 'google',
+          l = 'importLibrary',
+          q = '__ib__',
+          m = document,
+          b = window;
+        b = b[c] || (b[c] = {});
+        var d = b.maps || (b.maps = {}),
+          r = new Set(),
+          e = new URLSearchParams(),
+          u = () =>
+            h ||
+            (h = new Promise(async (f, n) => {
+              await (a = m.createElement('script'));
+              e.set('libraries', [...r] + '');
+              for (k in g)
+                e.set(
+                  k.replace(/[A-Z]/g, (t) => '_' + t[0].toLowerCase()),
+                  g[k]
+                );
+              e.set('callback', c + '.maps.' + q);
+              a.src = \`https://maps.\${c}apis.com/maps/api/js?\` + e;
+              d[q] = f;
+              a.onerror = () => (h = n(Error(p + ' could not load.')));
+              a.nonce = m.querySelector('script[nonce]')?.nonce || '';
+              m.head.append(a);
+            }));
+        d[l]
+          ? console.warn(p + ' only loads once. Ignoring:', g)
+          : (d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)));
+      })(${JSON.stringify(options.load)});`;
 
     // Act
     initializer.googleMapsApiInitializer(options.load);
-    initializer.googleMapsApiInitializer(options.load, true);
+    initializer.googleMapsApiInitializer(options.load);
 
     // Assert
     expect(spy).toHaveBeenCalledTimes(1);
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('src')).toBe(
-      googleMapScript.getAttribute('src'),
-    );
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('async')).toBe(
-      googleMapScript.getAttribute('async'),
-    );
-    expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('defer')).toBe(
-      googleMapScript.getAttribute('defer'),
+    expect((spy.mock.calls[0][0] as HTMLElement).innerHTML).toBe(
+      googleMapScript.innerHTML,
     );
   });
 });
