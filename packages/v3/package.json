@@ -2,6 +2,7 @@
   "name": "@gmap-vue/v3",
   "version": "1.0.3",
   "description": "This is a google map component for Vue.js, updated for Vue 2 compatibility",
+  "type": "module",
   "main": "dist/main.umd.js",
   "module": "dist/main.es.js",
   "types": "dist/types/src/main.d.ts",
