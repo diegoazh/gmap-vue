@@ -80,7 +80,7 @@ describe('google-maps-api-initializer.ts', () => {
     // Arrange
     googleMapScript.setAttribute(
       'src',
-      'https://maps.googleapis.com/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback'
+      'https://maps.googleapis.com/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback',
     );
 
     // Act
@@ -89,13 +89,13 @@ describe('google-maps-api-initializer.ts', () => {
     // Assert
     expect(spy).toHaveBeenCalledTimes(1);
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('src')).toBe(
-      googleMapScript.getAttribute('src')
+      googleMapScript.getAttribute('src'),
     );
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('async')).toBe(
-      googleMapScript.getAttribute('async')
+      googleMapScript.getAttribute('async'),
     );
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('defer')).toBe(
-      googleMapScript.getAttribute('defer')
+      googleMapScript.getAttribute('defer'),
     );
   });
 
@@ -103,7 +103,7 @@ describe('google-maps-api-initializer.ts', () => {
     // Arrange
     googleMapScript.setAttribute(
       'src',
-      'https://maps.google.cn/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback'
+      'https://maps.google.cn/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback',
     );
 
     // Act
@@ -112,13 +112,13 @@ describe('google-maps-api-initializer.ts', () => {
     // Assert
     expect(spy).toHaveBeenCalledTimes(1);
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('src')).toBe(
-      googleMapScript.getAttribute('src')
+      googleMapScript.getAttribute('src'),
     );
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('async')).toBe(
-      googleMapScript.getAttribute('async')
+      googleMapScript.getAttribute('async'),
     );
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('defer')).toBe(
-      googleMapScript.getAttribute('defer')
+      googleMapScript.getAttribute('defer'),
     );
   });
 
@@ -126,7 +126,7 @@ describe('google-maps-api-initializer.ts', () => {
     // Arrange
     googleMapScript.setAttribute(
       'src',
-      'https://maps.googleapis.com/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback'
+      'https://maps.googleapis.com/maps/api/js?key=test-key&libraries=roadmap&callback=GoogleMapsCallback',
     );
 
     // Act
@@ -136,13 +136,13 @@ describe('google-maps-api-initializer.ts', () => {
     // Assert
     expect(spy).toHaveBeenCalledTimes(1);
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('src')).toBe(
-      googleMapScript.getAttribute('src')
+      googleMapScript.getAttribute('src'),
     );
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('async')).toBe(
-      googleMapScript.getAttribute('async')
+      googleMapScript.getAttribute('async'),
     );
     expect((spy.mock.calls[0][0] as HTMLElement).getAttribute('defer')).toBe(
-      googleMapScript.getAttribute('defer')
+      googleMapScript.getAttribute('defer'),
     );
   });
 });

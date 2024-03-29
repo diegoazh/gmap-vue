@@ -21,7 +21,7 @@ describe('ClusterIcon component', () => {
         cy.get('[aria-label="Cluster of 2 markers"]').should(
           'have.attr',
           'title',
-          'Cluster of 2 markers'
+          'Cluster of 2 markers',
         );
       });
     });

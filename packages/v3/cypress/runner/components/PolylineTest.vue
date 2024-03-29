@@ -61,7 +61,7 @@ export default {
             coordinates: this.path.map(({ lat, lng }) => [lng, lat]),
           },
           null,
-          2
+          2,
         );
       }
     }, 1000),

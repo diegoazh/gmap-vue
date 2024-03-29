@@ -73,7 +73,7 @@ function _assert(v: boolean, message: string): void {
  * @returns {Object} A component object that should be exported by default from a Vue component
  */
 export function pluginComponentBuilder(
-  providedOptions: IGmapVueElementOptions
+  providedOptions: IGmapVueElementOptions,
 ): ComponentOptions {
   const {
     mappedProps,
@@ -136,8 +136,8 @@ export function pluginComponentBuilder(
                 null,
                 ...ctrArgs(
                   options,
-                  getPropsValuesWithoutOptionsProp(props || {}, this)
-                )
+                  getPropsValuesWithoutOptionsProp(props || {}, this),
+                ),
               ))()
             : new ConstructorObject(options);
 

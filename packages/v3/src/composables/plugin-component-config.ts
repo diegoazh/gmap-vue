@@ -341,7 +341,7 @@ const componentConfigs: PluginComponentConfig = {
  * @returns {SinglePluginComponentConfigWithoutEvents}
  */
 export function getComponentPropsConfig(
-  componentName: PluginComponentNames
+  componentName: PluginComponentNames,
 ): Omit<SinglePluginComponentConfig, 'events'> {
   const { events, ...config } = componentConfigs[componentName];
   return config;
@@ -357,7 +357,7 @@ export function getComponentPropsConfig(
  */
 export function getComponentEventsConfig(
   componentName: PluginComponentNames,
-  type?: 'auto' | 'manual'
+  type?: 'auto' | 'manual',
 ): string[] {
   if (type) {
     return componentConfigs[componentName].events[type];

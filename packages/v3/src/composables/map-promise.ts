@@ -9,7 +9,7 @@ const promise: Promise<google.maps.Map | undefined> = new Promise(
   (resolve, reject) => {
     mapPromiseDeferred.resolve = resolve;
     mapPromiseDeferred.reject = reject;
-  }
+  },
 );
 
 /**

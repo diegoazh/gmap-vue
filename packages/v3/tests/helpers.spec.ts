@@ -5,16 +5,20 @@ import {
   getPropsValuesWithoutOptionsProp,
 } from '../src/composables/helpers';
 import { ComponentPublicInstance } from 'vue';
-import { IPluginOptions } from '../src/interfaces/gmap-vue.interface';
+import { IGmapVuePluginOptions } from '../src/interfaces/gmap-vue.interface';
 
 describe('helpers.ts', () => {
   test('should bind all events when it is called', () => {
     // Arrange
     const events = ['click', 'dblclick'];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const gmi = { addListener: vi.fn((...args: any[]) => undefined) };
     const vueInstance = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       $emit: vi.fn((...args: any[]) => undefined),
-    } as unknown as ComponentPublicInstance & { $gmapOptions: IPluginOptions };
+    } as unknown as ComponentPublicInstance & {
+      $gmapOptions: IGmapVuePluginOptions;
+    };
 
     // Act
     bindEvents(events, gmi, vueInstance);

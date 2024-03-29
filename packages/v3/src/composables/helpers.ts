@@ -31,25 +31,34 @@ export function capitalizeFirstLetter(text: string): string {
  */
 export function getPropsValuesWithoutOptionsProp(
   props: { [key: string | number | symbol]: unknown },
-  vueInst?: ComponentPublicInstance
+  vueInst?: ComponentPublicInstance,
 ): Omit<{ [key: string | number | symbol]: IVueProp }, 'options'> {
   if (vueInst) {
-    return Object.keys(props).reduce((acc, propKey) => {
-      if (propKey !== 'options' && (vueInst?.$props as any)[propKey] != null) {
-        acc[propKey] = (vueInst?.$props as any)[propKey];
+    return Object.keys(props).reduce(
+      (acc, propKey) => {
+        if (
+          propKey !== 'options' &&
+          (vueInst?.$props as any)[propKey] != null
+        ) {
+          acc[propKey] = (vueInst?.$props as any)[propKey];
+        }
+
+        return acc;
+      },
+      {} as { [key: string | number | symbol]: IVueProp },
+    );
+  }
+
+  return Object.keys(props).reduce(
+    (acc, propKey) => {
+      if (propKey !== 'options' && (props as any)[propKey] != null) {
+        acc[propKey] = (props as any)[propKey];
       }
 
       return acc;
-    }, {} as { [key: string | number | symbol]: IVueProp });
-  }
-
-  return Object.keys(props).reduce((acc, propKey) => {
-    if (propKey !== 'options' && (props as any)[propKey] != null) {
-      acc[propKey] = (props as any)[propKey];
-    }
-
-    return acc;
-  }, {} as { [key: string | number | symbol]: IVueProp });
+    },
+    {} as { [key: string | number | symbol]: IVueProp },
+  );
 }
 
 /**
@@ -64,7 +73,7 @@ export function getPropsValuesWithoutOptionsProp(
  * @internal
  */
 export function getLazyValue<T>(
-  fn: LazyValueGetterFn<T>
+  fn: LazyValueGetterFn<T>,
 ): LazyValueGetterFn<T> {
   let called = false;
   let ret: Promise<T>;
@@ -89,7 +98,7 @@ export function getLazyValue<T>(
  * @internal
  */
 export function filterVuePropsOptions<T extends GmapVuePluginProps>(
-  mappedProps: T
+  mappedProps: T,
 ): {
   [key in keyof T]: IVueProp;
 } {
@@ -103,11 +112,14 @@ export function filterVuePropsOptions<T extends GmapVuePluginProps>(
 
       return [key, value];
     }) as Array<[keyof T, IVueProp]>
-  ).reduce((acc, [key, val]) => {
-    acc[key] = val;
+  ).reduce(
+    (acc, [key, val]) => {
+      acc[key] = val;
 
-    return acc;
-  }, {} as { [key in keyof T]: IVueProp });
+      return acc;
+    },
+    {} as { [key in keyof T]: IVueProp },
+  );
 }
 
 /**
@@ -127,7 +139,7 @@ export function filterVuePropsOptions<T extends GmapVuePluginProps>(
 export function downArrowSimulator(input: HTMLInputElement | null): void {
   if (!input) {
     throw new Error(
-      `The input for downArrowSimulator should be defined, currently: ${input}`
+      `The input for downArrowSimulator should be defined, currently: ${input}`,
     );
   }
 
@@ -144,7 +156,7 @@ export function downArrowSimulator(input: HTMLInputElement | null): void {
    */
   function addEventListenerWrapper(
     type: string,
-    listener: (...args: any[]) => any
+    listener: (...args: any[]) => any,
   ): void {
     // Simulate a 'down arrow' keypress on hitting 'return' when no pac suggestion is selected,
     // and then trigger the original listener.
@@ -228,8 +240,8 @@ export function twoWayBindingWrapper(
   fn: (
     increment: () => void,
     decrement: () => void,
-    shouldUpdate: () => boolean
-  ) => void
+    shouldUpdate: () => boolean,
+  ) => void,
 ): void {
   let counter = 0;
 
@@ -240,7 +252,7 @@ export function twoWayBindingWrapper(
     () => {
       counter = Math.max(0, counter - 1);
     },
-    () => counter === 0
+    () => counter === 0,
   );
 }
 
@@ -265,7 +277,7 @@ export function watchPrimitiveProperties(
   propertiesToTrack: string[],
   handler: () => any,
   vueInst: ComponentPublicInstance,
-  immediate = false
+  immediate = false,
 ): void {
   let isHandled = false;
 
@@ -310,7 +322,7 @@ export function watchPrimitivePropertiesOnSetup(
   propertiesToTrack: string[],
   handler: () => any,
   props: Record<any, any>,
-  immediate = false
+  immediate = false,
 ): void {
   let isHandled = false;
 
@@ -354,7 +366,7 @@ export function bindEvents(
   eventsConfig: string[],
   googleMapsInst: Record<string, any>,
   vueInst: ComponentPublicInstance & { $gmapOptions: IGmapVuePluginOptions },
-  excludedEvents: string[] = []
+  excludedEvents: string[] = [],
 ): void {
   eventsConfig.forEach((eventName) => {
     if (!excludedEvents.includes(eventName) && !/_changed/.test(eventName)) {
@@ -384,7 +396,7 @@ export function bindEvents(
 export function bindProps(
   propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
   AnyGoogleMapsClassInstance: Record<string, any>,
-  vueInst: ComponentPublicInstance & { $gmapOptions: IGmapVuePluginOptions }
+  vueInst: ComponentPublicInstance & { $gmapOptions: IGmapVuePluginOptions },
 ): void {
   Object.entries(vueInst.$props).forEach(([propKey, propValue]) => {
     if (!propsComponentConfig.noBind.includes(propKey)) {
@@ -413,18 +425,18 @@ export function bindProps(
             {
               immediate: propValue != undefined,
               deep: typeof propValue !== 'object' && !Array.isArray(propValue),
-            }
+            },
           );
         } else {
           watchPrimitivePropertiesOnSetup(
             propsComponentConfig.trackProperties[propKey].map(
-              (prop) => `${propKey}.${prop}`
+              (prop) => `${propKey}.${prop}`,
             ),
             () => {
               AnyGoogleMapsClassInstance[setMethodName](propValue);
             },
             vueInst.$props,
-            propValue != undefined
+            propValue != undefined,
           );
         }
       }
@@ -440,7 +452,7 @@ export function bindProps(
             if (value && !isEqual(value, (vueInst.$props as any)[propKey])) {
               vueInst.$emit(
                 eventName,
-                AnyGoogleMapsClassInstance[getMethodName]()
+                AnyGoogleMapsClassInstance[getMethodName](),
               );
             }
           });
@@ -467,7 +479,7 @@ export function bindGoogleMapsEventsToVueEventsOnSetup(
   eventsComponentConfig: string[],
   AnyGoogleMapsClassInstance: Record<string, any>,
   emits: (ev: string, value: any) => void,
-  excludedEvents: string[] = []
+  excludedEvents: string[] = [],
 ): void {
   eventsComponentConfig.forEach((eventName) => {
     if (!excludedEvents.includes(eventName) && !/_changed/.test(eventName)) {
@@ -499,7 +511,7 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
   propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
   AnyGoogleMapsClassInstance: Record<string, any>,
   emits: (ev: string, value: any) => void,
-  props: Record<any, any>
+  props: Record<any, any>,
 ): void {
   Object.keys(props).forEach((propKey) => {
     if (!propsComponentConfig.noBind.includes(propKey)) {
@@ -508,7 +520,7 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
           propKey,
           props,
           propsComponentConfig.trackProperties[propKey],
-          AnyGoogleMapsClassInstance
+          AnyGoogleMapsClassInstance,
         );
 
       if (propsComponentConfig.twoWay.includes(propKey)) {
@@ -534,7 +546,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
   propKey: string,
   props: Record<any, any>,
   trackProperties: string[],
-  AnyGoogleMapsClassInstance: Record<string, any>
+  AnyGoogleMapsClassInstance: Record<string, any>,
 ): { eventName: string; getMethodName: string } {
   const setMethodName = `set${capitalizeFirstLetter(propKey)}`;
   const getMethodName = `get${capitalizeFirstLetter(propKey)}`;
@@ -563,7 +575,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
           deep:
             typeof props[propKey] !== 'object' &&
             !Array.isArray(props[propKey]),
-        }
+        },
       );
     } else {
       watchPrimitivePropertiesOnSetup(
@@ -572,7 +584,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
           AnyGoogleMapsClassInstance[setMethodName](props[propKey]);
         },
         props,
-        props[propKey] != undefined
+        props[propKey] != undefined,
       );
     }
   }
@@ -582,7 +594,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
 
 /** @internal */
 function oldHtmlInputElementGuard(
-  input: HTMLInputElement | OldHtmlInputElement
+  input: HTMLInputElement | OldHtmlInputElement,
 ): input is OldHtmlInputElement {
   return (input as OldHtmlInputElement).attachEvent !== undefined;
 }

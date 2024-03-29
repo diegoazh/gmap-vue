@@ -11,8 +11,8 @@ const server = http.createServer((req, res) => {
     req.url === '/'
       ? path.join(baseUrl, 'index.html')
       : !/^https?:\/\//gim.test(req.url)
-      ? path.join(baseUrl, req.url)
-      : req.url;
+        ? path.join(baseUrl, req.url)
+        : req.url;
   const extension = path.extname(filePath);
   let contentType = 'text/html';
 

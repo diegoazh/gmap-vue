@@ -29,7 +29,7 @@ describe('promise-lazy-builder', () => {
     const optionsMock = { load: { key: 'abc' } };
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(
       optionsMock,
-      () => undefined
+      () => undefined,
     );
 
     // Act

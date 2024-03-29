@@ -22,7 +22,7 @@ let _delayedResizeCallback: () => Promise<void>;
 export function onMountedResizeBusHook(
   map: google.maps.Map, // TODO: maybe can be removed
   props: { [key: string]: any },
-  resizeFn: () => void
+  resizeFn: () => void,
 ) {
   if (!props.resizeBus) {
     currentResizeBus.value = defaultResizeBus;
@@ -44,7 +44,7 @@ export function onMountedResizeBusHook(
     () => props.resizeBus,
     (newVal) => {
       currentResizeBus.value = newVal.value;
-    }
+    },
   );
 
   watch(
@@ -57,7 +57,7 @@ export function onMountedResizeBusHook(
       if (newVal.value) {
         newVal.value.on('resize', _delayedResizeCallback);
       }
-    }
+    },
   );
 }
 
