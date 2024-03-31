@@ -163,6 +163,7 @@ export function useGoogleMapsApiPromiseLazy(): Promise<
 /**
  * This function returns the configuration passed to the plugin
  *
+ * @public
  * @returns IPluginOptions
  */
 export function usePluginOptions(): IGmapVuePluginOptions {

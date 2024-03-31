@@ -16,6 +16,7 @@ import { inject, onUnmounted, provide, watch } from 'vue';
  * @displayName GmvHeatmapLayer
  * @see [source code](/guide/heatmap-layer.html#source-code)
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/heatmaplayer)
+ * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/visualization#HeatmapLayer)
  */
 
 /*******************************************************************************
@@ -43,7 +44,15 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmvHeatmapLayer'));
+const emits = defineEmits<{
+  data_changed: [
+    value:
+      | google.maps.MVCArray<
+          google.maps.LatLng | google.maps.visualization.WeightedLocation
+        >
+      | (google.maps.LatLng | google.maps.visualization.WeightedLocation)[],
+  ];
+}>();
 
 /*******************************************************************************
  * INJECT
@@ -89,14 +98,14 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       heatmapLayerPropsConfig,
       heatMapLayerInstance,
-      emits,
+      emits as any,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       heatmapLayerEventsConfig,
       heatMapLayerInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 
@@ -124,6 +133,7 @@ watch(
     if (heatMapLayerInstance) {
       if (value && value !== oldValue) {
         heatMapLayerInstance.setData(value);
+        emits('data_changed', value);
       }
     }
   },

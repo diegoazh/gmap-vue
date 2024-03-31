@@ -80,7 +80,16 @@ const props = withDefaults(
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
 const gmvStreetViewPanorama = ref<HTMLElement | null>(null);
-const emits = defineEmits(getComponentEventsConfig('GmvStreetViewPanorama'));
+const emits = defineEmits<{
+  closeclick: [value: Event];
+  pano_changed: [];
+  position_changed: [value: google.maps.LatLng | null];
+  pov_changed: [];
+  resize: [];
+  status_changed: [];
+  visible_changed: [];
+  zoom_changed: [];
+}>();
 
 /*******************************************************************************
  * STREET VIEW PANORAMA
@@ -246,13 +255,13 @@ onMounted(() => {
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         streetViewPanoramaPropsConfig,
         streetViewPanoramaInstance,
-        emits,
+        emits as any,
         props,
       );
       bindGoogleMapsEventsToVueEventsOnSetup(
         streetViewPanoramaEventsConfig,
         streetViewPanoramaInstance,
-        emits,
+        emits as any,
         excludedEvents,
       );
 

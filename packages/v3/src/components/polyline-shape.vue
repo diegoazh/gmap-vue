@@ -54,7 +54,20 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmvPolyline'));
+const emits = defineEmits<{
+  click: [value: google.maps.PolyMouseEvent];
+  contextmenu: [value: google.maps.PolyMouseEvent];
+  dblclick: [value: google.maps.PolyMouseEvent];
+  drag: [value: google.maps.MapMouseEvent];
+  dragend: [value: google.maps.MapMouseEvent];
+  dragstart: [value: google.maps.MapMouseEvent];
+  mousedown: [value: google.maps.PolyMouseEvent];
+  mousemove: [value: google.maps.PolyMouseEvent];
+  mouseout: [value: google.maps.PolyMouseEvent];
+  mouseover: [value: google.maps.PolyMouseEvent];
+  mouseup: [value: google.maps.PolyMouseEvent];
+  path_changed: [value: google.maps.MVCArray<google.maps.LatLng>];
+}>();
 
 /*******************************************************************************
  * INJECT
@@ -99,13 +112,13 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polylineShapePropsConfig,
       polylineShapeInstance,
-      emits,
+      emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polylineShapeEventsConfig,
       polylineShapeInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 

@@ -74,7 +74,7 @@ export type PluginComponentConfig = {
   [key in PluginComponentNames]: SinglePluginComponentConfig;
 };
 
-/** @internal */
+/** @public */
 export type GlobalGoogleObject = typeof google;
 
 export type GoogleMapsAPIInitializerFn = (options: ILoadPluginOptions) => void;

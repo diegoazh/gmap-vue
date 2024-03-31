@@ -66,6 +66,7 @@ const props = withDefaults(
     heading?: number;
     isFractionalZoomEnabled?: boolean;
     keyboardShortcuts?: boolean;
+    mapId?: string;
     mapTypeControl?: boolean;
     mapTypeControlOptions?: google.maps.MapTypeControlOptions;
     mapTypeId?: google.maps.MapTypeId;
@@ -109,7 +110,30 @@ const props = withDefaults(
  * TEMPLATE REF, ATTRIBUTES AND EMITTERS
  ******************************************************************************/
 const gmvMap = ref<HTMLElement | null>(null);
-const emits = defineEmits(getComponentEventsConfig('GmvMap'));
+const emits = defineEmits<{
+  bounds_changed: [value: google.maps.LatLngBounds | undefined];
+  center_changed: [value: google.maps.LatLng | undefined];
+  click: [value: google.maps.MapMouseEvent | google.maps.IconMouseEvent];
+  contextmenu: [value: google.maps.MapMouseEvent];
+  dblclick: [value: google.maps.MapMouseEvent];
+  drag: [];
+  dragend: [];
+  dragstart: [];
+  heading_changed: [];
+  idle: [];
+  isfractionalzoomenabled_changed: [];
+  mapcapabilities_changed: [];
+  maptypeid_changed: [];
+  mousemove: [value: google.maps.MapMouseEvent];
+  mouseout: [value: google.maps.MapMouseEvent];
+  mouseover: [value: google.maps.MapMouseEvent];
+  projection_changed: [];
+  renderingtype_changed: [];
+  tilesloaded: [];
+  tilt_changed: [];
+  zoom_changed: [value: number | undefined];
+  resize: [];
+}>();
 
 /*******************************************************************************
  * RECYCLE KEY
@@ -319,7 +343,7 @@ onMounted(() => {
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         mapLayerPropsConfig,
         mapInstance,
-        emits,
+        emits as any,
         props,
       );
 
@@ -327,7 +351,7 @@ onMounted(() => {
       bindGoogleMapsEventsToVueEventsOnSetup(
         mapLayerEventsConfig,
         mapInstance,
-        emits,
+        emits as any,
         excludedEvents,
       );
 

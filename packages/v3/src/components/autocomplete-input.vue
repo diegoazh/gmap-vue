@@ -12,12 +12,6 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-};
-</script>
-
 <script lang="ts" setup>
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
@@ -78,7 +72,9 @@ const props = withDefaults(
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
 const gmvAutoCompleteInput = ref<HTMLInputElement | null>(null);
-const emits = defineEmits(getComponentEventsConfig('GmvAutocomplete'));
+const emits = defineEmits<{
+  place_changed: [value: google.maps.places.PlaceResult];
+}>();
 
 /*******************************************************************************
  * INJECT
@@ -130,12 +126,6 @@ onMounted(() => {
         downArrowSimulator(scopedInput);
       }
 
-      if (typeof google.maps.places.Autocomplete !== 'function') {
-        throw new Error(
-          "google.maps.places.Autocomplete is undefined. Did you add 'places' to libraries when loading Google Maps?",
-        );
-      }
-
       const autocompleteOptions: IAutoCompleteInputVueComponentProps & {
         [key: string]: any;
       } = {
@@ -146,6 +136,13 @@ onMounted(() => {
       const { Autocomplete } = (await google.maps.importLibrary(
         'places',
       )) as google.maps.PlacesLibrary;
+
+      if (typeof Autocomplete !== 'function') {
+        throw new Error(
+          "google.maps.places.Autocomplete is undefined. Did you add 'places' to libraries when loading Google Maps?",
+        );
+      }
+
       autoCompleteInstance = new Autocomplete(scopedInput, autocompleteOptions);
 
       const autoCompletePropsConfig =
@@ -158,14 +155,14 @@ onMounted(() => {
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         autoCompletePropsConfig,
         autoCompleteInstance,
-        emits,
+        emits as any,
         props,
       );
 
       bindGoogleMapsEventsToVueEventsOnSetup(
         autoCompleteEventsConfig,
         autoCompleteInstance,
-        emits,
+        emits as any,
         excludedEvents,
       );
 

@@ -49,7 +49,20 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmvCluster'));
+const emits = defineEmits<{
+  clusteringbegin: [];
+  clusteringend: [];
+  click: [value: google.maps.MapMouseEvent];
+  rightclick: [value: google.maps.MapMouseEvent];
+  dblclick: [value: google.maps.MapMouseEvent];
+  drag: [value: google.maps.MapMouseEvent];
+  dragend: [value: google.maps.MapMouseEvent];
+  dragstart: [value: google.maps.MapMouseEvent];
+  mousedown: [value: google.maps.MapMouseEvent];
+  mouseout: [value: google.maps.MapMouseEvent];
+  mouseover: [value: google.maps.MapMouseEvent];
+  mouseup: [value: google.maps.MapMouseEvent];
+}>();
 
 /*******************************************************************************
  * INJECT
@@ -105,14 +118,14 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       clusterIconPropsConfig,
       clusterInstance,
-      emits,
+      emits as any,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       clusterIconEventsConfig,
       clusterInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 

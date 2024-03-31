@@ -25,43 +25,36 @@ import { h, inject, onUnmounted, provide, useSlots } from 'vue';
  ******************************************************************************/
 const props = withDefaults(
   defineProps<{
-    anchorPoint?: google.maps.Point;
-    animation?: google.maps.Animation;
-    clickable?: boolean;
-    crossOnDrag?: boolean;
-    cursor?: string;
-    draggable?: boolean;
-    icon?: string | google.maps.Icon | google.maps.Symbol | null;
-    label?: string | google.maps.MarkerLabel;
-    opacity?: number;
-    optimized?: boolean;
-    position?: google.maps.LatLng | google.maps.LatLngLiteral;
-    shape?: google.maps.MarkerShape;
+    collisionBehavior?: google.maps.CollisionBehavior;
+    content?: HTMLElement;
+    gmpClickable?: boolean; // Notice: Available only in the v=beta channel.
+    gmpDraggable?: boolean;
+    position?:
+      | google.maps.LatLng
+      | google.maps.LatLngLiteral
+      | google.maps.LatLngAltitude
+      | google.maps.LatLngAltitudeLiteral;
     title?: string;
-    visible?: boolean;
     zIndex?: number;
     options?: Record<string, unknown>;
-    place?: Record<string, unknown>; // TODO: Define properties of this object
-    /**
-     *  This property was not found on the Googole Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
-     */
-    attribution?: Record<string, unknown>; // TODO: Define properties of this object, or remove it if it's not used
   }>(),
   {
-    clickable: true,
-    crossOnDrag: true,
-    cursor: 'pointer',
-    draggable: false,
-    opacity: 1,
-    optimized: false,
-    visible: true,
+    gmpClickable: true,
+    gmpDraggable: false,
   },
 );
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmvMarker'));
+const emits = defineEmits<{
+  click: [value: google.maps.MapMouseEvent];
+  drag: [value: google.maps.MapMouseEvent];
+  dragend: [value: google.maps.MapMouseEvent];
+  dragstart: [value: google.maps.MapMouseEvent];
+  'gmp-click': [value: google.maps.marker.AdvancedMarkerClickEvent];
+  'update:position': [value: { lat?: number; lng?: number }];
+}>();
 const slots = useSlots();
 
 /*******************************************************************************
@@ -115,7 +108,7 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       markerIconPropsConfig,
       markerInstance,
-      emits,
+      emits as any,
       props,
     );
 
@@ -123,7 +116,7 @@ const promise = mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       markerIconEventsConfig,
       markerInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 
@@ -134,8 +127,14 @@ const promise = mapPromise
        * @property {Object} position Object with lat and lng values, eg: { lat: 10.0, lng: 10.0 }
        */
       emits('update:position', {
-        lat: newPosition?.lat,
-        lng: newPosition?.lng,
+        lat:
+          typeof newPosition?.lat === 'number'
+            ? newPosition.lat
+            : newPosition?.lat?.(),
+        lng:
+          typeof newPosition?.lng === 'number'
+            ? newPosition.lng
+            : newPosition?.lng?.(),
       });
     });
 

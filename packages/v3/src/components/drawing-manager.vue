@@ -69,7 +69,17 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmvDrawingManager'));
+const emits = defineEmits<{
+  circlecomplete: [value: google.maps.Circle];
+  markercomplete: [value: google.maps.Marker];
+  polygoncomplete: [value: google.maps.Polygon];
+  polylinecomplete: [value: google.maps.Polyline];
+  rectanglecomplete: [value: google.maps.Rectangle];
+  overlaycomplete: [value: google.maps.drawing.OverlayCompleteEvent];
+  'update:shapes': [value: google.maps.drawing.OverlayCompleteEvent[]];
+  'added:shape': [value: google.maps.drawing.OverlayCompleteEvent];
+  'removed:shape': [value: google.maps.drawing.OverlayCompleteEvent];
+}>();
 const $slots = useSlots();
 
 /*******************************************************************************
@@ -138,13 +148,13 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       drawingManagerPropsConfig,
       drawingManagerInstance,
-      emits,
+      emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       drawingManagerEventsConfig,
       drawingManagerInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 

@@ -50,7 +50,21 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmvCircle'));
+const emits = defineEmits<{
+  center_changed: [];
+  click: [value: google.maps.MapMouseEvent];
+  dblclick: [value: google.maps.MapMouseEvent];
+  drag: [value: google.maps.MapMouseEvent];
+  dragend: [value: google.maps.MapMouseEvent];
+  dragstart: [value: google.maps.MapMouseEvent];
+  mousedown: [value: google.maps.MapMouseEvent];
+  mousemove: [value: google.maps.MapMouseEvent];
+  mouseout: [value: google.maps.MapMouseEvent];
+  mouseover: [value: google.maps.MapMouseEvent];
+  mouseup: [value: google.maps.MapMouseEvent];
+  radius_changed: [value: void];
+  rightclick: [value: google.maps.MapMouseEvent];
+}>();
 
 /*******************************************************************************
  * INJECT
@@ -96,13 +110,13 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       circleShapePropsConfig,
       circleShapeInstance,
-      emits,
+      emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       circleShapeEventsConfig,
       circleShapeInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 

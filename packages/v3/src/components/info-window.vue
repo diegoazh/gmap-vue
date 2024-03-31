@@ -55,7 +55,15 @@ const props = withDefaults(
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
 const gmvInfoWindow = ref<HTMLElement | null>(null);
-const emits = defineEmits(getComponentEventsConfig('GmvInfoWindow'));
+const emits = defineEmits<{
+  close: [];
+  closeclick: [];
+  content_changed: [];
+  domready: [];
+  position_changed: [];
+  visible: [];
+  zindex_changed: [];
+}>();
 
 /*******************************************************************************
  * INJECT
@@ -114,14 +122,14 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       infoWindowPropsConfig,
       infoWindowInstance,
-      emits,
+      emits as any,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       infoWindowEventsConfig,
       infoWindowInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 

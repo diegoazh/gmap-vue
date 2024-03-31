@@ -42,7 +42,11 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const emits = defineEmits(getComponentEventsConfig('GmvKmlLayer'));
+const emits = defineEmits<{
+  click: [value: google.maps.KmlMouseEvent];
+  defaultviewport_changed: [];
+  status_changed: [];
+}>();
 
 /*******************************************************************************
  * INJECT
@@ -84,13 +88,13 @@ const promise = mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       kmlLayerPropsConfig,
       kmlLayerInstance,
-      emits,
+      emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       kmlLayerEventsConig,
       kmlLayerInstance,
-      emits,
+      emits as any,
       excludedEvents,
     );
 
