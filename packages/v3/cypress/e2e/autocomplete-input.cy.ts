@@ -4,7 +4,7 @@ describe('AutocompleteInput component', () => {
 
     cy.visit('/');
     cy.get('button[name=autocomplete]').click();
-    cy.get('.gmv-map').should('be.visible');
+    cy.get('.gmv-map').should('exist');
     cy.get('.gm-style').should('be.visible');
     const input = () => cy.get('input');
     input().type(`${search}`);

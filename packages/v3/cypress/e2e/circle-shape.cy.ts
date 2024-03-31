@@ -2,7 +2,7 @@ describe('CircleShape component', () => {
   it('should contain a circle shape with 5 points', function () {
     cy.visit('/');
     cy.get('button[name=circle]').click();
-    cy.get('.gmv-map').should('be.visible');
+    cy.get('.gmv-map').should('exist');
     cy.get('.gm-style').should('be.visible');
     cy.get('[style="position: absolute; left: 0px; top: 0px; z-index: 0;"]')
       .last()

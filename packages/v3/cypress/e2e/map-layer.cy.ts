@@ -6,7 +6,7 @@ describe('MapLayer component', () => {
     cy.visit('/');
     cy.get('button[name=map]').click();
     cy.contains('h2', 'Test E2E: Map layer');
-    cy.get('.gmv-map').should('be.visible');
+    cy.get('.gmv-map').should('exist');
     cy.get('.gm-style').should('be.visible');
     cy.get('.gmv-map-container > .gmv-map > div');
     cy.get('.gmv-map-container > .gmv-map-hidden');

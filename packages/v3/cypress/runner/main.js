@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import { createGmapVuePlugin } from '../../dist/main.es';
 import App from './components/App.vue';
+import '@gmap-vue/v3/dist/style.css';
 
 window.app = createApp(App)
   .use(

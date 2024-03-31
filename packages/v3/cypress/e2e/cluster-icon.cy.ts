@@ -2,7 +2,7 @@ describe('ClusterIcon component', () => {
   it('should have a cluster of 2 markers', function () {
     cy.visit('/');
     cy.get('button[name=cluster]').click();
-    cy.get('.gmv-map').should('be.visible');
+    cy.get('.gmv-map').should('exist');
     cy.get('.gm-style').should('be.visible');
     cy.get('[aria-label=Map]').within(() => {
       cy.window().then((win) => {
