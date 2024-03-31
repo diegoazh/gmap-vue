@@ -57,6 +57,9 @@ describe('MarkerIcon component', () => {
     cy.get('.gmv-map').should('exist');
     cy.get('.gm-style').should('be.visible');
     cy.get('#empty').click();
+    cy.get('.gmv-map')
+      .find('[class="GMAMP-maps-pin-view"]')
+      .should('have.length', 2);
     cy.get('#empty').click();
     cy.get('.gmv-map')
       .find('[class="GMAMP-maps-pin-view"]')

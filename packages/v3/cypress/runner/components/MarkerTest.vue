@@ -43,7 +43,6 @@
 export default {
   data() {
     return {
-      visible: true,
       visible2: true,
       empty: false,
       center: {
