@@ -1,12 +1,18 @@
 <template>
   <div>
-    <gmv-map :center="center" :zoom="11" style="width: 100%; height: 500px">
+    <gmv-map
+      :center="center"
+      :zoom="11"
+      style="width: 100%; height: 500px"
+      mapId="DEMO_MAP_ID"
+    >
       <gmv-kml-layer
         v-for="(l, i) in kmlLayers"
         :key="i"
         :clickable="true"
         :preserveViewport="true"
         :url="l.url"
+        :id="`kml-icon-${i + 1}`"
       ></gmv-kml-layer>
     </gmv-map>
   </div>

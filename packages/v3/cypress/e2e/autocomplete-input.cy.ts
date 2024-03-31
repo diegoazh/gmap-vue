@@ -4,9 +4,14 @@ describe('AutocompleteInput component', () => {
 
     cy.visit('/');
     cy.get('button[name=autocomplete]').click();
-    const input = () => cy.get('.pac-target-input');
+    cy.get('.gmv-map').should('be.visible');
+    cy.get('.gm-style').should('be.visible');
+    const input = () => cy.get('input');
     input().type(`${search}`);
     cy.get('.pac-item').first().click();
-    cy.get('.gmv-map').find('map').should('have.length', 1);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+    cy.get('#use-place-btn').click();
+    cy.get('.gmv-map').find('.GMAMP-maps-pin-view').should('have.length', 1);
   });
 });

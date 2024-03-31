@@ -1,7 +1,4 @@
 <template>
-  <button id="visibility" type="button" @click="visible = !visible">
-    {{ btnTxt }}
-  </button>
   <button id="visibility2" type="button" @click="visible2 = !visible2">
     {{ btnTxt2 }}
   </button>
@@ -9,7 +6,12 @@
     {{ btnTxt3 }}
   </button>
   <br /><br />
-  <gmv-map :center="center" :zoom="6" style="width: 100%; height: 500px">
+  <gmv-map
+    :center="center"
+    :zoom="6"
+    style="width: 100%; height: 500px"
+    mapId="DEMO_MAP_ID"
+  >
     <gmv-marker
       v-for="(m, i) in markers"
       :key="i"
@@ -17,7 +19,6 @@
       :draggable="true"
       :position="m.position"
       @click="center = m.position"
-      :visible="visible"
     ></gmv-marker>
     <gmv-marker
       v-if="visible2"
@@ -66,11 +67,8 @@ export default {
     };
   },
   computed: {
-    btnTxt() {
-      return this.visible ? 'Hide markers' : 'Show markers';
-    },
     btnTxt2() {
-      return this.visible2 ? 'Destroy markers' : 'Rebuild markers';
+      return this.visible2 ? 'Hide markers' : 'Show markers';
     },
     btnTxt3() {
       return this.empty ? 'Empty the markers array' : 'Fill the markers array';

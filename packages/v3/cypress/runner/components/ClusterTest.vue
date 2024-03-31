@@ -1,6 +1,11 @@
 <template>
   <div>
-    <gmv-map :center="center" :zoom="7" style="width: 100%; height: 500px">
+    <gmv-map
+      :center="center"
+      :zoom="7"
+      style="width: 100%; height: 500px"
+      mapId="DEMO_MAP_ID"
+    >
       <gmv-cluster>
         <gmv-marker
           v-for="(m, index) in markers"
@@ -19,7 +24,6 @@
 // to use with `pnpm run dev` import from '../../../src/main'
 // to use with `pnpm run test:e2e` import from '../../../dist/main.es'
 // to use with `pnpm run test:e2e:ci` import from '../../../dist/main.es'
-import { Cluster } from '../../../dist/main.es';
 
 export default {
   data() {
@@ -43,9 +47,6 @@ export default {
         },
       ],
     };
-  },
-  components: {
-    GmvCluster: Cluster,
   },
 };
 </script>

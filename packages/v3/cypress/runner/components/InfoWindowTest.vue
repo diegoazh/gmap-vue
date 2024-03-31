@@ -2,7 +2,12 @@
   <div>
     A basic example of using a single info-window for 3 markers.
 
-    <gmv-map :center="center" :zoom="15" style="width: 100%; height: 500px">
+    <gmv-map
+      :center="center"
+      :zoom="15"
+      style="width: 100%; height: 500px"
+      mapId="DEMO_MAP_ID"
+    >
       <gmv-info-window
         :content="infoOptions.content"
         :marker="infoOptions.marker"
