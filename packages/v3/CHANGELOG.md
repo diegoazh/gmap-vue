@@ -1,3 +1,22 @@
+# [2.0.0](https://github.com/diegoazh/gmap-vue/compare/gmv3_v1.0.3...gmv3_v2.0.0) (2024-03-31)
+
+
+### Bug Fixes
+
+* **v3:** add type define-emit declarations ([fb29c9c](https://github.com/diegoazh/gmap-vue/commit/fb29c9c40e902525f875be75c55188647015614c))
+* **v3:** improve types, interfaces and composables ([072f661](https://github.com/diegoazh/gmap-vue/commit/072f661f34802a6d2a2f7395d03290254dd75c1a))
+
+
+### Features
+
+* **v3:** implement import-library in all components ([5d13adf](https://github.com/diegoazh/gmap-vue/commit/5d13adfa03021648ffbf4abb8d9569e15bbd6af6))
+* **v3:** improve exports, types and remove deprecated options ([9947ce6](https://github.com/diegoazh/gmap-vue/commit/9947ce6df1c920e5298ca41ceec82909dcb77c06))
+
+
+### BREAKING CHANGES
+
+* **v3:** CHANGE
+
 ## [1.0.3](https://github.com/diegoazh/gmap-vue/compare/gmv3_v1.0.2...gmv3_v1.0.3) (2023-07-23)
 
 
