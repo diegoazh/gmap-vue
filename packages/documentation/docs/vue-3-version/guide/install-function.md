@@ -14,7 +14,7 @@ The install function also saved the options passed to the plugin in a global pro
 
 These two options also have its own composables functions that you can use to get their respective values using the Vue composition API. For more details go to the [next section](/docs/vue-3-version/guide/global-properties).
 
-```ts title="plugin main.ts"
+```ts title="plugin main.ts" showLineNumbers
 // ...
 app.config.globalProperties.$gmapApiPromiseLazy = googleMapsApiPromiseLazy;
 app.config.globalProperties.$gmapOptions = finalOptions;
@@ -24,7 +24,7 @@ app.provide($gmapOptions, finalOptions);
 
 Finally, by default the install function initialize and install all components in the plugin.
 
-```ts title="plugin main.ts"
+```ts title="plugin main.ts" showLineNumbers
 // ...
 app
   .component(

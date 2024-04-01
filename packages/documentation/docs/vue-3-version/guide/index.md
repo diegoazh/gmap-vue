@@ -23,7 +23,7 @@ All files in the source code are entirely self documented with **jsdoc** comment
 
 The `GmapVuePlugin` exposed in the package is an object that contains the `install` function required for Vue to add plugins to your app.
 
-```ts title="main.ts" showLineNumbers {1,3,8-11}
+```ts title="main.ts" showLineNumbers {1,3,8-12}
 import { createGmapVuePlugin } from '@gmap-vue/v3';
 import App from './App.vue';
 import '@gmap-vue/v3/dist/style.css';
