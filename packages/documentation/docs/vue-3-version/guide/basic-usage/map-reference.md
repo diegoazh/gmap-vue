@@ -55,9 +55,9 @@ If you need to gain access to the `Map` instance (e.g. to call `panToBounds`, `p
 </template>
 
 <script setup lang="ts">
-  import { useMapPromise } from '@gmap-vue/v3/composables';
-  import { onMounted, ref } from 'vue';
-  import { MapLayer } from '@gmap-vue/v3/components';
+  import { useMapPromise } from "@gmap-vue/v3/composables";
+  import { onMounted, ref } from "vue";
+  import { MapLayer } from "@gmap-vue/v3/components";
 
   const mapRef = ref<typeof MapLayer | null>(null);
   const mapPromise = useMapPromise();
@@ -91,14 +91,14 @@ If you need to gain access to the `Map` instance (e.g. to call `panToBounds`, `p
 To safety type a ref of one of the plugin components is to add the following to your `main.ts` file
 
 ```ts title="main.ts" showLineNumbers {11}
-import { ComponentInstance } from 'vue';
-import { MapLayer } from '@gmap-vue/v3/components';
-import { type IMapLayerVueComponentExpose } from '@gmap-vue/v3/interfaces';
+import { ComponentInstance } from "vue";
+import { MapLayer } from "@gmap-vue/v3/components";
+import { type IMapLayerVueComponentExpose } from "@gmap-vue/v3/interfaces";
 
 /**
  * Vue augmentations
  */
-declare module 'vue' {
+declare module "vue" {
   interface ComponentCustomProperties {
     $refs: {
       mapRef: ComponentInstance<typeof MapLayer & IMapLayerVueComponentExpose>;
@@ -116,8 +116,8 @@ declare module 'vue' {
 In this example you can not use the `inject` method to get the mapPromise as we show below
 
 ```ts title="Composition API" showLineNumbers
-import { inject } from 'vue';
-import { $mapPromise } from '@gmap-vue/v3/keys';
+import { inject } from "vue";
+import { $mapPromise } from "@gmap-vue/v3/keys";
 
 const mapPromise = inject($mapPromise);
 ```
