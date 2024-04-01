@@ -24,11 +24,11 @@ jobs:
         run: pnpm install
       - name: Build docs
         working-directory: ./packages/documentation
-        run: pnpm run build:docs
+        run: pnpm run build
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: gh-pages
-          build_dir: ./packages/documentation/docs/.vuepress/dist
+          build_dir: ./packages/documentation/build
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
