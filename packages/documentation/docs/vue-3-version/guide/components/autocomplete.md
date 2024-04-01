@@ -321,5 +321,3 @@ If the element in the slot is a vue component then it must have a child ref call
 
 The v-bind:attrs is required.
 :::
-
-## Examples
