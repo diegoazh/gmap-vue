@@ -29,7 +29,9 @@ import { onMounted, ref, watch } from 'vue';
 /**
  * Autocomplete component
  * @displayName GmvAutocomplete
- * @see [source code](/guide/autocomplete.html#source-code)
+ * @see [official guide](https://developers.google.com/maps/documentation/javascript/place-autocomplete)
+ * @see [official reference](https://developers.google.com/maps/documentation/javascript/reference/places-widget#Autocomplete)
+ * @see [source code](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/api/components/autocomplete)
  */
 
 /*******************************************************************************
