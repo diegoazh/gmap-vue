@@ -92,6 +92,7 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "type-gen": "vue-tsc -p tsconfig.app.json --declaration --emitDeclarationOnly",
     "test": "vitest",
+    "test:ci": "vitest run",
     "test:unit": "vitest --environment jsdom",
     "coverage": "vitest run --coverage",
     "test:e2e": "cypress install && start-server-and-test test:e2e:vite:server http://localhost:4173/ 'pnpm exec cypress open --e2e'",
