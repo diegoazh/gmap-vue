@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+pnpm run lint && pnpm run test && pnpm run test:e2e:ci;
