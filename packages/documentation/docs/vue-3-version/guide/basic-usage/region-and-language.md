@@ -27,7 +27,7 @@ createApp(App)
   .use(
     createGmapVuePlugin({
       load: {
-        key: 'AIzaSyBjgUIzYFpbPK218ePJ07XDWcUwvrW7tuY',
+        key: '...',
         region: 'VI',
         language: 'vi',
       },
