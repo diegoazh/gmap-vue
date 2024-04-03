@@ -298,7 +298,7 @@ export default {
         self.deleteSelection();
       });
       google.maps.event.addListener(shape.overlay, 'dragend', () => {
-         this.$emit('update:shapes', [...this.finalShapes]);
+        this.$emit('update:shapes', [...this.finalShapes]);
       });
       this.setSelection(shape);
     },
