@@ -1,7 +1,7 @@
 ---
-id: components
-sidebar_position: 4
-sidebar_label: components
+id: introduction
+sidebar_position: 1
+sidebar_label: Introduction
 ---
 
 # The `components` of the plugin

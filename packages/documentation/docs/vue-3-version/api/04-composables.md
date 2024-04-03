@@ -1,6 +1,6 @@
 ---
 id: composables
-sidebar_position: 5
+sidebar_position: 4
 sidebar_label: composables
 ---
 # The exposed composables
