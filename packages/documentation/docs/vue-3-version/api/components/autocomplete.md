@@ -21,8 +21,10 @@ This component is a wrapper of the Google Autocomplete class.
 
 ## Props
 
-:::note
-The highlighted lines are the official props
+:::info
+The _highlighted_ lines are the official props, we strongly recommend to read the [**official documentation**](https://developers.google.com/maps/documentation/javascript/reference/places-widget#AutocompleteOptions).
+
+**Here we only describe the custom props added by this plugin**
 :::
 
 ```ts title="Autocomplete props interface" showLineNumbers {11-15}
@@ -64,21 +66,6 @@ export interface IAutoCompleteInputVueComponentProps {
 }
 ```
 
-- **bound**:
-  - _type_: [`google.maps.LatLngBounds`](https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngBounds) | [`google.maps.LatLngBoundsLiteral`](https://developers.google.com/maps/documentation/javascript/reference/coordinates#LatLngBoundsLiteral)
-  - _description_: The area in which to search for places.
-- **componentRestrictions**:
-  - _type_: [`google.maps.places.ComponentRestrictions`](https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#ComponentRestrictions)
-  - _description_: The component restrictions. Component restrictions are used to restrict predictions to only those within the parent component. For example, the country.
-- **fields**:
-  - _type_: `string[]`
-  - _description_: Fields to be included for the Place in the details response when the details are successfully retrieved, which will be billed for. If ['ALL'] is passed in, all available fields will be returned and billed for (this is not recommended for production deployments). For a list of fields see PlaceResult. Nested fields can be specified with dot-paths (for example, "geometry.location"). The default is ['ALL'].
-- **strictBounds**:
-  - _type_: `boolean`
-  - _description_: A boolean value, indicating that the Autocomplete widget should only return those places that are inside the bounds of the Autocomplete widget at the time the query is sent. Setting strictBounds to false (which is the default) will make the results biased towards, but not restricted to, places contained within the bounds.
-- **types**:
-  - _type_: `string[]`
-  - _description_: The types of predictions to be returned. For supported types, see the developer's guide. If no types are specified, all types will be returned.
 - **selectFirstOnEnter**:
   - _type_: `boolean`
   - _description_: Select the first result in the list when press enter keyboard
@@ -90,7 +77,7 @@ export interface IAutoCompleteInputVueComponentProps {
   - _type_: `Record<string, unknown>`
   - _description_: We use this prop as a guard, if the official Autocomplete API changes and add new props you can use the options prop to use these new props until we update our API to use it explicitly.
 
-## Methods
+## Exposed const
 
 :::note
 We only document the exposed methods of the component
@@ -115,7 +102,7 @@ We only document the exposed methods of the component
 ## Events
 
 - **place_changed**:
-  - _type_: [`google.maps.places.PlaceResult`](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
+  - _Event type_: [`google.maps.places.PlaceResult`](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
   - _description_: This event is fired when a PlaceResult is made available for a Place the user has selected.
 If the user enters the name of a Place that was not suggested by the control and presses the Enter key, or if a Place Details request fails, the PlaceResult contains the user input in the name property, with no other properties defined.
 
@@ -136,9 +123,9 @@ If the user enters the name of a Place that was not suggested by the control and
 ## Source code
 
 <details>
-  <summary>`Autocomplete.vue` source code</summary>
+  <summary>`autocomplete-input.vue` source code</summary>
 
-```ts
+```html showLineNumbers
 <template>
   <div>
     <!--
