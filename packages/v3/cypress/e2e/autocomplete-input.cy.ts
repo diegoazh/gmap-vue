@@ -6,6 +6,8 @@ describe('AutocompleteInput component', () => {
     cy.get('button[name=autocomplete]').click();
     cy.get('.gmv-map').should('exist');
     cy.get('.gm-style').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
     const input = () => cy.get('input');
     input().type(`${search}`);
     cy.get('.pac-item').first().click();
