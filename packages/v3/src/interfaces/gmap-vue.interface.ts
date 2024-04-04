@@ -350,6 +350,7 @@ export interface IKmlLayerVueComponentExpose {
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.clickableIcons
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.controlSize
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.disableDefaultUI
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.disableDoubleClickZoom
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.draggableCursor
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.draggingCursor
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.fullscreenControl
@@ -358,21 +359,22 @@ export interface IKmlLayerVueComponentExpose {
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.heading
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.isFractionalZoomEnabled
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.keyboardShortcuts
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapId
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeControl
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeControlOptions
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.mapTypeId
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.maxZoom
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.minZoom
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.noClear
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.panControl
- * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.panControlOptions
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.restriction
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.rotateControl
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.rotateControlOptions
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.scaleControl
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.scaleControlOptions
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.scrollwheel
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.streetView
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.streetViewControl
+ * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.streetViewControlOptions
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.styles
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.tilt
  * @see https://developers.google.com/maps/documentation/javascript/reference/map#MapOptions.zoom
@@ -385,6 +387,7 @@ export interface IMapLayerVueComponentProps {
   clickableIcons?: boolean;
   controlSize?: number;
   disableDefaultUI?: boolean;
+  disableDoubleClickZoom?: boolean;
   draggableCursor?: string;
   draggingCursor?: string;
   fullscreenControl?: boolean;
@@ -393,21 +396,22 @@ export interface IMapLayerVueComponentProps {
   heading?: number;
   isFractionalZoomEnabled?: boolean;
   keyboardShortcuts?: boolean;
+  mapId?: string;
   mapTypeControl?: boolean;
   mapTypeControlOptions?: google.maps.MapTypeControlOptions;
   mapTypeId?: google.maps.MapTypeId;
   maxZoom?: number;
   minZoom?: number;
   noClear?: boolean;
-  panControl?: boolean;
-  panControlOptions?: google.maps.PanControlOptions;
   restriction?: google.maps.MapRestriction;
   rotateControl?: boolean;
   rotateControlOptions?: google.maps.RotateControlOptions;
   scaleControl?: boolean;
   scaleControlOptions?: google.maps.ScaleControlOptions;
+  scrollwheel?: boolean;
   streetView?: google.maps.StreetViewPanorama;
   streetViewControl?: boolean;
+  streetViewControlOptions?: google.maps.StreetViewControlOptions;
   styles?: google.maps.MapTypeStyle[];
   tilt?: number;
   zoom?: number;

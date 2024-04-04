@@ -58,6 +58,7 @@ const props = withDefaults(
     clickableIcons?: boolean;
     controlSize?: number;
     disableDefaultUI?: boolean;
+    disableDoubleClickZoom?: boolean;
     draggableCursor?: string;
     draggingCursor?: string;
     fullscreenControl?: boolean;
@@ -73,15 +74,15 @@ const props = withDefaults(
     maxZoom?: number;
     minZoom?: number;
     noClear?: boolean;
-    panControl?: boolean;
-    panControlOptions?: google.maps.PanControlOptions;
     restriction?: google.maps.MapRestriction;
     rotateControl?: boolean;
     rotateControlOptions?: google.maps.RotateControlOptions;
     scaleControl?: boolean;
     scaleControlOptions?: google.maps.ScaleControlOptions;
+    scrollwheel?: boolean;
     streetView?: google.maps.StreetViewPanorama;
     streetViewControl?: boolean;
+    streetViewControlOptions?: google.maps.StreetViewControlOptions;
     styles?: google.maps.MapTypeStyle[];
     tilt?: number;
     zoom?: number;
