@@ -354,7 +354,7 @@ We only document the exposed methods of the component
 - **default**: The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc.
 - **visible**: This slot must be used if you want to display content within the responsive wrapper for the map.
 
-```html showLineNumbers {6}
+```html showLineNumbers {5,7}
 <template>
   <div class="gmv-map-container">
     <div ref="gmvMap" class="gmv-map"></div>
