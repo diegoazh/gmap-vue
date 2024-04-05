@@ -7,6 +7,10 @@ sidebar_label: Introduction
 ---
 ## About GmapVue
 
+:::danger
+This version is no longer maintained because of the EOL of Vue 2.
+:::
+
 GmapVue is a fork from [vue2-google-maps](https://github.com/xkjyeah/vue-google-maps).
 
 This project has all features added to `vue2-google-maps` plugin up

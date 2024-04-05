@@ -90,11 +90,11 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Vue 3 version',
+              label: 'version for Vue@3',
               to: '/docs/vue-3-version/',
             },
             {
-              label: 'Vue 2 version',
+              label: 'version for Vue@2',
               to: '/docs/vue-2-version/',
             },
           ],
