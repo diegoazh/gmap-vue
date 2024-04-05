@@ -67,13 +67,13 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'vue3Version',
           position: 'left',
-          label: 'Vue 3 docs',
+          label: 'version for Vue@3',
         },
         {
           type: 'docSidebar',
           sidebarId: 'vue2Version',
           position: 'left',
-          label: 'Vue 2 docs',
+          label: 'version for Vue@2',
         },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
