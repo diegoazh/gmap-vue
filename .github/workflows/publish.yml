@@ -23,9 +23,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
+        run: npm install -g pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Create env file
         run: |
           touch ./packages/v3/cypress/runner/.env
@@ -36,7 +36,7 @@ jobs:
         run: pnpm run test:e2e
 
   publish:
-    name: NPM publish
+    name: npm publish
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/master'}}
     needs: [build]
@@ -48,11 +48,9 @@ jobs:
         with:
           node-version: '20.x'
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-          run_install: |
-            - args: [--frozen-lockfile, --ignore-scripts]
+        run: npm install --location=global pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Build package
         working-directory: ./packages/v3
         run: pnpm run build
