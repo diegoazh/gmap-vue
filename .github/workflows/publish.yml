@@ -27,8 +27,7 @@ jobs:
         with:
           version: latest
           run_install: |
-            - recursive: true
-              args: [--frozen-lockfile, --ignore-scripts]
+            - args: [--frozen-lockfile, --ignore-scripts]
       - name: Create env file
         run: |
           touch ./packages/v3/cypress/runner/.env
@@ -55,8 +54,7 @@ jobs:
         with:
           version: latest
           run_install: |
-            - recursive: true
-              args: [--frozen-lockfile, --ignore-scripts]
+            - args: [--frozen-lockfile, --ignore-scripts]
       - name: Build package
         working-directory: ./packages/v3
         run: pnpm run build
