@@ -25,7 +25,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: latest
+          version: 8
           run_install: |
             - args: [--frozen-lockfile, --ignore-scripts]
       - name: Create env file
@@ -52,7 +52,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: latest
+          version: 8
           run_install: |
             - args: [--frozen-lockfile, --ignore-scripts]
       - name: Build package
