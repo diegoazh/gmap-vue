@@ -1,4 +1,5 @@
 name: publish
+
 on:
   push:
     branches:
@@ -65,12 +66,13 @@ jobs:
         run: |
           git remote set-url origin "https://${{ secrets.GH_TOKEN_REPO }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
           git checkout master
-      - name: Semantic Release
+      - name: Preparing new release
         working-directory: ./packages/v3
         run: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CI: true
       - name: Publish new version to npm
         uses: JS-DevTools/npm-publish@v2
         with:
