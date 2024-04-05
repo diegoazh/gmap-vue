@@ -25,7 +25,7 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install
       - name: Create env file
         run: |
           touch ./packages/v3/cypress/runner/.env
