@@ -1,34 +1,15 @@
 # GmapVue for Vue 3
 
-[![Build Status](https://travis-ci.org/diegoazh/gmap-vue.svg?branch=master)](https://travis-ci.org/diegoazh/gmap-vue)
+[![Publish](https://github.com/diegoazh/gmap-vue/workflows/publish/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Apublish)
+[![Documentation](https://github.com/diegoazh/gmap-vue/workflows/documentation/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Adocumentation)
 [![](https://data.jsdelivr.com/v1/package/npm/@gmap-vue/v3/badge)](https://www.jsdelivr.com/package/npm/@gmap-vue/v3)
-
-## Documentation
-
-Please follow next link to our [documentation](https://diegoazh.github.io/gmap-vue/). **NOT UPDATED YET**
-
-## CONTRIBUTORS NEEDED
-
-If you have time to contribute to a rather frequently used library, feel free to make a PR!
-For more background, please refer to [this issue](https://github.com/xkjyeah/vue-google-maps/issues/514).
-
-What's we needed are:
-
-1. Better automated tests
-2. Better integration tests with the popular frameworks, especially Nuxt and Vue template
-
-The above three will go a long way to keeping the project maintainable and contributable, and will address many of the open issues.
-
-## Migrating from version for Vue 2
-
-In the new version of this plugin for Vue v3 we introduce many changes on the structure and also we tried to improve some names to be more intuitive. Please for more detail refer to our [documentation](/#).
 
 ## Installation
 
 ### npm
 
 ```shell
-npm install @gmap-vue/v3 --save
+npm install @gmap-vue/v3
 ```
 
 ### pnpm
@@ -43,33 +24,19 @@ pnpm add @gmap-vue/v3
 yarn add @gmap-vue/v3
 ```
 
-### Manually
+## [Documentation](https://diegoazh.github.io/gmap-vue/)
 
-Just download `dist/main.umd.js` file and include it from your HTML.
+You can find the documentation following the [link](https://diegoazh.github.io/gmap-vue/).
 
-```html
-<script src="./main.umd.js"></script>
-```
+## Migrating from version for Vue 2
 
-### jsdelivr
+In the new version of this plugin for Vue v3 we introduce many changes on the structure and also we tried to improve some names to be more intuitive. Please for more detail refer to our [documentation](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/#migrating-from-version-for-vue-2).
 
-You can use a free CDN like [jsdelivr](https://www.jsdelivr.com) to include this plugin in your html file
+## CONTRIBUTORS ARE WELCOME
 
-```html
-<script src="https://cdn.jsdelivr.net/npm/@gmap-vue/v3/dist/main.umd.js"></script>
-```
+If you have time to contribute to a rather frequently used library, feel free to make a PR!, but first please read our [contributing guide](https://github.com/diegoazh/gmap-vue/blob/master/CONTRIBUTING.md).
 
-### unpkg
+What's urgently needed are:
 
-You can use a free CDN like [unpkg](https://unpkg.com) to include this plugin in your html file
-
-```html
-<script src="https://unpkg.com/@gmap-vue/v3/dist/main.umd.js"></script>
-```
-
-::: warning
-Be aware that if you use this method, you cannot use TitleCase for your components and your attributes.
-That is, instead of writing `<GmapMap>`, you need to write `<gmap-map>`.
-:::
-
-[Live example](https://diegoazh.github.io/gmap-vue/guide/).
+1. Better unit tests (we use Vitest).
+2. Better integration tests (we use Cypress)
