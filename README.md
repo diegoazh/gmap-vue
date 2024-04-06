@@ -1,29 +1,13 @@
-# GmapVue for Vue 3
+# GmapVue
 
 [![Publish](https://github.com/diegoazh/gmap-vue/workflows/publish/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Apublish)
 [![Documentation](https://github.com/diegoazh/gmap-vue/workflows/documentation/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Adocumentation)
 
-A plugin for Vue that help you to manage Google Maps API on your Vue app.
+A Vue plugin that wraps the Google Map API into different Vue components.
 
-## Install
+## [Documentation](https://diegoazh.github.io/gmap-vue/)
 
-### PNPM
-
-```sh
-pnpm add @gmap-vue/v3
-```
-
-### NPM
-
-```sh
-npm install @gmap-vue/v3
-```
-
-### Yarn
-
-```sh
-yarn add @gmap-vue/v3
-```
+You can find the documentation following the [link](https://diegoazh.github.io/gmap-vue/).
 
 ## Plugin dependencies
 
@@ -33,10 +17,6 @@ yarn add @gmap-vue/v3
 |*@googlemaps/markerclusterer*|[![npm version](https://badge.fury.io/js/@googlemaps%2Fmarkerclusterer.svg)](https://badge.fury.io/js/@googlemaps%2Fmarkerclusterer)|
 |*lodash.isEqual*|[![npm version](https://badge.fury.io/js/lodash.isequal.svg)](https://www.npmjs.com/package/lodash.isequal)|
 |*mitt*|[![npm version](https://badge.fury.io/js/mitt.svg)](https://www.npmjs.com/package/mitt)|
-
-## [Documentation](https://diegoazh.github.io/gmap-vue/)
-
-The new documentation is not ready yet and we will landed it soon, until that please, refer to the source. On our code base we use typescript, it helps to follow the code along the repository and also we added comments in almost all functions and methods.
 
 ## Fork of vue2-google-maps
 
@@ -48,22 +28,10 @@ This project uses [pnpm](https://pnpm.io/es/) workspaces to manage the plugin an
 
 - Clone the repository and run
 
-  - `npm`
-
-    ```sh
-    npm install
-    ```
-
   - `pnpm`
 
     ```sh
     pnpm install
-    ```
-
-  - `yarn`
-
-    ```sh
-    yarn
     ```
 
 - To start the documentation site locally you can run the below command, it starts the documentation page on [http://localhost:8080/](http://localhost:8080/)
