@@ -2,14 +2,18 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
   useShapesHelpers,
 } from '@/composables';
 import type { IPolygonShapeVueComponentProps } from '@/interfaces';
-import { $mapPromise, $polygonShapePromise } from '@/keys';
+import { $polygonShapePromise } from '@/keys';
 import { inject, onUnmounted, provide, watch } from 'vue';
 
 /**
@@ -43,6 +47,8 @@ const props = withDefaults(
     visible?: boolean;
     zIndex?: number;
     deepWatch?: boolean;
+    polygonKey?: string;
+    mapKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -79,18 +85,32 @@ const emits = defineEmits<{
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const polygonPromiseDeferred = usePromiseDeferred(
+  props.polygonKey || $polygonShapePromise,
+);
+const promise = usePromise(props.polygonKey || $polygonShapePromise);
+provide(props.polygonKey || $polygonShapePromise, promise);
+
+/*******************************************************************************
  * POLYGON SHAPE
  ******************************************************************************/
+defineOptions({ name: 'polygon-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let polygonShapeInstance: google.maps.Polygon | undefined;
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
@@ -129,13 +149,15 @@ const promise = mapPromise
       excludedEvents,
     );
 
-    return polygonShapeInstance;
+    if (!polygonPromiseDeferred.resolve) {
+      throw new Error('polygonPromiseDeferred.resolve is undefined');
+    }
+
+    polygonPromiseDeferred.resolve(polygonShapeInstance);
   })
   .catch((error) => {
     throw error;
   });
-
-provide($polygonShapePromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -254,6 +276,8 @@ onUnmounted(() => {
   if (polygonShapeInstance) {
     polygonShapeInstance.setMap(null);
   }
+
+  useDestroyPromisesOnUnmounted(props.polygonKey || $polygonShapePromise);
 });
 
 /*******************************************************************************

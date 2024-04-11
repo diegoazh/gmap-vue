@@ -1,5 +1,6 @@
 import { useMapPromise } from '@/composables';
 import type { IGmapVueElementOptions } from '@/interfaces';
+import { $mapPromise } from '@/keys';
 import type { ComponentOptions } from 'vue';
 import {
   bindEvents,
@@ -101,7 +102,7 @@ export function pluginComponentBuilder(
       return '';
     },
     provide() {
-      const promise = useMapPromise()
+      const promise = useMapPromise($mapPromise)
         ?.then((map) => {
           if (!map) {
             throw new Error('the map instance was not created');

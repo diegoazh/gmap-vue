@@ -20,7 +20,6 @@ let _delayedResizeCallback: () => Promise<void>;
  * @internal
  */
 export function onMountedResizeBusHook(
-  map: google.maps.Map, // TODO: maybe can be removed
   props: { [key: string]: any },
   resizeFn: () => void,
 ) {

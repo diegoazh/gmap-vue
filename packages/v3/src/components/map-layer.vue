@@ -20,15 +20,16 @@ import {
   onMountedResizeBusHook,
   onUnmountedResizeBusHook,
   twoWayBindingWrapper,
+  useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
-  useMapPromise,
-  useMapPromiseDeferred,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
   useResizeBus,
   watchPrimitivePropertiesOnSetup,
 } from '@/composables';
 import type { IMapLayerVueComponentProps } from '@/interfaces';
-import { $mapPromise } from '@/keys';
+import { $mapPromise, $recyclePrefix } from '@/keys';
 import type { Emitter, EventType } from 'mitt';
 import {
   computed,
@@ -88,6 +89,7 @@ const props = withDefaults(
     zoom?: number;
     zoomControl?: boolean;
     zoomControlOptions?: google.maps.ZoomControlOptions;
+    mapKey?: string;
     resizeBus?: Emitter<Record<EventType, unknown>>;
     options?: { [key: string]: any };
   }>(),
@@ -139,7 +141,21 @@ const emits = defineEmits<{
 /*******************************************************************************
  * RECYCLE KEY
  ******************************************************************************/
-const recyclePrefix = '__gmc__';
+/**
+ * Define de final mapKey.
+ * This method is a legacy method to maintain compatibility with the old recycle key and should be removed in the next major release.
+ *
+ * @method defineMapKey
+ * @returns {string}
+ * @internal
+ */
+function defineMapKey(): string {
+  return props?.mapKey
+    ? props.mapKey
+    : props?.options && props.options?.recycle
+      ? props.options.recycle
+      : '';
+}
 
 /**
  * Get the recycle key of the map
@@ -148,23 +164,22 @@ const recyclePrefix = '__gmc__';
  * @public
  */
 function getRecycleKey(): string {
-  return props?.options?.recycle
-    ? `${recyclePrefix}${props?.options.recycle}`
-    : recyclePrefix;
+  return `${$recyclePrefix}${defineMapKey()}`;
 }
 
 /*******************************************************************************
  * MAP
  ******************************************************************************/
+defineOptions({ name: 'map-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let mapInstance: google.maps.Map | undefined;
 
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const mapPromiseDeferred = useMapPromiseDeferred();
-const promise = useMapPromise();
-provide($mapPromise, promise);
+const mapPromiseDeferred = usePromiseDeferred(defineMapKey() || $mapPromise);
+const promise = usePromise(defineMapKey() || $mapPromise);
+provide(defineMapKey() || $mapPromise, promise);
 
 /*******************************************************************************
  * RESIZE BUS
@@ -323,7 +338,7 @@ onMounted(() => {
 
       const recycleKey = getRecycleKey();
 
-      if (props?.options?.recycle && window[recycleKey]) {
+      if (window[recycleKey]) {
         gmvMap.value.appendChild(window[recycleKey].div);
         mapInstance = window[recycleKey].map as google.maps.Map;
         mapInstance.setOptions(mapLayerOptions);
@@ -335,7 +350,7 @@ onMounted(() => {
         window[recycleKey] = { map: mapInstance };
       }
 
-      onMountedResizeBusHook(mapInstance, props, resizePreserveCenter);
+      onMountedResizeBusHook(props, resizePreserveCenter);
 
       const mapLayerPropsConfig = getComponentPropsConfig('GmvMap');
       const mapLayerEventsConfig = getComponentEventsConfig('GmvMap', 'auto');
@@ -415,7 +430,6 @@ onMounted(() => {
       }
 
       mapPromiseDeferred.resolve(mapInstance);
-      return mapInstance;
     })
     .catch((error) => {
       throw error;
@@ -431,6 +445,7 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
   onUnmountedResizeBusHook();
+  useDestroyPromisesOnUnmounted(defineMapKey() || $mapPromise);
 });
 
 /*******************************************************************************

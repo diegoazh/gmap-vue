@@ -1,4 +1,4 @@
-import type { IGoogleMapsApiObject, IGmapVuePluginOptions } from '@/interfaces';
+import type { IGmapVuePluginOptions, IGoogleMapsApiObject } from '@/interfaces';
 import type {
   GlobalGoogleObject,
   GoogleMapsAPIInitializerFn,
@@ -58,9 +58,10 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
   globalThis.GoogleMapsCallback = (): void => {
     try {
       resolveFn();
-      callbackExecuted = true;
     } catch (error) {
       globalThis.console.error('Error executing the GoogleMapsCallback', error);
+    } finally {
+      callbackExecuted = true;
     }
   };
 
@@ -73,7 +74,6 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
 
       if (window?.google?.maps != null && !callbackExecuted) {
         globalThis.GoogleMapsCallback();
-        callbackExecuted = true; // TODO: check this, is possible it can be removed. Assigned in the callback function.
       }
 
       if (callbackExecuted) {

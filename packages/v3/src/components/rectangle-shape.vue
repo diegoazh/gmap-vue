@@ -2,13 +2,17 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
 } from '@/composables';
 import type { IRectangleShapeVueComponentProps } from '@/interfaces';
-import { $mapPromise, $rectangleShapePromise } from '@/keys';
+import { $rectangleShapePromise } from '@/keys';
 import { inject, onUnmounted, provide } from 'vue';
 
 /**
@@ -36,6 +40,8 @@ const props = withDefaults(
     strokeWeight?: number;
     visible?: boolean;
     zIndex?: number;
+    rectangleKey?: string;
+    mapKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -68,18 +74,32 @@ const emits = defineEmits<{
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const rectanglePromiseDeferred = usePromiseDeferred(
+  props.rectangleKey || $rectangleShapePromise,
+);
+const promise = usePromise(props.rectangleKey || $rectangleShapePromise);
+provide(props.rectangleKey || $rectangleShapePromise, promise);
+
+/*******************************************************************************
  * RECTANGLE SHAPE
  ******************************************************************************/
+defineOptions({ name: 'rectangle-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let rectangleShapeInstance: google.maps.Rectangle | undefined;
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
@@ -118,13 +138,15 @@ const promise = mapPromise
       excludedEvents,
     );
 
-    return rectangleShapeInstance;
+    if (!rectanglePromiseDeferred.resolve) {
+      throw new Error('rectanglePromiseDeferred.resolve is undefined');
+    }
+
+    rectanglePromiseDeferred.resolve(rectangleShapeInstance);
   })
   .catch((error) => {
     throw error;
   });
-
-provide($rectangleShapePromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -145,6 +167,8 @@ onUnmounted(() => {
   if (rectangleShapeInstance) {
     rectangleShapeInstance.setMap(null);
   }
+
+  useDestroyPromisesOnUnmounted(props.rectangleKey || $rectangleShapePromise);
 });
 
 /*******************************************************************************

@@ -12,13 +12,17 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
 } from '@/composables';
 import type { IDrawingManagerVueComponentProps } from '@/interfaces';
-import { $drawingManagerPromise, $mapPromise } from '@/keys';
+import { $drawingManagerPromise } from '@/keys';
 import { computed, inject, onUnmounted, provide, useSlots, watch } from 'vue';
 
 /**
@@ -38,7 +42,7 @@ const props = withDefaults(
     drawingControl?: boolean;
     drawingControlOptions?: google.maps.drawing.DrawingControlOptions;
     drawingMode?: google.maps.drawing.OverlayType | null;
-    markerOptions?: google.maps.MarkerOptions;
+    markerOptions?: google.maps.marker.AdvancedMarkerElementOptions;
     polygonOptions?: google.maps.PolygonOptions;
     polylineOptions?: google.maps.PolylineOptions;
     rectangleOptions?: google.maps.RectangleOptions;
@@ -57,6 +61,8 @@ const props = withDefaults(
       | 'BOTTOM_RIGHT';
     drawingModes?: google.maps.drawing.OverlayType[];
     shapes?: google.maps.drawing.OverlayCompleteEvent[];
+    drawingKey?: string;
+    mapKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -85,20 +91,34 @@ const $slots = useSlots();
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const drawingPromiseDeferred = usePromiseDeferred(
+  props.drawingKey || $drawingManagerPromise,
+);
+const promise = usePromise(props.drawingKey || $drawingManagerPromise);
+provide(props.drawingKey || $drawingManagerPromise, promise);
+
+/*******************************************************************************
  * DRAWING MANAGER
  ******************************************************************************/
+defineOptions({ name: 'drawing-manager' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let drawingManagerInstance: google.maps.drawing.DrawingManager | undefined;
 let map: google.maps.Map | undefined;
 let selectedShape: google.maps.drawing.OverlayCompleteEvent | undefined;
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
@@ -170,13 +190,15 @@ const promise = mapPromise
       drawAll();
     }
 
-    return drawingManagerInstance;
+    if (!drawingPromiseDeferred.resolve) {
+      throw new Error('drawingPromiseDeferred.resolve is undefined');
+    }
+
+    drawingPromiseDeferred.resolve(drawingManagerInstance);
   })
   .catch((error) => {
     throw error;
   });
-
-provide($drawingManagerPromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -421,6 +443,8 @@ onUnmounted(() => {
   if (drawingManagerInstance) {
     drawingManagerInstance.setMap(null);
   }
+
+  useDestroyPromisesOnUnmounted(props.drawingKey || $drawingManagerPromise);
 });
 
 /*******************************************************************************

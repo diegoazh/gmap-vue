@@ -2,14 +2,18 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
   useShapesHelpers,
 } from '@/composables';
 import type { IPolylineShapeVueComponentProps } from '@/interfaces';
-import { $mapPromise, $polylineShapePromise } from '@/keys';
+import { $polylineShapePromise } from '@/keys';
 import { inject, onUnmounted, provide, watch } from 'vue';
 
 /**
@@ -39,6 +43,8 @@ const props = withDefaults(
     visible?: boolean;
     zIndex?: number;
     deepWatch?: boolean;
+    polylineKey?: string;
+    mapKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -72,18 +78,32 @@ const emits = defineEmits<{
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const polylinePromiseDeferred = usePromiseDeferred(
+  props.polylineKey || $polylineShapePromise,
+);
+const promise = usePromise(props.polylineKey || $polylineShapePromise);
+provide(props.polylineKey || $polylineShapePromise, promise);
+
+/*******************************************************************************
  * POLYLINE SHAPE
  ******************************************************************************/
+defineOptions({ name: 'polyline-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let polylineShapeInstance: google.maps.Polyline | undefined;
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
@@ -122,13 +142,15 @@ const promise = mapPromise
       excludedEvents,
     );
 
-    return polylineShapeInstance;
+    if (!polylinePromiseDeferred.resolve) {
+      throw new Error('polylinePromiseDeferred.resolve is undefined');
+    }
+
+    polylinePromiseDeferred.resolve(polylineShapeInstance);
   })
   .catch((error) => {
     throw error;
   });
-
-provide($polylineShapePromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -203,6 +225,8 @@ onUnmounted(() => {
   if (polylineShapeInstance) {
     polylineShapeInstance.setMap(null);
   }
+
+  useDestroyPromisesOnUnmounted(props.polylineKey || $polylineShapePromise);
 });
 
 /*******************************************************************************

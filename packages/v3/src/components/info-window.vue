@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div ref="gmvInfoWindow">
+  <div class="info-window-container">
+    <div ref="gmvInfoWindow" class="info-window-content">
       <!-- so named because it will fly away to another component -->
       <!-- @slot Used to set your info window.  -->
       <slot></slot>
@@ -12,13 +12,17 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
 } from '@/composables';
 import type { IInfoWindowVueComponentProps } from '@/interfaces';
-import { $infoWindowPromise, $mapPromise, $markerPromise } from '@/keys';
+import { $infoWindowPromise } from '@/keys';
 import { inject, onMounted, provide, ref, watch } from 'vue';
 
 /**
@@ -43,7 +47,10 @@ const props = withDefaults(
     position?: google.maps.LatLng | google.maps.LatLngLiteral;
     zIndex?: number;
     opened?: boolean;
-    marker?: google.maps.Marker;
+    marker?: google.maps.marker.AdvancedMarkerElement;
+    infoWindowKey?: string;
+    markerKey?: string;
+    mapKey?: string;
     options?: Record<string | number | symbol, unknown>;
   }>(),
   {
@@ -68,21 +75,40 @@ const emits = defineEmits<{
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
-const markerPromise = inject($markerPromise, undefined);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
+
+const markerPromise = props.markerKey
+  ? inject<Promise<google.maps.marker.AdvancedMarkerElement | undefined>>(
+      props.markerKey,
+    )
+  : undefined;
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const infoWindowPromiseDeferred = usePromiseDeferred(
+  props.infoWindowKey || $infoWindowPromise,
+);
+const promise = usePromise(props.infoWindowKey || $infoWindowPromise);
+provide(props.infoWindowKey || $infoWindowPromise, promise);
+
+/*******************************************************************************
  * INFO WINDOW
  ******************************************************************************/
+defineOptions({ name: 'info-window' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let map: google.maps.Map | undefined;
 let markerOwner: google.maps.marker.AdvancedMarkerElement | undefined;
 let infoWindowInstance: google.maps.InfoWindow | undefined;
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
@@ -135,13 +161,15 @@ const promise = mapPromise
 
     openInfoWindow();
 
-    return infoWindowInstance;
+    if (!infoWindowPromiseDeferred.resolve) {
+      throw new Error('infoWindowPromiseDeferred.resolve is undefined');
+    }
+
+    infoWindowPromiseDeferred.resolve(infoWindowInstance);
   })
   .catch((error) => {
     throw error;
   });
-
-provide($infoWindowPromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -200,6 +228,8 @@ onMounted(() => {
   if (el) {
     el?.parentNode?.removeChild(el);
   }
+
+  useDestroyPromisesOnUnmounted(props.infoWindowKey || $infoWindowPromise);
 });
 
 /*******************************************************************************

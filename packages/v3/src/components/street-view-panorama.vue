@@ -14,18 +14,18 @@ import {
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
+  useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
-  useMapPromise,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
   useResizeBus,
-  useStreetViewPanoramaPromise,
-  useStreetViewPanoramaPromiseDeferred,
   watchPrimitivePropertiesOnSetup,
 } from '@/composables';
 import type { IStreetViewPanoramaVueComponentProps } from '@/interfaces';
 import { $streetViewPanoramaPromise } from '@/keys';
 import isEqual from 'lodash.isequal';
-import { computed, onMounted, provide, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 
 /**
  * Street View Panorama component
@@ -65,7 +65,8 @@ const props = withDefaults(
     zoom?: number;
     zoomControl?: boolean;
     zoomControlOptions?: google.maps.ZoomControlOptions;
-    options: Record<string, unknown>;
+    streetViewKey?: string;
+    options?: Record<string, unknown>;
   }>(),
   {
     clickToGo: true,
@@ -73,6 +74,7 @@ const props = withDefaults(
     enableCloseButton: false,
     scrollwheel: true,
     showRoadLabels: true,
+    visible: true,
   },
 );
 
@@ -94,18 +96,18 @@ const emits = defineEmits<{
 /*******************************************************************************
  * STREET VIEW PANORAMA
  ******************************************************************************/
+defineOptions({ name: 'street-view-panorama' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let streetViewPanoramaInstance: google.maps.StreetViewPanorama | undefined;
 
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const streetViewPanoramaPromiseDeferred =
-  useStreetViewPanoramaPromiseDeferred();
-const promise = useStreetViewPanoramaPromise();
-provide($streetViewPanoramaPromise, promise);
-// TODO: find a way to implement this in order to use with markers
-// provide($mapPromise, promise); // so that we can use it with markers
+const streetViewPanoramaPromiseDeferred = usePromiseDeferred(
+  props.streetViewKey || $streetViewPanoramaPromise,
+);
+const promise = usePromise(props.streetViewKey || $streetViewPanoramaPromise);
+provide(props.streetViewKey || $streetViewPanoramaPromise, promise);
 
 /*******************************************************************************
  * RESIZE BUS
@@ -221,8 +223,7 @@ watch(
  ******************************************************************************/
 onMounted(() => {
   useGoogleMapsApiPromiseLazy()
-    .then(() => useMapPromise())
-    .then(async (map) => {
+    .then(async () => {
       if (!gmvStreetViewPanorama.value) {
         throw new Error(
           `we can find the template ref: 'gmvStreetViewPanorama'`,
@@ -312,17 +313,17 @@ onMounted(() => {
         );
       }
 
-      if (map) {
-        map.setStreetView(streetViewPanoramaInstance);
-      }
-
       streetViewPanoramaPromiseDeferred.resolve(streetViewPanoramaInstance);
-
-      return streetViewPanoramaInstance;
     })
     .catch((error) => {
       throw error;
     });
+});
+
+onUnmounted(() => {
+  useDestroyPromisesOnUnmounted(
+    props.streetViewKey || $streetViewPanoramaPromise,
+  );
 });
 /*******************************************************************************
  * RENDERS

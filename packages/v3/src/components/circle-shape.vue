@@ -2,13 +2,17 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
 } from '@/composables';
 import type { ICircleShapeVueComponentProps } from '@/interfaces';
-import { $circleShapePromise, $mapPromise } from '@/keys';
+import { $circleShapePromise } from '@/keys';
 import { inject, onUnmounted, provide } from 'vue';
 
 /**
@@ -36,6 +40,8 @@ const props = withDefaults(
     strokeWeight?: number;
     visible?: boolean;
     zIndex?: number;
+    circleKey?: string;
+    mapKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -69,19 +75,33 @@ const emits = defineEmits<{
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const circlePromiseDeferred = usePromiseDeferred(
+  props.circleKey || $circleShapePromise,
+);
+const promise = usePromise(props.circleKey || $circleShapePromise);
+provide(props.circleKey || $circleShapePromise, promise);
+
+/*******************************************************************************
  * CIRCLE SHAPE
  ******************************************************************************/
+defineOptions({ name: 'circle-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let circleShapeInstance: google.maps.Circle | undefined;
 
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('The map instance was not created');
@@ -120,13 +140,15 @@ const promise = mapPromise
       excludedEvents,
     );
 
-    return circleShapeInstance;
+    if (!circlePromiseDeferred.resolve) {
+      throw new Error('circlePromiseDeferred.resolve is undefined');
+    }
+
+    circlePromiseDeferred.resolve(circleShapeInstance);
   })
   .catch((error) => {
     throw error;
   });
-
-provide($circleShapePromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -147,6 +169,8 @@ onUnmounted(() => {
   if (circleShapeInstance) {
     circleShapeInstance.setMap(null);
   }
+
+  useDestroyPromisesOnUnmounted(props.circleKey || $circleShapePromise);
 });
 /*******************************************************************************
  * RENDERS
