@@ -2,6 +2,7 @@ import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { InjectionKey } from 'vue';
 import type { IGmapVuePluginOptions } from '../interfaces';
 
+export const $recyclePrefix = '__gmc__';
 export const $mapPromise = Symbol('mapPromise') as InjectionKey<
   Promise<google.maps.Map | undefined>
 >;

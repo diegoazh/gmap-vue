@@ -85,6 +85,7 @@ const emits = defineEmits<{
 /*******************************************************************************
  * AUTOCOMPLETE
  ******************************************************************************/
+defineOptions({ inheritAttrs: false, name: 'autocomplete-input' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let autoCompleteInstance: google.maps.places.Autocomplete | undefined;
 

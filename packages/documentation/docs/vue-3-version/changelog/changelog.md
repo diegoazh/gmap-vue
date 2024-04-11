@@ -4,6 +4,13 @@ title: Changelog
 sidebar_position: 5
 sidebar_label: Changelog
 ---
+# [2.## [2.0.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.0.0...gmv3_v2.0.1) (2024-04-05)
+
+
+### Bug Fixes
+
+* **v3:** update map props and its interface ([90acc21](https://github.com/diegoazh/gmap-vue/commit/90acc21ee6c1649ca5d5124209cfbd706996c501))
+
 # [2.0.0](https://github.com/diegoazh/gmap-vue/compare/gmv3_v1.0.3...gmv3_v2.0.0) (2024-03-31)
 
 

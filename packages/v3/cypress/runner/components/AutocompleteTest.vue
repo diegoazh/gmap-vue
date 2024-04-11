@@ -70,8 +70,13 @@ function usePlace() {
 }
 
 onMounted(async () => {
-  map.value = await mapPromise;
-  ready.value = true;
+  console.log(mapPromise);
+  mapPromise.then((map) => {
+    map.value = map;
+    ready.value = true;
+  });
+  // map.value = await mapPromise;
+  // ready.value = true;
 });
 </script>
 <style scoped>

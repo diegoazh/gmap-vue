@@ -2,8 +2,8 @@ import type { SinglePluginComponentConfig } from '@/types';
 import type {
   Algorithm,
   MarkerClusterer,
-  onClusterClickHandler,
   Renderer,
+  onClusterClickHandler,
 } from '@googlemaps/markerclusterer';
 import type { Emitter, EventType } from 'mitt';
 import type { Ref, RendererElement, RendererNode, VNode } from 'vue';
@@ -178,6 +178,8 @@ export interface ICircleShapeVueComponentProps {
   strokeWeight?: number;
   visible?: boolean;
   zIndex?: number;
+  circleKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
 }
 
@@ -199,6 +201,8 @@ export interface IMarkerClusterVueComponentProps {
   markers?: google.maps.marker.AdvancedMarkerElement[];
   onClusterClick?: onClusterClickHandler;
   renderer?: Renderer;
+  clusterKey?: string;
+  mapKey?: string;
   options?: Record<string, any>;
 }
 
@@ -225,7 +229,7 @@ export interface IDrawingManagerVueComponentProps
   drawingControl?: boolean;
   drawingControlOptions?: google.maps.drawing.DrawingControlOptions;
   drawingMode?: google.maps.drawing.OverlayType | null;
-  markerOptions?: google.maps.MarkerOptions;
+  markerOptions?: google.maps.marker.AdvancedMarkerElementOptions;
   polygonOptions?: google.maps.PolygonOptions;
   polylineOptions?: google.maps.PolylineOptions;
   rectangleOptions?: google.maps.RectangleOptions;
@@ -244,6 +248,8 @@ export interface IDrawingManagerVueComponentProps
     | 'BOTTOM_RIGHT';
   drawingModes?: google.maps.drawing.OverlayType[];
   shapes?: google.maps.drawing.OverlayCompleteEvent[];
+  drawingKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
 }
 
@@ -276,6 +282,8 @@ export interface IHeatmapLayerVueComponentProps {
   maxIntensity?: number;
   opacity?: number;
   number?: number;
+  heatmapKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
 }
 
@@ -307,6 +315,9 @@ export interface IInfoWindowVueComponentProps {
   zIndex?: number;
   opened?: boolean;
   marker?: google.maps.marker.AdvancedMarkerElement;
+  infoWindowKey?: string;
+  markerKey?: string;
+  mapKey?: string;
   options?: Record<string | number | symbol, unknown>;
 }
 
@@ -331,6 +342,8 @@ export interface IKmlLayerVueComponentProps {
   suppressInfoWindows?: boolean;
   url?: string;
   zIndex?: number;
+  kmlKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
 }
 
@@ -417,6 +430,7 @@ export interface IMapLayerVueComponentProps {
   zoom?: number;
   zoomControl?: boolean;
   zoomControlOptions?: google.maps.ZoomControlOptions;
+  mapKey?: string;
   resizeBus?: Emitter<Record<EventType, unknown>>;
   options?: { [key: string]: any };
 }
@@ -445,42 +459,30 @@ export interface IMapLayerVueComponentExpose {
 /**
  * Marker Google Maps properties documentation
  *
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.anchorPoint
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.animation
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.clickable
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.cursor
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.draggable
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.icon
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.label
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.opacity
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.position
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.shape
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.title
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.visible
- * @see https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerOptions.zIndex
+ * @see https://developers.google.com/maps/documentation/javascript/reference/advanced-markers#AdvancedMarkerElementOptions.collisionBehavior
+ * @see https://developers.google.com/maps/documentation/javascript/reference/advanced-markers#AdvancedMarkerElementOptions.content
+ * @see https://developers.google.com/maps/documentation/javascript/reference/advanced-markers#AdvancedMarkerElementOptions.gmpClickable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/advanced-markers#AdvancedMarkerElementOptions.gmpDraggable
+ * @see https://developers.google.com/maps/documentation/javascript/reference/advanced-markers#AdvancedMarkerElementOptions.position
+ * @see https://developers.google.com/maps/documentation/javascript/reference/advanced-markers#AdvancedMarkerElementOptions.title
+ * @see https://developers.google.com/maps/documentation/javascript/reference/advanced-markers#AdvancedMarkerElementOptions.zIndex
  */
 export interface IMarkerIconVueComponentProps {
-  anchorPoint?: google.maps.Point;
-  animation?: google.maps.Animation;
-  clickable?: boolean;
-  crossOnDrag?: boolean;
-  cursor?: string;
-  draggable?: boolean;
-  icon?: string | google.maps.Icon | google.maps.Symbol | null;
-  label?: string | google.maps.MarkerLabel;
-  opacity?: number;
-  optimized?: boolean;
-  position?: google.maps.LatLng | google.maps.LatLngLiteral;
-  shape?: google.maps.MarkerShape;
+  collisionBehavior?: google.maps.CollisionBehavior;
+  content?: HTMLElement;
+  gmpClickable?: boolean; // Notice: Available only in the v=beta channel.
+  gmpDraggable?: boolean;
+  position?:
+    | google.maps.LatLng
+    | google.maps.LatLngLiteral
+    | google.maps.LatLngAltitude
+    | google.maps.LatLngAltitudeLiteral;
   title?: string;
-  visible?: boolean;
   zIndex?: number;
+  markerKey?: string;
+  clusterKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
-  place?: Record<string, unknown>; // TODO: Define properties of this object
-  /**
-   *  This property was not found on the Google Maps documentation, but it was defined in the previous version of this component. Any suggestion is welcome here.
-   */
-  attribution?: Record<string, unknown>; // TODO: Define properties of this object, or remove it if it's not used
 }
 
 export interface IMarkerIconVueComponentExpose {
@@ -531,6 +533,8 @@ export interface IPolygonShapeVueComponentProps {
   visible?: boolean;
   zIndex?: number;
   deepWatch?: boolean;
+  polygonKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
 }
 
@@ -569,6 +573,8 @@ export interface IPolylineShapeVueComponentProps {
   visible?: boolean;
   zIndex?: number;
   deepWatch?: boolean;
+  polylineKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
 }
 
@@ -606,6 +612,8 @@ export interface IRectangleShapeVueComponentProps {
   strokeWeight?: number;
   visible?: boolean;
   zIndex?: number;
+  rectangleKey?: string;
+  mapKey?: string;
   options?: Record<string, unknown>;
 }
 
@@ -669,7 +677,8 @@ export interface IStreetViewPanoramaVueComponentProps {
   zoom?: number;
   zoomControl?: boolean;
   zoomControlOptions?: google.maps.ZoomControlOptions;
-  options: Record<string, unknown>;
+  streetViewKey?: string;
+  options?: Record<string, unknown>;
 }
 
 export interface IStreetViewPanoramaVueComponentExpose {

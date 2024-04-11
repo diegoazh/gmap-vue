@@ -1,12 +1,23 @@
-import type { IGmapVuePluginOptions, IVueProp } from '@/interfaces';
+import type {
+  IGmapVuePluginOptions,
+  IVueProp,
+  PromiseDeferred,
+} from '@/interfaces';
 import type {
   GmapVuePluginProps,
   LazyValueGetterFn,
   OldHtmlInputElement,
   SinglePluginComponentConfig,
 } from '@/types';
-import { type ComponentPublicInstance, nextTick, watch } from 'vue';
 import isEqual from 'lodash.isequal';
+import {
+  getCurrentInstance,
+  nextTick,
+  reactive,
+  watch,
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+} from 'vue';
 
 /**
  * Function that helps you to capitalize the first letter on a word
@@ -539,6 +550,40 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       }
     }
   });
+}
+
+/** @internal */
+export function deferredPromiseFactory<T>(): PromiseDeferred<T> {
+  return reactive({
+    resolve: undefined,
+    reject: undefined,
+  });
+}
+
+/** @internal */
+export function componentPromiseFactory<T>(
+  deferredPromise: PromiseDeferred<T>,
+): Promise<T | undefined> {
+  return new Promise((resolve, reject) => {
+    deferredPromise.resolve = resolve;
+    deferredPromise.reject = reject;
+  });
+}
+
+/** @internal */
+export function findParentInstanceByName(
+  componentName: string,
+): ComponentInternalInstance | null | undefined {
+  const currentInstance = getCurrentInstance();
+  let ancestor = currentInstance?.parent;
+  let name = ancestor?.type.name || ancestor?.type.__name;
+
+  while (ancestor && name !== componentName) {
+    ancestor = ancestor.parent;
+    name = ancestor?.type.name || ancestor?.type.__name;
+  }
+
+  return ancestor;
 }
 
 /** @internal */

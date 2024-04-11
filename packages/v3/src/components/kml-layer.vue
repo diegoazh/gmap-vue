@@ -2,13 +2,17 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
 } from '@/composables';
 import type { IKmlLayerVueComponentProps } from '@/interfaces';
-import { $kmlLayerPromise, $mapPromise } from '@/keys';
+import { $kmlLayerPromise } from '@/keys';
 import { inject, onUnmounted, provide } from 'vue';
 
 /**
@@ -30,6 +34,8 @@ const props = withDefaults(
     suppressInfoWindows?: boolean;
     url?: string;
     zIndex?: number;
+    kmlKey?: string;
+    mapKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -51,18 +57,30 @@ const emits = defineEmits<{
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
 
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const kmlPromiseDeferred = usePromiseDeferred(props.kmlKey || $kmlLayerPromise);
+const promise = usePromise(props.kmlKey || $kmlLayerPromise);
+provide(props.kmlKey || $kmlLayerPromise, promise);
+
+/*******************************************************************************
  * KML LAYER
  ******************************************************************************/
+defineOptions({ name: 'kml-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let kmlLayerInstance: google.maps.KmlLayer | undefined;
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
@@ -98,13 +116,15 @@ const promise = mapPromise
       excludedEvents,
     );
 
-    return kmlLayerInstance;
+    if (!kmlPromiseDeferred.resolve) {
+      throw new Error('kmlPromiseDeferred.resolve is undefined');
+    }
+
+    kmlPromiseDeferred.resolve(kmlLayerInstance);
   })
   .catch((error) => {
     throw error;
   });
-
-provide($kmlLayerPromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -125,6 +145,8 @@ onUnmounted(() => {
   if (kmlLayerInstance) {
     kmlLayerInstance.setMap(null);
   }
+
+  useDestroyPromisesOnUnmounted(props.kmlKey || $kmlLayerPromise);
 });
 /*******************************************************************************
  * RENDERS

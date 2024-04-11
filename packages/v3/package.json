@@ -116,6 +116,7 @@
   "homepage": "https://github.com/diegoazh/gmap-vue#readme",
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.5.3",
+    "@vitest/coverage-v8": "^1.4.0",
     "lodash.isequal": "^4.5.0",
     "mitt": "^3.0.1",
     "vue": "^3.4.21"

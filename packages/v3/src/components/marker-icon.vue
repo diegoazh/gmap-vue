@@ -2,13 +2,17 @@
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
+  findParentInstanceByName,
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
 } from '@/composables';
 import type { IMarkerIconVueComponentProps } from '@/interfaces';
-import { $clusterPromise, $mapPromise, $markerPromise } from '@/keys';
+import { $markerPromise } from '@/keys';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { h, inject, onUnmounted, provide, useSlots } from 'vue';
 
@@ -36,6 +40,9 @@ const props = withDefaults(
       | google.maps.LatLngAltitudeLiteral;
     title?: string;
     zIndex?: number;
+    markerKey?: string;
+    clusterKey?: string;
+    mapKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -60,8 +67,17 @@ const slots = useSlots();
 /*******************************************************************************
  * INJECT
  ******************************************************************************/
-const mapPromise = inject($mapPromise);
-const clusterPromise = inject($clusterPromise, undefined);
+const mapPromise = props.mapKey
+  ? inject<Promise<google.maps.Map | undefined>>(props.mapKey)
+  : (findParentInstanceByName('map-layer')?.exposed?.mapPromise as Promise<
+      google.maps.Map | undefined
+    >);
+
+const clusterPromise = props.clusterKey
+  ? inject<Promise<MarkerClusterer | undefined>>(props.clusterKey)
+  : (findParentInstanceByName('cluster-icon')?.exposed
+      ?.clusterPromise as Promise<MarkerClusterer | undefined>);
+
 let clusterOwner: MarkerClusterer | undefined;
 
 if (!mapPromise) {
@@ -69,11 +85,21 @@ if (!mapPromise) {
 }
 
 /*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const markerPromiseDeferred = usePromiseDeferred(
+  props.markerKey || $markerPromise,
+);
+const promise = usePromise(props.markerKey || $markerPromise);
+provide(props.markerKey || $markerPromise, promise);
+
+/*******************************************************************************
  * MARKER
  ******************************************************************************/
+defineOptions({ name: 'marker-icon' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let markerInstance: google.maps.marker.AdvancedMarkerElement | undefined;
-const promise = mapPromise
+mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance was not created');
@@ -145,13 +171,15 @@ const promise = mapPromise
       });
     }
 
-    return markerInstance;
+    if (!markerPromiseDeferred.resolve) {
+      throw new Error('markerPromiseDeferred.resolve is undefined');
+    }
+
+    markerPromiseDeferred.resolve(markerInstance);
   })
   .catch((reason) => {
     throw reason;
   });
-
-provide($markerPromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -181,6 +209,8 @@ onUnmounted(() => {
   } else if (markerInstance) {
     markerInstance.map = null;
   }
+
+  useDestroyPromisesOnUnmounted(props.markerKey || $markerPromise);
 });
 
 /*******************************************************************************

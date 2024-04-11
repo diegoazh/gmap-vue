@@ -104,17 +104,26 @@ export interface IMapLayerVueComponentProps {
   zoom?: number;
   zoomControl?: boolean;
   zoomControlOptions?: google.maps.ZoomControlOptions;
+  mapKey?: string;
   resizeBus?: Emitter<Record<EventType, unknown>>;
   options?: { [key: string]: any };
 }
 ```
+
+- **mapKey**:
+  - _type_: `string`
+  - _description_: A unique key to identify different instances of the `GmvMap` component. This always be prefixed with `__gmc__` as a recycle key to save the Google Map class instance into the global `window` object. For example if you set this prop with `'MyMap'` this results on `'__gmc__MyMap'` for the recycle key, that is returned by the exposed `getRecycleKey` method. and you should use this key to get the correct map promise using the `useMapPromise('MyMap')` composable. **This is the old `recycle` prop from `v2.0.1` and below**.
+
+:::warning
+For legacy compatibility we decide to maintain the old way to set the map key, eg: `options: { recycle: 'myMapKey' }` but, **we strongly recommend to use the new `mapKey` prop** because the old way should be removed in the next major release.
+:::
 
 - **resizeBus**:
   - _type_: `Emitter<Record<EventType, unknown>>;`
   - _description_: This is the resize bus, the default value is the `default resize bus` is an `emit` object. `EventType` is typed as `string | symbol` and the event is `unknown` because we can not know which events will you fire.
 - **options**:
   - _type_: `Record<string, unknown>`
-  - _description_: We use this prop as a guard, if the official Autocomplete API changes and add new props you can use the options prop to use these new props until we update our API to use it explicitly.
+  - _description_: We use this prop as a fallback option. If the official API changes and add new props to the class you can use the options prop to use and populate these new props until we update our API to use it explicitly.
 
 ## Methods
 
@@ -261,9 +270,7 @@ We only document the exposed methods of the component
   ```ts showLineNumbers
   //...
   function getRecycleKey(): string {
-    return props?.options?.recycle
-      ? `${recyclePrefix}${props?.options.recycle}`
-      : recyclePrefix;
+    return props?.recycle ? `${recyclePrefix}${props.recycle}` : recyclePrefix;
   }
   //...
   ```
@@ -366,6 +373,58 @@ We only document the exposed methods of the component
 </template>
 ```
 
+## Provide/Inject
+
+This component provides to its descendants a `mapPromise` to know when the map instance is ready to use.
+
+From versions **above `v2.0.1`** every map promise si provided using the `mapKey` prop or using the `$mapPromise` key as the default value. If you have only one instance of the map you can avoid to set this prop but, **take care because if you have more than one map and forget to set the `mapKey`, the second instance of the map will override the promise of the first map and you will be using the same instance in both places** causing the issues described in the following [report](https://github.com/diegoazh/gmap-vue/issues/309).
+
+:::warning
+**From `v2.0.1` and below it only provides one promise with the default key `$mapPromise`**.
+:::
+
+```ts showLineNumbers
+import { $mapPromise } from '@/keys';
+
+//...
+const promise = usePromise(props.mapKey || $mapPromise);
+provide(props.mapKey || $mapPromise, promise);
+//...
+```
+
+You can get the promise using `inject` like de following example but, only on the descendants of the `GmvMap` component, that mean only on components placed between the `GmvMap` tags.
+
+```ts showLineNumbers
+import { $mapPromise } from '@/keys';
+
+//...
+const mapPromise = inject($mapPromise); // if you are using only one map
+const mapPromise = inject('mapKey'); // two or more instances needs to use the `mapKey` prop
+//...
+```
+
+```html
+<GmvMap>
+  <YourComponentHere /> <!-- 👈🏼 Your component here can use inject to get the promise. -->
+</GmvMap>
+```
+
+For other cases you can use the `useMapPromise` composable. Read more about it [`here`](/docs/vue-3-version/api/composables#usemappromise).
+
+```ts
+import { useMapPromise } from "@gmap-vue/v3/composables";
+
+const mapPromise = useMapPromise('mapKey');
+```
+
+:::info
+This `mapPromise` is exposed and you can access it from the component reference using `ref`.
+:::
+
+## Ref
+
+To get a component reference for the `GmvMap`, please follow this [guide](/docs/vue-3-version/guide/basic-usage/map-reference).
+
 ## Source code
 
 <details>
@@ -394,15 +453,16 @@ import {
   onMountedResizeBusHook,
   onUnmountedResizeBusHook,
   twoWayBindingWrapper,
+  useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
-  useMapPromise,
-  useMapPromiseDeferred,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
   useResizeBus,
   watchPrimitivePropertiesOnSetup,
 } from '@/composables';
 import type { IMapLayerVueComponentProps } from '@/interfaces';
-import { $mapPromise } from '@/keys';
+import { $mapPromise, $recyclePrefix } from '@/keys';
 import type { Emitter, EventType } from 'mitt';
 import {
   computed,
@@ -462,6 +522,7 @@ const props = withDefaults(
     zoom?: number;
     zoomControl?: boolean;
     zoomControlOptions?: google.maps.ZoomControlOptions;
+    mapKey?: string;
     resizeBus?: Emitter<Record<EventType, unknown>>;
     options?: { [key: string]: any };
   }>(),
@@ -513,7 +574,21 @@ const emits = defineEmits<{
 /*******************************************************************************
  * RECYCLE KEY
  ******************************************************************************/
-const recyclePrefix = '__gmc__';
+/**
+ * Define de final mapKey.
+ * This method is a legacy method to maintain compatibility with the old recycle key and should be removed in the next major release.
+ *
+ * @method defineMapKey
+ * @returns {string}
+ * @internal
+ */
+function defineMapKey(): string {
+  return props?.mapKey
+    ? props.mapKey
+    : props?.options && props.options?.recycle
+      ? props.options.recycle
+      : '';
+}
 
 /**
  * Get the recycle key of the map
@@ -522,23 +597,22 @@ const recyclePrefix = '__gmc__';
  * @public
  */
 function getRecycleKey(): string {
-  return props?.options?.recycle
-    ? `${recyclePrefix}${props?.options.recycle}`
-    : recyclePrefix;
+  return `${$recyclePrefix}${defineMapKey()}`;
 }
 
 /*******************************************************************************
  * MAP
  ******************************************************************************/
+defineOptions({ name: 'map-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let mapInstance: google.maps.Map | undefined;
 
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const mapPromiseDeferred = useMapPromiseDeferred();
-const promise = useMapPromise();
-provide($mapPromise, promise);
+const mapPromiseDeferred = usePromiseDeferred(defineMapKey() || $mapPromise);
+const promise = usePromise(defineMapKey() || $mapPromise);
+provide(defineMapKey() || $mapPromise, promise);
 
 /*******************************************************************************
  * RESIZE BUS
@@ -697,7 +771,7 @@ onMounted(() => {
 
       const recycleKey = getRecycleKey();
 
-      if (props?.options?.recycle && window[recycleKey]) {
+      if (window[recycleKey]) {
         gmvMap.value.appendChild(window[recycleKey].div);
         mapInstance = window[recycleKey].map as google.maps.Map;
         mapInstance.setOptions(mapLayerOptions);
@@ -709,7 +783,7 @@ onMounted(() => {
         window[recycleKey] = { map: mapInstance };
       }
 
-      onMountedResizeBusHook(mapInstance, props, resizePreserveCenter);
+      onMountedResizeBusHook(props, resizePreserveCenter);
 
       const mapLayerPropsConfig = getComponentPropsConfig('GmvMap');
       const mapLayerEventsConfig = getComponentEventsConfig('GmvMap', 'auto');
@@ -789,7 +863,6 @@ onMounted(() => {
       }
 
       mapPromiseDeferred.resolve(mapInstance);
-      return mapInstance;
     })
     .catch((error) => {
       throw error;
@@ -805,6 +878,7 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
   onUnmountedResizeBusHook();
+  useDestroyPromisesOnUnmounted(defineMapKey() || $mapPromise);
 });
 
 /*******************************************************************************

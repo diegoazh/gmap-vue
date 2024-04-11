@@ -2,8 +2,10 @@
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import { fileURLToPath, URL } from 'url';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import dts from 'vite-plugin-dts';
+
+const envs = loadEnv('production', process.cwd(), 'VITE');
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -43,6 +45,6 @@ export default defineConfig({
         },
       },
     },
-    minify: false,
+    minify: envs['VITE_IS_LOCAL_BUILD'] !== '1',
   },
 });
