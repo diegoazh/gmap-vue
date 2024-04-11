@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.0.1...gmv3_v2.1.0) (2024-04-11)
+
+
+### Features
+
+* **v3:** create independent instances of every component using a component key prop ([#315](https://github.com/diegoazh/gmap-vue/issues/315)) ([0c21c60](https://github.com/diegoazh/gmap-vue/commit/0c21c608125c37115a8625b1e1cdcf9e081ac6fd)), closes [#309](https://github.com/diegoazh/gmap-vue/issues/309) [#309](https://github.com/diegoazh/gmap-vue/issues/309) [#309](https://github.com/diegoazh/gmap-vue/issues/309)
+
 ## [2.0.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.0.0...gmv3_v2.0.1) (2024-04-05)
 
 
