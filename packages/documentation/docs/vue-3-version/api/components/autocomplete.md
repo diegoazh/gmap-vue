@@ -75,7 +75,7 @@ export interface IAutoCompleteInputVueComponentProps {
 - **setFieldsTo**: To avoid paying for data that you don't need, be sure to use Autocomplete.setFields() to specify only the place data that you will use.
 - **options**:
   - _type_: `Record<string, unknown>`
-  - _description_: We use this prop as a guard, if the official Autocomplete API changes and add new props you can use the options prop to use these new props until we update our API to use it explicitly.
+  - _description_: We use this prop as a fallback option. If the official API changes and add new props to the class you can use the options prop to use and populate these new props until we update our API to use it explicitly.
 
 ## Exposed const
 
