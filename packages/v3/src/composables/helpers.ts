@@ -574,13 +574,21 @@ export function componentPromiseFactory<T>(
 export function findParentInstanceByName(
   componentName: string,
 ): ComponentInternalInstance | null | undefined {
+  let ancestor: ComponentInternalInstance | null | undefined; // = currentInstance?.parent;
+  let name: string | undefined; // = ancestor?.type.name || ancestor?.type.__name;
+
+  function updateAncestor(instance: ComponentInternalInstance | null) {
+    const ancestor = instance?.parent;
+    const name = ancestor?.type.name || ancestor?.type.__name;
+
+    return { ancestor, name };
+  }
+
   const currentInstance = getCurrentInstance();
-  let ancestor = currentInstance?.parent;
-  let name = ancestor?.type.name || ancestor?.type.__name;
+  ({ ancestor, name } = updateAncestor(currentInstance));
 
   while (ancestor && name !== componentName) {
-    ancestor = ancestor.parent;
-    name = ancestor?.type.name || ancestor?.type.__name;
+    ({ ancestor, name } = updateAncestor(ancestor));
   }
 
   return ancestor;
