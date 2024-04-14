@@ -22,6 +22,7 @@ import type { InjectionKey } from 'vue';
 
 const deferredPromisesList = new Map();
 const componentPromisesList = new Map();
+
 /**
  * @param  {string|InjectionKey<Promise<T|undefined>>} key
  *
