@@ -4,6 +4,7 @@ import {
 } from '@/composables/helpers';
 import type { PromiseDeferred } from '@/interfaces';
 import {
+  $autocompletePromise,
   $circleShapePromise,
   $clusterPromise,
   $drawingManagerPromise,
@@ -78,6 +79,23 @@ export function useDestroyPromisesOnUnmounted<T>(
 ): void {
   componentPromisesList.delete(key);
   deferredPromisesList.delete(key);
+}
+
+/**
+ * This function returns a promise, when it is resolved returns the Google Maps component instance
+ *
+ * @param  {string} key - the recycle prop of the map
+ * @returns {Promise}
+ * @public
+ */
+export function useAutocompletePromise(
+  key:
+    | string
+    | InjectionKey<
+        Promise<google.maps.places.Autocomplete | undefined>
+      > = $autocompletePromise,
+): Promise<google.maps.places.Autocomplete | undefined> {
+  return usePromise<google.maps.places.Autocomplete>(key);
 }
 
 /**

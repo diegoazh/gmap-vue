@@ -20,11 +20,15 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
+  usePromise,
+  usePromiseDeferred,
 } from '@/composables';
 import type { IAutoCompleteInputVueComponentProps } from '@/interfaces';
-import { onMounted, ref, watch } from 'vue';
+import { $autocompletePromise } from '@/keys';
+import { onMounted, onUnmounted, provide, ref, watch } from 'vue';
 
 /**
  * Autocomplete component
@@ -63,6 +67,7 @@ const props = withDefaults(
      * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
      */
     setFieldsTo?: string[];
+    autocompleteKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -88,6 +93,15 @@ const emits = defineEmits<{
 defineOptions({ inheritAttrs: false, name: 'autocomplete-input' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let autoCompleteInstance: google.maps.places.Autocomplete | undefined;
+
+/*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const autocompletePromiseDeferred = usePromiseDeferred(
+  props.autocompleteKey || $autocompletePromise,
+);
+const promise = usePromise(props.autocompleteKey || $autocompletePromise);
+provide(props.autocompleteKey || $autocompletePromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -188,10 +202,20 @@ onMounted(() => {
           emits('place_changed', autoCompleteInstance.getPlace());
         }
       });
+
+      if (!autocompletePromiseDeferred.resolve) {
+        throw new Error('autocompletePromiseDeferred.resolve is undefined');
+      }
+
+      autocompletePromiseDeferred.resolve(autoCompleteInstance);
     })
     .catch((error) => {
       throw error;
     });
+});
+
+onUnmounted(() => {
+  useDestroyPromisesOnUnmounted(props.autocompleteKey || $autocompletePromise);
 });
 
 /*******************************************************************************

@@ -141,6 +141,7 @@ export interface IAutoCompleteInputVueComponentProps {
    * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
    */
   setFieldsTo?: string[];
+  autocompleteKey?: string;
   options?: Record<string, unknown>;
 }
 
