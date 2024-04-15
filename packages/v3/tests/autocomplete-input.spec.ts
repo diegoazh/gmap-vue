@@ -1,7 +1,8 @@
-import { VueWrapper, mount, flushPromises } from '@vue/test-utils';
+import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { h } from 'vue';
 import { Autocomplete } from '../src/components';
-import { googleMock } from './mocks/global.mock';
+import { autocompleteCbk, googleMock, valueMocks } from './mocks/global.mock';
 
 describe('AutocompleteInput component', () => {
   let wrapper: VueWrapper<any, any>;
@@ -25,17 +26,20 @@ describe('AutocompleteInput component', () => {
     vi.clearAllMocks();
   });
 
-  it('should be mounted successfully', () => {
+  it('should be mounted successfully', async () => {
     // given
     wrapper = mount(Autocomplete);
+
+    // when
+    await flushPromises();
 
     // then
     expect(wrapper).not.toBeNull();
   });
 
-  it('should export an autocomplete instance', async () => {
+  it('should render a correct DOM and export an autocompletePromise', async () => {
     // given
-    wrapper = mount(Autocomplete);
+    wrapper = mount(Autocomplete, { attrs: { class: 'my-class' } });
 
     // when
     await flushPromises();
@@ -43,8 +47,40 @@ describe('AutocompleteInput component', () => {
 
     // then
     expect(wrapper.isVisible()).toBeTruthy();
-    expect(wrapper.get('input')).not.toBeNull();
+    expect(wrapper.get('input')).toBeDefined();
+    expect(wrapper.get('.my-class')).toBeDefined();
     expect(Object.keys(component.slots).length).toEqual(0);
     expect(component.exposed?.autocompletePromise).instanceOf(Promise);
+  });
+
+  it('should has the right content in the slot', async () => {
+    // given
+    const input = h('input');
+    wrapper = mount(Autocomplete, {
+      attrs: { class: 'my-class' },
+      props: { slotRef: input },
+      slots: { default: input },
+    });
+
+    // when
+    await flushPromises();
+    const component = wrapper.getCurrentComponent();
+
+    // then
+    expect(Object.keys(component.slots).length).toEqual(1);
+  });
+
+  it('should emit the correct events', async () => {
+    // given
+    wrapper = mount(Autocomplete);
+
+    // when
+    await flushPromises();
+    autocompleteCbk.placeChanged?.();
+    const emitted = wrapper.emitted('place_changed');
+
+    // then
+    expect(emitted).toHaveLength(1);
+    expect(emitted?.[0]).toEqual([valueMocks.place]);
   });
 });

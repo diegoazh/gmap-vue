@@ -17,6 +17,16 @@ describe('google-maps-api-initializer.ts', () => {
   let googleMapScript: HTMLElement;
 
   beforeEach(async () => {
+    vi.mock('../src/composables', async (originalImport) => {
+      const original = (await originalImport()) as Record<string, any>;
+
+      return {
+        ...original,
+        usePluginOptions: vi
+          .fn()
+          .mockReturnValue({ load: { key: 'abc', mapId: 'test' } }),
+      };
+    });
     initializer = await import(
       '../src/composables/google-maps-api-initializer'
     );
