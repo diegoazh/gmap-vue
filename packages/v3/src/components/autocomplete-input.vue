@@ -1,10 +1,9 @@
 <template>
   <div>
     <!--
-				@slot Used to set your custom component for the input, eg: v-text-field.<br>
-        It has two binding properties:<br>
+				@slot Used to set your custom component for the input, eg: v-text-field.
+        It has two binding properties:
         - `attrs`, it's type is `object`, it's all attributes passed to the component ([vm.$attrs](https://vuejs.org/v2/api/?#vm-attrs))<br>
-        - `listeners`, it's type is `object`, it's all events passed to the component ([vm.$listeners](https://vuejs.org/v2/api/?#vm-listeners))
 			-->
     <slot :attrs="$attrs">
       <input ref="gmvAutoCompleteInput" v-bind="$attrs" />
