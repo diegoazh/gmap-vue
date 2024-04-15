@@ -40,7 +40,6 @@ describe('AutocompleteInput component', () => {
     // when
     await flushPromises();
     const component = wrapper.getCurrentComponent();
-    console.log(component.slots);
 
     // then
     expect(wrapper.isVisible()).toBeTruthy();
