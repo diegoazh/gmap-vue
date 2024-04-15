@@ -146,7 +146,7 @@ export interface IAutoCompleteInputVueComponentProps {
 }
 
 export interface IAutoCompleteInputVueComponentExpose {
-  autoCompleteInstance: google.maps.places.Autocomplete | undefined;
+  autocompleteInstance: google.maps.places.Autocomplete | undefined;
 }
 
 /**
