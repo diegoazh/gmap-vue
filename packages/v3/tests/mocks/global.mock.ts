@@ -41,12 +41,18 @@ export const markerValues: {
   updatePosition: undefined,
 };
 
+export const circleValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
-      Autocomplete: function (a, b) {
-        autocompleteValues.input = a;
-        autocompleteValues.options = b;
+      Autocomplete: function (html, options) {
+        autocompleteValues.input = html;
+        autocompleteValues.options = options;
         this.getPlace = vi.fn().mockReturnValue(valueMocks.place);
         this.addListener = (name: string, cbk: () => void) => {
           if (name === 'place_changed') {
@@ -54,12 +60,13 @@ export const googleMock = {
           }
         };
       },
-      Map: function (a, b) {
-        mapValues.input = a;
-        mapValues.options = b;
+      Map: function (html, options) {
+        mapValues.input = html;
+        mapValues.options = options;
         this.getCenter = vi.fn().mockReturnValue(valueMocks.center);
         this.getZoom = vi.fn().mockReturnValue(valueMocks.zoom);
         this.getBounds = vi.fn().mockReturnValue(valueMocks.bounds);
+        this.getDiv = vi.fn();
         this.addListener = (name: string, cbk: () => void) => {
           if (name === 'center_changed') {
             mapValues.centerChanged = cbk;
@@ -72,14 +79,18 @@ export const googleMock = {
           }
         };
       },
-      AdvancedMarkerElement: function (a) {
-        markerValues.input = a;
-        markerValues.options = a;
+      AdvancedMarkerElement: function (options) {
+        markerValues.options = options;
         this.addListener = (name: string, cbk: () => void) => {
           if (name === 'dragend') {
             markerValues.updatePosition = cbk;
           }
         };
+      },
+      Circle: function (options) {
+        circleValues.options = options;
+        this.addListener = (name: string, cbk: () => void) => {};
+        this.setMap = vi.fn();
       },
     }),
   },

@@ -2,6 +2,8 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { h } from 'vue';
 import { MapLayer } from '../src/components';
+import { useDestroyPromisesOnUnmounted } from '../src/composables';
+import { $mapPromise } from '../src/keys';
 import { googleMock, mapValues, valueMocks } from './mocks/global.mock';
 
 describe('MapLayer component', () => {
@@ -16,6 +18,7 @@ describe('MapLayer component', () => {
         usePluginOptions: vi
           .fn()
           .mockReturnValue({ load: { key: 'abc', mapId: 'test' } }),
+        useDestroyPromisesOnUnmounted: vi.fn(),
       };
     });
   });
@@ -101,5 +104,41 @@ describe('MapLayer component', () => {
     expect(zoomChangedEmitted?.[0]).toEqual([valueMocks.zoom]);
     expect(boundsChangedEmitted).toHaveLength(1);
     expect(boundsChangedEmitted?.[0]).toEqual([valueMocks.bounds]);
+  });
+
+  it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
+    // given
+    const props = { center: { lat: 1, lng: 1 } };
+    vi.stubGlobal('window', { __gmc__: undefined });
+    const wrapper = mount(MapLayer, {
+      props,
+      slots: { visible: h('div') },
+    });
+
+    // when
+    await flushPromises();
+    wrapper.unmount();
+
+    // then
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith($mapPromise);
+  });
+
+  it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
+    // given
+    const props = { center: { lat: 1, lng: 1 }, mapKey: 'myMap' };
+    vi.stubGlobal('window', { __gmc__: undefined });
+    const wrapper = mount(MapLayer, {
+      props,
+      slots: { visible: h('div') },
+    });
+
+    // when
+    await flushPromises();
+    wrapper.unmount();
+
+    // then
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(props.mapKey);
   });
 });

@@ -2,6 +2,8 @@ import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { h } from 'vue';
 import { Autocomplete } from '../src/components';
+import { useDestroyPromisesOnUnmounted } from '../src/composables';
+import { $autocompletePromise } from '../src/keys';
 import {
   autocompleteValues,
   googleMock,
@@ -22,6 +24,7 @@ describe('AutocompleteInput component', () => {
         usePluginOptions: vi
           .fn()
           .mockReturnValue({ load: { key: 'abc', mapId: 'test' } }),
+        useDestroyPromisesOnUnmounted: vi.fn(),
       };
     });
   });
@@ -90,5 +93,36 @@ describe('AutocompleteInput component', () => {
     // then
     expect(emitted).toHaveLength(1);
     expect(emitted?.[0]).toEqual([valueMocks.place]);
+  });
+
+  it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
+    // given
+    const wrapper = mount(Autocomplete);
+
+    // when
+    await flushPromises();
+    wrapper.unmount();
+
+    // then
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(
+      $autocompletePromise,
+    );
+  });
+
+  it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
+    // given
+    const props = { autocompleteKey: 'myAutocomplete' };
+    const wrapper = mount(Autocomplete, { props });
+
+    // when
+    await flushPromises();
+    wrapper.unmount();
+
+    // then
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(
+      props.autocompleteKey,
+    );
   });
 });

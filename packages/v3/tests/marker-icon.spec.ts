@@ -2,21 +2,21 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { h } from 'vue';
 import { Marker } from '../src/components';
+import { useDestroyPromisesOnUnmounted } from '../src/composables';
+import { $markerPromise } from '../src/keys';
 import { googleMock, markerValues } from './mocks/global.mock';
 
 describe('MarkerIcon component', () => {
   let Map;
-  let AdvancedMarkerElement;
 
   beforeEach(async () => {
-    ({ Map, AdvancedMarkerElement } = await googleMock.maps.importLibrary());
+    ({ Map } = await googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.mock('../src/composables', async (originalImport) => {
       const original = (await originalImport()) as Record<string, any>;
 
       return {
         ...original,
-        useGoogleMapsApiPromiseLazy: vi.fn().mockResolvedValue({}),
         usePluginOptions: vi
           .fn()
           .mockReturnValue({ load: { key: 'abc', mapId: 'test' } }),
@@ -25,6 +25,7 @@ describe('MarkerIcon component', () => {
             mapPromise: Promise.resolve(Map),
           },
         }),
+        useDestroyPromisesOnUnmounted: vi.fn(),
       };
     });
   });
@@ -46,24 +47,22 @@ describe('MarkerIcon component', () => {
 
   it('should render a correct DOM and export a markerPromise', async () => {
     // given
+    const template = `<div></div>`;
     const props = { content: h('p', 'Test'), title: 'this is the title' };
     const wrapper = mount(
       {
         ...Marker,
-        template: '<div></div>',
+        template,
       },
       { props },
     ); // we added a template to avoid warnings in the console
 
     // when
     await flushPromises();
-    const instance = wrapper.getCurrentComponent();
-    const marker = await instance.exposed?.markerPromise;
-    console.log(marker);
 
     // then
     expect(wrapper.isVisible()).toBeTruthy();
-    expect(wrapper.html()).toBe('<div></div>');
+    expect(wrapper.html()).toBe(template);
     expect(JSON.stringify(markerValues.options)).toEqual(
       JSON.stringify({
         ...props,
@@ -71,6 +70,9 @@ describe('MarkerIcon component', () => {
         gmpDraggable: false,
         map: Map,
       }),
+    );
+    expect(wrapper.getCurrentComponent().exposed?.markerPromise).toBeInstanceOf(
+      Promise,
     );
   });
 
@@ -98,5 +100,54 @@ describe('MarkerIcon component', () => {
     expect(wrapper.emitted('update:position')).toEqual([
       [{ lat: undefined, lng: undefined }],
     ]);
+  });
+
+  it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
+    // given
+    const props = {
+      content: h('div', 'Test'),
+      title: 'title',
+      gmpDraggable: true,
+    };
+    const wrapper = mount(
+      {
+        ...Marker,
+        template: '<div></div>',
+      },
+      { props },
+    ); // we added a template to avoid warnings in the console
+
+    // when
+    await flushPromises();
+    wrapper.unmount();
+
+    // then
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith($markerPromise);
+  });
+
+  it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
+    // given
+    const props = {
+      content: h('div', 'Test'),
+      title: 'title',
+      gmpDraggable: true,
+      markerKey: 'myMarker',
+    };
+    const wrapper = mount(
+      {
+        ...Marker,
+        template: '<div></div>',
+      },
+      { props },
+    ); // we added a template to avoid warnings in the console
+
+    // when
+    await flushPromises();
+    wrapper.unmount();
+
+    // then
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
+    expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(props.markerKey);
   });
 });
