@@ -47,6 +47,12 @@ export const circleValues: {
   options: undefined,
 };
 
+export const clusterValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({

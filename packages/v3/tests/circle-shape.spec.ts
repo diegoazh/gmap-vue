@@ -44,7 +44,7 @@ describe('CircleShape component', () => {
     expect(wrapper).toBeDefined();
   });
 
-  it('should render the correct DOM and export a circlePromise', async () => {
+  it('should render the correct DOM and export a circleShapePromise', async () => {
     // given
     const template = `<div></div>`;
     const props = { center: { lat: 3, lng: 3 } };
