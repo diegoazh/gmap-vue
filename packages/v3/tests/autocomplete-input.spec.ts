@@ -2,7 +2,11 @@ import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { h } from 'vue';
 import { Autocomplete } from '../src/components';
-import { autocompleteCbk, googleMock, valueMocks } from './mocks/global.mock';
+import {
+  autocompleteValues,
+  googleMock,
+  valueMocks,
+} from './mocks/global.mock';
 
 describe('AutocompleteInput component', () => {
   let wrapper: VueWrapper<any, any>;
@@ -50,6 +54,10 @@ describe('AutocompleteInput component', () => {
     expect(wrapper.get('input')).toBeDefined();
     expect(wrapper.get('.my-class')).toBeDefined();
     expect(Object.keys(component.slots).length).toEqual(0);
+    expect(autocompleteValues.options).toEqual({
+      selectFirstOnEnter: true,
+      strictBounds: false,
+    });
     expect(component.exposed?.autocompletePromise).instanceOf(Promise);
   });
 
@@ -76,7 +84,7 @@ describe('AutocompleteInput component', () => {
 
     // when
     await flushPromises();
-    autocompleteCbk.placeChanged?.();
+    autocompleteValues.placeChanged?.();
     const emitted = wrapper.emitted('place_changed');
 
     // then

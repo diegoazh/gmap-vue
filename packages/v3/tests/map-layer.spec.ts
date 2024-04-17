@@ -2,7 +2,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { h } from 'vue';
 import { MapLayer } from '../src/components';
-import { googleMock, mapCbk, valueMocks } from './mocks/global.mock';
+import { googleMock, mapValues, valueMocks } from './mocks/global.mock';
 
 describe('MapLayer component', () => {
   beforeAll(() => {
@@ -37,9 +37,10 @@ describe('MapLayer component', () => {
 
   it('should render a correct DOM and export a mapPromise', async () => {
     // given
+    const props = { center: { lat: 1, lng: 1 } };
     vi.stubGlobal('window', { __gmc__: undefined });
     const wrapper = mount(MapLayer, {
-      props: { center: { lat: 1, lng: 1 } },
+      props,
       slots: { visible: h('div') },
     });
 
@@ -53,6 +54,24 @@ describe('MapLayer component', () => {
     expect(wrapper.find('gmv-map')).toBeDefined();
     expect(wrapper.find('gmv-map-hidden')).toBeDefined();
     expect(Object.keys(component.slots).length).toEqual(1);
+    expect(mapValues.options).toEqual({
+      ...props,
+      clickableIcons: true,
+      disableDefaultUI: false,
+      disableDoubleClickZoom: false,
+      fullscreenControl: true,
+      gestureHandling: 'auto',
+      isFractionalZoomEnabled: false,
+      keyboardShortcuts: true,
+      mapTypeControl: true,
+      mapTypeId: 'roadmap',
+      noClear: false,
+      rotateControl: true,
+      scaleControl: true,
+      scrollwheel: false,
+      streetViewControl: true,
+      zoomControl: true,
+    });
     expect(component.exposed?.mapPromise).instanceOf(Promise);
   });
 
@@ -66,10 +85,10 @@ describe('MapLayer component', () => {
 
     // when
     await flushPromises();
-    mapCbk.centerChanged?.();
-    mapCbk.centerChanged?.();
-    mapCbk.zoomChanged?.();
-    mapCbk.boundsChanged?.();
+    mapValues.centerChanged?.();
+    mapValues.centerChanged?.();
+    mapValues.zoomChanged?.();
+    mapValues.boundsChanged?.();
     const centerChangedEmitted = wrapper.emitted('center_changed');
     const zoomChangedEmitted = wrapper.emitted('zoom_changed');
     const boundsChangedEmitted = wrapper.emitted('bounds_changed');
