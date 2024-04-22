@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import { InfoWindow } from '../../src/components';
 
 export const valueMocks = {
   place: { lat: 1, lng: 1 },
@@ -65,6 +66,12 @@ export const heatmapValues: {
   options: undefined,
 };
 
+export const infoWindowValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
@@ -119,6 +126,12 @@ export const googleMock = {
         heatmapValues.options = options;
         this.addListener = () => {};
         this.setMap = vi.fn();
+      },
+      InfoWindow: function (options) {
+        infoWindowValues.options = options;
+        this.addListener = () => {};
+        this.setMap = vi.fn();
+        this.close = vi.fn();
       },
     }),
     drawing: {
