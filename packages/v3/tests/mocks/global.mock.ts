@@ -59,6 +59,12 @@ export const drawingValues: {
   options: undefined,
 };
 
+export const heatmapValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
@@ -106,6 +112,11 @@ export const googleMock = {
       },
       DrawingManager: function (options) {
         drawingValues.options = options;
+        this.addListener = () => {};
+        this.setMap = vi.fn();
+      },
+      HeatmapLayer: function (options) {
+        heatmapValues.options = options;
         this.addListener = () => {};
         this.setMap = vi.fn();
       },
