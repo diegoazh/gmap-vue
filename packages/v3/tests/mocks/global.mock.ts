@@ -78,6 +78,12 @@ export const kmlLayerValues: {
   options: undefined,
 };
 
+export const polygonValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
@@ -141,6 +147,11 @@ export const googleMock = {
       },
       KmlLayer: function (options) {
         kmlLayerValues.options = options;
+        this.addListener = () => {};
+        this.setMap = vi.fn();
+      },
+      Polygon: function (options) {
+        polygonValues.options = options;
         this.addListener = () => {};
         this.setMap = vi.fn();
       },
