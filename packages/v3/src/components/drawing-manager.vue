@@ -77,7 +77,7 @@ const props = withDefaults(
  ******************************************************************************/
 const emits = defineEmits<{
   circlecomplete: [value: google.maps.Circle];
-  markercomplete: [value: google.maps.Marker];
+  markercomplete: [value: google.maps.marker.AdvancedMarkerElement];
   polygoncomplete: [value: google.maps.Polygon];
   polylinecomplete: [value: google.maps.Polyline];
   rectanglecomplete: [value: google.maps.Rectangle];

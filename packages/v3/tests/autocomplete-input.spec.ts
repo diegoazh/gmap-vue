@@ -2,6 +2,7 @@ import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { h } from 'vue';
 import { Autocomplete } from '../src/components';
+import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $autocompletePromise } from '../src/keys';
 import {
@@ -15,18 +16,11 @@ describe('AutocompleteInput component', () => {
 
   beforeEach(() => {
     vi.stubGlobal('google', googleMock);
-    vi.mock('../src/composables', async (originalImport) => {
-      const original = (await originalImport()) as Record<string, any>;
-
-      return {
-        ...original,
-        useGoogleMapsApiPromiseLazy: vi.fn().mockResolvedValue({}),
-        usePluginOptions: vi
-          .fn()
-          .mockReturnValue({ load: { key: 'abc', mapId: 'test' } }),
-        useDestroyPromisesOnUnmounted: vi.fn(),
-      };
+    vi.spyOn(composables, 'useGoogleMapsApiPromiseLazy').mockResolvedValue({});
+    vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
+      load: { key: 'abc', mapId: 'test' },
     });
+    vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
 
   afterEach(() => {
@@ -110,7 +104,7 @@ describe('AutocompleteInput component', () => {
     );
   });
 
-  it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
+  it('should call useDestroyPromisesOnUnmounted with the custom key when the component is unmounted', async () => {
     // given
     const props = { autocompleteKey: 'myAutocomplete' };
     const wrapper = mount(Autocomplete, { props });

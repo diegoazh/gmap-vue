@@ -53,6 +53,12 @@ export const clusterValues: {
   options: undefined,
 };
 
+export const drawingValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
@@ -95,9 +101,22 @@ export const googleMock = {
       },
       Circle: function (options) {
         circleValues.options = options;
-        this.addListener = (name: string, cbk: () => void) => {};
+        this.addListener = () => {};
+        this.setMap = vi.fn();
+      },
+      DrawingManager: function (options) {
+        drawingValues.options = options;
+        this.addListener = () => {};
         this.setMap = vi.fn();
       },
     }),
+    drawing: {
+      OverlayType: {
+        MARKER: 'MARKER',
+        CIRCLE: 'CIRCLE',
+        POLYGON: 'POLYGON',
+      },
+    },
+    ControlPosition: { TOP_CENTER: 'TOP_CENTER' },
   },
 };
