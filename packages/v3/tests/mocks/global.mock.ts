@@ -72,6 +72,12 @@ export const infoWindowValues: {
   options: undefined,
 };
 
+export const kmlLayerValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
@@ -132,6 +138,11 @@ export const googleMock = {
         this.addListener = () => {};
         this.setMap = vi.fn();
         this.close = vi.fn();
+      },
+      KmlLayer: function (options) {
+        kmlLayerValues.options = options;
+        this.addListener = () => {};
+        this.setMap = vi.fn();
       },
     }),
     drawing: {
