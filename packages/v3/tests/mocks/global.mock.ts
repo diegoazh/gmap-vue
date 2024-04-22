@@ -1,5 +1,4 @@
 import { vi } from 'vitest';
-import { InfoWindow } from '../../src/components';
 
 export const valueMocks = {
   place: { lat: 1, lng: 1 },
@@ -84,6 +83,12 @@ export const polygonValues: {
   options: undefined,
 };
 
+export const polylineValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
@@ -152,6 +157,11 @@ export const googleMock = {
       },
       Polygon: function (options) {
         polygonValues.options = options;
+        this.addListener = () => {};
+        this.setMap = vi.fn();
+      },
+      Polyline: function (options) {
+        polylineValues.options = options;
         this.addListener = () => {};
         this.setMap = vi.fn();
       },
