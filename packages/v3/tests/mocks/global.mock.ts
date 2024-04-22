@@ -89,6 +89,12 @@ export const polylineValues: {
   options: undefined,
 };
 
+export const streetViewValues: {
+  options?: Record<string, any>;
+} = {
+  options: undefined,
+};
+
 export const googleMock = {
   maps: {
     importLibrary: async () => ({
@@ -162,6 +168,11 @@ export const googleMock = {
       },
       Polyline: function (options) {
         polylineValues.options = options;
+        this.addListener = () => {};
+        this.setMap = vi.fn();
+      },
+      StreetViewPanorama: function (options) {
+        streetViewValues.options = options;
         this.addListener = () => {};
         this.setMap = vi.fn();
       },
