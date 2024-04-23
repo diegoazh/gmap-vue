@@ -201,5 +201,5 @@ onUpdated(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ clusterInstance, clusterPromise: promise });
+defineExpose({ clusterPromise: promise });
 </script>

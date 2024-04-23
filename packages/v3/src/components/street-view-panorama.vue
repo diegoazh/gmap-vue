@@ -333,7 +333,6 @@ onUnmounted(() => {
  * EXPOSE
  ******************************************************************************/
 defineExpose({
-  streetViewPanoramaInstance,
   currentResizeBus,
   _resizeCallback,
   _delayedResizeCallback,

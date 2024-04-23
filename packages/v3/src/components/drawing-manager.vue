@@ -458,7 +458,6 @@ defineExpose({
   setDrawingMode,
   deleteSelection,
   clearAll,
-  drawingManagerInstance,
   drawingManagerPromise: promise,
 });
 </script>

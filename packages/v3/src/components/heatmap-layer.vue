@@ -179,5 +179,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ heatMapLayerInstance, heatmapLayerPromise: promise });
+defineExpose({ heatmapLayerPromise: promise });
 </script>

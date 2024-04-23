@@ -225,7 +225,6 @@ onUnmounted(() => {
  * EXPOSE
  ******************************************************************************/
 defineExpose({
-  autocompleteInstance: autocompleteInstance,
   autocompletePromise: promise,
 });
 </script>

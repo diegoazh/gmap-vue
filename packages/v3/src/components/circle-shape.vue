@@ -179,5 +179,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ circleShapeInstance, circleShapePromise: promise });
+defineExpose({ circleShapePromise: promise });
 </script>

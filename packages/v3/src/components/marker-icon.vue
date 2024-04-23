@@ -235,5 +235,5 @@ if (
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ VNodeMarkerIcon, markerInstance, markerPromise: promise });
+defineExpose({ VNodeMarkerIcon, markerPromise: promise });
 </script>

@@ -236,5 +236,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ polylineShapeInstance, polylineShapePromise: promise });
+defineExpose({ polylineShapePromise: promise });
 </script>

@@ -155,5 +155,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ kmlLayerInstance, kmlLayerPromise: promise });
+defineExpose({ kmlLayerPromise: promise });
 </script>

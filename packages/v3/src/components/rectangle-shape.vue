@@ -178,5 +178,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ rectangleShapeInstance, rectangleShapePromise: promise });
+defineExpose({ rectangleShapePromise: promise });
 </script>

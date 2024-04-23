@@ -239,5 +239,5 @@ onMounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ infoWindowInstance, infoWindowPromise: promise });
+defineExpose({ infoWindowPromise: promise });
 </script>

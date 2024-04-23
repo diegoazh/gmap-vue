@@ -457,7 +457,6 @@ onUnmounted(() => {
  ******************************************************************************/
 defineExpose({
   mapPromise: promise,
-  mapInstance,
   panBy,
   panTo,
   panToBounds,
