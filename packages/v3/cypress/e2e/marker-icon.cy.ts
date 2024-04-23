@@ -40,11 +40,12 @@ describe('MarkerIcon component', () => {
       .should('have.length', 4);
   });
 
-  it('should empty the markers array from the map removing 2 of the 4 markers', function () {
+  it('should clean the markers array from the map removing 2 of the 4 markers', function () {
     cy.visit('/');
     cy.get('button[name=marker]').click();
     cy.get('.gmv-map').should('exist');
     cy.get('.gm-style').should('be.visible');
+    cy.get('.gmv-map').should('be.visible');
     cy.get('#empty').click();
     cy.get('.gmv-map')
       .find('[class="GMAMP-maps-pin-view"]')
