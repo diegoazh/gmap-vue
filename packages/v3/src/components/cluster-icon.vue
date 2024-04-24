@@ -13,10 +13,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IMarkerClusterVueComponentProps } from '@/interfaces';
 import { $clusterPromise } from '@/keys';
@@ -86,10 +85,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const clusterPromiseDeferred = usePromiseDeferred(
-  props.clusterKey || $clusterPromise,
-);
-const promise = usePromise(props.clusterKey || $clusterPromise);
+const { promiseDeferred: clusterPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.clusterKey || $clusterPromise);
 provide(props?.clusterKey || $clusterPromise, promise);
 
 /*******************************************************************************
@@ -97,11 +94,10 @@ provide(props?.clusterKey || $clusterPromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'cluster-icon' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let clusterInstance: MarkerClusterer | undefined;
 mapPromise
   ?.then((mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     // Initialize the maps with the given options
@@ -121,7 +117,7 @@ mapPromise
       );
     }
 
-    clusterInstance = new MarkerClusterer({
+    const cluster = new MarkerClusterer({
       map: mapInstance,
       markers,
       onClusterClick,
@@ -137,14 +133,14 @@ mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       clusterIconPropsConfig,
-      clusterInstance,
+      cluster,
       emits as any,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       clusterIconEventsConfig,
-      clusterInstance,
+      cluster,
       emits as any,
       excludedEvents,
     );
@@ -153,7 +149,7 @@ mapPromise
       throw new Error('clusterPromiseDeferred.resolve is undefined');
     }
 
-    clusterPromiseDeferred.resolve(clusterInstance);
+    clusterPromiseDeferred.resolve(cluster);
   })
   .catch((error) => {
     throw error;
@@ -174,23 +170,29 @@ mapPromise
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onBeforeUnmount(() => {
-  if (clusterInstance) {
-    clusterInstance.clearMarkers();
+onBeforeUnmount(async () => {
+  const cluster = await promise;
+
+  if (cluster) {
+    cluster.clearMarkers();
   }
 });
 
-onUnmounted(() => {
-  if (clusterInstance) {
-    clusterInstance.setMap(null);
+onUnmounted(async () => {
+  const cluster = await promise;
+
+  if (cluster) {
+    cluster.setMap(null);
   }
 
   useDestroyPromisesOnUnmounted(props.clusterKey || $clusterPromise);
 });
 
-onUpdated(() => {
-  if (clusterInstance) {
-    clusterInstance.render();
+onUpdated(async () => {
+  const cluster = await promise;
+
+  if (cluster) {
+    cluster.render();
   }
 });
 
@@ -201,5 +203,5 @@ onUpdated(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ clusterInstance, clusterPromise: promise });
+defineExpose({ clusterPromise: promise });
 </script>

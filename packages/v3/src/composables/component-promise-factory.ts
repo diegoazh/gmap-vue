@@ -4,6 +4,7 @@ import {
 } from '@/composables/helpers';
 import type { PromiseDeferred } from '@/interfaces';
 import {
+  $autocompletePromise,
   $circleShapePromise,
   $clusterPromise,
   $drawingManagerPromise,
@@ -22,6 +23,7 @@ import type { InjectionKey } from 'vue';
 
 const deferredPromisesList = new Map();
 const componentPromisesList = new Map();
+
 /**
  * @param  {string|InjectionKey<Promise<T|undefined>>} key
  *
@@ -44,7 +46,7 @@ function createPromises<T>(
  * @internal
  * @returns {Promise}
  */
-export function usePromise<T>(
+function usePromise<T>(
   key: string | InjectionKey<Promise<T | undefined>>,
 ): Promise<T | undefined> {
   if (!componentPromisesList.has(key)) {
@@ -58,7 +60,7 @@ export function usePromise<T>(
  * @internal
  * @returns {Promise}
  */
-export function usePromiseDeferred<T>(
+function usePromiseDeferred<T>(
   key: string | InjectionKey<Promise<T | undefined>>,
 ): PromiseDeferred<T> {
   if (!deferredPromisesList.has(key)) {
@@ -70,6 +72,20 @@ export function usePromiseDeferred<T>(
 
 /**
  * @internal
+ * @param  {string|InjectionKey<Promise<T|undefined>>} key
+ * @returns Object
+ */
+export function useComponentPromiseFactory<T>(
+  key: string | InjectionKey<Promise<T | undefined>>,
+): { promiseDeferred: PromiseDeferred<T>; promise: Promise<T | undefined> } {
+  const promiseDeferred = usePromiseDeferred(key);
+  const promise = usePromise(key);
+
+  return { promiseDeferred, promise };
+}
+
+/**
+ * @internal
  * @returns {Promise}
  */
 export function useDestroyPromisesOnUnmounted<T>(
@@ -77,6 +93,23 @@ export function useDestroyPromisesOnUnmounted<T>(
 ): void {
   componentPromisesList.delete(key);
   deferredPromisesList.delete(key);
+}
+
+/**
+ * This function returns a promise, when it is resolved returns the Google Maps component instance
+ *
+ * @param  {string} key - the recycle prop of the map
+ * @returns {Promise}
+ * @public
+ */
+export function useAutocompletePromise(
+  key:
+    | string
+    | InjectionKey<
+        Promise<google.maps.places.Autocomplete | undefined>
+      > = $autocompletePromise,
+): Promise<google.maps.places.Autocomplete | undefined> {
+  return usePromise<google.maps.places.Autocomplete>(key);
 }
 
 /**

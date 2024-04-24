@@ -49,6 +49,7 @@ export function getPropsValuesWithoutOptionsProp(
       (acc, propKey) => {
         if (
           propKey !== 'options' &&
+          !/^(\w+)(key)$/gim.test(propKey) &&
           (vueInst?.$props as any)[propKey] != null
         ) {
           acc[propKey] = (vueInst?.$props as any)[propKey];
@@ -62,7 +63,11 @@ export function getPropsValuesWithoutOptionsProp(
 
   return Object.keys(props).reduce(
     (acc, propKey) => {
-      if (propKey !== 'options' && (props as any)[propKey] != null) {
+      if (
+        propKey !== 'options' &&
+        !/^(\w+)(key)$/gim.test(propKey) &&
+        (props as any)[propKey] != null
+      ) {
         acc[propKey] = (props as any)[propKey];
       }
 
@@ -574,13 +579,21 @@ export function componentPromiseFactory<T>(
 export function findParentInstanceByName(
   componentName: string,
 ): ComponentInternalInstance | null | undefined {
+  let ancestor: ComponentInternalInstance | null | undefined; // = currentInstance?.parent;
+  let name: string | undefined; // = ancestor?.type.name || ancestor?.type.__name;
+
+  function updateAncestor(instance: ComponentInternalInstance | null) {
+    const ancestor = instance?.parent;
+    const name = ancestor?.type.name || ancestor?.type.__name;
+
+    return { ancestor, name };
+  }
+
   const currentInstance = getCurrentInstance();
-  let ancestor = currentInstance?.parent;
-  let name = ancestor?.type.name || ancestor?.type.__name;
+  ({ ancestor, name } = updateAncestor(currentInstance));
 
   while (ancestor && name !== componentName) {
-    ancestor = ancestor.parent;
-    name = ancestor?.type.name || ancestor?.type.__name;
+    ({ ancestor, name } = updateAncestor(ancestor));
   }
 
   return ancestor;

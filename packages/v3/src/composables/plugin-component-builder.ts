@@ -105,7 +105,7 @@ export function pluginComponentBuilder(
       const promise = useMapPromise($mapPromise)
         ?.then((map) => {
           if (!map) {
-            throw new Error('the map instance was not created');
+            throw new Error('the map instance is not defined');
           }
 
           // Infowindow needs this to be immediately available

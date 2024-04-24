@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { ICircleShapeVueComponentProps } from '@/interfaces';
 import { $circleShapePromise } from '@/keys';
@@ -88,10 +87,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const circlePromiseDeferred = usePromiseDeferred(
-  props.circleKey || $circleShapePromise,
-);
-const promise = usePromise(props.circleKey || $circleShapePromise);
+const { promiseDeferred: circlePromiseDeferred, promise } =
+  useComponentPromiseFactory(props.circleKey || $circleShapePromise);
 provide(props.circleKey || $circleShapePromise, promise);
 
 /*******************************************************************************
@@ -99,12 +96,11 @@ provide(props.circleKey || $circleShapePromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'circle-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let circleShapeInstance: google.maps.Circle | undefined;
 
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('The map instance was not created');
+      throw new Error('The map instance is not defined');
     }
 
     const circleShapeOptions: ICircleShapeVueComponentProps & {
@@ -119,7 +115,7 @@ mapPromise
     const { Circle } = (await google.maps.importLibrary(
       'maps',
     )) as google.maps.MapsLibrary;
-    circleShapeInstance = new Circle(circleShapeOptions);
+    const circleShape = new Circle(circleShapeOptions);
 
     const circleShapePropsConfig = getComponentPropsConfig('GmvCircle');
     const circleShapeEventsConfig = getComponentEventsConfig(
@@ -129,13 +125,13 @@ mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       circleShapePropsConfig,
-      circleShapeInstance,
+      circleShape,
       emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       circleShapeEventsConfig,
-      circleShapeInstance,
+      circleShape,
       emits as any,
       excludedEvents,
     );
@@ -144,7 +140,7 @@ mapPromise
       throw new Error('circlePromiseDeferred.resolve is undefined');
     }
 
-    circlePromiseDeferred.resolve(circleShapeInstance);
+    circlePromiseDeferred.resolve(circleShape);
   })
   .catch((error) => {
     throw error;
@@ -165,9 +161,11 @@ mapPromise
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onUnmounted(() => {
-  if (circleShapeInstance) {
-    circleShapeInstance.setMap(null);
+onUnmounted(async () => {
+  const circleShape = await promise;
+
+  if (circleShape) {
+    circleShape.setMap(null);
   }
 
   useDestroyPromisesOnUnmounted(props.circleKey || $circleShapePromise);
@@ -179,5 +177,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ circleShapeInstance, circleShapePromise: promise });
+defineExpose({ circleShapePromise: promise });
 </script>

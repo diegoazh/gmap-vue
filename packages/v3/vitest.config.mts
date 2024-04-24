@@ -12,10 +12,10 @@ export default defineConfig({
   test: {
     server: {
       deps: {
-        external: ['google.maps'],
+        external: ['@googlemaps/markerclusterer', 'google.maps'],
       },
     },
-    environment: 'happy-dom', // or 'jsdom', 'node'
+    environment: 'happy-dom', // or 'happy-dom', 'jsdom', 'node'
     coverage: {
       provider: 'v8', // 'istanbul' or 'c8'
       reporter: ['text', 'json', 'html'],

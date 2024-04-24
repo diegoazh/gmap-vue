@@ -3,6 +3,9 @@ import type { InjectionKey } from 'vue';
 import type { IGmapVuePluginOptions } from '../interfaces';
 
 export const $recyclePrefix = '__gmc__';
+export const $autocompletePromise = Symbol(
+  'autocompletePromise',
+) as InjectionKey<Promise<google.maps.places.Autocomplete | undefined>>;
 export const $mapPromise = Symbol('mapPromise') as InjectionKey<
   Promise<google.maps.Map | undefined>
 >;

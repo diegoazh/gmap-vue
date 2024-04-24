@@ -141,11 +141,12 @@ export interface IAutoCompleteInputVueComponentProps {
    * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
    */
   setFieldsTo?: string[];
+  autocompleteKey?: string;
   options?: Record<string, unknown>;
 }
 
 export interface IAutoCompleteInputVueComponentExpose {
-  autoCompleteInstance: google.maps.places.Autocomplete | undefined;
+  autocompleteInstance: google.maps.places.Autocomplete | undefined;
 }
 
 /**

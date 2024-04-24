@@ -16,10 +16,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IDrawingManagerVueComponentProps } from '@/interfaces';
 import { $drawingManagerPromise } from '@/keys';
@@ -77,7 +76,7 @@ const props = withDefaults(
  ******************************************************************************/
 const emits = defineEmits<{
   circlecomplete: [value: google.maps.Circle];
-  markercomplete: [value: google.maps.Marker];
+  markercomplete: [value: google.maps.marker.AdvancedMarkerElement];
   polygoncomplete: [value: google.maps.Polygon];
   polylinecomplete: [value: google.maps.Polyline];
   rectanglecomplete: [value: google.maps.Rectangle];
@@ -104,10 +103,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const drawingPromiseDeferred = usePromiseDeferred(
-  props.drawingKey || $drawingManagerPromise,
-);
-const promise = usePromise(props.drawingKey || $drawingManagerPromise);
+const { promiseDeferred: drawingPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.drawingKey || $drawingManagerPromise);
 provide(props.drawingKey || $drawingManagerPromise, promise);
 
 /*******************************************************************************
@@ -115,13 +112,12 @@ provide(props.drawingKey || $drawingManagerPromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'drawing-manager' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let drawingManagerInstance: google.maps.drawing.DrawingManager | undefined;
 let map: google.maps.Map | undefined;
 let selectedShape: google.maps.drawing.OverlayCompleteEvent | undefined;
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     map = mapInstance;
@@ -149,13 +145,13 @@ mapPromise
     const { DrawingManager } = (await google.maps.importLibrary(
       'drawing',
     )) as google.maps.DrawingLibrary;
-    drawingManagerInstance = new DrawingManager({
+    const drawingManager = new DrawingManager({
       ...drawingManagerOptions,
       drawingControlOptions: {
         ...defaultDrawingControlOptions,
         ...drawingManagerOptions.drawingControlOptions,
       },
-      drawingControl: !$slots.default,
+      drawingControl: $slots.default ? !$slots.default : props.drawingControl,
     });
 
     const drawingManagerPropsConfig =
@@ -167,18 +163,18 @@ mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       drawingManagerPropsConfig,
-      drawingManagerInstance,
+      drawingManager,
       emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       drawingManagerEventsConfig,
-      drawingManagerInstance,
+      drawingManager,
       emits as any,
       excludedEvents,
     );
 
-    drawingManagerInstance.addListener(
+    drawingManager.addListener(
       'overlaycomplete',
       (event: google.maps.drawing.OverlayCompleteEvent) => addShape(event),
     );
@@ -194,7 +190,7 @@ mapPromise
       throw new Error('drawingPromiseDeferred.resolve is undefined');
     }
 
-    drawingPromiseDeferred.resolve(drawingManagerInstance);
+    drawingPromiseDeferred.resolve(drawingManager);
   })
   .catch((error) => {
     throw error;
@@ -241,7 +237,7 @@ const drawAll = () => {
   props.shapes?.forEach((shape: google.maps.drawing.OverlayCompleteEvent) => {
     if (shape.overlay) {
       if (!map) {
-        throw new Error('the map instance was not created');
+        throw new Error('the map instance is not defined');
       }
 
       shape.overlay.setMap(map);
@@ -305,8 +301,14 @@ const addShape = (shape: google.maps.drawing.OverlayCompleteEvent) => {
  * @returns {void}
  * @public
  */
-const setDrawingMode = (mode: google.maps.drawing.OverlayType | null) => {
-  drawingManagerInstance?.setDrawingMode(mode);
+const setDrawingMode = async (mode: google.maps.drawing.OverlayType | null) => {
+  const drawingManager = await promise;
+
+  if (!drawingManager) {
+    return console.error('the drawing manager is not defined');
+  }
+
+  drawingManager.setDrawingMode(mode);
 };
 
 /**
@@ -351,10 +353,12 @@ const clearAll = () => {
  ******************************************************************************/
 watch(
   () => props.drawingControlOptions,
-  (value, oldValue) => {
-    if (drawingManagerInstance) {
+  async (value, oldValue) => {
+    const drawingManager = await promise;
+
+    if (drawingManager) {
       if (value && value !== oldValue) {
-        drawingManagerInstance.setOptions({
+        drawingManager.setOptions({
           drawingControlOptions: { ...oldValue, ...value },
         });
       }
@@ -364,10 +368,12 @@ watch(
 
 watch(
   () => props.position,
-  (value, oldValue) => {
-    if (drawingManagerInstance) {
+  async (value, oldValue) => {
+    const drawingManager = await promise;
+
+    if (drawingManager) {
       if (value && value !== oldValue) {
-        drawingManagerInstance.setOptions({
+        drawingManager.setOptions({
           drawingControlOptions: { position: evaluatedPosition.value },
         });
       }
@@ -377,10 +383,12 @@ watch(
 
 watch(
   () => props.drawingModes,
-  (value, oldValue) => {
-    if (drawingManagerInstance) {
+  async (value, oldValue) => {
+    const drawingManager = await promise;
+
+    if (drawingManager) {
       if (value && value !== oldValue) {
-        drawingManagerInstance.setOptions({
+        drawingManager.setOptions({
           drawingControlOptions: { drawingModes: value },
         });
       }
@@ -390,58 +398,72 @@ watch(
 
 watch(
   () => props.drawingControlOptions,
-  (value) => {
-    if (drawingManagerInstance && value) {
-      drawingManagerInstance.setOptions({ drawingControlOptions: value });
+  async (value) => {
+    const drawingManager = await promise;
+
+    if (drawingManager && value) {
+      drawingManager.setOptions({ drawingControlOptions: value });
     }
   },
 );
 watch(
   () => props.circleOptions,
-  (value) => {
-    if (drawingManagerInstance && value) {
-      drawingManagerInstance.setOptions({ circleOptions: value });
+  async (value) => {
+    const drawingManager = await promise;
+
+    if (drawingManager && value) {
+      drawingManager.setOptions({ circleOptions: value });
     }
   },
 );
 watch(
   () => props.markerOptions,
-  (value) => {
-    if (drawingManagerInstance && value) {
-      drawingManagerInstance.setOptions({ markerOptions: value });
+  async (value) => {
+    const drawingManager = await promise;
+
+    if (drawingManager && value) {
+      drawingManager.setOptions({ markerOptions: value });
     }
   },
 );
 watch(
   () => props.polygonOptions,
-  (value) => {
-    if (drawingManagerInstance && value) {
-      drawingManagerInstance.setOptions({ polygonOptions: value });
+  async (value) => {
+    const drawingManager = await promise;
+
+    if (drawingManager && value) {
+      drawingManager.setOptions({ polygonOptions: value });
     }
   },
 );
 watch(
   () => props.polylineOptions,
-  (value) => {
-    if (drawingManagerInstance && value) {
-      drawingManagerInstance.setOptions({ polylineOptions: value });
+  async (value) => {
+    const drawingManager = await promise;
+
+    if (drawingManager && value) {
+      drawingManager.setOptions({ polylineOptions: value });
     }
   },
 );
 watch(
   () => props.rectangleOptions,
-  (value) => {
-    if (drawingManagerInstance && value) {
-      drawingManagerInstance.setOptions({ rectangleOptions: value });
+  async (value) => {
+    const drawingManager = await promise;
+
+    if (drawingManager && value) {
+      drawingManager.setOptions({ rectangleOptions: value });
     }
   },
 );
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onUnmounted(() => {
-  if (drawingManagerInstance) {
-    drawingManagerInstance.setMap(null);
+onUnmounted(async () => {
+  const drawingManager = await promise;
+
+  if (drawingManager) {
+    drawingManager.setMap(null);
   }
 
   useDestroyPromisesOnUnmounted(props.drawingKey || $drawingManagerPromise);
@@ -458,7 +480,6 @@ defineExpose({
   setDrawingMode,
   deleteSelection,
   clearAll,
-  drawingManagerInstance,
   drawingManagerPromise: promise,
 });
 </script>

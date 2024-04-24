@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
   useShapesHelpers,
 } from '@/composables';
 import type { IPolylineShapeVueComponentProps } from '@/interfaces';
@@ -91,10 +90,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const polylinePromiseDeferred = usePromiseDeferred(
-  props.polylineKey || $polylineShapePromise,
-);
-const promise = usePromise(props.polylineKey || $polylineShapePromise);
+const { promiseDeferred: polylinePromiseDeferred, promise } =
+  useComponentPromiseFactory(props.polylineKey || $polylineShapePromise);
 provide(props.polylineKey || $polylineShapePromise, promise);
 
 /*******************************************************************************
@@ -102,11 +99,10 @@ provide(props.polylineKey || $polylineShapePromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'polyline-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let polylineShapeInstance: google.maps.Polyline | undefined;
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     const polylineOptions: IPolylineShapeVueComponentProps & {
@@ -121,7 +117,7 @@ mapPromise
     const { Polyline } = (await google.maps.importLibrary(
       'maps',
     )) as google.maps.MapsLibrary;
-    polylineShapeInstance = new Polyline(polylineOptions);
+    const polylineShape = new Polyline(polylineOptions);
 
     const polylineShapePropsConfig = getComponentPropsConfig('GmvPolyline');
     const polylineShapeEventsConfig = getComponentEventsConfig(
@@ -131,13 +127,13 @@ mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polylineShapePropsConfig,
-      polylineShapeInstance,
+      polylineShape,
       emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polylineShapeEventsConfig,
-      polylineShapeInstance,
+      polylineShape,
       emits as any,
       excludedEvents,
     );
@@ -146,7 +142,7 @@ mapPromise
       throw new Error('polylinePromiseDeferred.resolve is undefined');
     }
 
-    polylinePromiseDeferred.resolve(polylineShapeInstance);
+    polylinePromiseDeferred.resolve(polylineShape);
   })
   .catch((error) => {
     throw error;
@@ -171,49 +167,41 @@ const pathEventListeners: [
 
 watch(
   () => props.path,
-  (newValue, oldValue) => {
-    if (polylineShapeInstance) {
-      if (props.path && newValue && newValue !== oldValue) {
-        clearEvents(pathEventListeners);
+  async (newValue, oldValue) => {
+    const polylineShape = await promise;
 
-        polylineShapeInstance.setPath(newValue);
+    if (!polylineShape) {
+      return console.error('polyline was not defined');
+    }
 
-        const mvcPath = polylineShapeInstance.getPath();
+    if (props.path && newValue && newValue !== oldValue) {
+      clearEvents(pathEventListeners);
 
-        pathEventListeners.push([
-          mvcPath,
-          mvcPath.addListener(
-            'insert_at',
-            updatePathOrPaths(
-              'path_changed',
-              polylineShapeInstance.getPath,
-              emits,
-            ),
-          ),
-        ]);
-        pathEventListeners.push([
-          mvcPath,
-          mvcPath.addListener(
-            'remove_at',
-            updatePathOrPaths(
-              'path_changed',
-              polylineShapeInstance.getPath,
-              emits,
-            ),
-          ),
-        ]);
-        pathEventListeners.push([
-          mvcPath,
-          mvcPath.addListener(
-            'set_at',
-            updatePathOrPaths(
-              'path_changed',
-              polylineShapeInstance.getPath,
-              emits,
-            ),
-          ),
-        ]);
-      }
+      polylineShape.setPath(newValue);
+
+      const mvcPath = polylineShape.getPath();
+
+      pathEventListeners.push([
+        mvcPath,
+        mvcPath.addListener(
+          'insert_at',
+          updatePathOrPaths('path_changed', polylineShape.getPath, emits),
+        ),
+      ]);
+      pathEventListeners.push([
+        mvcPath,
+        mvcPath.addListener(
+          'remove_at',
+          updatePathOrPaths('path_changed', polylineShape.getPath, emits),
+        ),
+      ]);
+      pathEventListeners.push([
+        mvcPath,
+        mvcPath.addListener(
+          'set_at',
+          updatePathOrPaths('path_changed', polylineShape.getPath, emits),
+        ),
+      ]);
     }
   },
   { deep: props.deepWatch, immediate: true },
@@ -221,9 +209,11 @@ watch(
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onUnmounted(() => {
-  if (polylineShapeInstance) {
-    polylineShapeInstance.setMap(null);
+onUnmounted(async () => {
+  const polylineShape = await promise;
+
+  if (polylineShape) {
+    polylineShape.setMap(null);
   }
 
   useDestroyPromisesOnUnmounted(props.polylineKey || $polylineShapePromise);
@@ -236,5 +226,5 @@ onUnmounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ polylineShapeInstance, polylineShapePromise: promise });
+defineExpose({ polylineShapePromise: promise });
 </script>

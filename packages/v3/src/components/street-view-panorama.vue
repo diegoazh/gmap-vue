@@ -14,11 +14,10 @@ import {
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
   useResizeBus,
   watchPrimitivePropertiesOnSetup,
 } from '@/composables';
@@ -98,15 +97,12 @@ const emits = defineEmits<{
  ******************************************************************************/
 defineOptions({ name: 'street-view-panorama' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let streetViewPanoramaInstance: google.maps.StreetViewPanorama | undefined;
 
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const streetViewPanoramaPromiseDeferred = usePromiseDeferred(
-  props.streetViewKey || $streetViewPanoramaPromise,
-);
-const promise = usePromise(props.streetViewKey || $streetViewPanoramaPromise);
+const { promiseDeferred: streetViewPanoramaPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.streetViewKey || $streetViewPanoramaPromise);
 provide(props.streetViewKey || $streetViewPanoramaPromise, promise);
 
 /*******************************************************************************
@@ -121,9 +117,11 @@ let { _resizeCallback } = useResizeBus();
  * @returns {void}
  * @public
  */
-function resize(): void {
-  if (streetViewPanoramaInstance) {
-    google.maps.event.trigger(streetViewPanoramaInstance, 'resize');
+async function resize(): Promise<void> {
+  const streetViewPanorama = await promise;
+
+  if (streetViewPanorama) {
+    google.maps.event.trigger(streetViewPanorama, 'resize');
   }
 }
 
@@ -133,16 +131,18 @@ function resize(): void {
  * @returns {void}
  * @public
  */
-function resizePreserveCenter(): void {
-  if (!streetViewPanoramaInstance) {
+async function resizePreserveCenter(): Promise<void> {
+  const streetViewPanorama = await promise;
+
+  if (!streetViewPanorama) {
     return;
   }
 
-  const oldCenter = streetViewPanoramaInstance.getPosition();
-  google.maps.event.trigger(streetViewPanoramaInstance, 'resize');
+  const oldCenter = streetViewPanorama.getPosition();
+  google.maps.event.trigger(streetViewPanorama, 'resize');
 
   if (oldCenter) {
-    streetViewPanoramaInstance.setPosition(oldCenter);
+    streetViewPanorama.setPosition(oldCenter);
   }
 }
 
@@ -181,39 +181,33 @@ const finalLatLng = computed(
  ******************************************************************************/
 watch(
   () => props.zoom,
-  (newValue, oldValue) => {
-    if (
-      streetViewPanoramaInstance &&
-      newValue &&
-      !isEqual(newValue, oldValue)
-    ) {
-      streetViewPanoramaInstance.setZoom(newValue);
+  async (newValue, oldValue) => {
+    const streetViewPanorama = await promise;
+
+    if (streetViewPanorama && newValue && !isEqual(newValue, oldValue)) {
+      streetViewPanorama.setZoom(newValue);
     }
   },
 );
 
 watch(
   () => props.pov,
-  (newValue, oldValue) => {
-    if (
-      streetViewPanoramaInstance &&
-      newValue &&
-      !isEqual(newValue, oldValue)
-    ) {
-      streetViewPanoramaInstance.setPov(newValue);
+  async (newValue, oldValue) => {
+    const streetViewPanorama = await promise;
+
+    if (streetViewPanorama && newValue && !isEqual(newValue, oldValue)) {
+      streetViewPanorama.setPov(newValue);
     }
   },
 );
 
 watch(
   () => props.pano,
-  (newValue, oldValue) => {
-    if (
-      streetViewPanoramaInstance &&
-      newValue &&
-      !isEqual(newValue, oldValue)
-    ) {
-      streetViewPanoramaInstance.setPano(newValue);
+  async (newValue, oldValue) => {
+    const streetViewPanorama = await promise;
+
+    if (streetViewPanorama && newValue && !isEqual(newValue, oldValue)) {
+      streetViewPanorama.setPano(newValue);
     }
   },
 );
@@ -240,7 +234,7 @@ onMounted(() => {
       const { StreetViewPanorama } = (await google.maps.importLibrary(
         'streetView',
       )) as google.maps.StreetViewLibrary;
-      streetViewPanoramaInstance = new StreetViewPanorama(
+      const streetViewPanorama = new StreetViewPanorama(
         gmvStreetViewPanorama.value,
         streetViewOptions,
       );
@@ -255,13 +249,13 @@ onMounted(() => {
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         streetViewPanoramaPropsConfig,
-        streetViewPanoramaInstance,
+        streetViewPanorama,
         emits as any,
         props,
       );
       bindGoogleMapsEventsToVueEventsOnSetup(
         streetViewPanoramaEventsConfig,
-        streetViewPanoramaInstance,
+        streetViewPanorama,
         emits as any,
         excludedEvents,
       );
@@ -271,19 +265,19 @@ onMounted(() => {
         // Panos take a while to load
         increment();
 
-        if (!streetViewPanoramaInstance) {
+        if (!streetViewPanorama) {
           throw new Error('the street view panorama instance was not created');
         }
 
-        streetViewPanoramaInstance.addListener('position_changed', () => {
+        streetViewPanorama.addListener('position_changed', () => {
           if (shouldUpdate()) {
-            if (!streetViewPanoramaInstance) {
+            if (!streetViewPanorama) {
               throw new Error(
                 'the street view panorama instance was not created',
               );
             }
 
-            emits('position_changed', streetViewPanoramaInstance.getPosition());
+            emits('position_changed', streetViewPanorama.getPosition());
           }
 
           decrement();
@@ -291,13 +285,13 @@ onMounted(() => {
 
         const updateCenter = () => {
           increment();
-          if (!streetViewPanoramaInstance) {
+          if (!streetViewPanorama) {
             throw new Error(
               'the street view panorama instance was not created',
             );
           }
 
-          streetViewPanoramaInstance.setPosition(finalLatLng.value);
+          streetViewPanorama.setPosition(finalLatLng.value);
         };
 
         watchPrimitivePropertiesOnSetup(
@@ -313,7 +307,7 @@ onMounted(() => {
         );
       }
 
-      streetViewPanoramaPromiseDeferred.resolve(streetViewPanoramaInstance);
+      streetViewPanoramaPromiseDeferred.resolve(streetViewPanorama);
     })
     .catch((error) => {
       throw error;
@@ -333,7 +327,6 @@ onUnmounted(() => {
  * EXPOSE
  ******************************************************************************/
 defineExpose({
-  streetViewPanoramaInstance,
   currentResizeBus,
   _resizeCallback,
   _delayedResizeCallback,
