@@ -4,7 +4,21 @@ title: Changelog
 sidebar_position: 5
 sidebar_label: Changelog
 ---
-# [2.## [2.0.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.0.0...gmv3_v2.0.1) (2024-04-05)
+## [2.1.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.0...gmv3_v2.1.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* **v3:** remove exposed instances because they are always undefined and cause errors with watchers and events ([bdc2f86](https://github.com/diegoazh/gmap-vue/commit/bdc2f8618c1b88c955ce116f5b25aabe5a70da44)), closes [#318](https://github.com/diegoazh/gmap-vue/issues/318) [#319](https://github.com/diegoazh/gmap-vue/issues/319) [#320](https://github.com/diegoazh/gmap-vue/issues/320)
+
+# [2.1.0](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.0.1...gmv3_v2.1.0) (2024-04-11)
+
+
+### Features
+
+* **v3:** create independent instances of every component using a component key prop ([#315](https://github.com/diegoazh/gmap-vue/issues/315)) ([0c21c60](https://github.com/diegoazh/gmap-vue/commit/0c21c608125c37115a8625b1e1cdcf9e081ac6fd)), closes [#309](https://github.com/diegoazh/gmap-vue/issues/309) [#309](https://github.com/diegoazh/gmap-vue/issues/309) [#309](https://github.com/diegoazh/gmap-vue/issues/309)
+
+## [2.0.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.0.0...gmv3_v2.0.1) (2024-04-05)
 
 
 ### Bug Fixes
