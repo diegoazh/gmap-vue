@@ -6,6 +6,7 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useClusterPromise,
   useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
@@ -13,7 +14,7 @@ import {
 import type { IMarkerIconVueComponentProps } from '@/interfaces';
 import { $markerPromise } from '@/keys';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { h, inject, onUnmounted, provide, useSlots } from 'vue';
+import { computed, h, inject, onUnmounted, provide, useSlots } from 'vue';
 
 /**
  * Marker component
@@ -72,20 +73,20 @@ const mapPromise = props.mapKey
       google.maps.Map | undefined
     >);
 
-const clusterPromise = props.clusterKey
-  ? inject<Promise<MarkerClusterer | undefined>>(props.clusterKey)
-  : (findParentInstanceByName('cluster-icon')?.exposed
-      ?.clusterPromise as Promise<MarkerClusterer | undefined>);
-
-let clusterOwner: MarkerClusterer | undefined;
-
 if (!mapPromise) {
   throw new Error('The map promise was not built');
 }
 
+const clusterPromise = props.clusterKey
+  ? useClusterPromise(props.clusterKey)
+  : (findParentInstanceByName('cluster-icon')?.exposed?.clusterPromise as
+      | Promise<MarkerClusterer | undefined>
+      | undefined);
+
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
+let rawClusterOwner: MarkerClusterer | undefined;
 const { promiseDeferred: markerPromiseDeferred, promise } =
   useComponentPromiseFactory(props.markerKey || $markerPromise);
 provide(props.markerKey || $markerPromise, promise);
@@ -163,7 +164,7 @@ mapPromise
     if (clusterPromise) {
       clusterPromise.then((clusterInstance) => {
         clusterInstance?.addMarker(marker);
-        clusterOwner = clusterInstance;
+        rawClusterOwner = clusterInstance;
       });
     }
 
@@ -180,6 +181,12 @@ mapPromise
 /*******************************************************************************
  * COMPUTED
  ******************************************************************************/
+const clusterOwner = computed({
+  get: () => rawClusterOwner,
+  set: (val) => {
+    rawClusterOwner = val;
+  },
+});
 
 /*******************************************************************************
  * METHODS
@@ -199,11 +206,11 @@ onUnmounted(async () => {
     return console.error('the marker instance is not defined');
   }
 
-  if (clusterOwner) {
+  if (clusterOwner.value) {
     // Repaint will be performed in `updated()` of cluster
-    clusterOwner.removeMarker(marker, true);
+    clusterOwner.value.removeMarker(marker, true);
     /* Performance optimization when destroying a large number of markers */
-    clusterOwner = undefined;
+    clusterOwner.value = undefined;
   } else if (marker) {
     marker.map = null;
   }
