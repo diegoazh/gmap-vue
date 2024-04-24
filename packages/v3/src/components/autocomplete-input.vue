@@ -91,7 +91,6 @@ const emits = defineEmits<{
  ******************************************************************************/
 defineOptions({ inheritAttrs: false, name: 'autocomplete-input' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let autocompleteInstance: google.maps.places.Autocomplete | undefined;
 
 /*******************************************************************************
  * PROVIDE
@@ -115,9 +114,15 @@ provide(props.autocompleteKey || $autocompletePromise, promise);
  ******************************************************************************/
 watch(
   () => props.componentRestrictions,
-  (newValue, oldValue) => {
+  async (newValue, oldValue) => {
+    const autocomplete = await promise;
+
+    if (!autocomplete) {
+      return console.error('the autocomplete instance is not defined');
+    }
+
     if (newValue && newValue !== oldValue) {
-      autocompleteInstance?.setComponentRestrictions(newValue);
+      autocomplete.setComponentRestrictions(newValue);
     }
   },
 );
@@ -159,7 +164,7 @@ onMounted(() => {
         );
       }
 
-      autocompleteInstance = new Autocomplete(scopedInput, autocompleteOptions);
+      const autocomplete = new Autocomplete(scopedInput, autocompleteOptions);
 
       const autocompletePropsConfig =
         getComponentPropsConfig('GmvAutocomplete');
@@ -170,35 +175,35 @@ onMounted(() => {
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         autocompletePropsConfig,
-        autocompleteInstance,
+        autocomplete,
         emits as any,
         props,
       );
 
       bindGoogleMapsEventsToVueEventsOnSetup(
         autocompleteEventsConfig,
-        autocompleteInstance,
+        autocomplete,
         emits as any,
         excludedEvents,
       );
 
       if (props.setFieldsTo) {
-        autocompleteInstance.setFields(props.setFieldsTo);
+        autocomplete.setFields(props.setFieldsTo);
       }
 
       /**
        * Not using `bindEvents` because we also want
        * to return the result of `getPlace()`
        */
-      autocompleteInstance.addListener('place_changed', () => {
-        if (autocompleteInstance) {
+      autocomplete.addListener('place_changed', () => {
+        if (autocomplete) {
           /**
            * Place change event
            * @event place_changed
            * @property {object} place `this.$autocomplete.getPlace()`
            * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
            */
-          emits('place_changed', autocompleteInstance.getPlace());
+          emits('place_changed', autocomplete.getPlace());
         }
       });
 
@@ -206,7 +211,7 @@ onMounted(() => {
         throw new Error('autocompletePromiseDeferred.resolve is undefined');
       }
 
-      autocompletePromiseDeferred.resolve(autocompleteInstance);
+      autocompletePromiseDeferred.resolve(autocomplete);
     })
     .catch((error) => {
       throw error;

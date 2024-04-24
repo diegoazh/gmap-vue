@@ -107,11 +107,10 @@ defineOptions({ name: 'info-window' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let map: google.maps.Map | undefined;
 let markerOwner: google.maps.marker.AdvancedMarkerElement | undefined;
-let infoWindowInstance: google.maps.InfoWindow | undefined;
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     map = mapInstance;
@@ -134,7 +133,7 @@ mapPromise
     const { InfoWindow } = (await google.maps.importLibrary(
       'maps',
     )) as google.maps.MapsLibrary;
-    infoWindowInstance = new InfoWindow({
+    const infoWindowInstance = new InfoWindow({
       ...infoWindowOptions,
       content: gmvInfoWindow.value,
     });
@@ -178,19 +177,25 @@ mapPromise
 /*******************************************************************************
  * METHODS
  ******************************************************************************/
-function openInfoWindow(): void {
+const openInfoWindow = async (): Promise<void> => {
+  const infoWindow = await promise;
+
+  if (!infoWindow) {
+    return console.error('the info window is not defined');
+  }
+
   if (props.opened) {
     if (markerOwner) {
-      infoWindowInstance?.open(map, markerOwner);
+      infoWindow.open(map, markerOwner);
     } else if (props.marker) {
-      infoWindowInstance?.open(map, props.marker);
+      infoWindow.open(map, props.marker);
     } else {
-      infoWindowInstance?.open(map);
+      infoWindow.open(map);
     }
   } else {
-    infoWindowInstance?.close();
+    infoWindow.close();
   }
-}
+};
 
 /*******************************************************************************
  * WATCHERS
@@ -204,17 +209,29 @@ watch(
 
 watch(
   () => props.position,
-  (value, oldValue) => {
+  async (value, oldValue) => {
+    const infoWindow = await promise;
+
+    if (!infoWindow) {
+      return console.error('the info window is not defined');
+    }
+
     if (value && value !== oldValue) {
-      infoWindowInstance?.setPosition(value);
+      infoWindow?.setPosition(value);
     }
   },
 );
 watch(
   () => props.content,
-  (value, oldValue) => {
+  async (value, oldValue) => {
+    const infoWindow = await promise;
+
+    if (!infoWindow) {
+      return console.error('the info window is not defined');
+    }
+
     if (value && value !== oldValue) {
-      infoWindowInstance?.setContent(value);
+      infoWindow?.setContent(value);
     }
   },
 );

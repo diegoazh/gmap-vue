@@ -49,6 +49,7 @@ export function getPropsValuesWithoutOptionsProp(
       (acc, propKey) => {
         if (
           propKey !== 'options' &&
+          !/^(\w+)(key)$/gim.test(propKey) &&
           (vueInst?.$props as any)[propKey] != null
         ) {
           acc[propKey] = (vueInst?.$props as any)[propKey];
@@ -62,7 +63,11 @@ export function getPropsValuesWithoutOptionsProp(
 
   return Object.keys(props).reduce(
     (acc, propKey) => {
-      if (propKey !== 'options' && (props as any)[propKey] != null) {
+      if (
+        propKey !== 'options' &&
+        !/^(\w+)(key)$/gim.test(propKey) &&
+        (props as any)[propKey] != null
+      ) {
         acc[propKey] = (props as any)[propKey];
       }
 

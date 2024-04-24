@@ -109,11 +109,10 @@ provide(props.polygonKey || $polygonShapePromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'polygon-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let polygonShapeInstance: google.maps.Polygon | undefined;
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     const polygonShapeOptions: IPolygonShapeVueComponentProps & {
@@ -128,7 +127,7 @@ mapPromise
     const { Polygon } = (await google.maps.importLibrary(
       'maps',
     )) as google.maps.MapsLibrary;
-    polygonShapeInstance = new Polygon(polygonShapeOptions);
+    const polygonShape = new Polygon(polygonShapeOptions);
 
     const polygonShapePropsConfig = getComponentPropsConfig('GmvPolygon');
     const polygonShapeEventsConfig = getComponentEventsConfig(
@@ -138,13 +137,13 @@ mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polygonShapePropsConfig,
-      polygonShapeInstance,
+      polygonShape,
       emits as any,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polygonShapeEventsConfig,
-      polygonShapeInstance,
+      polygonShape,
       emits as any,
       excludedEvents,
     );
@@ -153,7 +152,7 @@ mapPromise
       throw new Error('polygonPromiseDeferred.resolve is undefined');
     }
 
-    polygonPromiseDeferred.resolve(polygonShapeInstance);
+    polygonPromiseDeferred.resolve(polygonShape);
   })
   .catch((error) => {
     throw error;
@@ -181,86 +180,67 @@ const pathsEventListeners: [
 
 watch(
   () => props.paths,
-  (newValue, oldValue) => {
-    if (polygonShapeInstance) {
-      if (props.paths && newValue && newValue !== oldValue) {
-        clearEvents(pathsEventListeners);
+  async (newValue, oldValue) => {
+    const polygonShape = await promise;
 
-        polygonShapeInstance.setPaths(newValue);
+    if (!polygonShape) {
+      return console.error('polygon was not defined');
+    }
 
-        const mvcArray = polygonShapeInstance.getPaths();
+    if (props.paths && newValue && newValue !== oldValue) {
+      clearEvents(pathsEventListeners);
 
-        for (let i = 0; i < mvcArray.getLength(); i += 1) {
-          const mvcPath = mvcArray.getAt(i);
-          pathsEventListeners.push([
-            mvcPath,
-            mvcPath.addListener(
-              'insert_at',
-              updatePathOrPaths(
-                'paths_changed',
-                polygonShapeInstance.getPaths,
-                emits,
-              ),
-            ),
-          ]);
-          pathsEventListeners.push([
-            mvcPath,
-            mvcPath.addListener(
-              'remove_at',
-              updatePathOrPaths(
-                'paths_changed',
-                polygonShapeInstance.getPaths,
-                emits,
-              ),
-            ),
-          ]);
-          pathsEventListeners.push([
-            mvcPath,
-            mvcPath.addListener(
-              'set_at',
-              updatePathOrPaths(
-                'paths_changed',
-                polygonShapeInstance.getPaths,
-                emits,
-              ),
-            ),
-          ]);
-        }
+      polygonShape.setPaths(newValue);
 
+      const mvcArray = polygonShape.getPaths();
+      const getPathsFn = () => polygonShape.getPaths();
+
+      for (let i = 0; i < mvcArray.getLength(); i += 1) {
+        const mvcPath = mvcArray.getAt(i);
         pathsEventListeners.push([
-          mvcArray,
-          mvcArray.addListener(
+          mvcPath,
+          mvcPath.addListener(
             'insert_at',
-            updatePathOrPaths(
-              'paths_changed',
-              polygonShapeInstance.getPaths,
-              emits,
-            ),
+            updatePathOrPaths('paths_changed', getPathsFn, emits),
           ),
         ]);
         pathsEventListeners.push([
-          mvcArray,
-          mvcArray.addListener(
+          mvcPath,
+          mvcPath.addListener(
             'remove_at',
-            updatePathOrPaths(
-              'paths_changed',
-              polygonShapeInstance.getPaths,
-              emits,
-            ),
+            updatePathOrPaths('paths_changed', getPathsFn, emits),
           ),
         ]);
         pathsEventListeners.push([
-          mvcArray,
-          mvcArray.addListener(
+          mvcPath,
+          mvcPath.addListener(
             'set_at',
-            updatePathOrPaths(
-              'paths_changed',
-              polygonShapeInstance.getPaths,
-              emits,
-            ),
+            updatePathOrPaths('paths_changed', getPathsFn, emits),
           ),
         ]);
       }
+
+      pathsEventListeners.push([
+        mvcArray,
+        mvcArray.addListener(
+          'insert_at',
+          updatePathOrPaths('paths_changed', getPathsFn, emits),
+        ),
+      ]);
+      pathsEventListeners.push([
+        mvcArray,
+        mvcArray.addListener(
+          'remove_at',
+          updatePathOrPaths('paths_changed', getPathsFn, emits),
+        ),
+      ]);
+      pathsEventListeners.push([
+        mvcArray,
+        mvcArray.addListener(
+          'set_at',
+          updatePathOrPaths('paths_changed', getPathsFn, emits),
+        ),
+      ]);
     }
   },
   {
@@ -272,9 +252,11 @@ watch(
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onUnmounted(() => {
-  if (polygonShapeInstance) {
-    polygonShapeInstance.setMap(null);
+onUnmounted(async () => {
+  const polygonShape = await promise;
+
+  if (polygonShape) {
+    polygonShape.setMap(null);
   }
 
   useDestroyPromisesOnUnmounted(props.polygonKey || $polygonShapePromise);

@@ -172,7 +172,6 @@ function getRecycleKey(): string {
  ******************************************************************************/
 defineOptions({ name: 'map-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let mapInstance: google.maps.Map | undefined;
 
 /*******************************************************************************
  * PROVIDE
@@ -193,7 +192,9 @@ let { _resizeCallback } = useResizeBus();
  * @returns {void}
  * @public
  */
-function resize(): void {
+async function resize(): Promise<void> {
+  const mapInstance = await promise;
+
   if (mapInstance) {
     google.maps.event.trigger(mapInstance, 'resize');
   }
@@ -205,7 +206,9 @@ function resize(): void {
  * @returns {void}
  * @public
  */
-function resizePreserveCenter(): void {
+async function resizePreserveCenter(): Promise<void> {
+  const mapInstance = await promise;
+
   if (!mapInstance) {
     return;
   }
@@ -255,7 +258,9 @@ const finalLatLng = computed(
  * @returns {void}
  * @public
  */
-function panBy(x: number, y: number): void {
+async function panBy(x: number, y: number): Promise<void> {
+  const mapInstance = await promise;
+
   if (mapInstance) {
     mapInstance.panBy(x, y);
   }
@@ -268,7 +273,11 @@ function panBy(x: number, y: number): void {
  * @returns {void}
  * @public
  */
-function panTo(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
+async function panTo(
+  latLng: google.maps.LatLng | google.maps.LatLngLiteral,
+): Promise<void> {
+  const mapInstance = await promise;
+
   if (mapInstance) {
     mapInstance.panTo(latLng);
   }
@@ -282,10 +291,12 @@ function panTo(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
  * @returns {void}
  * @public
  */
-function panToBounds(
+async function panToBounds(
   latLngBounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
   padding: number | google.maps.Padding,
-): void {
+): Promise<void> {
+  const mapInstance = await promise;
+
   if (mapInstance) {
     mapInstance.panToBounds(latLngBounds, padding);
   }
@@ -300,10 +311,12 @@ function panToBounds(
  * @returns {void}
  * @public
  */
-function fitBounds(
+async function fitBounds(
   bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
   padding: number | google.maps.Padding,
-): void {
+): Promise<void> {
+  const mapInstance = await promise;
+
   if (mapInstance) {
     mapInstance.fitBounds(bounds, padding);
   }
@@ -314,7 +327,9 @@ function fitBounds(
  ******************************************************************************/
 watch(
   () => props.zoom,
-  (newVal, oldValue) => {
+  async (newVal, oldValue) => {
+    const mapInstance = await promise;
+
     if (mapInstance && newVal && newVal !== oldValue) {
       mapInstance.setZoom(newVal);
     }
@@ -337,6 +352,7 @@ onMounted(() => {
       };
 
       const recycleKey = getRecycleKey();
+      let mapInstance: google.maps.Map | undefined;
 
       if (window[recycleKey]) {
         gmvMap.value.appendChild(window[recycleKey].div);
@@ -436,10 +452,15 @@ onMounted(() => {
     });
 });
 
-onBeforeUnmount(() => {
-  const recycleKey = getRecycleKey();
-  if (window[recycleKey]) {
-    window[recycleKey].div = mapInstance?.getDiv();
+onBeforeUnmount(async () => {
+  const mapInstance = await promise;
+
+  if (mapInstance) {
+    const recycleKey = getRecycleKey();
+
+    if (window[recycleKey]) {
+      window[recycleKey].div = mapInstance.getDiv();
+    }
   }
 });
 

@@ -87,12 +87,10 @@ provide(props.heatmapKey || $heatmapLayerPromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'heatmap-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let heatMapLayerInstance: google.maps.visualization.HeatmapLayer | undefined;
-
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     const heatmapLayerOptions: IHeatmapLayerVueComponentProps & {
@@ -107,7 +105,7 @@ mapPromise
     const { HeatmapLayer } = (await google.maps.importLibrary(
       'visualization',
     )) as google.maps.VisualizationLibrary;
-    heatMapLayerInstance = new HeatmapLayer(heatmapLayerOptions);
+    const heatMapLayer = new HeatmapLayer(heatmapLayerOptions);
 
     const heatmapLayerPropsConfig = getComponentPropsConfig('GmvHeatmapLayer');
     const heatmapLayerEventsConfig = getComponentEventsConfig(
@@ -117,14 +115,14 @@ mapPromise
 
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       heatmapLayerPropsConfig,
-      heatMapLayerInstance,
+      heatMapLayer,
       emits as any,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       heatmapLayerEventsConfig,
-      heatMapLayerInstance,
+      heatMapLayer,
       emits as any,
       excludedEvents,
     );
@@ -133,7 +131,7 @@ mapPromise
       throw new Error('heatmapLayerPromiseDeferred.resolve is undefined');
     }
 
-    heatmapLayerPromiseDeferred.resolve(heatMapLayerInstance);
+    heatmapLayerPromiseDeferred.resolve(heatMapLayer);
   })
   .catch((error) => {
     throw error;
@@ -152,10 +150,12 @@ mapPromise
  ******************************************************************************/
 watch(
   () => props.data,
-  (value, oldValue) => {
-    if (heatMapLayerInstance) {
+  async (value, oldValue) => {
+    const heatMapLayer = await promise;
+
+    if (heatMapLayer) {
       if (value && value !== oldValue) {
-        heatMapLayerInstance.setData(value);
+        heatMapLayer.setData(value);
         emits('data_changed', value);
       }
     }
@@ -165,9 +165,11 @@ watch(
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onUnmounted(() => {
-  if (heatMapLayerInstance) {
-    heatMapLayerInstance.setMap(null);
+onUnmounted(async () => {
+  const heatMapLayer = await promise;
+
+  if (heatMapLayer) {
+    heatMapLayer.setMap(null);
   }
 
   useDestroyPromisesOnUnmounted(props.heatmapKey || $heatmapLayerPromise);

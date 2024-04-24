@@ -98,11 +98,10 @@ provide(props.rectangleKey || $rectangleShapePromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'rectangle-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let rectangleShapeInstance: google.maps.Rectangle | undefined;
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     const rectangleOptions: IRectangleShapeVueComponentProps & {
@@ -117,7 +116,7 @@ mapPromise
     const { Rectangle } = (await google.maps.importLibrary(
       'maps',
     )) as google.maps.MapsLibrary;
-    rectangleShapeInstance = new Rectangle(rectangleOptions);
+    const rectangleShapeInstance = new Rectangle(rectangleOptions);
 
     const rectangleShapePropsConfig = getComponentPropsConfig('GmvRectangle');
     const rectangleShapeEventsConfig = getComponentEventsConfig(
@@ -163,9 +162,11 @@ mapPromise
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onUnmounted(() => {
-  if (rectangleShapeInstance) {
-    rectangleShapeInstance.setMap(null);
+onUnmounted(async () => {
+  const rectangleShape = await promise;
+
+  if (rectangleShape) {
+    rectangleShape.setMap(null);
   }
 
   useDestroyPromisesOnUnmounted(props.rectangleKey || $rectangleShapePromise);

@@ -98,11 +98,10 @@ provide(props.markerKey || $markerPromise, promise);
  ******************************************************************************/
 defineOptions({ name: 'marker-icon' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let markerInstance: google.maps.marker.AdvancedMarkerElement | undefined;
 mapPromise
   ?.then(async (mapInstance) => {
     if (!mapInstance) {
-      throw new Error('the map instance was not created');
+      throw new Error('the map instance is not defined');
     }
 
     // Initialize the maps with the given options
@@ -122,7 +121,7 @@ mapPromise
     const { AdvancedMarkerElement } = (await google.maps.importLibrary(
       'marker',
     )) as google.maps.MarkerLibrary;
-    markerInstance = new AdvancedMarkerElement(markerIconOptions);
+    const marker = new AdvancedMarkerElement(markerIconOptions);
 
     const markerIconPropsConfig = getComponentPropsConfig('GmvMarker');
     const markerIconEventsConfig = getComponentEventsConfig(
@@ -133,7 +132,7 @@ mapPromise
     // bind prop events of google maps
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       markerIconPropsConfig,
-      markerInstance,
+      marker,
       emits as any,
       props,
     );
@@ -141,13 +140,13 @@ mapPromise
     // binding events
     bindGoogleMapsEventsToVueEventsOnSetup(
       markerIconEventsConfig,
-      markerInstance,
+      marker,
       emits as any,
       excludedEvents,
     );
 
-    markerInstance?.addListener('dragend', () => {
-      const newPosition = markerInstance?.position;
+    marker.addListener('dragend', () => {
+      const newPosition = marker.position;
       /**
        * An event to detect when a position changes
        * @property {Object} position Object with lat and lng values, eg: { lat: 10.0, lng: 10.0 }
@@ -166,7 +165,7 @@ mapPromise
 
     if (clusterPromise) {
       clusterPromise.then((clusterInstance) => {
-        clusterInstance?.addMarker(markerInstance!);
+        clusterInstance?.addMarker(marker);
         clusterOwner = clusterInstance;
       });
     }
@@ -175,7 +174,7 @@ mapPromise
       throw new Error('markerPromiseDeferred.resolve is undefined');
     }
 
-    markerPromiseDeferred.resolve(markerInstance);
+    markerPromiseDeferred.resolve(marker);
   })
   .catch((reason) => {
     throw reason;
@@ -196,18 +195,20 @@ mapPromise
 /*******************************************************************************
  * HOOKS
  ******************************************************************************/
-onUnmounted(() => {
-  if (!markerInstance) {
-    return;
+onUnmounted(async () => {
+  const marker = await promise;
+
+  if (!marker) {
+    return console.error('the marker instance is not defined');
   }
 
   if (clusterOwner) {
     // Repaint will be performed in `updated()` of cluster
-    clusterOwner.removeMarker(markerInstance!, true);
+    clusterOwner.removeMarker(marker, true);
     /* Performance optimization when destroying a large number of markers */
     clusterOwner = undefined;
-  } else if (markerInstance) {
-    markerInstance.map = null;
+  } else if (marker) {
+    marker.map = null;
   }
 
   useDestroyPromisesOnUnmounted(props.markerKey || $markerPromise);
