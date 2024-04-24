@@ -34,12 +34,13 @@ describe('MapLayer component', () => {
 
   it('should render a correct DOM and export a mapPromise', async () => {
     // given
-    const props = { center: { lat: 1, lng: 1 } };
+    const props = { center: { lat: 1, lng: 1 }, mapKey: 'myMap' };
     vi.stubGlobal('window', { __gmc__: undefined });
     const wrapper = mount(MapLayer, {
       props,
       slots: { visible: h('div') },
     });
+    const { mapKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -52,7 +53,7 @@ describe('MapLayer component', () => {
     expect(wrapper.find('gmv-map-hidden')).toBeDefined();
     expect(Object.keys(component.slots).length).toEqual(1);
     expect(mapValues.options).toEqual({
-      ...props,
+      ...propsInOptions,
       clickableIcons: true,
       disableDefaultUI: false,
       disableDoubleClickZoom: false,
@@ -112,6 +113,7 @@ describe('MapLayer component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -130,6 +132,7 @@ describe('MapLayer component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

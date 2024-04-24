@@ -45,7 +45,11 @@ describe('MarkerIcon component', () => {
   it('should render a correct DOM and export a markerPromise', async () => {
     // given
     const template = `<div></div>`;
-    const props = { content: h('p', 'Test'), title: 'this is the title' };
+    const props = {
+      content: h('p', 'Test'),
+      title: 'this is the title',
+      markerKey: 'myMarker',
+    };
     const wrapper = mount(
       {
         ...Marker,
@@ -53,6 +57,7 @@ describe('MarkerIcon component', () => {
       },
       { props },
     ); // we added a template to avoid warnings in the console
+    const { markerKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -63,7 +68,7 @@ describe('MarkerIcon component', () => {
     expect(JSON.stringify(markerValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
+        ...propsInOptions,
         gmpClickable: true,
         gmpDraggable: false,
       }),
@@ -117,6 +122,7 @@ describe('MarkerIcon component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -142,6 +148,7 @@ describe('MarkerIcon component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

@@ -40,7 +40,9 @@ describe('AutocompleteInput component', () => {
 
   it('should render a correct DOM and export an autocompletePromise', async () => {
     // given
+    const props = { strictBounds: true, autocompleteKey: 'myAutocomplete' };
     wrapper = mount(Autocomplete, { attrs: { class: 'my-class' } });
+    const { autocompleteKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -52,6 +54,7 @@ describe('AutocompleteInput component', () => {
     expect(wrapper.get('.my-class')).toBeDefined();
     expect(Object.keys(component.slots).length).toEqual(0);
     expect(autocompleteValues.options).toEqual({
+      ...propsInOptions,
       selectFirstOnEnter: true,
       strictBounds: false,
     });
@@ -96,6 +99,7 @@ describe('AutocompleteInput component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -112,6 +116,7 @@ describe('AutocompleteInput component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

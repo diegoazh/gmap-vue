@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     updateEdited(mvcArray) {
+      console.info('>>>>> the event was fired successfully');
       let paths = [];
       for (let i = 0; i < mvcArray.getLength(); i++) {
         let path = [];

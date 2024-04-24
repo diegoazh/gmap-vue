@@ -46,8 +46,9 @@ describe('PolygonShape component', () => {
 
   it('should render the correct DOM and return a polygonShapePromise', async () => {
     // given
-    const props = { polygonKey: 'myPolygonKey' };
+    const props = { polygonKey: 'myPolygonKey', clickable: false };
     const wrapper = mount({ ...Polygon, template }, { props });
+    const { polygonKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -58,8 +59,7 @@ describe('PolygonShape component', () => {
     expect(JSON.stringify(polygonValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
-        clickable: true,
+        ...propsInOptions,
         draggable: false,
         editable: false,
         geodesic: false,
@@ -80,6 +80,7 @@ describe('PolygonShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -96,6 +97,7 @@ describe('PolygonShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

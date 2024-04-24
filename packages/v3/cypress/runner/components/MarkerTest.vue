@@ -18,28 +18,31 @@
       :clickable="true"
       :draggable="true"
       :position="m.position"
+      :markerKey="`marker-${i}`"
       @click="center = m.position"
     ></gmv-marker>
     <gmv-marker
       v-if="visible2"
-      :key="i"
+      :key="2"
       :clickable="true"
       :draggable="true"
       :position="markers2[0].position"
+      :markerKey="`marker-2`"
       @click="center = markers2[0].position"
     ></gmv-marker>
     <gmv-marker
       v-if="visible2"
-      :key="i"
+      :key="3"
       :clickable="true"
       :draggable="true"
       :position="markers2[1].position"
+      :markerKey="`marker-3`"
       @click="center = markers2[1].position"
     ></gmv-marker>
   </gmv-map>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   data() {
     return {

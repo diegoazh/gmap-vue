@@ -46,7 +46,7 @@ describe('PolygonShape component', () => {
   it('should render the correct DOM and return a streetViewPanoramaPromise', async () => {
     // given
     const template = `<div class="gmv-street-view-panorama-container">\n  <div class="gmv-street-view-panorama"></div><!-- @slot A default slot to render the street view panorama -->\n</div>`;
-    const props = { streetViewKey: 'myStreetViewKey' };
+    const props = { streetViewKey: 'myStreetViewKey', addressControl: false };
     const wrapper = mount(StreetViewPanorama, { props });
 
     // when
@@ -127,6 +127,7 @@ describe('PolygonShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -143,6 +144,7 @@ describe('PolygonShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

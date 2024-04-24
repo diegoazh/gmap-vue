@@ -45,8 +45,9 @@ describe('CircleShape component', () => {
   it('should render the correct DOM and export a circleShapePromise', async () => {
     // given
     const template = `<div></div>`;
-    const props = { center: { lat: 3, lng: 3 } };
+    const props = { center: { lat: 3, lng: 3 }, circleKey: 'myCircle' };
     const wrapper = mount({ ...Circle, template }, { props });
+    const { circleKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -56,7 +57,7 @@ describe('CircleShape component', () => {
     expect(JSON.stringify(circleValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
+        ...propsInOptions,
         clickable: true,
         draggable: false,
         editable: false,
@@ -79,6 +80,7 @@ describe('CircleShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -96,6 +98,7 @@ describe('CircleShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

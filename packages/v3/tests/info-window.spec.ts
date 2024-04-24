@@ -43,8 +43,9 @@ describe('InfoWindow component', () => {
 
   it('should render the correct DOM and return a infoWindowPromise', async () => {
     // give
-    const props = { infoWindowKey: 'myInfoWindowKey' };
+    const props = { infoWindowKey: 'myInfoWindowKey', disableAutoPan: true };
     const wrapper = mount(InfoWindow, { props });
+    const { infoWindowKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -55,8 +56,7 @@ describe('InfoWindow component', () => {
     expect(JSON.stringify(infoWindowValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
-        disableAutoPan: false,
+        ...propsInOptions,
         opened: false,
         content: {
           oncancel: null,
@@ -130,6 +130,7 @@ describe('InfoWindow component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(composables.useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -146,6 +147,7 @@ describe('InfoWindow component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(composables.useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

@@ -46,8 +46,9 @@ describe('PolygonShape component', () => {
 
   it('should render the correct DOM and return a polylineShapePromise', async () => {
     // given
-    const props = { polylineKey: 'myPolylineKey' };
+    const props = { polylineKey: 'myPolylineKey', clickable: false };
     const wrapper = mount({ ...Polyline, template }, { props });
+    const { polylineKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -58,8 +59,7 @@ describe('PolygonShape component', () => {
     expect(JSON.stringify(polylineValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
-        clickable: true,
+        ...propsInOptions,
         draggable: false,
         editable: false,
         geodesic: false,
@@ -79,6 +79,7 @@ describe('PolygonShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -95,6 +96,7 @@ describe('PolygonShape component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

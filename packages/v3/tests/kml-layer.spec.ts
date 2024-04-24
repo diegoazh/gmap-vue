@@ -46,8 +46,9 @@ describe('KmlLayer component', () => {
 
   it('should render the correct DOM and return a kmlLayerPromise', async () => {
     // given
-    const props = { kmlKey: 'myKmlKey' };
+    const props = { kmlKey: 'myKmlKey', clickable: false };
     const wrapper = mount({ ...KmlLayer, template }, { props });
+    const { kmlKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -58,8 +59,7 @@ describe('KmlLayer component', () => {
     expect(JSON.stringify(kmlLayerValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
-        clickable: true,
+        ...propsInOptions,
         preserveViewport: false,
         screenOverlays: true,
         suppressInfoWindows: false,
@@ -77,6 +77,7 @@ describe('KmlLayer component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -93,6 +94,7 @@ describe('KmlLayer component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

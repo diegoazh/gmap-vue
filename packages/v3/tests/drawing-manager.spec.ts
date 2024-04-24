@@ -44,9 +44,10 @@ describe('DrawingManager component', () => {
 
   it('should render the correct DOM and expose a drawingManagerPromise', async () => {
     // given
-    const props = { drawingKey: 'myDrawingKey' };
+    const props = { drawingKey: 'myDrawingKey', drawingControl: false };
     const template = `<div>\n  <!-- @slot Used to set your drawing manager -->\n</div>`;
     const wrapper = mount(DrawingManager, { props });
+    const { drawingKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -57,7 +58,6 @@ describe('DrawingManager component', () => {
     expect(wrapper.props()).toEqual({
       ...props,
       circleOptions: undefined,
-      drawingControl: true,
       drawingControlOptions: undefined,
       drawingMode: null,
       drawingModes: undefined,
@@ -73,13 +73,11 @@ describe('DrawingManager component', () => {
     expect(JSON.stringify(drawingValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
-        drawingControl: true,
+        ...propsInOptions,
         drawingControlOptions: {
           drawingModes: ['MARKER', 'CIRCLE', 'POLYGON', undefined, undefined],
           position: 'TOP_CENTER',
         },
-        drawingKey: 'myDrawingKey',
       }),
     );
     expect(
@@ -94,6 +92,7 @@ describe('DrawingManager component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -110,6 +109,7 @@ describe('DrawingManager component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

@@ -46,8 +46,9 @@ describe('HeatmapLayer component', () => {
 
   it('should render the correct DOM and return a heatmapLayerPromise', async () => {
     // given
-    const props = { heatmapKey: 'myHeatmapKey' };
+    const props = { heatmapKey: 'myHeatmapKey', dissipating: true };
     const wrapper = mount({ ...HeatmapLayer, template }, { props });
+    const { heatmapKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -58,8 +59,7 @@ describe('HeatmapLayer component', () => {
     expect(JSON.stringify(heatmapValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
-        ...props,
-        dissipating: false,
+        ...propsInOptions,
         opacity: 0.6,
       }),
     );
@@ -75,6 +75,7 @@ describe('HeatmapLayer component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -91,6 +92,7 @@ describe('HeatmapLayer component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();

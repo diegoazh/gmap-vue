@@ -50,9 +50,9 @@ describe('helpers.ts', () => {
     expect(result).toBe('Test');
   });
 
-  test('should return all props without the options one when is called', () => {
+  test('should return all props without the options and key props when is called', () => {
     // Arrange
-    const props = { test: 'hi', options: {} };
+    const props = { test: 'hi', options: {}, mapKey: 'myMap' };
 
     // Act
     const result = getPropsValuesWithoutOptionsProp(props);
@@ -61,5 +61,6 @@ describe('helpers.ts', () => {
     expect(Object.keys(result).length).toBe(1);
     expect(Object.keys(result)).toEqual(['test']);
     expect(Object.keys(result).includes('options')).toBeFalsy();
+    expect(Object.keys(result).includes('mapKey')).toBeFalsy();
   });
 });

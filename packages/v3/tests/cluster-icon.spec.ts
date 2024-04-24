@@ -58,8 +58,9 @@ describe('ClusterIcon component', () => {
   it('should render the correct DOM and expose a clusterPromise', async () => {
     // given
     const template = `<div>\n  <!-- @slot Used to set your cluster -->\n</div>`;
-    const props = { clusterKey: 'myCluster' };
+    const props = { clusterKey: 'myCluster', onClusterClick: () => {} };
     const wrapper = mount(Cluster, { props });
+    const { clusterKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -73,15 +74,14 @@ describe('ClusterIcon component', () => {
       options: undefined,
       algorithm: undefined,
       markers: undefined,
-      onClusterClick: undefined,
       renderer: undefined,
     });
     expect(JSON.stringify(clusterValues.options)).toEqual(
       JSON.stringify({
         map: new Map(),
+        ...propsInOptions,
         algorithm: undefined,
         markers: undefined,
-        onClusterClick: undefined,
         renderer: undefined,
       }),
     );
@@ -97,6 +97,7 @@ describe('ClusterIcon component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
@@ -111,6 +112,7 @@ describe('ClusterIcon component', () => {
     // when
     await flushPromises();
     wrapper.unmount();
+    await flushPromises();
 
     // then
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
