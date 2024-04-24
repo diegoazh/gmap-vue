@@ -87,6 +87,7 @@
     "dev:e2e": "pnpm run build && vite --config cypress/runner/vite.config.js",
     "preview": "vite preview --port 4173",
     "build": "vite build",
+    "build:dev": "vite build --mode development",
     "tsc:build": "tsc --project tsconfig.app.json",
     "vite:build": "run-p type-check build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
