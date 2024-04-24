@@ -19,11 +19,10 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IAutoCompleteInputVueComponentProps } from '@/interfaces';
 import { $autocompletePromise } from '@/keys';
@@ -95,10 +94,8 @@ const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const autocompletePromiseDeferred = usePromiseDeferred(
-  props.autocompleteKey || $autocompletePromise,
-);
-const promise = usePromise(props.autocompleteKey || $autocompletePromise);
+const { promiseDeferred: autocompletePromiseDeferred, promise } =
+  useComponentPromiseFactory(props.autocompleteKey || $autocompletePromise);
 provide(props.autocompleteKey || $autocompletePromise, promise);
 
 /*******************************************************************************

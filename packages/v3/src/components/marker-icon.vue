@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IMarkerIconVueComponentProps } from '@/interfaces';
 import { $markerPromise } from '@/keys';
@@ -87,10 +86,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const markerPromiseDeferred = usePromiseDeferred(
-  props.markerKey || $markerPromise,
-);
-const promise = usePromise(props.markerKey || $markerPromise);
+const { promiseDeferred: markerPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.markerKey || $markerPromise);
 provide(props.markerKey || $markerPromise, promise);
 
 /*******************************************************************************

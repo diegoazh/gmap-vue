@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { ICircleShapeVueComponentProps } from '@/interfaces';
 import { $circleShapePromise } from '@/keys';
@@ -88,10 +87,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const circlePromiseDeferred = usePromiseDeferred(
-  props.circleKey || $circleShapePromise,
-);
-const promise = usePromise(props.circleKey || $circleShapePromise);
+const { promiseDeferred: circlePromiseDeferred, promise } =
+  useComponentPromiseFactory(props.circleKey || $circleShapePromise);
 provide(props.circleKey || $circleShapePromise, promise);
 
 /*******************************************************************************

@@ -14,11 +14,10 @@ import {
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
   twoWayBindingWrapper,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
   useResizeBus,
   watchPrimitivePropertiesOnSetup,
 } from '@/composables';
@@ -102,10 +101,8 @@ const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const streetViewPanoramaPromiseDeferred = usePromiseDeferred(
-  props.streetViewKey || $streetViewPanoramaPromise,
-);
-const promise = usePromise(props.streetViewKey || $streetViewPanoramaPromise);
+const { promiseDeferred: streetViewPanoramaPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.streetViewKey || $streetViewPanoramaPromise);
 provide(props.streetViewKey || $streetViewPanoramaPromise, promise);
 
 /*******************************************************************************

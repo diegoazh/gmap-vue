@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
   useShapesHelpers,
 } from '@/composables';
 import type { IPolygonShapeVueComponentProps } from '@/interfaces';
@@ -98,10 +97,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const polygonPromiseDeferred = usePromiseDeferred(
-  props.polygonKey || $polygonShapePromise,
-);
-const promise = usePromise(props.polygonKey || $polygonShapePromise);
+const { promiseDeferred: polygonPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.polygonKey || $polygonShapePromise);
 provide(props.polygonKey || $polygonShapePromise, promise);
 
 /*******************************************************************************

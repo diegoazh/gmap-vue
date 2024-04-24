@@ -16,10 +16,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IInfoWindowVueComponentProps } from '@/interfaces';
 import { $infoWindowPromise } from '@/keys';
@@ -94,10 +93,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const infoWindowPromiseDeferred = usePromiseDeferred(
-  props.infoWindowKey || $infoWindowPromise,
-);
-const promise = usePromise(props.infoWindowKey || $infoWindowPromise);
+const { promiseDeferred: infoWindowPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.infoWindowKey || $infoWindowPromise);
 provide(props.infoWindowKey || $infoWindowPromise, promise);
 
 /*******************************************************************************

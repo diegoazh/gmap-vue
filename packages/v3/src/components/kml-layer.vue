@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IKmlLayerVueComponentProps } from '@/interfaces';
 import { $kmlLayerPromise } from '@/keys';
@@ -70,8 +69,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const kmlPromiseDeferred = usePromiseDeferred(props.kmlKey || $kmlLayerPromise);
-const promise = usePromise(props.kmlKey || $kmlLayerPromise);
+const { promiseDeferred: kmlPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.kmlKey || $kmlLayerPromise);
 provide(props.kmlKey || $kmlLayerPromise, promise);
 
 /*******************************************************************************

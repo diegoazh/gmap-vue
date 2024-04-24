@@ -46,7 +46,7 @@ function createPromises<T>(
  * @internal
  * @returns {Promise}
  */
-export function usePromise<T>(
+function usePromise<T>(
   key: string | InjectionKey<Promise<T | undefined>>,
 ): Promise<T | undefined> {
   if (!componentPromisesList.has(key)) {
@@ -60,7 +60,7 @@ export function usePromise<T>(
  * @internal
  * @returns {Promise}
  */
-export function usePromiseDeferred<T>(
+function usePromiseDeferred<T>(
   key: string | InjectionKey<Promise<T | undefined>>,
 ): PromiseDeferred<T> {
   if (!deferredPromisesList.has(key)) {
@@ -68,6 +68,20 @@ export function usePromiseDeferred<T>(
   }
 
   return deferredPromisesList.get(key);
+}
+
+/**
+ * @internal
+ * @param  {string|InjectionKey<Promise<T|undefined>>} key
+ * @returns Object
+ */
+export function useComponentPromiseFactory<T>(
+  key: string | InjectionKey<Promise<T | undefined>>,
+): { promiseDeferred: PromiseDeferred<T>; promise: Promise<T | undefined> } {
+  const promiseDeferred = usePromiseDeferred(key);
+  const promise = usePromise(key);
+
+  return { promiseDeferred, promise };
 }
 
 /**

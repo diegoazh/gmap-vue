@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
   useShapesHelpers,
 } from '@/composables';
 import type { IPolylineShapeVueComponentProps } from '@/interfaces';
@@ -91,10 +90,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const polylinePromiseDeferred = usePromiseDeferred(
-  props.polylineKey || $polylineShapePromise,
-);
-const promise = usePromise(props.polylineKey || $polylineShapePromise);
+const { promiseDeferred: polylinePromiseDeferred, promise } =
+  useComponentPromiseFactory(props.polylineKey || $polylineShapePromise);
 provide(props.polylineKey || $polylineShapePromise, promise);
 
 /*******************************************************************************

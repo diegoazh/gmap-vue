@@ -20,11 +20,10 @@ import {
   onMountedResizeBusHook,
   onUnmountedResizeBusHook,
   twoWayBindingWrapper,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
   useResizeBus,
   watchPrimitivePropertiesOnSetup,
 } from '@/composables';
@@ -176,8 +175,8 @@ const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const mapPromiseDeferred = usePromiseDeferred(defineMapKey() || $mapPromise);
-const promise = usePromise(defineMapKey() || $mapPromise);
+const { promiseDeferred: mapPromiseDeferred, promise } =
+  useComponentPromiseFactory(defineMapKey() || $mapPromise);
 provide(defineMapKey() || $mapPromise, promise);
 
 /*******************************************************************************

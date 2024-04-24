@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IHeatmapLayerVueComponentProps } from '@/interfaces';
 import { $heatmapLayerPromise } from '@/keys';
@@ -76,10 +75,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const heatmapLayerPromiseDeferred = usePromiseDeferred(
-  props.heatmapKey || $heatmapLayerPromise,
-);
-const promise = usePromise(props.heatmapKey || $heatmapLayerPromise);
+const { promiseDeferred: heatmapLayerPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.heatmapKey || $heatmapLayerPromise);
 provide(props.heatmapKey || $heatmapLayerPromise, promise);
 
 /*******************************************************************************

@@ -13,10 +13,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IMarkerClusterVueComponentProps } from '@/interfaces';
 import { $clusterPromise } from '@/keys';
@@ -86,10 +85,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const clusterPromiseDeferred = usePromiseDeferred(
-  props.clusterKey || $clusterPromise,
-);
-const promise = usePromise(props.clusterKey || $clusterPromise);
+const { promiseDeferred: clusterPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.clusterKey || $clusterPromise);
 provide(props?.clusterKey || $clusterPromise, promise);
 
 /*******************************************************************************

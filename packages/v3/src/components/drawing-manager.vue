@@ -16,10 +16,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IDrawingManagerVueComponentProps } from '@/interfaces';
 import { $drawingManagerPromise } from '@/keys';
@@ -104,10 +103,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const drawingPromiseDeferred = usePromiseDeferred(
-  props.drawingKey || $drawingManagerPromise,
-);
-const promise = usePromise(props.drawingKey || $drawingManagerPromise);
+const { promiseDeferred: drawingPromiseDeferred, promise } =
+  useComponentPromiseFactory(props.drawingKey || $drawingManagerPromise);
 provide(props.drawingKey || $drawingManagerPromise, promise);
 
 /*******************************************************************************

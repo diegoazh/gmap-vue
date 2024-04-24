@@ -6,10 +6,9 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
   useDestroyPromisesOnUnmounted,
   usePluginOptions,
-  usePromise,
-  usePromiseDeferred,
 } from '@/composables';
 import type { IRectangleShapeVueComponentProps } from '@/interfaces';
 import { $rectangleShapePromise } from '@/keys';
@@ -87,10 +86,8 @@ if (!mapPromise) {
 /*******************************************************************************
  * PROVIDE
  ******************************************************************************/
-const rectanglePromiseDeferred = usePromiseDeferred(
-  props.rectangleKey || $rectangleShapePromise,
-);
-const promise = usePromise(props.rectangleKey || $rectangleShapePromise);
+const { promiseDeferred: rectanglePromiseDeferred, promise } =
+  useComponentPromiseFactory(props.rectangleKey || $rectangleShapePromise);
 provide(props.rectangleKey || $rectangleShapePromise, promise);
 
 /*******************************************************************************
