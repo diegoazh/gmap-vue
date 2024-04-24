@@ -6,13 +6,15 @@
       style="width: 100%; height: 500px"
       mapId="DEMO_MAP_ID"
     >
-      <gmv-cluster>
+      <gmv-cluster clusterKey="myCluster">
         <gmv-marker
           v-for="(m, index) in markers"
           :key="index"
           :clickable="true"
           :draggable="true"
           :position="m.position"
+          :marker-key="`marker-${index}`"
+          clusterKey="myCluster"
           @click="center = m.position"
         ></gmv-marker>
       </gmv-cluster>
