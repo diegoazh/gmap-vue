@@ -4,6 +4,13 @@ title: Changelog
 sidebar_position: 5
 sidebar_label: Changelog
 ---
+## [2.1.2](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.1...gmv3_v2.1.2) (2024-04-24)
+
+
+### Bug Fixes
+
+* **v3:** change inject for composable to get component promise  ([#324](https://github.com/diegoazh/gmap-vue/issues/324)) ([6613c59](https://github.com/diegoazh/gmap-vue/commit/6613c59a14887986412a73b3611829db299455e4)), closes [#323](https://github.com/diegoazh/gmap-vue/issues/323)
+
 ## [2.1.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.0...gmv3_v2.1.1) (2024-04-24)
 
 
