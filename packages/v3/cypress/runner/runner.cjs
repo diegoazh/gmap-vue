@@ -5,14 +5,23 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 const port = process.env.PORT || 4173;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const baseUrl = path.resolve(__dirname, './dist');
-  const filePath =
+  const root = '.';
+  let filePath =
     req.url === '/'
       ? path.join(baseUrl, 'index.html')
       : !/^https?:\/\//gim.test(req.url)
         ? path.join(baseUrl, req.url)
         : req.url;
+  filePath = await fs.realpath(path.resolve(root, filePath));
+
+  if (filePath.startsWith(root)) {
+    res.statusCode = 403;
+    res.end();
+    return;
+  }
+
   const extension = path.extname(filePath);
   let contentType = 'text/html';
 
