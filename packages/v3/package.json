@@ -146,7 +146,7 @@
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "gh-pages": "^6.1.1",
-    "happy-dom": "^14.3.9",
+    "happy-dom": "^15.11.0",
     "jsdom": "^24.0.0",
     "lint-staged": "^15.2.2",
     "lodash.throttle": "^4.1.1",
