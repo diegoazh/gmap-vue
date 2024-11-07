@@ -26,7 +26,7 @@ import {
 } from '@/composables';
 import type { IAutoCompleteInputVueComponentProps } from '@/interfaces';
 import { $autocompletePromise } from '@/keys';
-import { onMounted, onUnmounted, provide, ref, watch } from 'vue';
+import { onMounted, onUnmounted, provide, useTemplateRef, watch } from 'vue';
 
 /**
  * Autocomplete component
@@ -76,7 +76,9 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvAutoCompleteInput = ref<HTMLInputElement | null>(null);
+const gmvAutoCompleteInput = useTemplateRef<HTMLInputElement | null>(
+  'gmvAutoCompleteInput',
+);
 const emits = defineEmits<{
   place_changed: [value: google.maps.places.PlaceResult];
 }>();

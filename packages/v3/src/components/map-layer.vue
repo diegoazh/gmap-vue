@@ -36,7 +36,7 @@ import {
   onMounted,
   onUnmounted,
   provide,
-  ref,
+  useTemplateRef,
   watch,
 } from 'vue';
 
@@ -111,7 +111,7 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES AND EMITTERS
  ******************************************************************************/
-const gmvMap = ref<HTMLElement | null>(null);
+const gmvMap = useTemplateRef<HTMLElement | null>('gmvMap');
 const emits = defineEmits<{
   bounds_changed: [value: google.maps.LatLngBounds | undefined];
   center_changed: [value: google.maps.LatLng | undefined];

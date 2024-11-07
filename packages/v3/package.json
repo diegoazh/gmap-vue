@@ -63,10 +63,12 @@
     },
     "./components": {
       "import": {
-        "types": "./dist/types/src/components/index.d.ts"
+        "types": "./dist/types/src/components/index.d.ts",
+        "default": "./dist/src/components.cjs.js"
       },
       "require": {
-        "types": "./dist/types/src/components/index.d.ts"
+        "types": "./dist/types/src/components/index.d.ts",
+        "default": "./dist/src/components.es.js"
       }
     },
     "./dist/style.css": {
@@ -117,10 +119,10 @@
   "homepage": "https://github.com/diegoazh/gmap-vue#readme",
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.5.3",
-    "@vitest/coverage-v8": "^1.4.0",
+    "@vitest/coverage-v8": "^2.1.4",
     "lodash.isequal": "^4.5.0",
     "mitt": "^3.0.1",
-    "vue": "^3.4.22"
+    "vue": "^3.5.12"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.9.0",

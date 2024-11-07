@@ -23,7 +23,15 @@ import {
 } from '@/composables';
 import type { IInfoWindowVueComponentProps } from '@/interfaces';
 import { $infoWindowPromise } from '@/keys';
-import { computed, inject, onMounted, provide, ref, watch } from 'vue';
+import {
+  computed,
+  inject,
+  onMounted,
+  onUnmounted,
+  provide,
+  useTemplateRef,
+  watch,
+} from 'vue';
 
 /**
  * InfoWindow component
@@ -61,7 +69,7 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvInfoWindow = ref<HTMLElement | null>(null);
+const gmvInfoWindow = useTemplateRef<HTMLElement | null>('gmvInfoWindow');
 const emits = defineEmits<{
   close: [];
   closeclick: [];
@@ -242,6 +250,14 @@ onMounted(() => {
   }
 
   useDestroyPromisesOnUnmounted(props.infoWindowKey || $infoWindowPromise);
+});
+
+onUnmounted(async () => {
+  const infoWindow = await promise;
+
+  if (infoWindow) {
+    infoWindow.close();
+  }
 });
 
 /*******************************************************************************

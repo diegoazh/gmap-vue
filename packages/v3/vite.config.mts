@@ -28,6 +28,7 @@ export default defineConfig({
     lib: {
       entry: {
         main: resolve(__dirname, './src/main.ts'),
+        components: resolve(__dirname, './src/components/index.ts'),
         composables: resolve(__dirname, './src/composables/index.ts'),
         keys: resolve(__dirname, './src/keys/index.ts'),
       },

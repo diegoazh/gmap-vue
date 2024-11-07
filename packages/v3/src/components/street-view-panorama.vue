@@ -24,7 +24,14 @@ import {
 import type { IStreetViewPanoramaVueComponentProps } from '@/interfaces';
 import { $streetViewPanoramaPromise } from '@/keys';
 import isEqual from 'lodash.isequal';
-import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  provide,
+  useTemplateRef,
+  watch,
+} from 'vue';
 
 /**
  * Street View Panorama component
@@ -80,7 +87,9 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvStreetViewPanorama = ref<HTMLElement | null>(null);
+const gmvStreetViewPanorama = useTemplateRef<HTMLElement | null>(
+  'gmvStreetViewPanorama',
+);
 const emits = defineEmits<{
   closeclick: [value: Event];
   pano_changed: [];
