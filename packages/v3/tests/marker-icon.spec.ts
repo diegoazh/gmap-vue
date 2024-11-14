@@ -1,17 +1,22 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance, h } from 'vue';
+import type { ComponentInstance } from 'vue';
+import { h } from 'vue';
 import { Marker } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $markerPromise } from '../src/keys';
-import { googleMock, markerValues } from './mocks/global.mock';
+import {
+  googleMock,
+  markerValues,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('MarkerIcon component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -22,7 +27,7 @@ describe('MarkerIcon component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -67,13 +72,13 @@ describe('MarkerIcon component', () => {
     expect(wrapper.html()).toBe(template);
     expect(JSON.stringify(markerValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
         gmpClickable: true,
         gmpDraggable: false,
       }),
     );
-    expect(wrapper.getCurrentComponent().exposed?.markerPromise).toBeInstanceOf(
+    expect(wrapper.getCurrentComponent().exposed.markerPromise).toBeInstanceOf(
       Promise,
     );
   });
@@ -95,7 +100,7 @@ describe('MarkerIcon component', () => {
 
     // when
     await flushPromises();
-    markerValues.updatePosition?.();
+    markerValues.updatePosition();
 
     // then
     expect(wrapper.emitted()).toHaveProperty('update:position');

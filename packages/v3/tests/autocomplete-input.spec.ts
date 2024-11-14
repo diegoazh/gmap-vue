@@ -1,5 +1,7 @@
-import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
+import type { VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ComponentInstance } from 'vue';
 import { h } from 'vue';
 import { Autocomplete } from '../src/components';
 import * as composables from '../src/composables';
@@ -12,7 +14,7 @@ import {
 } from './mocks/global.mock';
 
 describe('AutocompleteInput component', () => {
-  let wrapper: VueWrapper<any, any>;
+  let wrapper: VueWrapper<unknown, ComponentInstance<Autocomplete>>;
 
   beforeEach(() => {
     vi.stubGlobal('google', googleMock);
@@ -58,7 +60,7 @@ describe('AutocompleteInput component', () => {
       selectFirstOnEnter: true,
       strictBounds: false,
     });
-    expect(component.exposed?.autocompletePromise).instanceOf(Promise);
+    expect(component.exposed.autocompletePromise).instanceOf(Promise);
   });
 
   it('should has the right content in the slot', async () => {
@@ -84,12 +86,12 @@ describe('AutocompleteInput component', () => {
 
     // when
     await flushPromises();
-    autocompleteValues.placeChanged?.();
+    autocompleteValues.placeChanged();
     const emitted = wrapper.emitted('place_changed');
 
     // then
     expect(emitted).toHaveLength(1);
-    expect(emitted?.[0]).toEqual([valueMocks.place]);
+    expect(emitted[0]).toEqual([valueMocks.place]);
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {

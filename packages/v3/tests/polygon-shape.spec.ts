@@ -1,19 +1,23 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import { Polygon } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $polygonShapePromise } from '../src/keys';
-import { googleMock, polygonValues } from './mocks/global.mock';
+import {
+  googleMock,
+  type MockComponentConstructorWithHTML,
+  polygonValues,
+} from './mocks/global.mock';
 
 describe('PolygonShape component', () => {
-  let Map;
-  let template;
+  let Map: MockComponentConstructorWithHTML;
+  let template: string;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     template = '<div class="myKmlLayer"></div>';
-    ({ Map } = await googleMock.maps.importLibrary());
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -24,7 +28,7 @@ describe('PolygonShape component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -58,7 +62,7 @@ describe('PolygonShape component', () => {
     expect(wrapper.html()).toBe(template);
     expect(JSON.stringify(polygonValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
         draggable: false,
         editable: false,
@@ -69,7 +73,7 @@ describe('PolygonShape component', () => {
       }),
     );
     expect(
-      wrapper.getCurrentComponent().exposed?.polygonShapePromise,
+      wrapper.getCurrentComponent().exposed.polygonShapePromise,
     ).toBeInstanceOf(Promise);
   });
 

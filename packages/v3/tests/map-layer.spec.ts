@@ -70,7 +70,7 @@ describe('MapLayer component', () => {
       streetViewControl: true,
       zoomControl: true,
     });
-    expect(component.exposed?.mapPromise).instanceOf(Promise);
+    expect(component.exposed.mapPromise).instanceOf(Promise);
   });
 
   it('should emit the correct events', async () => {
@@ -83,22 +83,22 @@ describe('MapLayer component', () => {
 
     // when
     await flushPromises();
-    mapValues.centerChanged?.();
-    mapValues.centerChanged?.();
-    mapValues.zoomChanged?.();
-    mapValues.boundsChanged?.();
+    mapValues.centerChanged();
+    mapValues.centerChanged();
+    mapValues.zoomChanged();
+    mapValues.boundsChanged();
     const centerChangedEmitted = wrapper.emitted('center_changed');
     const zoomChangedEmitted = wrapper.emitted('zoom_changed');
     const boundsChangedEmitted = wrapper.emitted('bounds_changed');
 
     // then
     expect(centerChangedEmitted).toHaveLength(2);
-    expect(centerChangedEmitted?.[0]).toEqual([valueMocks.center]);
-    expect(centerChangedEmitted?.[1]).toEqual([valueMocks.center]);
+    expect(centerChangedEmitted[0]).toEqual([valueMocks.center]);
+    expect(centerChangedEmitted[1]).toEqual([valueMocks.center]);
     expect(zoomChangedEmitted).toHaveLength(1);
-    expect(zoomChangedEmitted?.[0]).toEqual([valueMocks.zoom]);
+    expect(zoomChangedEmitted[0]).toEqual([valueMocks.zoom]);
     expect(boundsChangedEmitted).toHaveLength(1);
-    expect(boundsChangedEmitted?.[0]).toEqual([valueMocks.bounds]);
+    expect(boundsChangedEmitted[0]).toEqual([valueMocks.bounds]);
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {

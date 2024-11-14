@@ -67,7 +67,18 @@ const props = withDefaults(
   {
     drawingControl: true,
     drawingMode: null,
-    // shapes: [] as any,
+    circleOptions: undefined,
+    drawingControlOptions: undefined,
+    markerOptions: undefined,
+    polygonOptions: undefined,
+    polylineOptions: undefined,
+    rectangleOptions: undefined,
+    position: undefined,
+    drawingModes: undefined,
+    shapes: undefined,
+    drawingKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -104,18 +115,19 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: drawingPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.drawingKey || $drawingManagerPromise);
-provide(props.drawingKey || $drawingManagerPromise, promise);
+  useComponentPromiseFactory(props.drawingKey ?? $drawingManagerPromise);
+provide(props.drawingKey ?? $drawingManagerPromise, promise);
 
 /*******************************************************************************
  * DRAWING MANAGER
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'drawing-manager' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let map: google.maps.Map | undefined;
 let selectedShape: google.maps.drawing.OverlayCompleteEvent | undefined;
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
@@ -164,19 +176,21 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       drawingManagerPropsConfig,
       drawingManager,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       drawingManagerEventsConfig,
       drawingManager,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
     drawingManager.addListener(
       'overlaycomplete',
-      (event: google.maps.drawing.OverlayCompleteEvent) => addShape(event),
+      async (event: google.maps.drawing.OverlayCompleteEvent) => {
+        await addShape(event);
+      },
     );
 
     // TODO: check this event if it is needed or is the expected or best behaviour for all common cases
@@ -192,7 +206,7 @@ mapPromise
 
     drawingPromiseDeferred.resolve(drawingManager);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -235,21 +249,19 @@ const evaluatedPosition = computed(() => {
  ******************************************************************************/
 const drawAll = () => {
   props.shapes?.forEach((shape: google.maps.drawing.OverlayCompleteEvent) => {
-    if (shape.overlay) {
-      if (!map) {
-        throw new Error('the map instance is not defined');
-      }
-
-      shape.overlay.setMap(map);
-      google.maps.event.addListener(shape.overlay, 'click', () => {
-        setSelection(shape);
-      });
+    if (!map) {
+      throw new Error('the map instance is not defined');
     }
+
+    shape.overlay.setMap(map);
+    google.maps.event.addListener(shape.overlay, 'click', () => {
+      setSelection(shape);
+    });
   });
 };
 
 const clearSelection = () => {
-  if (selectedShape && selectedShape.overlay) {
+  if (selectedShape?.overlay) {
     selectedShape.overlay.set('fillColor', '#777');
     selectedShape.overlay.set('strokeColor', '#999');
     selectedShape.overlay.setOptions({ editable: false });
@@ -259,38 +271,32 @@ const clearSelection = () => {
 };
 
 const setSelection = (shape: google.maps.drawing.OverlayCompleteEvent) => {
-  if (shape.overlay) {
-    clearSelection();
+  clearSelection();
 
-    shape.overlay.setOptions({ editable: true });
-    shape.overlay.setDraggable(true);
-    selectedShape = shape;
+  shape.overlay.setOptions({ editable: true });
+  shape.overlay.setDraggable(true);
+  selectedShape = shape;
 
-    if (selectedShape && selectedShape.overlay) {
-      selectedShape.overlay.set('fillColor', '#555');
-      selectedShape.overlay.set('strokeColor', '#777');
-    }
-  }
+  selectedShape.overlay.set('fillColor', '#555');
+  selectedShape.overlay.set('strokeColor', '#777');
 };
 
-const addShape = (shape: google.maps.drawing.OverlayCompleteEvent) => {
-  setDrawingMode(null);
+const addShape = async (shape: google.maps.drawing.OverlayCompleteEvent) => {
+  await setDrawingMode(null);
   emits('added:shape', shape);
   emits('update:shapes', [
     ...(props.shapes?.length ? props.shapes : []),
     shape,
   ]);
 
-  if (shape.overlay) {
-    google.maps.event.addListener(shape.overlay, 'click', () => {
-      setSelection(shape);
-    });
-    google.maps.event.addListener(shape.overlay, 'rightclick', () => {
-      deleteSelection();
-    });
-
+  google.maps.event.addListener(shape.overlay, 'click', () => {
     setSelection(shape);
-  }
+  });
+  google.maps.event.addListener(shape.overlay, 'rightclick', () => {
+    deleteSelection();
+  });
+
+  setSelection(shape);
 };
 
 /**
@@ -305,7 +311,8 @@ const setDrawingMode = async (mode: google.maps.drawing.OverlayType | null) => {
   const drawingManager = await promise;
 
   if (!drawingManager) {
-    return console.error('the drawing manager is not defined');
+    console.error('the drawing manager is not defined');
+    return;
   }
 
   drawingManager.setDrawingMode(mode);
@@ -319,13 +326,17 @@ const setDrawingMode = async (mode: google.maps.drawing.OverlayType | null) => {
  * @public
  */
 const deleteSelection = () => {
-  if (selectedShape && selectedShape.overlay) {
+  if (selectedShape?.overlay) {
     selectedShape.overlay.setMap(null);
     const index = props.shapes?.indexOf(selectedShape);
-    if (index) {
+    if (index && index >= 0) {
       const oldShapes = [...(props.shapes?.length ? props.shapes : [])];
       const [shape] = oldShapes.splice(index, 1);
-      emits('removed:shape', shape);
+
+      if (shape) {
+        emits('removed:shape', shape);
+      }
+
       emits('update:shapes', oldShapes);
     }
   }
@@ -342,9 +353,7 @@ const clearAll = () => {
   clearSelection();
 
   props.shapes?.forEach((shape: google.maps.drawing.OverlayCompleteEvent) => {
-    if (shape.overlay) {
-      shape.overlay.setMap(null);
-    }
+    shape.overlay.setMap(null);
   });
 };
 
@@ -460,13 +469,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  const drawingManager = await promise;
-
-  if (drawingManager) {
-    drawingManager.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.drawingKey || $drawingManagerPromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.drawingKey ?? $drawingManagerPromise);
 });
 
 /*******************************************************************************

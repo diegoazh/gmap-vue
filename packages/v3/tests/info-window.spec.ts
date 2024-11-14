@@ -1,16 +1,20 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import { InfoWindow } from '../src/components';
 import * as composables from '../src/composables';
 import { $infoWindowPromise } from '../src/keys';
-import { googleMock, infoWindowValues } from './mocks/global.mock';
+import {
+  googleMock,
+  infoWindowValues,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('InfoWindow component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -21,7 +25,7 @@ describe('InfoWindow component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -55,7 +59,7 @@ describe('InfoWindow component', () => {
     expect(wrapper.html()).toBe('<div class="info-window-container"></div>');
     expect(JSON.stringify(infoWindowValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
         opened: false,
         content: {
@@ -119,7 +123,7 @@ describe('InfoWindow component', () => {
       }),
     );
     expect(
-      wrapper.getCurrentComponent().exposed?.infoWindowPromise,
+      wrapper.getCurrentComponent().exposed.infoWindowPromise,
     ).toBeInstanceOf(Promise);
   });
 

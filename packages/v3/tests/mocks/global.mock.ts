@@ -1,5 +1,13 @@
 import { vi } from 'vitest';
 
+export type MockComponentConstructorWithHTML = (
+  html?: HTMLElement,
+  options?: Record<string, unknown>,
+) => void;
+export type MockComponentConstructorWithoutHTML = (
+  options?: Record<string, unknown>,
+) => void;
+
 export const valueMocks = {
   place: { lat: 1, lng: 1 },
   center: { lat: 2, lng: 2 },
@@ -8,8 +16,8 @@ export const valueMocks = {
 };
 
 export const autocompleteValues: {
-  input?: any;
-  options?: Record<string, any>;
+  input?: unknown;
+  options?: Record<string, unknown>;
   placeChanged?: () => void;
 } = {
   input: undefined,
@@ -18,8 +26,8 @@ export const autocompleteValues: {
 };
 
 export const mapValues: {
-  input?: any;
-  options?: Record<string, any>;
+  input?: unknown;
+  options?: Record<string, unknown>;
   centerChanged?: () => void;
   zoomChanged?: () => void;
   boundsChanged?: () => void;
@@ -32,8 +40,8 @@ export const mapValues: {
 };
 
 export const markerValues: {
-  input?: any;
-  options?: Record<string, any>;
+  input?: unknown;
+  options?: Record<string, unknown>;
   updatePosition?: () => void;
 } = {
   input: undefined,
@@ -42,63 +50,78 @@ export const markerValues: {
 };
 
 export const circleValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const clusterValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const drawingValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const heatmapValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const infoWindowValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const kmlLayerValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const polygonValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const polylineValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const streetViewValues: {
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 } = {
   options: undefined,
 };
 
 export const googleMock = {
   maps: {
-    importLibrary: async () => ({
-      Autocomplete: function (html, options) {
+    importLibrary: (): {
+      Autocomplete: MockComponentConstructorWithHTML;
+      Map: MockComponentConstructorWithHTML;
+      AdvancedMarkerElement: MockComponentConstructorWithoutHTML;
+      Circle: MockComponentConstructorWithoutHTML;
+      DrawingManager: MockComponentConstructorWithoutHTML;
+      HeatmapLayer: MockComponentConstructorWithoutHTML;
+      InfoWindow: MockComponentConstructorWithoutHTML;
+      KmlLayer: MockComponentConstructorWithoutHTML;
+      Polygon: MockComponentConstructorWithoutHTML;
+      Polyline: MockComponentConstructorWithoutHTML;
+      StreetViewPanorama: MockComponentConstructorWithoutHTML;
+    } => ({
+      Autocomplete: function (
+        html?: HTMLElement,
+        options?: Record<string, unknown>,
+      ) {
         autocompleteValues.input = html;
         autocompleteValues.options = options;
         this.getPlace = vi.fn().mockReturnValue(valueMocks.place);
@@ -108,7 +131,7 @@ export const googleMock = {
           }
         };
       },
-      Map: function (html, options) {
+      Map: function (html?: HTMLElement, options?: Record<string, unknown>) {
         mapValues.input = html;
         mapValues.options = options;
         this.getCenter = vi.fn().mockReturnValue(valueMocks.center);
@@ -127,7 +150,7 @@ export const googleMock = {
           }
         };
       },
-      AdvancedMarkerElement: function (options) {
+      AdvancedMarkerElement: function (options?: Record<string, unknown>) {
         markerValues.options = options;
         this.addListener = (name: string, cbk: () => void) => {
           if (name === 'dragend') {
@@ -135,45 +158,61 @@ export const googleMock = {
           }
         };
       },
-      Circle: function (options) {
+      Circle: function (options?: Record<string, unknown>) {
         circleValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
       },
-      DrawingManager: function (options) {
+      DrawingManager: function (options?: Record<string, unknown>) {
         drawingValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
       },
-      HeatmapLayer: function (options) {
+      HeatmapLayer: function (options?: Record<string, unknown>) {
         heatmapValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
       },
-      InfoWindow: function (options) {
+      InfoWindow: function (options?: Record<string, unknown>) {
         infoWindowValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
         this.close = vi.fn();
       },
-      KmlLayer: function (options) {
+      KmlLayer: function (options?: Record<string, unknown>) {
         kmlLayerValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
       },
-      Polygon: function (options) {
+      Polygon: function (options?: Record<string, unknown>) {
         polygonValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
       },
-      Polyline: function (options) {
+      Polyline: function (options?: Record<string, unknown>) {
         polylineValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
       },
-      StreetViewPanorama: function (options) {
+      StreetViewPanorama: function (options?: Record<string, unknown>) {
         streetViewValues.options = options;
-        this.addListener = () => {};
+        this.addListener = () => {
+          return undefined;
+        };
         this.setMap = vi.fn();
       },
     }),

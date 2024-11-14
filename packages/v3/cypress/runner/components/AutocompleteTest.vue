@@ -8,25 +8,25 @@
         name="autocomplete"
         placeholder="find a place..."
         @place_changed="setPlace"
-      ></gmv-autocomplete>
+      />
       <br />
     </label>
     <button
-      id="use-place-btn"
       v-if="ready"
-      @click="usePlace"
+      id="use-place-btn"
       :style="{ backgroundColor: 'teal', color: 'white' }"
+      @click="usePlace"
     >
       Change map center using place
     </button>
     <br />
     <br />
-    <gmv-map class="map" :zoom="4" :center="center" mapId="DEMO_MAP_ID">
+    <gmv-map class="map" :zoom="4" :center="center" map-id="DEMO_MAP_ID">
       <gmv-marker
         v-for="(marker, index) in markers"
         :key="index"
         :position="marker.position"
-      ></gmv-marker>
+      />
     </gmv-map>
   </div>
 </template>
@@ -34,6 +34,7 @@
 import { useMapPromise } from '../../../dist/composables.es';
 import { onMounted, ref, toRaw } from 'vue';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const mapPromise = useMapPromise();
 const ready = ref<boolean>(false);
 const map = ref<google.maps.Map | undefined>();
@@ -47,8 +48,8 @@ function setPlace(p: google.maps.places.PlaceResult) {
 }
 function usePlace() {
   if (place.value) {
-    const lat = place.value?.geometry?.location?.lat();
-    const lng = place.value?.geometry?.location?.lng();
+    const lat = place.value.geometry?.location?.lat();
+    const lng = place.value.geometry?.location?.lng();
 
     if (lat != null && lng != null) {
       markers.value.push({
@@ -69,9 +70,11 @@ function usePlace() {
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   console.log(mapPromise);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   mapPromise.then((map) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     map.value = map;
     ready.value = true;
   });

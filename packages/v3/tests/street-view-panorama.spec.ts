@@ -1,17 +1,21 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import { StreetViewPanorama } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $streetViewPanoramaPromise } from '../src/keys';
-import { googleMock, streetViewValues } from './mocks/global.mock';
+import {
+  googleMock,
+  type MockComponentConstructorWithHTML,
+  streetViewValues,
+} from './mocks/global.mock';
 
 describe('PolygonShape component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'useGoogleMapsApiPromiseLazy').mockResolvedValue({});
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
@@ -23,7 +27,7 @@ describe('PolygonShape component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -116,7 +120,7 @@ describe('PolygonShape component', () => {
       }),
     );
     expect(
-      wrapper.getCurrentComponent().exposed?.streetViewPanoramaPromise,
+      wrapper.getCurrentComponent().exposed.streetViewPanoramaPromise,
     ).toBeInstanceOf(Promise);
   });
 

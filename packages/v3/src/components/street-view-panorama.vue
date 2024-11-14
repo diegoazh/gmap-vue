@@ -1,8 +1,8 @@
 <template>
   <div class="gmv-street-view-panorama-container">
-    <div ref="gmvStreetViewPanorama" class="gmv-street-view-panorama"></div>
+    <div ref="gmvStreetViewPanorama" class="gmv-street-view-panorama" />
     <!-- @slot A default slot to render the street view panorama -->
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
@@ -81,6 +81,18 @@ const props = withDefaults(
     scrollwheel: true,
     showRoadLabels: true,
     visible: true,
+    addressControlOptions: undefined,
+    controlSize: undefined,
+    fullscreenControlOptions: undefined,
+    motionTrackingControlOptions: undefined,
+    panControlOptions: undefined,
+    pano: undefined,
+    position: undefined,
+    pov: undefined,
+    zoom: undefined,
+    zoomControlOptions: undefined,
+    streetViewKey: undefined,
+    options: undefined,
   },
 );
 
@@ -104,6 +116,7 @@ const emits = defineEmits<{
 /*******************************************************************************
  * STREET VIEW PANORAMA
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'street-view-panorama' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 
@@ -111,14 +124,14 @@ const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: streetViewPanoramaPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.streetViewKey || $streetViewPanoramaPromise);
-provide(props.streetViewKey || $streetViewPanoramaPromise, promise);
+  useComponentPromiseFactory(props.streetViewKey ?? $streetViewPanoramaPromise);
+provide(props.streetViewKey ?? $streetViewPanoramaPromise, promise);
 
 /*******************************************************************************
  * RESIZE BUS
  ******************************************************************************/
 const { currentResizeBus, _delayedResizeCallback } = useResizeBus();
-let { _resizeCallback } = useResizeBus();
+const { _resizeCallback } = useResizeBus();
 
 /**
  * This method trigger the resize event of Google Maps
@@ -160,7 +173,8 @@ async function resizePreserveCenter(): Promise<void> {
  ******************************************************************************/
 const finalLat = computed(() => {
   if (!props.position) {
-    return console.warn('position is not defined');
+    console.warn('position is not defined');
+    return;
   }
 
   return typeof props.position.lat === 'function'
@@ -169,7 +183,8 @@ const finalLat = computed(() => {
 });
 const finalLng = computed(() => {
   if (!props.position) {
-    return console.warn('position is not defined');
+    console.warn('position is not defined');
+    return;
   }
 
   return typeof props.position.lng === 'function'
@@ -226,16 +241,16 @@ watch(
  ******************************************************************************/
 onMounted(() => {
   useGoogleMapsApiPromiseLazy()
-    .then(async () => {
+    ?.then(async () => {
       if (!gmvStreetViewPanorama.value) {
         throw new Error(
           `we can find the template ref: 'gmvStreetViewPanorama'`,
         );
       }
 
-      const streetViewOptions: Partial<IStreetViewPanoramaVueComponentProps> & {
-        [key: string]: any;
-      } = {
+      const streetViewOptions: Partial<IStreetViewPanoramaVueComponentProps> &
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Record<string, any> = {
         ...getPropsValuesWithoutOptionsProp(props),
         ...props.options,
       };
@@ -259,13 +274,13 @@ onMounted(() => {
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         streetViewPanoramaPropsConfig,
         streetViewPanorama,
-        emits as any,
+        emits as (ev: string, value: unknown) => void,
         props,
       );
       bindGoogleMapsEventsToVueEventsOnSetup(
         streetViewPanoramaEventsConfig,
         streetViewPanorama,
-        emits as any,
+        emits as (ev: string, value: unknown) => void,
         excludedEvents,
       );
 
@@ -274,12 +289,14 @@ onMounted(() => {
         // Panos take a while to load
         increment();
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!streetViewPanorama) {
           throw new Error('the street view panorama instance was not created');
         }
 
         streetViewPanorama.addListener('position_changed', () => {
           if (shouldUpdate()) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!streetViewPanorama) {
               throw new Error(
                 'the street view panorama instance was not created',
@@ -294,6 +311,7 @@ onMounted(() => {
 
         const updateCenter = () => {
           increment();
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (!streetViewPanorama) {
             throw new Error(
               'the street view panorama instance was not created',
@@ -318,14 +336,14 @@ onMounted(() => {
 
       streetViewPanoramaPromiseDeferred.resolve(streetViewPanorama);
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       throw error;
     });
 });
 
 onUnmounted(() => {
   useDestroyPromisesOnUnmounted(
-    props.streetViewKey || $streetViewPanoramaPromise,
+    props.streetViewKey ?? $streetViewPanoramaPromise,
   );
 });
 /*******************************************************************************

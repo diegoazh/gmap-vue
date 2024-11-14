@@ -6,17 +6,16 @@
       :center="center"
       :zoom="15"
       style="width: 100%; height: 500px"
-      mapId="DEMO_MAP_ID"
+      map-id="DEMO_MAP_ID"
     >
       <gmv-info-window
         :content="infoOptions.content"
         :marker="infoOptions.marker"
         :opened="infoWinOpen"
-        :pixelOffset="infoOptions.pixelOffset"
+        :pixel-offset="infoOptions.pixelOffset"
         :position="infoWindowPos"
         @closeclick="infoWinOpen = false"
-      >
-      </gmv-info-window>
+      />
 
       <gmv-marker
         v-for="(m, i) in markers"
@@ -25,7 +24,7 @@
         :clickable="true"
         :position="m.position"
         @click="toggleInfoWindow(m, i, $refs[`marker${i}`][0].markerInstance)"
-      ></gmv-marker>
+      />
     </gmv-map>
   </div>
 </template>

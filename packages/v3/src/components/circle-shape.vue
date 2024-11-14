@@ -47,8 +47,20 @@ const props = withDefaults(
     clickable: true,
     draggable: false,
     editable: false,
-    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0,
     visible: true,
+    center: undefined,
+    fillColor: undefined,
+    fillOpacity: undefined,
+    radius: undefined,
+    strokeColor: undefined,
+    strokeOpacity: undefined,
+    strokeWeight: undefined,
+    zIndex: undefined,
+    circleKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -67,7 +79,7 @@ const emits = defineEmits<{
   mouseout: [value: google.maps.MapMouseEvent];
   mouseover: [value: google.maps.MapMouseEvent];
   mouseup: [value: google.maps.MapMouseEvent];
-  radius_changed: [value: void];
+  radius_changed: [value: undefined];
   rightclick: [value: google.maps.MapMouseEvent];
 }>();
 
@@ -88,24 +100,25 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: circlePromiseDeferred, promise } =
-  useComponentPromiseFactory(props.circleKey || $circleShapePromise);
-provide(props.circleKey || $circleShapePromise, promise);
+  useComponentPromiseFactory(props.circleKey ?? $circleShapePromise);
+provide(props.circleKey ?? $circleShapePromise, promise);
 
 /*******************************************************************************
  * CIRCLE SHAPE
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'circle-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('The map instance is not defined');
     }
 
     const circleShapeOptions: ICircleShapeVueComponentProps & {
       map: google.maps.Map;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -126,13 +139,13 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       circleShapePropsConfig,
       circleShape,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       circleShapeEventsConfig,
       circleShape,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -142,7 +155,7 @@ mapPromise
 
     circlePromiseDeferred.resolve(circleShape);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -162,13 +175,8 @@ mapPromise
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  const circleShape = await promise;
-
-  if (circleShape) {
-    circleShape.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.circleKey || $circleShapePromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.circleKey ?? $circleShapePromise);
 });
 /*******************************************************************************
  * RENDERS

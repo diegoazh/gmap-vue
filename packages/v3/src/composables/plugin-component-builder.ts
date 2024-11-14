@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMapPromise } from '@/composables';
 import type { IGmapVueElementOptions } from '@/interfaces';
 import { $mapPromise } from '@/keys';
-import type { ComponentOptions } from 'vue';
+import type { ComponentOptions, ComponentPublicInstance } from 'vue';
 import {
   bindEvents,
   bindProps,
@@ -15,7 +16,6 @@ import {
  * @param  {boolean} v The expression that should return a boolean value, if false the assertion fails
  * @param  {string} message Error message to be displayed
  */
-// eslint-disable-next-line no-underscore-dangle -- old style should be analyzed
 function _assert(v: boolean, message: string): void {
   if (!v) throw new Error(message);
 }
@@ -84,7 +84,7 @@ export function pluginComponentBuilder(
     events,
     beforeCreate,
     afterCreate,
-    props,
+    props = {},
     ...rest
   } = providedOptions;
 
@@ -97,25 +97,33 @@ export function pluginComponentBuilder(
     props: {
       ...props,
     },
-    async setup() {},
+    setup() {
+      return undefined;
+    },
     render() {
       return '';
     },
     provide() {
+      const thisInstance = this as ComponentPublicInstance & {
+        $map: google.maps.Map;
+        options: Record<string, any>;
+        [key: string]: any;
+      };
+
       const promise = useMapPromise($mapPromise)
-        ?.then((map) => {
+        .then((map) => {
           if (!map) {
             throw new Error('the map instance is not defined');
           }
 
-          // Infowindow needs this to be immediately available
-          this.$map = map;
+          // InfoWindow needs this to be immediately available
+          thisInstance.$map = map;
 
           // Initialize the maps with the given options
           const options = {
             map,
-            ...getPropsValuesWithoutOptionsProp(props, this),
-            ...this.options,
+            ...getPropsValuesWithoutOptionsProp(props, thisInstance),
+            ...thisInstance.options,
           };
           // don't use delete keyword in order to create a more predictable code for the engine
 
@@ -128,36 +136,60 @@ export function pluginComponentBuilder(
           }
           return { options };
         })
-        .then(({ options }: { options: { [key: string]: any } }) => {
+        .then(({ options }: { options: Record<string, any> }) => {
           const ConstructorObject = ctr();
-          // https://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible
-          this[instanceName] = ctrArgs
-            ? new (Function.prototype.bind.call(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          thisInstance[instanceName] = ctrArgs
+            ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+              new (Function.prototype.bind.call(
                 ConstructorObject,
                 null,
                 ...ctrArgs(
                   options,
-                  getPropsValuesWithoutOptionsProp(props || {}, this),
+                  getPropsValuesWithoutOptionsProp(props, thisInstance),
                 ),
               ))()
-            : new ConstructorObject(options);
+            : // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+              new (ConstructorObject as any)(options);
 
-          bindProps(mappedProps, this[instanceName], this);
-          bindEvents(events, this[instanceName], this);
+          bindProps(
+            mappedProps,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unnecessary-type-assertion
+            thisInstance[instanceName] as any,
+            thisInstance,
+          );
+          bindEvents(
+            events,
+            thisInstance[instanceName] as Record<string, any>,
+            thisInstance,
+          );
 
           if (afterCreate) {
-            afterCreate.bind(this)(this[instanceName]);
+            afterCreate.bind(thisInstance)(
+              thisInstance[instanceName] as Record<string, any>,
+            );
           }
-          return this[instanceName];
+          return thisInstance[instanceName] as Record<string, any>;
         });
 
-      this[promiseName] = promise;
+      thisInstance[promiseName] = promise;
       return { [promiseName]: promise };
     },
     destroyed() {
+      const thisInstance = this as ComponentPublicInstance & {
+        options: Record<string, any>;
+        [key: string]: {
+          setMap?: (value: google.maps.Map | null) => void;
+        };
+      };
+
       // Note: not all Google Maps components support maps
-      if (this[instanceName] && this[instanceName].setMap) {
-        this[instanceName].setMap(null);
+      if (thisInstance[instanceName]?.setMap) {
+        (
+          thisInstance[instanceName] as {
+            setMap: (value: google.maps.Map | null) => void;
+          }
+        ).setMap(null);
       }
     },
     ...rest,

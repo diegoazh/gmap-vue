@@ -1,24 +1,17 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  MockInstance,
-  test,
-  vi,
-} from 'vitest';
-import { IGmapVuePluginOptions } from '../src/interfaces/gmap-vue.interface';
-import { GoogleMapsAPIInitializerFn } from '../src/types/gmap-vue.type';
+import type { MockInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { IGmapVuePluginOptions } from '../src/interfaces/gmap-vue.interface';
+import type { TGoogleMapsAPIInitializerFn } from '../src/types/gmap-vue.type';
 
 describe('google-maps-api-initializer.ts', () => {
-  let initializer: { googleMapsApiInitializer: GoogleMapsAPIInitializerFn };
-  let spy: MockInstance<[node: Node], Node>;
+  let initializer: { googleMapsApiInitializer: TGoogleMapsAPIInitializerFn };
+  let spy: MockInstance;
   let options: Partial<IGmapVuePluginOptions>;
   let googleMapScript: HTMLElement;
 
   beforeEach(async () => {
     vi.mock('../src/composables', async (originalImport) => {
-      const original = (await originalImport()) as Record<string, any>;
+      const original: Record<string, unknown> = await originalImport();
 
       return {
         ...original,
@@ -136,7 +129,7 @@ describe('google-maps-api-initializer.ts', () => {
     );
   });
 
-  test('should initialize once the google api when is called', async () => {
+  test('should initialize once the google api when is called', () => {
     // Arrange
     googleMapScript.innerHTML = `
       ((g) => {

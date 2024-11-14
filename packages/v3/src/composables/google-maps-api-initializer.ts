@@ -1,5 +1,5 @@
 import type { ILoadPluginOptions } from '@/interfaces';
-import type { GoogleMapsAPIInitializerFn } from '@/types';
+import type { TGoogleMapsAPIInitializerFn } from '@/types';
 
 /**
  * This function returns the initializer function, it is exported
@@ -13,7 +13,7 @@ import type { GoogleMapsAPIInitializerFn } from '@/types';
  *
  * @internal
  */
-function googleMapsAPIInitializerFactory(): GoogleMapsAPIInitializerFn {
+function googleMapsAPIInitializerFactory(): TGoogleMapsAPIInitializerFn {
   let isApiSetUp = false;
 
   return (options: ILoadPluginOptions): void => {

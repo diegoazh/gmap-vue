@@ -9,14 +9,13 @@
         :editable="true"
         :paths="paths"
         @paths_changed="updateEdited($event)"
-      >
-      </gmv-polygon>
+      />
     </gmv-map>
 
     <ul v-if="edited" @click="edited = null">
       <li v-for="(path, i) in edited" :key="i">
         <ol>
-          <li v-for="(point, i) in path" :key="i">
+          <li v-for="(point, j) in path" :key="j">
             {{ point.lat }}, {{ point.lng }}
           </li>
         </ol>
@@ -55,13 +54,15 @@ export default {
   methods: {
     updateEdited(mvcArray) {
       console.info('>>>>> the event was fired successfully');
-      let paths = [];
+      const paths = [];
       for (let i = 0; i < mvcArray.getLength(); i++) {
-        let path = [];
+        const path = [];
+
         for (let j = 0; j < mvcArray.getAt(i).getLength(); j++) {
-          let point = mvcArray.getAt(i).getAt(j);
+          const point = mvcArray.getAt(i).getAt(j);
           path.push({ lat: point.lat(), lng: point.lng() });
         }
+
         paths.push(path);
       }
       this.edited = paths;

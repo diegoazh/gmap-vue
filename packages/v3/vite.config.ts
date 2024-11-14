@@ -1,9 +1,12 @@
 /// <reference types="vitest" />
+import { fileURLToPath, URL } from 'node:url';
+
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
-import { fileURLToPath, URL } from 'url';
 import { defineConfig, loadEnv } from 'vite';
 import dts from 'vite-plugin-dts';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import vueDevTools from 'vite-plugin-vue-devtools';
 
 const envs = loadEnv('production', process.cwd(), 'VITE');
 
@@ -12,6 +15,8 @@ export default defineConfig({
   root: '.',
   plugins: [
     vue(),
+    vueJsx(),
+    vueDevTools(),
     dts({
       outDir: 'dist/types',
       tsconfigPath: resolve('./tsconfig.app.json'),

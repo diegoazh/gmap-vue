@@ -41,6 +41,11 @@ const props = withDefaults(
     clickable: true,
     preserveViewport: false,
     screenOverlays: true,
+    url: undefined,
+    zIndex: undefined,
+    kmlKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -70,23 +75,24 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: kmlPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.kmlKey || $kmlLayerPromise);
-provide(props.kmlKey || $kmlLayerPromise, promise);
+  useComponentPromiseFactory(props.kmlKey ?? $kmlLayerPromise);
+provide(props.kmlKey ?? $kmlLayerPromise, promise);
 
 /*******************************************************************************
  * KML LAYER
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'kml-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
 
     const kmlLayerOptions: IKmlLayerVueComponentProps & {
       map: google.maps.Map;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -104,13 +110,13 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       kmlLayerPropsConfig,
       kmlLayer,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       kmlLayerEventsConig,
       kmlLayer,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -120,7 +126,7 @@ mapPromise
 
     kmlPromiseDeferred.resolve(kmlLayer);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -140,13 +146,8 @@ mapPromise
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  const kmlLayer = await promise;
-
-  if (kmlLayer) {
-    kmlLayer.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.kmlKey || $kmlLayerPromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.kmlKey ?? $kmlLayerPromise);
 });
 /*******************************************************************************
  * RENDERS

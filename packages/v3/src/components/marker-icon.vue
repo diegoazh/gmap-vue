@@ -1,4 +1,4 @@
-<script lang="tsx" setup>
+<script lang="ts" setup>
 import {
   bindGoogleMapsEventsToVueEventsOnSetup,
   bindPropsWithGoogleMapsSettersAndGettersOnSetup,
@@ -14,7 +14,17 @@ import {
 import type { IMarkerIconVueComponentProps } from '@/interfaces';
 import { $markerPromise } from '@/keys';
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { computed, h, inject, onUnmounted, provide, useSlots } from 'vue';
+import {
+  computed,
+  h,
+  inject,
+  onUnmounted,
+  provide,
+  useSlots,
+  type RendererElement,
+  type RendererNode,
+  type VNode,
+} from 'vue';
 
 /**
  * Marker component
@@ -48,6 +58,15 @@ const props = withDefaults(
   {
     gmpClickable: true,
     gmpDraggable: false,
+    collisionBehavior: undefined,
+    content: undefined,
+    position: undefined,
+    title: undefined,
+    zIndex: undefined,
+    markerKey: undefined,
+    clusterKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -88,16 +107,17 @@ const clusterPromise = props.clusterKey
  ******************************************************************************/
 let rawClusterOwner: MarkerClusterer | undefined;
 const { promiseDeferred: markerPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.markerKey || $markerPromise);
-provide(props.markerKey || $markerPromise, promise);
+  useComponentPromiseFactory(props.markerKey ?? $markerPromise);
+provide(props.markerKey ?? $markerPromise, promise);
 
 /*******************************************************************************
  * MARKER
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'marker-icon' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
@@ -105,7 +125,7 @@ mapPromise
     // Initialize the maps with the given options
     const markerIconOptions: Partial<IMarkerIconVueComponentProps> & {
       map: google.maps.Map | undefined;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -131,7 +151,7 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       markerIconPropsConfig,
       marker,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
 
@@ -139,7 +159,7 @@ mapPromise
     bindGoogleMapsEventsToVueEventsOnSetup(
       markerIconEventsConfig,
       marker,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -153,19 +173,23 @@ mapPromise
         lat:
           typeof newPosition?.lat === 'number'
             ? newPosition.lat
-            : newPosition?.lat?.(),
+            : newPosition?.lat(),
         lng:
           typeof newPosition?.lng === 'number'
             ? newPosition.lng
-            : newPosition?.lng?.(),
+            : newPosition?.lng(),
       });
     });
 
     if (clusterPromise) {
-      clusterPromise.then((clusterInstance) => {
-        clusterInstance?.addMarker(marker);
-        rawClusterOwner = clusterInstance;
-      });
+      clusterPromise
+        .then((clusterInstance) => {
+          clusterInstance?.addMarker(marker);
+          rawClusterOwner = clusterInstance;
+        })
+        .catch((error: unknown) => {
+          console.error(error);
+        });
     }
 
     if (!markerPromiseDeferred.resolve) {
@@ -174,7 +198,7 @@ mapPromise
 
     markerPromiseDeferred.resolve(marker);
   })
-  .catch((reason) => {
+  .catch((reason: unknown) => {
     throw reason;
   });
 
@@ -203,7 +227,8 @@ onUnmounted(async () => {
   const marker = await promise;
 
   if (!marker) {
-    return console.error('the marker instance is not defined');
+    console.error('the marker instance is not defined');
+    return;
   }
 
   if (clusterOwner.value) {
@@ -211,11 +236,11 @@ onUnmounted(async () => {
     clusterOwner.value.removeMarker(marker, true);
     /* Performance optimization when destroying a large number of markers */
     clusterOwner.value = undefined;
-  } else if (marker) {
-    marker.map = null;
   }
 
-  useDestroyPromisesOnUnmounted(props.markerKey || $markerPromise);
+  marker.map = null;
+
+  useDestroyPromisesOnUnmounted(props.markerKey ?? $markerPromise);
 });
 
 /*******************************************************************************
@@ -224,15 +249,20 @@ onUnmounted(async () => {
 /**
  * @slot Default slot of the component.
  */
-let VNodeMarkerIcon = h('div', null, slots?.default?.());
+let VNodeMarkerIcon: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+VNode<RendererNode, RendererElement, Record<string, any>> | undefined = h(
+  'div',
+  null,
+  slots.default?.(),
+);
 
 if (
   slots.default &&
   typeof slots.default === 'function' &&
-  slots.default?.().length
+  slots.default().length
 ) {
   if (slots.default().length === 1) {
-    // So that infowindows can have a marker parent
+    // So that InfoWindows can have a marker parent
     VNodeMarkerIcon = slots.default()[0];
   }
 }
