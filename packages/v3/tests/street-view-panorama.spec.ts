@@ -11,7 +11,7 @@ import {
   streetViewValues,
 } from './mocks/global.mock';
 
-describe('PolygonShape component', () => {
+describe('StreetViewPanorama component', () => {
   let Map: MockComponentConstructorWithHTML;
 
   beforeEach(() => {
@@ -38,7 +38,9 @@ describe('PolygonShape component', () => {
 
   it('should be mounted successfully', async () => {
     // given
-    const wrapper = mount(StreetViewPanorama);
+    const wrapper = mount(StreetViewPanorama, {
+      attachTo: document.body,
+    });
 
     // when
     await flushPromises();
@@ -51,7 +53,10 @@ describe('PolygonShape component', () => {
     // given
     const template = `<div class="gmv-street-view-panorama-container">\n  <div class="gmv-street-view-panorama"></div><!-- @slot A default slot to render the street view panorama -->\n</div>`;
     const props = { streetViewKey: 'myStreetViewKey', addressControl: false };
-    const wrapper = mount(StreetViewPanorama, { props });
+    const wrapper = mount(StreetViewPanorama, {
+      props,
+      attachTo: document.body,
+    });
 
     // when
     await flushPromises();
@@ -61,72 +66,31 @@ describe('PolygonShape component', () => {
     expect(wrapper.html()).toBe(template);
     expect(JSON.stringify(streetViewValues.options)).toEqual(
       JSON.stringify({
-        oncancel: null,
-        onerror: null,
-        onscroll: null,
-        onselect: null,
-        onwheel: null,
-        oncopy: null,
-        oncut: null,
-        onpaste: null,
-        oncompositionend: null,
-        oncompositionstart: null,
-        oncompositionupdate: null,
-        onblur: null,
-        onfocus: null,
-        onfocusin: null,
-        onfocusout: null,
-        onfullscreenchange: null,
-        onfullscreenerror: null,
-        onkeydown: null,
-        onkeyup: null,
-        onauxclick: null,
-        onclick: null,
-        oncontextmenu: null,
-        ondblclick: null,
-        onmousedown: null,
-        onmouseenter: null,
-        onmouseleave: null,
-        onmousemove: null,
-        onmouseout: null,
-        onmouseover: null,
-        onmouseup: null,
-        ontouchcancel: null,
-        ontouchend: null,
-        ontouchmove: null,
-        ontouchstart: null,
-        oninvalid: null,
-        onanimationcancel: null,
-        onanimationend: null,
-        onanimationiteration: null,
-        onanimationstart: null,
-        onbeforeinput: null,
-        oninput: null,
-        onchange: null,
-        ongotpointercapture: null,
-        onlostpointercapture: null,
-        onpointercancel: null,
-        onpointerdown: null,
-        onpointerenter: null,
-        onpointerleave: null,
-        onpointermove: null,
-        onpointerout: null,
-        onpointerover: null,
-        onpointerup: null,
-        ontransitioncancel: null,
-        ontransitionend: null,
-        ontransitionrun: null,
-        ontransitionstart: null,
+        addressControl: false,
+        clickToGo: true,
+        disableDefaultUI: false,
+        disableDoubleClickZoom: true,
+        enableCloseButton: false,
+        fullscreenControl: false,
+        imageDateControl: false,
+        linksControl: false,
+        motionTracking: false,
+        motionTrackingControl: false,
+        panControl: false,
+        scrollwheel: true,
+        showRoadLabels: true,
+        visible: true,
+        zoomControl: false,
       }),
     );
     expect(
-      wrapper.getCurrentComponent().exposed.streetViewPanoramaPromise,
+      wrapper.getCurrentComponent().exposed?.streetViewPanoramaPromise,
     ).toBeInstanceOf(Promise);
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
     // given
-    const wrapper = mount(StreetViewPanorama);
+    const wrapper = mount(StreetViewPanorama, { attachTo: document.body });
 
     // when
     await flushPromises();
@@ -143,7 +107,10 @@ describe('PolygonShape component', () => {
   it('should call useDestroyPromisesOnUnmounted with the custom key when the component is unmounted', async () => {
     // given
     const props = { streetViewKey: 'myStreetViewKey' };
-    const wrapper = mount(StreetViewPanorama, { props });
+    const wrapper = mount(StreetViewPanorama, {
+      props,
+      attachTo: document.body,
+    });
 
     // when
     await flushPromises();

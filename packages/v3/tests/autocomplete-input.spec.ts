@@ -42,9 +42,10 @@ describe('AutocompleteInput component', () => {
 
   it('should render a correct DOM and export an autocompletePromise', async () => {
     // given
-    const props = { strictBounds: true, autocompleteKey: 'myAutocomplete' };
-    wrapper = mount(Autocomplete, { attrs: { class: 'my-class' } });
-    const { autocompleteKey, ...propsInOptions } = props;
+    wrapper = mount(Autocomplete, {
+      attrs: { class: 'my-class' },
+      props: { slotRef: undefined },
+    });
 
     // when
     await flushPromises();
@@ -56,11 +57,9 @@ describe('AutocompleteInput component', () => {
     expect(wrapper.get('.my-class')).toBeDefined();
     expect(Object.keys(component.slots).length).toEqual(0);
     expect(autocompleteValues.options).toEqual({
-      ...propsInOptions,
       selectFirstOnEnter: true,
-      strictBounds: false,
     });
-    expect(component.exposed.autocompletePromise).instanceOf(Promise);
+    expect(component.exposed?.autocompletePromise).instanceOf(Promise);
   });
 
   it('should has the right content in the slot', async () => {
@@ -82,16 +81,16 @@ describe('AutocompleteInput component', () => {
 
   it('should emit the correct events', async () => {
     // given
-    wrapper = mount(Autocomplete);
+    wrapper = mount(Autocomplete, { props: { slotRef: undefined } });
 
     // when
     await flushPromises();
-    autocompleteValues.placeChanged();
+    autocompleteValues.placeChanged?.();
     const emitted = wrapper.emitted('place_changed');
 
     // then
     expect(emitted).toHaveLength(1);
-    expect(emitted[0]).toEqual([valueMocks.place]);
+    expect(emitted?.[0]).toEqual([valueMocks.place]);
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
@@ -112,7 +111,7 @@ describe('AutocompleteInput component', () => {
 
   it('should call useDestroyPromisesOnUnmounted with the custom key when the component is unmounted', async () => {
     // given
-    const props = { autocompleteKey: 'myAutocomplete' };
+    const props = { autocompleteKey: 'myAutocomplete', slotRef: undefined };
     const wrapper = mount(Autocomplete, { props });
 
     // when

@@ -98,8 +98,10 @@ export const polylineValues: {
 };
 
 export const streetViewValues: {
+  html?: HTMLElement;
   options?: Record<string, unknown>;
 } = {
+  html: undefined,
   options: undefined,
 };
 
@@ -116,7 +118,7 @@ export const googleMock = {
       KmlLayer: MockComponentConstructorWithoutHTML;
       Polygon: MockComponentConstructorWithoutHTML;
       Polyline: MockComponentConstructorWithoutHTML;
-      StreetViewPanorama: MockComponentConstructorWithoutHTML;
+      StreetViewPanorama: MockComponentConstructorWithHTML;
     } => ({
       Autocomplete: function (
         html?: HTMLElement,
@@ -208,7 +210,11 @@ export const googleMock = {
         };
         this.setMap = vi.fn();
       },
-      StreetViewPanorama: function (options?: Record<string, unknown>) {
+      StreetViewPanorama: function (
+        html?: HTMLElement,
+        options?: Record<string, unknown>,
+      ) {
+        streetViewValues.html = html;
         streetViewValues.options = options;
         this.addListener = () => {
           return undefined;

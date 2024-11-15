@@ -62,7 +62,6 @@ describe('MarkerIcon component', () => {
       },
       { props },
     ); // we added a template to avoid warnings in the console
-    const { markerKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -73,12 +72,41 @@ describe('MarkerIcon component', () => {
     expect(JSON.stringify(markerValues.options)).toEqual(
       JSON.stringify({
         map: new Map() as MockComponentConstructorWithHTML,
-        ...propsInOptions,
+        content: {
+          __v_isVNode: true,
+          __v_skip: true,
+          type: 'p',
+          props: null,
+          key: null,
+          ref: null,
+          scopeId: null,
+          slotScopeIds: null,
+          children: 'Test',
+          component: null,
+          suspense: null,
+          ssContent: null,
+          ssFallback: null,
+          dirs: null,
+          transition: null,
+          el: null,
+          anchor: null,
+          target: null,
+          targetStart: null,
+          targetAnchor: null,
+          staticCount: 0,
+          shapeFlag: 9,
+          patchFlag: 0,
+          dynamicProps: null,
+          dynamicChildren: null,
+          appContext: null,
+          ctx: null,
+        },
         gmpClickable: true,
         gmpDraggable: false,
+        title: 'this is the title',
       }),
     );
-    expect(wrapper.getCurrentComponent().exposed.markerPromise).toBeInstanceOf(
+    expect(wrapper.getCurrentComponent().exposed?.markerPromise).toBeInstanceOf(
       Promise,
     );
   });
@@ -100,7 +128,7 @@ describe('MarkerIcon component', () => {
 
     // when
     await flushPromises();
-    markerValues.updatePosition();
+    markerValues.updatePosition?.();
 
     // then
     expect(wrapper.emitted()).toHaveProperty('update:position');
