@@ -176,7 +176,7 @@ importers:
         specifier: ^5.0.1
         version: 5.0.10
       rollup:
-        specifier: ^4.24.4
+        specifier: ^4.22.4
         version: 4.26.0
       rollup-plugin-copy:
         specifier: ^3.4.0
