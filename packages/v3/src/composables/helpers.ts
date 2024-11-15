@@ -151,7 +151,7 @@ export function downArrowSimulator(input: HTMLInputElement | null): void {
     throw new Error(`The input for downArrowSimulator should be defined`);
   }
 
-  const _addEventListener = oldHtmlInputElementGuard(input)
+  const _addEventListener = isOldHtmlInputElementGuard(input)
     ? input.attachEvent.bind(input)
     : input.addEventListener.bind(input);
 
@@ -198,7 +198,7 @@ export function downArrowSimulator(input: HTMLInputElement | null): void {
 
   input.addEventListener = addEventListenerWrapper;
 
-  if (oldHtmlInputElementGuard(input)) {
+  if (isOldHtmlInputElementGuard(input)) {
     input.attachEvent = addEventListenerWrapper;
   }
 }
@@ -693,7 +693,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
 }
 
 /** @internal */
-function oldHtmlInputElementGuard(
+function isOldHtmlInputElementGuard(
   input: HTMLInputElement | TOldHtmlInputElement,
 ): input is TOldHtmlInputElement {
   return !!(input as TOldHtmlInputElement).attachEvent;
