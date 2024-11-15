@@ -2,7 +2,7 @@
   <div class="gmv-street-view-panorama-container">
     <div ref="gmvStreetViewPanorama" class="gmv-street-view-panorama" />
     <!-- @slot A default slot to render the street view panorama -->
-    <slot />
+    <slot></slot>
   </div>
 </template>
 
@@ -99,7 +99,7 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvStreetViewPanorama = useTemplateRef<HTMLElement | null>(
+const gmvStreetViewPanorama = useTemplateRef<HTMLDivElement | null>(
   'gmvStreetViewPanorama',
 );
 const emits = defineEmits<{
@@ -360,6 +360,7 @@ defineExpose({
   resize,
   resizePreserveCenter,
   streetViewPanoramaPromise: promise,
+  gmvStreetViewPanorama,
 });
 </script>
 
