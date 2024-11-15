@@ -64,11 +64,11 @@ describe('AutocompleteInput component', () => {
 
   it('should has the right content in the slot', async () => {
     // given
-    const input = h('input');
+    const input = document.createElement('input');
     wrapper = mount(Autocomplete, {
       attrs: { class: 'my-class' },
-      props: { slotRef: input },
-      slots: { default: input },
+      props: { slotRef: input }, // Pass the real DOM element
+      slots: { default: () => h('input') }, // Keep the slot as a VNode
     });
 
     // when
