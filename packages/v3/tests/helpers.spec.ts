@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Mock } from 'node:test';
 import { describe, expect, test, vi } from 'vitest';
+import type { ComponentPublicInstance } from 'vue';
 import {
   bindEvents,
   capitalizeFirstLetter,
   getPropsValuesWithoutOptionsProp,
 } from '../src/composables/helpers';
-import { ComponentPublicInstance } from 'vue';
-import { IGmapVuePluginOptions } from '../src/interfaces/gmap-vue.interface';
+import type { IGmapVuePluginOptions } from '../src/interfaces/gmap-vue.interface';
 
 describe('helpers.ts', () => {
   test('should bind all events when it is called', () => {
@@ -22,7 +24,7 @@ describe('helpers.ts', () => {
 
     // Act
     bindEvents(events, gmi, vueInstance);
-    gmi.addListener.mock.calls.forEach((call) => {
+    gmi.addListener.mock.calls.forEach((call: (() => void)[]) => {
       call[1]();
     });
 
@@ -33,10 +35,22 @@ describe('helpers.ts', () => {
     expect(gmi.addListener.mock.calls[1][0]).toEqual(events[1]);
     expect(typeof gmi.addListener.mock.calls[1][1]).toBe('function');
     expect(vueInstance.$emit).toHaveBeenCalledTimes(2);
-    expect((vueInstance.$emit as any).mock.calls[0][0]).toBe(events[0]);
-    expect((vueInstance.$emit as any).mock.calls[0][1]).toBe(undefined);
-    expect((vueInstance.$emit as any).mock.calls[1][0]).toBe(events[1]);
-    expect((vueInstance.$emit as any).mock.calls[1][1]).toBe(undefined);
+    expect(
+      (vueInstance.$emit as Mock<(...args: any[]) => undefined>).mock
+        .calls[0][0],
+    ).toBe(events[0]);
+    expect(
+      (vueInstance.$emit as Mock<(...args: any[]) => undefined>).mock
+        .calls[0][1],
+    ).toBe(undefined);
+    expect(
+      (vueInstance.$emit as Mock<(...args: any[]) => undefined>).mock
+        .calls[1][0],
+    ).toBe(events[1]);
+    expect(
+      (vueInstance.$emit as Mock<(...args: any[]) => undefined>).mock
+        .calls[1][1],
+    ).toBe(undefined);
   });
 
   test('should capitalize the first letter of a word when it is called', () => {

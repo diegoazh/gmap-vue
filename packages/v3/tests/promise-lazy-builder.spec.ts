@@ -1,7 +1,16 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import type { IGmapVuePluginOptions } from '../src/interfaces';
+import type { TGlobalGoogleObject } from '../src/types/gmap-vue.type';
 
 describe('promise-lazy-builder', () => {
-  let promiseLazyBuilder;
+  let promiseLazyBuilder: {
+    usePluginOptions: () => IGmapVuePluginOptions;
+    saveLazyPromiseAndFinalOptions: (
+      o: Record<string, unknown>,
+      f: () => void,
+    ) => void;
+    useGoogleMapsApiPromiseLazy: () => Promise<TGlobalGoogleObject | undefined>;
+  };
 
   beforeEach(async () => {
     promiseLazyBuilder = await import(
@@ -66,13 +75,13 @@ describe('promise-lazy-builder', () => {
     expect(promiseLazyBuilder.useGoogleMapsApiPromiseLazy()).toEqual(fnMock2());
   });
 
-  test('should print a message when gmapApiPromiseLazy is not define', () => {
+  test('should print a message when gmapApiPromiseLazy is not define', async () => {
     // Arrange
     vi.spyOn(console, 'warn');
     const message = '$googleMapsApiPromiseLazy was not created yet...';
 
     // Act
-    promiseLazyBuilder.useGoogleMapsApiPromiseLazy();
+    await promiseLazyBuilder.useGoogleMapsApiPromiseLazy();
 
     // Assert
     expect(console.warn).toHaveBeenCalledTimes(1);

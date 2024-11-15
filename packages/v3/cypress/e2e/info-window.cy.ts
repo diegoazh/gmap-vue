@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 describe('InfoWindow component', () => {
   it('should click on the 3 clickable markers and display a different text on the info-window when each of it is clicked', function () {
     cy.visit('/');

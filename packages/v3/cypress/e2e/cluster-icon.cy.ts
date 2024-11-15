@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 describe('ClusterIcon component', () => {
   it('should have a cluster of 2 markers', function () {
     cy.visit('/');
@@ -12,6 +14,7 @@ describe('ClusterIcon component', () => {
             GoogleMapsCallback: string;
             __gmc__: { map: Record<any, any> };
           };
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         __gmc__.map.setZoom(3);
 
         expect(google).to.not.be.undefined;

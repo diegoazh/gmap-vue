@@ -1,4 +1,4 @@
-import {
+import type {
   Autocomplete,
   Circle,
   Cluster,
@@ -15,16 +15,17 @@ import {
 } from '@/components';
 import type {
   IGmapVueElementOptions,
+  IGmapVuePluginOptions,
   IGoogleMapProp,
   ILoadPluginOptions,
-  IGmapVuePluginOptions,
   IVueProp,
 } from '@/interfaces';
+import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { Emitter, EventType } from 'mitt';
 import type { ComponentOptions, Ref } from 'vue';
 
 /** @internal */
-export type PluginComponentNames =
+export type TPluginComponentNames =
   | 'GmvMap'
   | 'GmvMarker'
   | 'GmvCluster'
@@ -59,43 +60,44 @@ export type PluginComponentNames =
  * @property {string[]} events.manual - Manual events that should emit or bind
  */
 /** @internal */
-export type SinglePluginComponentConfig = {
+export interface ISinglePluginComponentConfig {
   noBind: string[];
   twoWay: string[];
-  trackProperties: { [key: string]: string[] };
+  trackProperties: Record<string, string[]>;
   events: {
     auto: string[];
     manual: string[]; // TODO: try to improve this to be an object with specific keys that can be used in the code
   };
-};
+}
 
 /** @internal */
-export type PluginComponentConfig = {
-  [key in PluginComponentNames]: SinglePluginComponentConfig;
-};
+export type TPluginComponentConfig = Record<
+  TPluginComponentNames,
+  ISinglePluginComponentConfig
+>;
 
 /** @public */
-export type GlobalGoogleObject = typeof google;
+export type TGlobalGoogleObject = Partial<typeof google>;
 
-export type GoogleMapsAPIInitializerFn = (options: ILoadPluginOptions) => void;
-
-/** @internal */
-export type LazyValueGetterFn<T> = () => Promise<T>;
+export type TGoogleMapsAPIInitializerFn = (options: ILoadPluginOptions) => void;
 
 /** @internal */
-export type PromiseLazyCreatorFn = (
+export type TLazyValueGetterFn<T> = () => Promise<T>;
+
+/** @internal */
+export type TPromiseLazyCreatorFn = (
   options: IGmapVuePluginOptions,
-) => LazyValueGetterFn<GlobalGoogleObject>;
+) => TLazyValueGetterFn<TGlobalGoogleObject>;
 
 /** @internal */
-export type OldHtmlInputElement = HTMLInputElement & {
-  attachEvent: (type: string, listener: () => any) => void;
+export type TOldHtmlInputElement = HTMLInputElement & {
+  attachEvent: (type: string, listener: () => unknown) => void;
 };
 
 /** @internal */
-export type GmapVuePluginProps = { [key: string]: IVueProp & IGoogleMapProp };
+export type TGmapVuePluginProps = Record<string, IVueProp & IGoogleMapProp>;
 
-export type GmvComponents = {
+export interface IGmvComponents {
   Autocomplete: typeof Autocomplete;
   Circle: typeof Circle;
   Cluster: typeof Cluster;
@@ -109,26 +111,47 @@ export type GmvComponents = {
   Polygon: typeof Polygon;
   Rectangle: typeof Rectangle;
   StreetViewPanorama: typeof StreetViewPanorama;
-};
+}
 
-export type GmvSharedComposables = {
+export interface IGmvSharedComposables {
   useMapPromise: () => Promise<google.maps.Map | undefined>;
   useResizeBus: () => {
     currentResizeBus: Ref<Emitter<Record<EventType, unknown>> | undefined>;
     _resizeCallback: () => void;
     _delayedResizeCallback: () => Promise<void>;
   };
-  useGoogleMapsApiPromiseLazy: () => Promise<any>;
+  useGoogleMapsApiPromiseLazy: () => Promise<unknown>;
   useStreetViewPanoramaPromise: () => Promise<
     google.maps.StreetViewPanorama | undefined
   >;
   usePluginOptions: () => IGmapVuePluginOptions;
-};
+}
 
-export type GmvUtilities = {
-  googleMapsApiInitializer: GoogleMapsAPIInitializerFn;
+export interface IGmvUtilities {
+  googleMapsApiInitializer: TGoogleMapsAPIInitializerFn;
   pluginComponentBuilder: (
     providedOptions: IGmapVueElementOptions,
   ) => ComponentOptions;
-  getGoogleMapsAPI: () => false | GlobalGoogleObject;
-};
+  getGoogleMapsAPI: () => false | TGlobalGoogleObject;
+}
+
+/** @internal */
+export type TGoogleMapsInstances =
+  | google.maps.Map
+  | google.maps.marker.AdvancedMarkerElement
+  | google.maps.InfoWindow
+  | google.maps.places.Autocomplete
+  | google.maps.KmlLayer
+  | google.maps.StreetViewPanorama
+  | google.maps.visualization.HeatmapLayer
+  | google.maps.Circle
+  | google.maps.Polygon
+  | google.maps.Polyline
+  | google.maps.Rectangle
+  | google.maps.drawing.DrawingManager
+  | MarkerClusterer;
+
+export interface IGoogleRecycleObject {
+  map: google.maps.Map;
+  div: HTMLElement;
+}

@@ -18,7 +18,7 @@
       <gmv-heatmap-layer
         :data="markers"
         :dissipating="false"
-        :maxIntensity="120"
+        :max-intensity="120"
       />
     </gmv-map>
   </div>

@@ -9,7 +9,7 @@ describe('AutocompleteInput component', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);
     const input = () => cy.get('input');
-    input().type(`${search}`);
+    input().type(search);
     cy.get('.pac-item').first().click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);

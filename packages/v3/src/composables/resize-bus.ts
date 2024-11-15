@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle -- old style, should be analyzed */
-
 import type { Emitter, EventType } from 'mitt';
 import mitt from 'mitt';
 import { nextTick, ref, watch } from 'vue';
@@ -7,7 +5,7 @@ import { nextTick, ref, watch } from 'vue';
 const defaultResizeBus = mitt();
 const currentResizeBus = ref<Emitter<Record<EventType, unknown>> | undefined>();
 let _resizeCallback: () => void;
-let _delayedResizeCallback: () => Promise<void>;
+let _delayedResizeCallback: () => void;
 
 /**
  * This function should be used to set and use the defined resize bus function
@@ -20,7 +18,7 @@ let _delayedResizeCallback: () => Promise<void>;
  * @internal
  */
 export function onMountedResizeBusHook(
-  props: { [key: string]: any },
+  props: { resizeBus?: Emitter<Record<EventType, unknown>> },
   resizeFn: () => void,
 ) {
   if (!props.resizeBus) {
@@ -35,14 +33,20 @@ export function onMountedResizeBusHook(
     resizeFn();
   };
 
-  _delayedResizeCallback = (): Promise<void> => {
-    return nextTick(() => _resizeCallback());
+  _delayedResizeCallback = (): void => {
+    nextTick()
+      .then(() => {
+        _resizeCallback();
+      })
+      .catch((error: unknown) => {
+        console.error(error);
+      });
   };
 
   watch(
     () => props.resizeBus,
     (newVal) => {
-      currentResizeBus.value = newVal.value;
+      currentResizeBus.value = newVal;
     },
   );
 

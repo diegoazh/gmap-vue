@@ -28,7 +28,7 @@ import { inject, onUnmounted, provide, watch } from 'vue';
 const props = withDefaults(
   defineProps<{
     data?:
-      | Array<google.maps.LatLng | google.maps.visualization.WeightedLocation>
+      | (google.maps.LatLng | google.maps.visualization.WeightedLocation)[]
       | google.maps.MVCArray<
           google.maps.LatLng | google.maps.visualization.WeightedLocation
         >;
@@ -43,6 +43,14 @@ const props = withDefaults(
   }>(),
   {
     opacity: 0.6,
+    data: undefined,
+    dissipating: undefined,
+    gradient: undefined,
+    maxIntensity: undefined,
+    number: undefined,
+    heatmapKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -76,23 +84,24 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: heatmapLayerPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.heatmapKey || $heatmapLayerPromise);
-provide(props.heatmapKey || $heatmapLayerPromise, promise);
+  useComponentPromiseFactory(props.heatmapKey ?? $heatmapLayerPromise);
+provide(props.heatmapKey ?? $heatmapLayerPromise, promise);
 
 /*******************************************************************************
  * HEATMAP
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'heatmap-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
 
     const heatmapLayerOptions: IHeatmapLayerVueComponentProps & {
       map: google.maps.Map;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -113,14 +122,14 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       heatmapLayerPropsConfig,
       heatMapLayer,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       heatmapLayerEventsConfig,
       heatMapLayer,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -130,7 +139,7 @@ mapPromise
 
     heatmapLayerPromiseDeferred.resolve(heatMapLayer);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -163,13 +172,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  const heatMapLayer = await promise;
-
-  if (heatMapLayer) {
-    heatMapLayer.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.heatmapKey || $heatmapLayerPromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.heatmapKey ?? $heatmapLayerPromise);
 });
 /*******************************************************************************
  * RENDERS

@@ -1,19 +1,23 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import { KmlLayer } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $kmlLayerPromise } from '../src/keys';
-import { googleMock, kmlLayerValues } from './mocks/global.mock';
+import {
+  googleMock,
+  kmlLayerValues,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('KmlLayer component', () => {
-  let Map;
-  let template;
+  let Map: MockComponentConstructorWithHTML;
+  let template: string;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     template = '<div class="myKmlLayer"></div>';
-    ({ Map } = await googleMock.maps.importLibrary());
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -24,7 +28,7 @@ describe('KmlLayer component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -58,7 +62,7 @@ describe('KmlLayer component', () => {
     expect(wrapper.html()).toBe(template);
     expect(JSON.stringify(kmlLayerValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
         preserveViewport: false,
         screenOverlays: true,
@@ -66,7 +70,7 @@ describe('KmlLayer component', () => {
       }),
     );
     expect(
-      wrapper.getCurrentComponent().exposed?.kmlLayerPromise,
+      wrapper.getCurrentComponent().exposed.kmlLayerPromise,
     ).toBeInstanceOf(Promise);
   });
 

@@ -1,1 +1,1 @@
-export * from './gmap-vue.type';
+export type * from './gmap-vue.type';

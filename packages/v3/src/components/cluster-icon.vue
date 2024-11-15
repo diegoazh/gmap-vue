@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- @slot Used to set your cluster -->
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
@@ -46,9 +46,17 @@ const props = withDefaults(
     renderer?: Renderer;
     clusterKey?: string;
     mapKey?: string;
-    options?: Record<string, any>;
+    options?: Record<string, unknown>;
   }>(),
-  {},
+  {
+    algorithm: undefined,
+    markers: undefined,
+    onClusterClick: undefined,
+    renderer: undefined,
+    clusterKey: undefined,
+    mapKey: undefined,
+    options: undefined,
+  },
 );
 
 /*******************************************************************************
@@ -86,16 +94,17 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: clusterPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.clusterKey || $clusterPromise);
-provide(props?.clusterKey || $clusterPromise, promise);
+  useComponentPromiseFactory(props.clusterKey ?? $clusterPromise);
+provide(props.clusterKey ?? $clusterPromise, promise);
 
 /*******************************************************************************
  * MARKER CLUSTER
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'cluster-icon' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 mapPromise
-  ?.then((mapInstance) => {
+  .then((mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
@@ -103,7 +112,7 @@ mapPromise
     // Initialize the maps with the given options
     const initialOptions: IMarkerClusterVueComponentProps & {
       map: google.maps.Map | undefined;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -111,6 +120,7 @@ mapPromise
     };
     const { markers, onClusterClick, renderer, algorithm } = initialOptions;
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!MarkerClusterer && typeof MarkerClusterer !== 'function') {
       throw new Error(
         'MarkerClusterer is not installed! Import it or include it from https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js',
@@ -134,14 +144,14 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       clusterIconPropsConfig,
       cluster,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       clusterIconEventsConfig,
       cluster,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -151,7 +161,7 @@ mapPromise
 
     clusterPromiseDeferred.resolve(cluster);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -171,29 +181,16 @@ mapPromise
  * HOOKS
  ******************************************************************************/
 onBeforeUnmount(async () => {
-  const cluster = await promise;
-
-  if (cluster) {
-    cluster.clearMarkers();
-  }
+  (await promise)?.clearMarkers();
 });
 
 onUnmounted(async () => {
-  const cluster = await promise;
-
-  if (cluster) {
-    cluster.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.clusterKey || $clusterPromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.clusterKey ?? $clusterPromise);
 });
 
 onUpdated(async () => {
-  const cluster = await promise;
-
-  if (cluster) {
-    cluster.render();
-  }
+  (await promise)?.render();
 });
 
 /*******************************************************************************

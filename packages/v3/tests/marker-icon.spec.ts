@@ -1,17 +1,22 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance, h } from 'vue';
+import type { ComponentInstance } from 'vue';
+import { h } from 'vue';
 import { Marker } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $markerPromise } from '../src/keys';
-import { googleMock, markerValues } from './mocks/global.mock';
+import {
+  googleMock,
+  markerValues,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('MarkerIcon component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -22,7 +27,7 @@ describe('MarkerIcon component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -57,7 +62,6 @@ describe('MarkerIcon component', () => {
       },
       { props },
     ); // we added a template to avoid warnings in the console
-    const { markerKey, ...propsInOptions } = props;
 
     // when
     await flushPromises();
@@ -67,10 +71,39 @@ describe('MarkerIcon component', () => {
     expect(wrapper.html()).toBe(template);
     expect(JSON.stringify(markerValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
-        ...propsInOptions,
+        map: new Map() as MockComponentConstructorWithHTML,
+        content: {
+          __v_isVNode: true,
+          __v_skip: true,
+          type: 'p',
+          props: null,
+          key: null,
+          ref: null,
+          scopeId: null,
+          slotScopeIds: null,
+          children: 'Test',
+          component: null,
+          suspense: null,
+          ssContent: null,
+          ssFallback: null,
+          dirs: null,
+          transition: null,
+          el: null,
+          anchor: null,
+          target: null,
+          targetStart: null,
+          targetAnchor: null,
+          staticCount: 0,
+          shapeFlag: 9,
+          patchFlag: 0,
+          dynamicProps: null,
+          dynamicChildren: null,
+          appContext: null,
+          ctx: null,
+        },
         gmpClickable: true,
         gmpDraggable: false,
+        title: 'this is the title',
       }),
     );
     expect(wrapper.getCurrentComponent().exposed?.markerPromise).toBeInstanceOf(

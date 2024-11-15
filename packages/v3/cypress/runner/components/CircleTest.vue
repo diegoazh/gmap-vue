@@ -5,7 +5,7 @@
       :center="center"
       :zoom="4"
       style="width: 100%; height: 500px"
-      mapId="DEMO_MAP_ID"
+      map-id="DEMO_MAP_ID"
     >
       <gmv-circle
         v-if="radius"
@@ -15,8 +15,7 @@
         :editable="editable"
         :options="options"
         :radius="radius"
-      >
-      </gmv-circle>
+      />
     </gmv-map>
   </div>
 </template>

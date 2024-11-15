@@ -12,8 +12,7 @@
         :draggable="draggable"
         :editable="editable"
         :options="options"
-      >
-      </gmv-rectangle>
+      />
     </gmv-map>
   </div>
 </template>

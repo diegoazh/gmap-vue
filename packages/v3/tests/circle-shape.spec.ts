@@ -1,17 +1,21 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import { Circle } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $circleShapePromise } from '../src/keys';
-import { circleValues, googleMock } from './mocks/global.mock';
+import {
+  circleValues,
+  googleMock,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('CircleShape component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -22,7 +26,7 @@ describe('CircleShape component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -56,7 +60,7 @@ describe('CircleShape component', () => {
     expect(wrapper.isVisible()).toBeTruthy();
     expect(JSON.stringify(circleValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
         clickable: true,
         draggable: false,
@@ -67,7 +71,7 @@ describe('CircleShape component', () => {
     );
     expect(wrapper.html()).toBe(template);
     expect(
-      wrapper.getCurrentComponent().exposed?.circleShapePromise,
+      wrapper.getCurrentComponent().exposed.circleShapePromise,
     ).toBeInstanceOf(Promise);
   });
 

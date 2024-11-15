@@ -32,10 +32,10 @@ const props = withDefaults(
     draggable?: boolean;
     editable?: boolean;
     geodesic?: boolean;
-    icons?: Array<google.maps.IconSequence>;
+    icons?: google.maps.IconSequence[];
     path?:
       | google.maps.MVCArray<google.maps.LatLng>
-      | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
+      | (google.maps.LatLng | google.maps.LatLngLiteral)[];
     strokeColor?: string;
     strokeOpacity?: number;
     strokeWeight?: number;
@@ -53,6 +53,15 @@ const props = withDefaults(
     geodesic: false,
     visible: true,
     deepWatch: false,
+    icons: undefined,
+    path: undefined,
+    strokeColor: undefined,
+    strokeOpacity: undefined,
+    strokeWeight: undefined,
+    zIndex: undefined,
+    polylineKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -91,23 +100,24 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: polylinePromiseDeferred, promise } =
-  useComponentPromiseFactory(props.polylineKey || $polylineShapePromise);
-provide(props.polylineKey || $polylineShapePromise, promise);
+  useComponentPromiseFactory(props.polylineKey ?? $polylineShapePromise);
+provide(props.polylineKey ?? $polylineShapePromise, promise);
 
 /*******************************************************************************
  * POLYLINE SHAPE
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'polyline-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
 
     const polylineOptions: IPolylineShapeVueComponentProps & {
       map: google.maps.Map | undefined;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -128,13 +138,13 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polylineShapePropsConfig,
       polylineShape,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polylineShapeEventsConfig,
       polylineShape,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -144,7 +154,7 @@ mapPromise
 
     polylinePromiseDeferred.resolve(polylineShape);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -171,7 +181,8 @@ watch(
     const polylineShape = await promise;
 
     if (!polylineShape) {
-      return console.error('polyline was not defined');
+      console.error('polyline was not defined');
+      return;
     }
 
     if (props.path && newValue && newValue !== oldValue) {
@@ -185,21 +196,33 @@ watch(
         mvcPath,
         mvcPath.addListener(
           'insert_at',
-          updatePathOrPaths('path_changed', polylineShape.getPath, emits),
+          updatePathOrPaths(
+            'path_changed',
+            polylineShape.getPath.bind(polylineShape),
+            emits,
+          ),
         ),
       ]);
       pathEventListeners.push([
         mvcPath,
         mvcPath.addListener(
           'remove_at',
-          updatePathOrPaths('path_changed', polylineShape.getPath, emits),
+          updatePathOrPaths(
+            'path_changed',
+            polylineShape.getPath.bind(polylineShape),
+            emits,
+          ),
         ),
       ]);
       pathEventListeners.push([
         mvcPath,
         mvcPath.addListener(
           'set_at',
-          updatePathOrPaths('path_changed', polylineShape.getPath, emits),
+          updatePathOrPaths(
+            'path_changed',
+            polylineShape.getPath.bind(polylineShape),
+            emits,
+          ),
         ),
       ]);
     }
@@ -210,13 +233,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  const polylineShape = await promise;
-
-  if (polylineShape) {
-    polylineShape.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.polylineKey || $polylineShapePromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.polylineKey ?? $polylineShapePromise);
 });
 
 /*******************************************************************************

@@ -40,8 +40,7 @@
           class="map-container"
           @center_changed="updateCenter"
           @idle="sync"
-        >
-        </gmv-map>
+        />
       </div>
       <div>
         <!--        <gmv-street-view-panorama-->

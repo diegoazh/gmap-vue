@@ -19,7 +19,7 @@ import {
   usePromiseLazyBuilderFn,
 } from '@/composables';
 import type { IGmapVuePluginOptions, IGoogleMapsApiObject } from '@/interfaces';
-import type { GlobalGoogleObject, GmvUtilities } from '@/types';
+import type { TGlobalGoogleObject, IGmvUtilities } from '@/types';
 import type { Emitter, EventType } from 'mitt';
 import { defineAsyncComponent, type App, type FunctionPlugin } from 'vue';
 import { $gmapOptions } from './keys';
@@ -30,7 +30,7 @@ import { $gmapOptions } from './keys';
 declare module 'vue' {
   interface ComponentCustomProperties {
     $gmapDefaultResizeBus: Emitter<Record<EventType, unknown>>;
-    $gmapApiPromiseLazy: () => Promise<any>;
+    $gmapApiPromiseLazy: () => Promise<unknown>;
     $gmapOptions: IGmapVuePluginOptions;
   }
   interface GlobalComponents {
@@ -57,10 +57,10 @@ declare global {
 
   interface Window {
     GoogleMapsApi: IGoogleMapsApiObject;
-    GoogleMapsCallback: <T = unknown>() => T;
-    google: GlobalGoogleObject;
+    GoogleMapsCallback: () => unknown;
+    google?: TGlobalGoogleObject;
 
-    [key: string | number | symbol]: any;
+    [key: string | number | symbol]: unknown;
   }
 }
 
@@ -77,7 +77,7 @@ globalThis.GoogleMapsApi = { isReady: false };
  * when its ready on the window object
  * @function
  */
-function getGoogleMapsAPI(): false | GlobalGoogleObject {
+function getGoogleMapsAPI(): false | TGlobalGoogleObject {
   return globalThis.GoogleMapsApi.isReady && globalThis.google;
 }
 
@@ -90,7 +90,7 @@ function getGoogleMapsAPI(): false | GlobalGoogleObject {
  * @property  {Function}  pluginComponentBuilder - function to initialize the Google Maps API
  * @property  {Function}  getGoogleMapsAPI - function to get the original Google Maps API
  */
-const utilities: GmvUtilities = {
+const utilities: IGmvUtilities = {
   googleMapsApiInitializer,
   pluginComponentBuilder,
   getGoogleMapsAPI,
@@ -116,8 +116,8 @@ const createGmapVuePlugin = (
       ...options,
       load: {
         libraries: 'places',
-        ...options?.load,
-      } as any,
+        ...options.load,
+      },
     };
 
     /**

@@ -26,7 +26,7 @@ import {
 } from '@/composables';
 import type { IAutoCompleteInputVueComponentProps } from '@/interfaces';
 import { $autocompletePromise } from '@/keys';
-import { onMounted, onUnmounted, provide, ref, watch } from 'vue';
+import { onMounted, onUnmounted, provide, useTemplateRef, watch } from 'vue';
 
 /**
  * Autocomplete component
@@ -70,13 +70,24 @@ const props = withDefaults(
   }>(),
   {
     selectFirstOnEnter: true,
+    bounds: undefined,
+    componentRestrictions: undefined,
+    fields: undefined,
+    strictBounds: undefined,
+    types: undefined,
+    slotRef: undefined,
+    setFieldsTo: undefined,
+    autocompleteKey: undefined,
+    options: undefined,
   },
 );
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvAutoCompleteInput = ref<HTMLInputElement | null>(null);
+const gmvAutoCompleteInput = useTemplateRef<HTMLInputElement | null>(
+  'gmvAutoCompleteInput',
+);
 const emits = defineEmits<{
   place_changed: [value: google.maps.places.PlaceResult];
 }>();
@@ -88,6 +99,7 @@ const emits = defineEmits<{
 /*******************************************************************************
  * AUTOCOMPLETE
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ inheritAttrs: false, name: 'autocomplete-input' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 
@@ -95,8 +107,8 @@ const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: autocompletePromiseDeferred, promise } =
-  useComponentPromiseFactory(props.autocompleteKey || $autocompletePromise);
-provide(props.autocompleteKey || $autocompletePromise, promise);
+  useComponentPromiseFactory(props.autocompleteKey ?? $autocompletePromise);
+provide(props.autocompleteKey ?? $autocompletePromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -115,7 +127,8 @@ watch(
     const autocomplete = await promise;
 
     if (!autocomplete) {
-      return console.error('the autocomplete instance is not defined');
+      console.error('the autocomplete instance is not defined');
+      return;
     }
 
     if (newValue && newValue !== oldValue) {
@@ -129,8 +142,8 @@ watch(
  ******************************************************************************/
 onMounted(() => {
   useGoogleMapsApiPromiseLazy()
-    .then(async () => {
-      let scopedInput = props.slotRef
+    ?.then(async () => {
+      const scopedInput = props.slotRef
         ? props.slotRef
         : gmvAutoCompleteInput.value;
 
@@ -144,9 +157,8 @@ onMounted(() => {
         downArrowSimulator(scopedInput);
       }
 
-      const autocompleteOptions: IAutoCompleteInputVueComponentProps & {
-        [key: string]: any;
-      } = {
+      const autocompleteOptions: IAutoCompleteInputVueComponentProps &
+        Record<string, unknown> = {
         ...getPropsValuesWithoutOptionsProp(props),
         ...props.options,
       };
@@ -173,14 +185,14 @@ onMounted(() => {
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         autocompletePropsConfig,
         autocomplete,
-        emits as any,
+        emits as (ev: string, value: unknown) => void,
         props,
       );
 
       bindGoogleMapsEventsToVueEventsOnSetup(
         autocompleteEventsConfig,
         autocomplete,
-        emits as any,
+        emits as (ev: string, value: unknown) => void,
         excludedEvents,
       );
 
@@ -193,15 +205,13 @@ onMounted(() => {
        * to return the result of `getPlace()`
        */
       autocomplete.addListener('place_changed', () => {
-        if (autocomplete) {
-          /**
-           * Place change event
-           * @event place_changed
-           * @property {object} place `this.$autocomplete.getPlace()`
-           * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
-           */
-          emits('place_changed', autocomplete.getPlace());
-        }
+        /**
+         * Place change event
+         * @event place_changed
+         * @property {object} place `this.$autocomplete.getPlace()`
+         * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
+         */
+        emits('place_changed', autocomplete.getPlace());
       });
 
       if (!autocompletePromiseDeferred.resolve) {
@@ -210,13 +220,13 @@ onMounted(() => {
 
       autocompletePromiseDeferred.resolve(autocomplete);
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       throw error;
     });
 });
 
 onUnmounted(() => {
-  useDestroyPromisesOnUnmounted(props.autocompleteKey || $autocompletePromise);
+  useDestroyPromisesOnUnmounted(props.autocompleteKey ?? $autocompletePromise);
 });
 
 /*******************************************************************************

@@ -3,7 +3,7 @@
     <div ref="gmvInfoWindow" class="info-window-content">
       <!-- so named because it will fly away to another component -->
       <!-- @slot Used to set your info window.  -->
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
@@ -23,7 +23,15 @@ import {
 } from '@/composables';
 import type { IInfoWindowVueComponentProps } from '@/interfaces';
 import { $infoWindowPromise } from '@/keys';
-import { computed, inject, onMounted, provide, ref, watch } from 'vue';
+import {
+  computed,
+  inject,
+  onMounted,
+  onUnmounted,
+  provide,
+  useTemplateRef,
+  watch,
+} from 'vue';
 
 /**
  * InfoWindow component
@@ -55,13 +63,26 @@ const props = withDefaults(
   }>(),
   {
     disableAutoPan: false,
+    ariaLabel: undefined,
+    content: undefined,
+    maxWidth: undefined,
+    minWidth: undefined,
+    pixelOffset: undefined,
+    position: undefined,
+    zIndex: undefined,
+    opened: undefined,
+    marker: undefined,
+    infoWindowKey: undefined,
+    markerKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvInfoWindow = ref<HTMLElement | null>(null);
+const gmvInfoWindow = useTemplateRef<HTMLElement | null>('gmvInfoWindow');
 const emits = defineEmits<{
   close: [];
   closeclick: [];
@@ -89,18 +110,19 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: infoWindowPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.infoWindowKey || $infoWindowPromise);
-provide(props.infoWindowKey || $infoWindowPromise, promise);
+  useComponentPromiseFactory(props.infoWindowKey ?? $infoWindowPromise);
+provide(props.infoWindowKey ?? $infoWindowPromise, promise);
 
 /*******************************************************************************
  * INFO WINDOW
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'info-window' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 let rawMap: google.maps.Map | undefined;
 let rawMarkerOwner: google.maps.marker.AdvancedMarkerElement | undefined;
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
@@ -110,18 +132,20 @@ mapPromise
     const markerPromise = useMarkerPromise(props.markerKey);
     const infoWindowOptions: Partial<IInfoWindowVueComponentProps> & {
       map: google.maps.Map | undefined;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
       ...props.options,
     };
 
-    if (markerPromise) {
-      markerPromise.then((markerInstance) => {
+    markerPromise
+      .then((markerInstance) => {
         rawMarkerOwner = markerInstance;
+      })
+      .catch((error: unknown) => {
+        console.error(error);
       });
-    }
 
     const { InfoWindow } = (await google.maps.importLibrary(
       'maps',
@@ -140,18 +164,16 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       infoWindowPropsConfig,
       infoWindow,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
 
     bindGoogleMapsEventsToVueEventsOnSetup(
       infoWindowEventsConfig,
       infoWindow,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
-
-    openInfoWindow();
 
     if (!infoWindowPromiseDeferred.resolve) {
       throw new Error('infoWindowPromiseDeferred.resolve is undefined');
@@ -159,7 +181,8 @@ mapPromise
 
     infoWindowPromiseDeferred.resolve(infoWindow);
   })
-  .catch((error) => {
+  .then(() => openInfoWindow())
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -176,7 +199,8 @@ const openInfoWindow = async (): Promise<void> => {
   const infoWindow = await promise;
 
   if (!infoWindow) {
-    return console.error('the info window instance is not defined');
+    console.error('the info window instance is not defined');
+    return;
   }
 
   if (props.opened) {
@@ -197,8 +221,8 @@ const openInfoWindow = async (): Promise<void> => {
  ******************************************************************************/
 watch(
   () => props.opened,
-  () => {
-    openInfoWindow();
+  async () => {
+    await openInfoWindow();
   },
 );
 
@@ -208,11 +232,12 @@ watch(
     const infoWindow = await promise;
 
     if (!infoWindow) {
-      return console.error('the info window is not defined');
+      console.error('the info window is not defined');
+      return;
     }
 
     if (value && value !== oldValue) {
-      infoWindow?.setPosition(value);
+      infoWindow.setPosition(value);
     }
   },
 );
@@ -222,11 +247,12 @@ watch(
     const infoWindow = await promise;
 
     if (!infoWindow) {
-      return console.error('the info window is not defined');
+      console.error('the info window is not defined');
+      return;
     }
 
     if (value && value !== oldValue) {
-      infoWindow?.setContent(value);
+      infoWindow.setContent(value);
     }
   },
 );
@@ -238,10 +264,13 @@ onMounted(() => {
   const el = gmvInfoWindow.value;
 
   if (el) {
-    el?.parentNode?.removeChild(el);
+    el.parentNode?.removeChild(el);
   }
+});
 
-  useDestroyPromisesOnUnmounted(props.infoWindowKey || $infoWindowPromise);
+onUnmounted(async () => {
+  (await promise)?.close();
+  useDestroyPromisesOnUnmounted(props.infoWindowKey ?? $infoWindowPromise);
 });
 
 /*******************************************************************************

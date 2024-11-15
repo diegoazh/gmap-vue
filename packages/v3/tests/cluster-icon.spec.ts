@@ -1,17 +1,21 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import { Cluster } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $clusterPromise } from '../src/keys';
-import { clusterValues, googleMock } from './mocks/global.mock';
+import {
+  clusterValues,
+  googleMock,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('ClusterIcon component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -22,19 +26,21 @@ describe('ClusterIcon component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
     vi.mock('@googlemaps/markerclusterer', async (originalImport) => {
-      const original = (await originalImport()) as Record<string, any>;
+      const original: Record<string, unknown> = await originalImport();
 
       return {
         ...original,
-        MarkerClusterer: function (options) {
+        MarkerClusterer: function (options: Record<string, unknown>) {
           clusterValues.options = options;
           this.clearMarkers = vi.fn();
           this.setMap = vi.fn();
-          this.addListener = () => {};
+          this.addListener = () => {
+            return undefined;
+          };
         },
       };
     });
@@ -58,7 +64,12 @@ describe('ClusterIcon component', () => {
   it('should render the correct DOM and expose a clusterPromise', async () => {
     // given
     const template = `<div>\n  <!-- @slot Used to set your cluster -->\n</div>`;
-    const props = { clusterKey: 'myCluster', onClusterClick: () => {} };
+    const props = {
+      clusterKey: 'myCluster',
+      onClusterClick: () => {
+        return undefined;
+      },
+    };
     const wrapper = mount(Cluster, { props });
     const { clusterKey, ...propsInOptions } = props;
 
@@ -78,16 +89,16 @@ describe('ClusterIcon component', () => {
     });
     expect(JSON.stringify(clusterValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
         algorithm: undefined,
         markers: undefined,
         renderer: undefined,
       }),
     );
-    expect(
-      wrapper.getCurrentComponent().exposed?.clusterPromise,
-    ).toBeInstanceOf(Promise);
+    expect(wrapper.getCurrentComponent().exposed.clusterPromise).toBeInstanceOf(
+      Promise,
+    );
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
