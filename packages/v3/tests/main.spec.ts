@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { IGmapVuePluginOptions } from '../src/interfaces';
+import type { IGmapVuePluginOptions } from '../src/interfaces';
 import * as main from '../src/main';
 
 describe('main.ts module', () => {

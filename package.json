@@ -5,7 +5,7 @@
   "repository": "git@github.com:diegoazh/gmap-vue.git",
   "author": "\"Daniel Sim, Guillaume Leclerc\",",
   "license": "MIT",
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.13.2",
   "scripts": {
     "serve:docs": "pnpm run --filter docs start",
     "build:all": "pnpm run --recursive build",
@@ -16,10 +16,10 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.6.3",
-    "@commitlint/config-conventional": "^17.6.3",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.2.2",
-    "rimraf": "^5.0.1"
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "rimraf": "^6.0.1"
   }
 }

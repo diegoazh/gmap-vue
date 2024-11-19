@@ -10,7 +10,7 @@
     :center="center"
     :zoom="6"
     style="width: 100%; height: 500px"
-    mapId="DEMO_MAP_ID"
+    map-id="DEMO_MAP_ID"
   >
     <gmv-marker
       v-for="(m, i) in markers"
@@ -18,31 +18,31 @@
       :clickable="true"
       :draggable="true"
       :position="m.position"
-      :markerKey="`marker-${i}`"
+      :marker-key="`marker-${i}`"
       @click="center = m.position"
-    ></gmv-marker>
+    />
     <gmv-marker
       v-if="visible2"
       :key="2"
       :clickable="true"
       :draggable="true"
       :position="markers2[0].position"
-      :markerKey="`marker-2`"
+      :marker-key="`marker-2`"
       @click="center = markers2[0].position"
-    ></gmv-marker>
+    />
     <gmv-marker
       v-if="visible2"
       :key="3"
       :clickable="true"
       :draggable="true"
       :position="markers2[1].position"
-      :markerKey="`marker-3`"
+      :marker-key="`marker-3`"
       @click="center = markers2[1].position"
-    ></gmv-marker>
+    />
   </gmv-map>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   data() {
     return {

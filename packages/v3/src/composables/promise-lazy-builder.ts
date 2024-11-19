@@ -1,14 +1,16 @@
 import type { IGmapVuePluginOptions, IGoogleMapsApiObject } from '@/interfaces';
 import type {
-  GlobalGoogleObject,
-  GoogleMapsAPIInitializerFn,
-  LazyValueGetterFn,
-  PromiseLazyCreatorFn,
+  TGlobalGoogleObject,
+  TGoogleMapsAPIInitializerFn,
+  TLazyValueGetterFn,
+  TPromiseLazyCreatorFn,
 } from '@/types';
 import { getLazyValue } from './helpers';
 
-let $finalOptions: IGmapVuePluginOptions;
-let $googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>;
+let $finalOptions: IGmapVuePluginOptions | undefined;
+let $googleMapsApiPromiseLazy:
+  | TLazyValueGetterFn<TGlobalGoogleObject>
+  | undefined;
 
 /**
  * This function is a factory of the promise lazy creator
@@ -17,23 +19,23 @@ let $googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>;
  *
  * @param  {Function} googleMapsApiInitializer function that initialize the Google Maps API
  * @param  {Object} GoogleMapsApi Vue app instance that will help to know if the Google API object is ready
- * @returns {(options: IGmapVuePluginOptions) => LazyValueGetterFn}
+ * @returns {(options: IGmapVuePluginOptions) => TLazyValueGetterFn}
  *
  * @internal
  */
 export function usePromiseLazyBuilderFn(
-  googleMapsApiInitializer: GoogleMapsAPIInitializerFn,
+  googleMapsApiInitializer: TGoogleMapsAPIInitializerFn,
   GoogleMapsApi: IGoogleMapsApiObject,
-): PromiseLazyCreatorFn {
+): TPromiseLazyCreatorFn {
   return (
     options: IGmapVuePluginOptions,
-  ): LazyValueGetterFn<GlobalGoogleObject> => {
+  ): TLazyValueGetterFn<TGlobalGoogleObject> => {
     /**
      * Things to do once the API is loaded
      *
      * @returns {Object} the Google Maps API object
      */
-    function onMapsReady(): GlobalGoogleObject {
+    function onMapsReady(): TGlobalGoogleObject {
       GoogleMapsApi.isReady = true;
       return globalThis.google;
     }
@@ -52,7 +54,9 @@ export function usePromiseLazyBuilderFn(
  *
  * @internal
  */
-function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
+function createCallbackAndChecksIfMapIsLoaded(
+  resolveFn: (value?: unknown) => void,
+): void {
   let callbackExecuted = false;
 
   globalThis.GoogleMapsCallback = (): void => {
@@ -72,7 +76,8 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
         timeoutId = undefined;
       }
 
-      if (window?.google?.maps != null && !callbackExecuted) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (window.google.maps != null && !callbackExecuted) {
         globalThis.GoogleMapsCallback();
       }
 
@@ -90,16 +95,16 @@ function createCallbackAndChecksIfMapIsLoaded(resolveFn: Function): void {
  * the Google Maps API or not
  *
  * @param  {IGmapVuePluginOptions} options
- * @param  {GoogleMapsAPIInitializerFn} googleMapsApiInitializer
- * @param  {()=>GlobalGoogleObject} onMapsReady
+ * @param  {TGoogleMapsAPIInitializerFn} googleMapsApiInitializer
+ * @param  {()=>TGlobalGoogleObject} onMapsReady
  *
  * @internal
  */
 function createFinalPromise(
   options: IGmapVuePluginOptions,
-  googleMapsApiInitializer: GoogleMapsAPIInitializerFn,
-  onMapsReady: () => GlobalGoogleObject,
-): Promise<GlobalGoogleObject> {
+  googleMapsApiInitializer: TGoogleMapsAPIInitializerFn,
+  onMapsReady: () => TGlobalGoogleObject,
+): Promise<TGlobalGoogleObject> {
   return new Promise((resolve, reject) => {
     if (typeof window === 'undefined') {
       // Do nothing if run from server-side
@@ -112,8 +117,16 @@ function createFinalPromise(
       if (!options.dynamicLoad && options.load) {
         googleMapsApiInitializer(options.load);
       }
-    } catch (err) {
-      reject(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        reject(err);
+      } else {
+        global.console.error(JSON.stringify(err, null, 2));
+        const error = new Error(
+          'unknown error - check the console to see the original error',
+        );
+        reject(error);
+      }
     }
   }).then(onMapsReady);
 }
@@ -124,14 +137,14 @@ function createFinalPromise(
  * is loaded and ready to use it
  *
  * @param  {IGmapVuePluginOptions} finalOptions
- * @param  {LazyValueGetterFn} googleMapsApiPromiseLazy
+ * @param  {TLazyValueGetterFn} googleMapsApiPromiseLazy
  * @returns void
  *
  * @internal
  */
 export function saveLazyPromiseAndFinalOptions(
   finalOptions: IGmapVuePluginOptions,
-  googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>,
+  googleMapsApiPromiseLazy: TLazyValueGetterFn<TGlobalGoogleObject>,
 ): void {
   if (!$finalOptions) {
     $finalOptions = finalOptions;
@@ -150,9 +163,9 @@ export function saveLazyPromiseAndFinalOptions(
  * @public
  * @returns {Promise<any>}
  */
-export function useGoogleMapsApiPromiseLazy(): Promise<
-  GlobalGoogleObject | undefined
-> {
+export function useGoogleMapsApiPromiseLazy():
+  | Promise<TGlobalGoogleObject | undefined>
+  | undefined {
   if (!$googleMapsApiPromiseLazy) {
     globalThis.console.warn('$googleMapsApiPromiseLazy was not created yet...');
   }
@@ -166,7 +179,7 @@ export function useGoogleMapsApiPromiseLazy(): Promise<
  * @public
  * @returns IPluginOptions
  */
-export function usePluginOptions(): IGmapVuePluginOptions {
+export function usePluginOptions(): IGmapVuePluginOptions | undefined {
   if (!$finalOptions) {
     globalThis.console.warn('$finalOptions was not defined yet...');
   }

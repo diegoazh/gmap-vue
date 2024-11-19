@@ -1,3 +1,13 @@
+## [2.1.3](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.2...gmv3_v2.1.3) (2024-11-15)
+
+
+### Bug Fixes
+
+* packages/documentation/package.json to reduce vulnerabilities ([#330](https://github.com/diegoazh/gmap-vue/issues/330)) ([2e2046f](https://github.com/diegoazh/gmap-vue/commit/2e2046fcfc4f7e88e86f39dcd72cc514781175fe))
+* packages/documentation/package.json to reduce vulnerabilities ([#332](https://github.com/diegoazh/gmap-vue/issues/332)) ([4b7b524](https://github.com/diegoazh/gmap-vue/commit/4b7b5244bc208c6495c6b5c4733d7fb84a38c099))
+* upgrade @docusaurus/core from 3.2.0 to 3.2.1 ([#326](https://github.com/diegoazh/gmap-vue/issues/326)) ([955c35b](https://github.com/diegoazh/gmap-vue/commit/955c35bca5913eebb80c3f96c519f582656d6bbb))
+* upgrade @docusaurus/preset-classic from 3.2.0 to 3.2.1 ([#325](https://github.com/diegoazh/gmap-vue/issues/325)) ([dc6ed1b](https://github.com/diegoazh/gmap-vue/commit/dc6ed1bc1f9cb411f955f98f6a6e03498d4e46af))
+
 ## [2.1.2](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.1...gmv3_v2.1.2) (2024-04-24)
 
 

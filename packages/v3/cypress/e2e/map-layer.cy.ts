@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('MapLayer component', () => {
@@ -13,10 +16,10 @@ describe('MapLayer component', () => {
     const inputLat = () => cy.get('input[name=lat]');
     const inputLng = () => cy.get('input[name=lng]');
     inputLat().clear();
-    inputLat().type(`${newCenter.lat}`);
+    inputLat().type(newCenter.lat.toString());
     inputLat().tab();
     inputLng().clear();
-    inputLng().type(`${newCenter.lng}{enter}`);
+    inputLng().type(`${newCenter.lng.toString()}{enter}`);
     inputLng().tab();
     cy.window().then((win) => {
       const { google, GoogleMapsCallback, __gmc__ } =
@@ -25,7 +28,9 @@ describe('MapLayer component', () => {
           GoogleMapsCallback: string;
           __gmc__: { map: Record<any, any> };
         };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const center = __gmc__.map.getCenter();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const rawCenter = { lat: center.lat(), lng: center.lng() };
 
       expect(google).to.not.be.undefined;

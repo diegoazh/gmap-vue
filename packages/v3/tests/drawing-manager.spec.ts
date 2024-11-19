@@ -1,17 +1,21 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import DrawingManager from '../src/components/drawing-manager.vue';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
 import { $drawingManagerPromise } from '../src/keys';
-import { drawingValues, googleMock } from './mocks/global.mock';
+import {
+  drawingValues,
+  googleMock,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('DrawingManager component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -22,7 +26,7 @@ describe('DrawingManager component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -72,7 +76,7 @@ describe('DrawingManager component', () => {
     });
     expect(JSON.stringify(drawingValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
         drawingControlOptions: {
           drawingModes: ['MARKER', 'CIRCLE', 'POLYGON', undefined, undefined],
@@ -81,7 +85,7 @@ describe('DrawingManager component', () => {
       }),
     );
     expect(
-      wrapper.getCurrentComponent().exposed?.drawingManagerPromise,
+      wrapper.getCurrentComponent().exposed.drawingManagerPromise,
     ).toBeInstanceOf(Promise);
   });
 

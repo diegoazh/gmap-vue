@@ -1,4 +1,4 @@
-import type { SinglePluginComponentConfig } from '@/types';
+import type { ISinglePluginComponentConfig } from '@/types';
 import type {
   Algorithm,
   MarkerClusterer,
@@ -24,14 +24,14 @@ export interface IGoogleMapsApiObject {
  * @property {string} libraries - A comma-separated list of additional Maps JavaScript API libraries to load. Specifying a fixed set of libraries is not generally recommended, but is available for developers who wish to finely tune the caching behavior on their website.
  * @property {string} language - The language to use. This affects the names of controls, copyright notices, driving directions, and control labels, and the responses to service requests. See the list of supported languages.
  * @property {string} region - The region code to use. This alters the map's behavior based on a given country or territory.
- * @property {string} authReferrerPolicy - Maps JS customers can configure HTTP Referrer Restrictions in the Cloud Console to limit which URLs are allowed to use a particular API Key. By default, these restrictions can be configured to allow only certain paths to use an API Key. If any URL on the same domain or origin may use the API Key, you can set authReferrerPolicy: "origin" to limit the amount of data sent when authorizing requests from the Maps JavaScript API. When this parameter is specified and HTTP Referrer Restrictions are enabled on Cloud Console, Maps JavaScript API will only be able to load if there is an HTTP Referrer Restriction that matches the current website's domain without a path specified.
+ * @property {string} authReferrerPolicy - Maps JS customers can configure HTTP Referrer Restrictions in the Cloud Console to limit which URLs are allowed to use a particular API Key. By default, these restrictions can be configured to allow only certain paths to use an API Key. If unknown URL on the same domain or origin may use the API Key, you can set authReferrerPolicy: "origin" to limit the amount of data sent when authorizing requests from the Maps JavaScript API. When this parameter is specified and HTTP Referrer Restrictions are enabled on Cloud Console, Maps JavaScript API will only be able to load if there is an HTTP Referrer Restriction that matches the current website's domain without a path specified.
  * @property {string} mapIds - An array of map Ids. Causes the configuration for the specified map Ids to be preloaded.
  * @property {string} channel - See Usage tracking per channel.
- * @property {string} solutionChannel - Google Maps Platform provides many types of sample code to help you get up and running quickly. To track adoption of our more complex code samples and improve solution quality, Google includes the solutionChannel query parameter in API calls in our sample code.
+ * @property {string} solutionChannel - Google Maps Platform provides munknown types of sample code to help you get up and running quickly. To track adoption of our more complex code samples and improve solution quality, Google includes the solutionChannel query parameter in API calls in our sample code.
  * @see https://developers.google.com/maps/documentation/javascript/load-maps-js-api#optional_parameters
  */
 export interface ILoadPluginOptions {
-  key: string;
+  key?: string;
   callback?: string;
   v?: string;
   libraries?: string;
@@ -56,7 +56,7 @@ export interface ILoadPluginOptions {
  */
 export interface IGmapVuePluginOptions {
   dynamicLoad?: boolean;
-  load: ILoadPluginOptions;
+  load?: ILoadPluginOptions;
   excludeEventsOnAllComponents?: () => string[];
 }
 
@@ -88,23 +88,25 @@ export interface IGoogleMapProp {
 }
 
 export interface IGmapVueElementOptions {
-  mappedProps: Omit<SinglePluginComponentConfig, 'events'>;
-  props: { [key: string]: IVueProp };
+  mappedProps: Omit<ISinglePluginComponentConfig, 'events'>;
+  props: Record<string, IVueProp>;
   events: string[];
   name: string;
-  ctr: () => any;
-  ctrArgs: (
-    options: { [key: string]: any },
-    props: { [key: string]: IVueProp },
-  ) => any[];
-  beforeCreate: (options: { [key: string]: any }) => any;
-  afterCreate: (mapElementInstance: { [key: string]: any }) => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ctr: () => (...args: any[]) => InstanceType<any>;
+  ctrArgs?: (
+    options: Record<string, unknown>,
+    props: Record<string, IVueProp | undefined>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) => Record<string, any>[];
+  beforeCreate?: (options: Record<string, unknown>) => unknown;
+  afterCreate?: (mapElementInstance: Record<string, unknown>) => unknown;
 }
 
 /** @internal */
 export interface PromiseDeferred<T> {
   resolve: ((value: T | undefined) => void) | undefined;
-  reject: ((reason?: any) => void) | undefined;
+  reject: ((reason?: unknown) => void) | undefined;
 }
 
 /**
@@ -204,7 +206,7 @@ export interface IMarkerClusterVueComponentProps {
   renderer?: Renderer;
   clusterKey?: string;
   mapKey?: string;
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 }
 
 export interface IMarkerClusterVueComponentExpose {
@@ -277,7 +279,7 @@ export interface IHeatmapLayerVueComponentProps {
     | google.maps.MVCArray<
         google.maps.LatLng | google.maps.visualization.WeightedLocation
       >
-    | Array<google.maps.LatLng | google.maps.visualization.WeightedLocation>;
+    | (google.maps.LatLng | google.maps.visualization.WeightedLocation)[];
   dissipating?: boolean;
   gradient?: string[];
   maxIntensity?: number;
@@ -433,7 +435,7 @@ export interface IMapLayerVueComponentProps {
   zoomControlOptions?: google.maps.ZoomControlOptions;
   mapKey?: string;
   resizeBus?: Emitter<Record<EventType, unknown>>;
-  options?: { [key: string]: any };
+  options?: Record<string, unknown>;
 }
 
 export interface IMapLayerVueComponentExpose {
@@ -490,9 +492,7 @@ export interface IMarkerIconVueComponentExpose {
   VNodeMarkerIcon: VNode<
     RendererNode,
     RendererElement,
-    {
-      [key: string]: any;
-    }
+    Record<string, unknown>
   >;
   markerInstance: google.maps.marker.AdvancedMarkerElement | undefined;
   markerPromise: Promise<google.maps.marker.AdvancedMarkerElement>;
@@ -525,8 +525,8 @@ export interface IPolygonShapeVueComponentProps {
   paths?:
     | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
     | google.maps.MVCArray<google.maps.LatLng>
-    | Array<Array<google.maps.LatLng | google.maps.LatLngLiteral>>
-    | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
+    | (google.maps.LatLng | google.maps.LatLngLiteral)[][]
+    | (google.maps.LatLng | google.maps.LatLngLiteral)[];
   strokeColor?: string;
   strokeOpacity?: number;
   strokePosition?: google.maps.StrokePosition;
@@ -564,10 +564,10 @@ export interface IPolylineShapeVueComponentProps {
   draggable?: boolean;
   editable?: boolean;
   geodesic?: boolean;
-  icons?: Array<google.maps.IconSequence>;
+  icons?: google.maps.IconSequence[];
   path?:
     | google.maps.MVCArray<google.maps.LatLng>
-    | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
+    | (google.maps.LatLng | google.maps.LatLngLiteral)[];
   strokeColor?: string;
   strokeOpacity?: number;
   strokeWeight?: number;

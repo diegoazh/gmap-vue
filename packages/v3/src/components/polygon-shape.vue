@@ -37,8 +37,8 @@ const props = withDefaults(
     paths?:
       | google.maps.MVCArray<google.maps.MVCArray<google.maps.LatLng>>
       | google.maps.MVCArray<google.maps.LatLng>
-      | Array<Array<google.maps.LatLng | google.maps.LatLngLiteral>>
-      | Array<google.maps.LatLng | google.maps.LatLngLiteral>;
+      | (google.maps.LatLng | google.maps.LatLngLiteral)[][]
+      | (google.maps.LatLng | google.maps.LatLngLiteral)[];
     strokeColor?: string;
     strokeOpacity?: number;
     strokePosition?: google.maps.StrokePosition;
@@ -55,9 +55,20 @@ const props = withDefaults(
     draggable: false,
     editable: false,
     geodesic: false,
-    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0,
     visible: true,
     deepWatch: false,
+    fillColor: undefined,
+    fillOpacity: undefined,
+    paths: undefined,
+    strokeColor: undefined,
+    strokeOpacity: undefined,
+    strokeWeight: undefined,
+    zIndex: undefined,
+    polygonKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -98,23 +109,24 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: polygonPromiseDeferred, promise } =
-  useComponentPromiseFactory(props.polygonKey || $polygonShapePromise);
-provide(props.polygonKey || $polygonShapePromise, promise);
+  useComponentPromiseFactory(props.polygonKey ?? $polygonShapePromise);
+provide(props.polygonKey ?? $polygonShapePromise, promise);
 
 /*******************************************************************************
  * POLYGON SHAPE
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'polygon-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
 
     const polygonShapeOptions: IPolygonShapeVueComponentProps & {
       map: google.maps.Map;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -135,13 +147,13 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       polygonShapePropsConfig,
       polygonShape,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       polygonShapeEventsConfig,
       polygonShape,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -151,7 +163,7 @@ mapPromise
 
     polygonPromiseDeferred.resolve(polygonShape);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -181,7 +193,8 @@ watch(
     const polygonShape = await promise;
 
     if (!polygonShape) {
-      return console.error('polygon was not defined');
+      console.error('polygon was not defined');
+      return;
     }
 
     if (props.paths && newValue && newValue !== oldValue) {
@@ -250,13 +263,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  const polygonShape = await promise;
-
-  if (polygonShape) {
-    polygonShape.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.polygonKey || $polygonShapePromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.polygonKey ?? $polygonShapePromise);
 });
 
 /*******************************************************************************

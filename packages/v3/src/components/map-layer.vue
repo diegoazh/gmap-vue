@@ -1,12 +1,12 @@
 <template>
   <div class="gmv-map-container">
-    <div ref="gmvMap" class="gmv-map"></div>
+    <div ref="gmvMap" class="gmv-map" />
     <div class="gmv-map-hidden">
       <!-- @slot The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc. -->
-      <slot></slot>
+      <slot />
     </div>
     <!-- @slot This slot must be used if you want to display content within the responsive wrapper for the map.  -->
-    <slot name="visible"></slot>
+    <slot name="visible" />
   </div>
 </template>
 
@@ -29,6 +29,7 @@ import {
 } from '@/composables';
 import type { IMapLayerVueComponentProps } from '@/interfaces';
 import { $mapPromise, $recyclePrefix } from '@/keys';
+import type { IGoogleRecycleObject } from '@/types';
 import type { Emitter, EventType } from 'mitt';
 import {
   computed,
@@ -36,7 +37,7 @@ import {
   onMounted,
   onUnmounted,
   provide,
-  ref,
+  useTemplateRef,
   watch,
 } from 'vue';
 
@@ -90,9 +91,10 @@ const props = withDefaults(
     zoomControlOptions?: google.maps.ZoomControlOptions;
     mapKey?: string;
     resizeBus?: Emitter<Record<EventType, unknown>>;
-    options?: { [key: string]: any };
+    options?: Record<string, unknown>;
   }>(),
   {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     mapTypeId: globalThis?.google?.maps?.MapTypeId?.ROADMAP || 'roadmap',
     clickableIcons: true,
     disableDefaultUI: false,
@@ -105,13 +107,39 @@ const props = withDefaults(
     scaleControl: true,
     streetViewControl: true,
     zoomControl: true,
+    backgroundColor: undefined,
+    controlSize: undefined,
+    disableDoubleClickZoom: undefined,
+    draggableCursor: undefined,
+    draggingCursor: undefined,
+    fullscreenControlOptions: undefined,
+    heading: undefined,
+    isFractionalZoomEnabled: undefined,
+    mapId: undefined,
+    mapTypeControlOptions: undefined,
+    maxZoom: undefined,
+    minZoom: undefined,
+    noClear: undefined,
+    restriction: undefined,
+    rotateControlOptions: undefined,
+    scaleControlOptions: undefined,
+    scrollwheel: undefined,
+    streetView: undefined,
+    streetViewControlOptions: undefined,
+    styles: undefined,
+    tilt: undefined,
+    zoom: undefined,
+    zoomControlOptions: undefined,
+    mapKey: undefined,
+    resizeBus: undefined,
+    options: undefined,
   },
 );
 
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES AND EMITTERS
  ******************************************************************************/
-const gmvMap = ref<HTMLElement | null>(null);
+const gmvMap = useTemplateRef<HTMLElement | null>('gmvMap');
 const emits = defineEmits<{
   bounds_changed: [value: google.maps.LatLngBounds | undefined];
   center_changed: [value: google.maps.LatLng | undefined];
@@ -149,10 +177,10 @@ const emits = defineEmits<{
  * @internal
  */
 function defineMapKey(): string {
-  return props?.mapKey
+  return props.mapKey
     ? props.mapKey
-    : props?.options && props.options?.recycle
-      ? props.options.recycle
+    : props.options?.recycle
+      ? (props.options.recycle as string)
       : '';
 }
 
@@ -169,6 +197,7 @@ function getRecycleKey(): string {
 /*******************************************************************************
  * MAP
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'map-layer' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 
@@ -183,7 +212,7 @@ provide(defineMapKey() || $mapPromise, promise);
  * RESIZE BUS
  ******************************************************************************/
 const { currentResizeBus, _delayedResizeCallback } = useResizeBus();
-let { _resizeCallback } = useResizeBus();
+const { _resizeCallback } = useResizeBus();
 
 /**
  * This method trigger the resize event of Google Maps
@@ -205,27 +234,33 @@ async function resize(): Promise<void> {
  * @returns {void}
  * @public
  */
-async function resizePreserveCenter(): Promise<void> {
-  const mapInstance = await promise;
+function resizePreserveCenter(): void {
+  promise
+    .then((mapInstance) => {
+      if (!mapInstance) {
+        return;
+      }
 
-  if (!mapInstance) {
-    return;
-  }
+      const oldCenter = mapInstance.getCenter();
+      google.maps.event.trigger(mapInstance, 'resize');
 
-  const oldCenter = mapInstance.getCenter();
-  google.maps.event.trigger(mapInstance, 'resize');
-
-  if (oldCenter) {
-    mapInstance.setCenter(oldCenter);
-  }
+      if (oldCenter) {
+        mapInstance.setCenter(oldCenter);
+      }
+    })
+    .catch((error: unknown) => {
+      console.error(error);
+    });
 }
 
 /*******************************************************************************
  * COMPUTED
  ******************************************************************************/
 const finalLat = computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!props.center) {
-    return console.warn('center is not defined');
+    console.warn('center is not defined');
+    return;
   }
 
   return typeof props.center.lat === 'function'
@@ -233,8 +268,10 @@ const finalLat = computed(() => {
     : props.center.lat;
 });
 const finalLng = computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!props.center) {
-    return console.warn('center is not defined');
+    console.warn('center is not defined');
+    return;
   }
 
   return typeof props.center.lng === 'function'
@@ -340,7 +377,7 @@ watch(
  ******************************************************************************/
 onMounted(() => {
   useGoogleMapsApiPromiseLazy()
-    .then(async () => {
+    ?.then(async () => {
       if (!gmvMap.value) {
         throw new Error(`we can find the template ref: 'gmvMap'`);
       }
@@ -354,8 +391,10 @@ onMounted(() => {
       let mapInstance: google.maps.Map | undefined;
 
       if (window[recycleKey]) {
-        gmvMap.value.appendChild(window[recycleKey].div);
-        mapInstance = window[recycleKey].map as google.maps.Map;
+        gmvMap.value.appendChild(
+          (window[recycleKey] as IGoogleRecycleObject).div,
+        );
+        mapInstance = (window[recycleKey] as IGoogleRecycleObject).map;
         mapInstance.setOptions(mapLayerOptions);
       } else {
         const { Map } = (await google.maps.importLibrary(
@@ -374,7 +413,7 @@ onMounted(() => {
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         mapLayerPropsConfig,
         mapInstance,
-        emits as any,
+        emits as (ev: string, value: unknown) => void,
         props,
       );
 
@@ -382,7 +421,7 @@ onMounted(() => {
       bindGoogleMapsEventsToVueEventsOnSetup(
         mapLayerEventsConfig,
         mapInstance,
-        emits as any,
+        emits as (ev: string, value: unknown) => void,
         excludedEvents,
       );
 
@@ -393,7 +432,7 @@ onMounted(() => {
           decrement: () => void,
           shouldUpdate: () => boolean,
         ) => {
-          mapInstance?.addListener('center_changed', () => {
+          mapInstance.addListener('center_changed', () => {
             if (shouldUpdate()) {
               /**
                * This event is fired when the map center property changes. It sends the position displayed at the center of the map. If the center or bounds have not been set then the result is undefined. (types: `LatLng|undefined`)
@@ -401,7 +440,7 @@ onMounted(() => {
                * @event center_changed
                * @type {(LatLng|undefined)}
                */
-              emits('center_changed', mapInstance?.getCenter());
+              emits('center_changed', mapInstance.getCenter());
             }
 
             decrement();
@@ -410,7 +449,7 @@ onMounted(() => {
           const updateCenter = () => {
             increment();
 
-            mapInstance?.setCenter(finalLatLng.value);
+            mapInstance.setCenter(finalLatLng.value);
           };
 
           watchPrimitivePropertiesOnSetup(
@@ -421,23 +460,23 @@ onMounted(() => {
         },
       );
 
-      mapInstance?.addListener('zoom_changed', () => {
+      mapInstance.addListener('zoom_changed', () => {
         /**
          * This event is fired when the map zoom property changes. It sends the zoom of the map. If the zoom has not been set then the result is undefined. (types: `number|undefined`)
          *
          * @event zoom_changed
          * @type {(number|undefined)}
          */
-        emits('zoom_changed', mapInstance?.getZoom());
+        emits('zoom_changed', mapInstance.getZoom());
       });
-      mapInstance?.addListener('bounds_changed', () => {
+      mapInstance.addListener('bounds_changed', () => {
         /**
          * This event is fired when the viewport bounds have changed. It sends The lat/lng bounds of the current viewport.
          *
          * @event bounds_changed
          * @type {LatLngBounds}
          */
-        emits('bounds_changed', mapInstance?.getBounds());
+        emits('bounds_changed', mapInstance.getBounds());
       });
 
       if (!mapPromiseDeferred.resolve) {
@@ -446,7 +485,7 @@ onMounted(() => {
 
       mapPromiseDeferred.resolve(mapInstance);
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       throw error;
     });
 });
@@ -458,7 +497,7 @@ onBeforeUnmount(async () => {
     const recycleKey = getRecycleKey();
 
     if (window[recycleKey]) {
-      window[recycleKey].div = mapInstance.getDiv();
+      (window[recycleKey] as IGoogleRecycleObject).div = mapInstance.getDiv();
     }
   }
 });

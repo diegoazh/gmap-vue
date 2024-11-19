@@ -47,8 +47,19 @@ const props = withDefaults(
     clickable: true,
     draggable: false,
     editable: false,
-    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0.0,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    strokePosition: globalThis?.google?.maps?.StrokePosition?.CENTER || 0,
     visible: true,
+    bounds: undefined,
+    fillColor: undefined,
+    fillOpacity: undefined,
+    strokeColor: undefined,
+    strokeOpacity: undefined,
+    strokeWeight: undefined,
+    zIndex: undefined,
+    rectangleKey: undefined,
+    mapKey: undefined,
+    options: undefined,
   },
 );
 
@@ -87,23 +98,24 @@ if (!mapPromise) {
  * PROVIDE
  ******************************************************************************/
 const { promiseDeferred: rectanglePromiseDeferred, promise } =
-  useComponentPromiseFactory(props.rectangleKey || $rectangleShapePromise);
-provide(props.rectangleKey || $rectangleShapePromise, promise);
+  useComponentPromiseFactory(props.rectangleKey ?? $rectangleShapePromise);
+provide(props.rectangleKey ?? $rectangleShapePromise, promise);
 
 /*******************************************************************************
  * RECTANGLE SHAPE
  ******************************************************************************/
+// eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'rectangle-shape' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
 mapPromise
-  ?.then(async (mapInstance) => {
+  .then(async (mapInstance) => {
     if (!mapInstance) {
       throw new Error('the map instance is not defined');
     }
 
     const rectangleOptions: IRectangleShapeVueComponentProps & {
       map: google.maps.Map | undefined;
-      [key: string]: any;
+      [key: string]: unknown;
     } = {
       map: mapInstance,
       ...getPropsValuesWithoutOptionsProp(props),
@@ -124,13 +136,13 @@ mapPromise
     bindPropsWithGoogleMapsSettersAndGettersOnSetup(
       rectangleShapePropsConfig,
       rectangleShapeInstance,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       props,
     );
     bindGoogleMapsEventsToVueEventsOnSetup(
       rectangleShapeEventsConfig,
       rectangleShapeInstance,
-      emits as any,
+      emits as (ev: string, value: unknown) => void,
       excludedEvents,
     );
 
@@ -140,7 +152,7 @@ mapPromise
 
     rectanglePromiseDeferred.resolve(rectangleShapeInstance);
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     throw error;
   });
 
@@ -160,13 +172,8 @@ mapPromise
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  const rectangleShape = await promise;
-
-  if (rectangleShape) {
-    rectangleShape.setMap(null);
-  }
-
-  useDestroyPromisesOnUnmounted(props.rectangleKey || $rectangleShapePromise);
+  (await promise)?.setMap(null);
+  useDestroyPromisesOnUnmounted(props.rectangleKey ?? $rectangleShapePromise);
 });
 
 /*******************************************************************************

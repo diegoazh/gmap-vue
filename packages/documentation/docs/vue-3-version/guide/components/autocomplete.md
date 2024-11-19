@@ -14,14 +14,19 @@ It is exported with the name `Autocomplete`, it is registered as `GmvAutocomplet
 
 This component save the original autocomplete object provided by Google Maps in a property called `autoCompleteInstance`, as the example below.
 
-```ts
+```ts showLineNumbers
 // ...
-
 const { Autocomplete } = (await google.maps.importLibrary(
-  'places'
+  'places',
 )) as google.maps.PlacesLibrary;
-autoCompleteInstance = new Autocomplete(scopedInput, autocompleteOptions);
 
+if (typeof Autocomplete !== 'function') {
+  throw new Error(
+    "google.maps.places.Autocomplete is undefined. Did you add 'places' to libraries when loading Google Maps?",
+  );
+}
+
+const autocomplete = new Autocomplete(scopedInput, autocompleteOptions);
 // ...
 ```
 
