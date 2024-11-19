@@ -1,16 +1,20 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ComponentInstance } from 'vue';
+import type { ComponentInstance } from 'vue';
 import { InfoWindow } from '../src/components';
 import * as composables from '../src/composables';
 import { $infoWindowPromise } from '../src/keys';
-import { googleMock, infoWindowValues } from './mocks/global.mock';
+import {
+  googleMock,
+  infoWindowValues,
+  type MockComponentConstructorWithHTML,
+} from './mocks/global.mock';
 
 describe('InfoWindow component', () => {
-  let Map;
+  let Map: MockComponentConstructorWithHTML;
 
-  beforeEach(async () => {
-    ({ Map } = await googleMock.maps.importLibrary());
+  beforeEach(() => {
+    ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
     vi.spyOn(composables, 'usePluginOptions').mockReturnValue({
       load: { key: 'abc', mapId: 'test' },
@@ -21,7 +25,7 @@ describe('InfoWindow component', () => {
           exposed: {
             mapPromise: Promise.resolve(new Map()),
           },
-        }) as unknown as ComponentInstance<any>,
+        }) as unknown as ComponentInstance<unknown>,
     );
     vi.spyOn(composables, 'useDestroyPromisesOnUnmounted');
   });
@@ -55,67 +59,10 @@ describe('InfoWindow component', () => {
     expect(wrapper.html()).toBe('<div class="info-window-container"></div>');
     expect(JSON.stringify(infoWindowValues.options)).toEqual(
       JSON.stringify({
-        map: new Map(),
+        map: new Map() as MockComponentConstructorWithHTML,
         ...propsInOptions,
-        opened: false,
-        content: {
-          oncancel: null,
-          onerror: null,
-          onscroll: null,
-          onselect: null,
-          onwheel: null,
-          oncopy: null,
-          oncut: null,
-          onpaste: null,
-          oncompositionend: null,
-          oncompositionstart: null,
-          oncompositionupdate: null,
-          onblur: null,
-          onfocus: null,
-          onfocusin: null,
-          onfocusout: null,
-          onfullscreenchange: null,
-          onfullscreenerror: null,
-          onkeydown: null,
-          onkeyup: null,
-          onauxclick: null,
-          onclick: null,
-          oncontextmenu: null,
-          ondblclick: null,
-          onmousedown: null,
-          onmouseenter: null,
-          onmouseleave: null,
-          onmousemove: null,
-          onmouseout: null,
-          onmouseover: null,
-          onmouseup: null,
-          ontouchcancel: null,
-          ontouchend: null,
-          ontouchmove: null,
-          ontouchstart: null,
-          oninvalid: null,
-          onanimationcancel: null,
-          onanimationend: null,
-          onanimationiteration: null,
-          onanimationstart: null,
-          onbeforeinput: null,
-          oninput: null,
-          onchange: null,
-          ongotpointercapture: null,
-          onlostpointercapture: null,
-          onpointercancel: null,
-          onpointerdown: null,
-          onpointerenter: null,
-          onpointerleave: null,
-          onpointermove: null,
-          onpointerout: null,
-          onpointerover: null,
-          onpointerup: null,
-          ontransitioncancel: null,
-          ontransitionend: null,
-          ontransitionrun: null,
-          ontransitionstart: null,
-        },
+        disableAutoPan: true,
+        content: {},
       }),
     );
     expect(

@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   IGmapVuePluginOptions,
   IVueProp,
   PromiseDeferred,
 } from '@/interfaces';
 import type {
-  GmapVuePluginProps,
-  LazyValueGetterFn,
-  OldHtmlInputElement,
-  SinglePluginComponentConfig,
+  ISinglePluginComponentConfig,
+  TGmapVuePluginProps,
+  TGoogleMapsInstances,
+  TLazyValueGetterFn,
+  TOldHtmlInputElement,
 } from '@/types';
 import isEqual from 'lodash.isequal';
 import {
@@ -41,40 +44,38 @@ export function capitalizeFirstLetter(text: string): string {
  * @internal
  */
 export function getPropsValuesWithoutOptionsProp(
-  props: { [key: string | number | symbol]: unknown },
+  props: Record<string | number | symbol, unknown>,
   vueInst?: ComponentPublicInstance,
-): Omit<{ [key: string | number | symbol]: IVueProp }, 'options'> {
+): Omit<Record<string | number | symbol, IVueProp | undefined>, 'options'> {
   if (vueInst) {
-    return Object.keys(props).reduce(
-      (acc, propKey) => {
-        if (
-          propKey !== 'options' &&
-          !/^(\w+)(key)$/gim.test(propKey) &&
-          (vueInst?.$props as any)[propKey] != null
-        ) {
-          acc[propKey] = (vueInst?.$props as any)[propKey];
-        }
-
-        return acc;
-      },
-      {} as { [key: string | number | symbol]: IVueProp },
-    );
-  }
-
-  return Object.keys(props).reduce(
-    (acc, propKey) => {
+    return Object.keys(props).reduce<
+      Record<string | number | symbol, IVueProp | undefined>
+    >((acc, propKey) => {
       if (
         propKey !== 'options' &&
         !/^(\w+)(key)$/gim.test(propKey) &&
-        (props as any)[propKey] != null
+        (vueInst.$props as Record<string, IVueProp>)[propKey] != null
       ) {
-        acc[propKey] = (props as any)[propKey];
+        acc[propKey] = (vueInst.$props as Record<string, IVueProp>)[propKey];
       }
 
       return acc;
-    },
-    {} as { [key: string | number | symbol]: IVueProp },
-  );
+    }, {});
+  }
+
+  return Object.keys(props).reduce<
+    Record<string | number | symbol, IVueProp | undefined>
+  >((acc, propKey) => {
+    if (
+      propKey !== 'options' &&
+      !/^(\w+)(key)$/gim.test(propKey) &&
+      props[propKey] != null
+    ) {
+      acc[propKey] = (props as Record<string, IVueProp>)[propKey];
+    }
+
+    return acc;
+  }, {});
 }
 
 /**
@@ -89,8 +90,8 @@ export function getPropsValuesWithoutOptionsProp(
  * @internal
  */
 export function getLazyValue<T>(
-  fn: LazyValueGetterFn<T>,
-): LazyValueGetterFn<T> {
+  fn: TLazyValueGetterFn<T>,
+): TLazyValueGetterFn<T> {
   let called = false;
   let ret: Promise<T>;
 
@@ -113,29 +114,22 @@ export function getLazyValue<T>(
  *
  * @internal
  */
-export function filterVuePropsOptions<T extends GmapVuePluginProps>(
+export function filterVuePropsOptions<T extends TGmapVuePluginProps>(
   mappedProps: T,
-): {
-  [key in keyof T]: IVueProp;
-} {
-  return (
-    Object.entries(mappedProps).map(([key, prop]) => {
+): Record<keyof T, IVueProp> {
+  return Object.entries(mappedProps).reduce<Record<string, IVueProp>>(
+    (acc, [key, prop]) => {
       const value: IVueProp = {};
 
       if ('type' in prop) value.type = prop.type;
       if ('default' in prop) value.default = prop.default;
       if ('required' in prop) value.required = prop.required;
 
-      return [key, value];
-    }) as Array<[keyof T, IVueProp]>
-  ).reduce(
-    (acc, [key, val]) => {
-      acc[key] = val;
-
+      acc[key] = value;
       return acc;
     },
-    {} as { [key in keyof T]: IVueProp },
-  );
+    {},
+  ) as Record<keyof T, IVueProp>;
 }
 
 /**
@@ -154,14 +148,12 @@ export function filterVuePropsOptions<T extends GmapVuePluginProps>(
  */
 export function downArrowSimulator(input: HTMLInputElement | null): void {
   if (!input) {
-    throw new Error(
-      `The input for downArrowSimulator should be defined, currently: ${input}`,
-    );
+    throw new Error(`The input for downArrowSimulator should be defined`);
   }
 
-  const _addEventListener = oldHtmlInputElementGuard(input)
-    ? input.attachEvent
-    : input.addEventListener;
+  const _addEventListener = isOldHtmlInputElementGuard(input)
+    ? input.attachEvent.bind(input)
+    : input.addEventListener.bind(input);
 
   /**
    * Add event listener wrapper that will replace to default addEventListener or attachEvent function
@@ -172,13 +164,14 @@ export function downArrowSimulator(input: HTMLInputElement | null): void {
    */
   function addEventListenerWrapper(
     type: string,
+
     listener: (...args: any[]) => any,
   ): void {
     // Simulate a 'down arrow' keypress on hitting 'return' when no pac suggestion is selected,
     // and then trigger the original listener.
     if (type === 'keydown') {
       const origListener = listener;
-      // eslint-disable-next-line no-param-reassign -- Is old style this should be analyzed
+
       listener = (event: KeyboardEvent) => {
         const suggestionSelected =
           document.getElementsByClassName('pac-item-selected').length > 0;
@@ -205,7 +198,7 @@ export function downArrowSimulator(input: HTMLInputElement | null): void {
 
   input.addEventListener = addEventListenerWrapper;
 
-  if (oldHtmlInputElementGuard(input)) {
+  if (isOldHtmlInputElementGuard(input)) {
     input.attachEvent = addEventListenerWrapper;
   }
 }
@@ -305,7 +298,7 @@ export function watchPrimitiveProperties(
   function requestHandle(): void {
     if (!isHandled) {
       isHandled = true;
-      vueInst.$nextTick(() => {
+      void vueInst.$nextTick(() => {
         isHandled = false;
         handler();
       });
@@ -337,7 +330,7 @@ export function watchPrimitiveProperties(
 export function watchPrimitivePropertiesOnSetup(
   propertiesToTrack: string[],
   handler: () => any,
-  props: Record<any, any>,
+  props: Record<string, any>,
   immediate = false,
 ): void {
   let isHandled = false;
@@ -351,7 +344,7 @@ export function watchPrimitivePropertiesOnSetup(
     if (!isHandled) {
       isHandled = true;
 
-      nextTick(() => {
+      void nextTick(() => {
         isHandled = false;
         if (value && !isEqual(value, oldValue)) {
           handler();
@@ -361,6 +354,7 @@ export function watchPrimitivePropertiesOnSetup(
   }
 
   propertiesToTrack.forEach((prop) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     watch(() => props[prop], requestHandle, { immediate });
   });
 }
@@ -385,8 +379,16 @@ export function bindEvents(
   excludedEvents: string[] = [],
 ): void {
   eventsConfig.forEach((eventName) => {
-    if (!excludedEvents.includes(eventName) && !/_changed/.test(eventName)) {
-      googleMapsInst.addListener(eventName, (ev: any) => {
+    if (
+      !excludedEvents.includes(eventName) &&
+      !eventName.includes('_changed')
+    ) {
+      (
+        googleMapsInst.addListener as (
+          e: string,
+          cbk: (ev: any) => void,
+        ) => void
+      )(eventName, (ev: any) => {
         vueInst.$emit(eventName, ev);
       });
     }
@@ -410,10 +412,12 @@ export function bindEvents(
  * @internal
  */
 export function bindProps(
-  propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
-  AnyGoogleMapsClassInstance: Record<string, any>,
+  propsComponentConfig: Omit<ISinglePluginComponentConfig, 'events'>,
+  AnyGoogleMapsClassInstance: TGoogleMapsInstances,
   vueInst: ComponentPublicInstance & { $gmapOptions: IGmapVuePluginOptions },
 ): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const instance = AnyGoogleMapsClassInstance as any;
   Object.entries(vueInst.$props).forEach(([propKey, propValue]) => {
     if (!propsComponentConfig.noBind.includes(propKey)) {
       const setMethodName = `set${capitalizeFirstLetter(propKey)}`;
@@ -421,8 +425,8 @@ export function bindProps(
       const eventName = `${propKey.toLowerCase()}_changed`;
 
       if (
-        AnyGoogleMapsClassInstance[setMethodName] &&
-        typeof AnyGoogleMapsClassInstance[setMethodName] === 'function'
+        instance[setMethodName] &&
+        typeof instance[setMethodName] === 'function'
       ) {
         // We need to avoid an endless
         // propChanged -> event emitted -> propChanged -> event emitted loop
@@ -436,7 +440,7 @@ export function bindProps(
             // TODO: confirm this watch works, because I think it needs the variable not only the name of the variable
             () => propKey,
             () => {
-              AnyGoogleMapsClassInstance[setMethodName](propValue);
+              (instance[setMethodName] as (p: unknown) => void)(propValue);
             },
             {
               immediate: propValue != undefined,
@@ -449,7 +453,7 @@ export function bindProps(
               (prop) => `${propKey}.${prop}`,
             ),
             () => {
-              AnyGoogleMapsClassInstance[setMethodName](propValue);
+              (instance[setMethodName] as (p: unknown) => void)(propValue);
             },
             vueInst.$props,
             propValue != undefined,
@@ -459,16 +463,24 @@ export function bindProps(
 
       if (propsComponentConfig.twoWay.includes(propKey)) {
         if (
-          AnyGoogleMapsClassInstance[getMethodName] &&
-          typeof AnyGoogleMapsClassInstance[getMethodName] === 'function'
+          instance[getMethodName] &&
+          typeof instance[getMethodName] === 'function'
         ) {
-          AnyGoogleMapsClassInstance?.addListener(eventName, () => {
-            const value = AnyGoogleMapsClassInstance[getMethodName]();
+          (
+            AnyGoogleMapsClassInstance.addListener as (
+              p: string,
+              cbk: () => void,
+            ) => void
+          )(eventName, () => {
+            const value = (instance[getMethodName] as () => unknown)();
 
-            if (value && !isEqual(value, (vueInst.$props as any)[propKey])) {
+            if (
+              value &&
+              !isEqual(value, (vueInst.$props as Record<string, any>)[propKey])
+            ) {
               vueInst.$emit(
                 eventName,
-                AnyGoogleMapsClassInstance[getMethodName](),
+                (instance[getMethodName] as () => unknown)(),
               );
             }
           });
@@ -493,13 +505,21 @@ export function bindProps(
  */
 export function bindGoogleMapsEventsToVueEventsOnSetup(
   eventsComponentConfig: string[],
-  AnyGoogleMapsClassInstance: Record<string, any>,
+  AnyGoogleMapsClassInstance: TGoogleMapsInstances,
   emits: (ev: string, value: any) => void,
   excludedEvents: string[] = [],
 ): void {
   eventsComponentConfig.forEach((eventName) => {
-    if (!excludedEvents.includes(eventName) && !/_changed/.test(eventName)) {
-      AnyGoogleMapsClassInstance?.addListener(eventName, (ev: any) => {
+    if (
+      !excludedEvents.includes(eventName) &&
+      !eventName.includes('_changed')
+    ) {
+      (
+        AnyGoogleMapsClassInstance.addListener as (
+          e: string,
+          cbk: (ev: any) => void,
+        ) => void
+      )(eventName, (ev: any) => {
         emits(eventName, ev);
       });
     }
@@ -515,7 +535,7 @@ export function bindGoogleMapsEventsToVueEventsOnSetup(
  *
  * Note: For composition API. This function should be used on setup script.
  *
- * @param {SinglePluginComponentConfig} propsComponentConfig - The plugin component configuration for this Google Maps instance
+ * @param {ISinglePluginComponentConfig} propsComponentConfig - The plugin component configuration for this Google Maps instance
  * @param  {Object} AnyGoogleMapsClassInstance the Maps, Marker, Circle or any Google Maps class instance
  * @param {() => void} emits - The Vue emit object built with defineEmits function
  * @param  {Object} props - Vue component props  of the component that should be synced with the Google Maps instances props
@@ -524,28 +544,39 @@ export function bindGoogleMapsEventsToVueEventsOnSetup(
  * @internal
  */
 export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-  propsComponentConfig: Omit<SinglePluginComponentConfig, 'events'>,
-  AnyGoogleMapsClassInstance: Record<string, any>,
-  emits: (ev: string, value: any) => void,
-  props: Record<any, any>,
+  propsComponentConfig: Omit<ISinglePluginComponentConfig, 'events'>,
+  AnyGoogleMapsClassInstance: TGoogleMapsInstances,
+  emits: (ev: string, value: unknown) => void,
+  props: Record<string, unknown>,
 ): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const instance = AnyGoogleMapsClassInstance as any;
+
   Object.keys(props).forEach((propKey) => {
     if (!propsComponentConfig.noBind.includes(propKey)) {
       const { eventName, getMethodName } =
         bindVuePropsWithGoogleMapsPropsSetters(
           propKey,
           props,
-          propsComponentConfig.trackProperties[propKey],
+          propsComponentConfig.trackProperties[propKey] ?? [],
           AnyGoogleMapsClassInstance,
         );
 
       if (propsComponentConfig.twoWay.includes(propKey)) {
         if (
-          AnyGoogleMapsClassInstance[getMethodName] &&
-          typeof AnyGoogleMapsClassInstance[getMethodName] === 'function'
+          instance[getMethodName] &&
+          typeof instance[getMethodName] === 'function'
         ) {
-          AnyGoogleMapsClassInstance?.addListener(eventName, () => {
-            const value = AnyGoogleMapsClassInstance[getMethodName]();
+          (
+            AnyGoogleMapsClassInstance.addListener as (
+              e: string,
+              cbk: () => void,
+            ) => void
+          )(eventName, () => {
+            const cbk = (instance[getMethodName] as () => unknown).bind(
+              instance,
+            );
+            const value = cbk();
 
             if (value && !isEqual(value, props[propKey])) {
               emits(eventName, value);
@@ -584,7 +615,7 @@ export function findParentInstanceByName(
 
   function updateAncestor(instance: ComponentInternalInstance | null) {
     const ancestor = instance?.parent;
-    const name = ancestor?.type.name || ancestor?.type.__name;
+    const name = ancestor?.type.name ?? ancestor?.type.__name;
 
     return { ancestor, name };
   }
@@ -602,31 +633,37 @@ export function findParentInstanceByName(
 /** @internal */
 function bindVuePropsWithGoogleMapsPropsSetters(
   propKey: string,
-  props: Record<any, any>,
+  props: Record<string, unknown>,
   trackProperties: string[],
-  AnyGoogleMapsClassInstance: Record<string, any>,
+  AnyGoogleMapsClassInstance: TGoogleMapsInstances,
 ): { eventName: string; getMethodName: string } {
   const setMethodName = `set${capitalizeFirstLetter(propKey)}`;
   const getMethodName = `get${capitalizeFirstLetter(propKey)}`;
   const eventName = `${propKey.toLowerCase()}_changed`;
 
   if (
-    AnyGoogleMapsClassInstance[setMethodName] &&
-    typeof AnyGoogleMapsClassInstance[setMethodName] === 'function'
+    (AnyGoogleMapsClassInstance as any)?.[setMethodName] &&
+    typeof (AnyGoogleMapsClassInstance as any)?.[setMethodName] === 'function'
   ) {
     // We need to avoid an endless
     // propChanged -> event emitted -> propChanged -> event emitted loop
     // although this may really be the user's responsibility
     if (
       (typeof props[propKey] !== 'object' && !Array.isArray(props[propKey])) ||
-      !trackProperties?.length
+      !trackProperties.length
     ) {
       // Track the object deeply
       watch(
         () => props[propKey],
         (value, oldValue) => {
-          if (value != null && !isEqual(value, oldValue))
-            AnyGoogleMapsClassInstance[setMethodName](value);
+          if (value != null && !isEqual(value, oldValue)) {
+            const cbk = (
+              (AnyGoogleMapsClassInstance as any)[setMethodName] as (
+                value: unknown,
+              ) => void
+            ).bind(AnyGoogleMapsClassInstance);
+            cbk(value);
+          }
         },
         {
           immediate: props[propKey] != undefined,
@@ -639,7 +676,12 @@ function bindVuePropsWithGoogleMapsPropsSetters(
       watchPrimitivePropertiesOnSetup(
         trackProperties.map((prop) => `${propKey}.${prop}`),
         () => {
-          AnyGoogleMapsClassInstance[setMethodName](props[propKey]);
+          const cbk = (
+            (AnyGoogleMapsClassInstance as any)[setMethodName] as (
+              p: any,
+            ) => void
+          ).bind(AnyGoogleMapsClassInstance);
+          cbk(props[propKey]);
         },
         props,
         props[propKey] != undefined,
@@ -651,8 +693,8 @@ function bindVuePropsWithGoogleMapsPropsSetters(
 }
 
 /** @internal */
-function oldHtmlInputElementGuard(
-  input: HTMLInputElement | OldHtmlInputElement,
-): input is OldHtmlInputElement {
-  return (input as OldHtmlInputElement).attachEvent !== undefined;
+function isOldHtmlInputElementGuard(
+  input: HTMLInputElement | TOldHtmlInputElement,
+): input is TOldHtmlInputElement {
+  return !!(input as TOldHtmlInputElement).attachEvent;
 }

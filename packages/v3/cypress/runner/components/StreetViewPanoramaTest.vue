@@ -52,8 +52,7 @@
           :zoom="12"
           class="map-container"
           @center_changed="updateCenter"
-        >
-        </gmv-map>
+        />
       </div>
       <div>
         <gmv-street-view-panorama
@@ -65,8 +64,7 @@
           @pano_changed="updatePano"
           @position_changed="updatePosition"
           @pov_changed="updatePov"
-        >
-        </gmv-street-view-panorama>
+        />
       </div>
     </div>
   </div>
@@ -88,6 +86,9 @@ export default {
       },
       pano: 0,
     };
+  },
+  created() {
+    this.sync();
   },
   methods: {
     updatePov(pov) {
@@ -111,9 +112,6 @@ export default {
     sync() {
       this.mapCenter = this.reportedMapCenter;
     },
-  },
-  created() {
-    this.sync();
   },
 };
 </script>

@@ -62,6 +62,7 @@ export interface IAutoCompleteInputVueComponentProps {
    * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
    */
   setFieldsTo?: string[];
+  autocompleteKey?: string;
   options?: Record<string, unknown>;
 }
 ```
@@ -73,6 +74,7 @@ export interface IAutoCompleteInputVueComponentProps {
   - _type_: `HTMLInputElement`
   - _description_: the unique ref set to the component passed in the slot input
 - **setFieldsTo**: To avoid paying for data that you don't need, be sure to use Autocomplete.setFields() to specify only the place data that you will use.
+- **autocompleteKey**: This is used to identify every instance of the Google Maps Autocomplete class. If it's not provided it always use the `$autocompletePromise` key as its default value, but take care about it because if you use it in many places you will use always the same instance.
 - **options**:
   - _type_: `Record<string, unknown>`
   - _description_: We use this prop as a fallback option. If the official API changes and add new props to the class you can use the options prop to use and populate these new props until we update our API to use it explicitly.
@@ -83,21 +85,9 @@ export interface IAutoCompleteInputVueComponentProps {
 We only document the exposed methods of the component
 :::
 
-- **autoCompleteInstance**:
-  - _type_: [`InstanceType<google.maps.places.Autocomplete>`](https://developers.google.com/maps/documentation/javascript/reference/places-widget#Autocomplete)
-  - _description_: Is an instance of the Autocomplete class.
-
-  ```ts showLineNumbers {8}
-  //...
-    const { Autocomplete } = (await google.maps.importLibrary(
-    'places',
-  )) as google.maps.PlacesLibrary;
-
-  // ...
-
-  autoCompleteInstance = new Autocomplete(scopedInput, autocompleteOptions);
-  //...
-  ```
+- **autoCompletePromise**:
+  - _type_: [`Promise<InstanceType<google.maps.places.Autocomplete> | undefined>`](https://developers.google.com/maps/documentation/javascript/reference/places-widget#Autocomplete)
+  - _description_: This is a promise that resolves the instance of the Google Maps Autocomplete class.
 
 ## Events
 
@@ -129,10 +119,9 @@ If the user enters the name of a Place that was not suggested by the control and
 <template>
   <div>
     <!--
-				@slot Used to set your custom component for the input, eg: v-text-field.<br>
-        It has two binding properties:<br>
+				@slot Used to set your custom component for the input, eg: v-text-field.
+        It has two binding properties:
         - `attrs`, it's type is `object`, it's all attributes passed to the component ([vm.$attrs](https://vuejs.org/v2/api/?#vm-attrs))<br>
-        - `listeners`, it's type is `object`, it's all events passed to the component ([vm.$listeners](https://vuejs.org/v2/api/?#vm-listeners))
 			-->
     <slot :attrs="$attrs">
       <input ref="gmvAutoCompleteInput" v-bind="$attrs" />
@@ -148,11 +137,14 @@ import {
   getComponentEventsConfig,
   getComponentPropsConfig,
   getPropsValuesWithoutOptionsProp,
+  useComponentPromiseFactory,
+  useDestroyPromisesOnUnmounted,
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
 } from '@/composables';
 import type { IAutoCompleteInputVueComponentProps } from '@/interfaces';
-import { onMounted, ref, watch } from 'vue';
+import { $autocompletePromise } from '@/keys';
+import { onMounted, onUnmounted, provide, ref, watch } from 'vue';
 
 /**
  * Autocomplete component
@@ -191,6 +183,7 @@ const props = withDefaults(
      * @see [PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
      */
     setFieldsTo?: string[];
+    autocompleteKey?: string;
     options?: Record<string, unknown>;
   }>(),
   {
@@ -213,8 +206,15 @@ const emits = defineEmits<{
 /*******************************************************************************
  * AUTOCOMPLETE
  ******************************************************************************/
+defineOptions({ inheritAttrs: false, name: 'autocomplete-input' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
-let autoCompleteInstance: google.maps.places.Autocomplete | undefined;
+
+/*******************************************************************************
+ * PROVIDE
+ ******************************************************************************/
+const { promiseDeferred: autocompletePromiseDeferred, promise } =
+  useComponentPromiseFactory(props.autocompleteKey || $autocompletePromise);
+provide(props.autocompleteKey || $autocompletePromise, promise);
 
 /*******************************************************************************
  * COMPUTED
@@ -229,9 +229,15 @@ let autoCompleteInstance: google.maps.places.Autocomplete | undefined;
  ******************************************************************************/
 watch(
   () => props.componentRestrictions,
-  (newValue, oldValue) => {
+  async (newValue, oldValue) => {
+    const autocomplete = await promise;
+
+    if (!autocomplete) {
+      return console.error('the autocomplete instance is not defined');
+    }
+
     if (newValue && newValue !== oldValue) {
-      autoCompleteInstance?.setComponentRestrictions(newValue);
+      autocomplete.setComponentRestrictions(newValue);
     }
   },
 );
@@ -273,52 +279,62 @@ onMounted(() => {
         );
       }
 
-      autoCompleteInstance = new Autocomplete(scopedInput, autocompleteOptions);
+      const autocomplete = new Autocomplete(scopedInput, autocompleteOptions);
 
-      const autoCompletePropsConfig =
+      const autocompletePropsConfig =
         getComponentPropsConfig('GmvAutocomplete');
-      const autoCompleteEventsConfig = getComponentEventsConfig(
+      const autocompleteEventsConfig = getComponentEventsConfig(
         'GmvAutocomplete',
         'auto',
       );
 
       bindPropsWithGoogleMapsSettersAndGettersOnSetup(
-        autoCompletePropsConfig,
-        autoCompleteInstance,
+        autocompletePropsConfig,
+        autocomplete,
         emits as any,
         props,
       );
 
       bindGoogleMapsEventsToVueEventsOnSetup(
-        autoCompleteEventsConfig,
-        autoCompleteInstance,
+        autocompleteEventsConfig,
+        autocomplete,
         emits as any,
         excludedEvents,
       );
 
       if (props.setFieldsTo) {
-        autoCompleteInstance.setFields(props.setFieldsTo);
+        autocomplete.setFields(props.setFieldsTo);
       }
 
       /**
        * Not using `bindEvents` because we also want
        * to return the result of `getPlace()`
        */
-      autoCompleteInstance.addListener('place_changed', () => {
-        if (autoCompleteInstance) {
+      autocomplete.addListener('place_changed', () => {
+        if (autocomplete) {
           /**
            * Place change event
            * @event place_changed
            * @property {object} place `this.$autocomplete.getPlace()`
            * @see [Get place information](https://developers.google.com/maps/documentation/javascript/places-autocomplete#get-place-information)
            */
-          emits('place_changed', autoCompleteInstance.getPlace());
+          emits('place_changed', autocomplete.getPlace());
         }
       });
+
+      if (!autocompletePromiseDeferred.resolve) {
+        throw new Error('autocompletePromiseDeferred.resolve is undefined');
+      }
+
+      autocompletePromiseDeferred.resolve(autocomplete);
     })
     .catch((error) => {
       throw error;
     });
+});
+
+onUnmounted(() => {
+  useDestroyPromisesOnUnmounted(props.autocompleteKey || $autocompletePromise);
 });
 
 /*******************************************************************************
@@ -328,7 +344,9 @@ onMounted(() => {
 /*******************************************************************************
  * EXPOSE
  ******************************************************************************/
-defineExpose({ autoCompleteInstance });
+defineExpose({
+  autocompletePromise: promise,
+});
 </script>
 ```
 

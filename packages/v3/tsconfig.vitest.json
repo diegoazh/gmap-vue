@@ -4,10 +4,6 @@
   "compilerOptions": {
     "composite": true,
     "lib": [],
-    "types": [
-      "node",
-      "jsdom",
-      "google.maps"
-    ]
+    "types": ["node", "jsdom", "google.maps"]
   }
 }

@@ -18,8 +18,7 @@
         :path="path"
         @path_changed="updateEdited($event)"
         @rightclick="handleClickForDelete"
-      >
-      </gmv-polyline>
+      />
     </gmv-map>
 
     <div>
@@ -27,9 +26,10 @@
         :value="polylineGeojson"
         style="width: 100%; height: 200px"
         @input="readGeojson"
-      >
-      </textarea>
-      <div v-if="errorMessage">{{ errorMessage }}</div>
+      />
+      <div v-if="errorMessage">
+        {{ errorMessage }}
+      </div>
     </div>
   </div>
 </template>
@@ -70,9 +70,9 @@ export default {
     polylinePath: function () {
       if (!this.mvcPath) return null;
 
-      let path = [];
+      const path = [];
       for (let j = 0; j < this.mvcPath.getLength(); j++) {
-        let point = this.mvcPath.getAt(j);
+        const point = this.mvcPath.getAt(j);
         path.push({ lat: point.lat(), lng: point.lng() });
       }
       return path;
@@ -100,7 +100,7 @@ export default {
       try {
         this.polylineGeojson = $event.target.value;
 
-        var v = JSON.parse($event.target.value);
+        const v = JSON.parse($event.target.value);
 
         this.path = v.coordinates.map(([lng, lat]) => ({ lat, lng }));
 

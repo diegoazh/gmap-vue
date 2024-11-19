@@ -4,8 +4,8 @@
     class="map"
     :center="center"
     :zoom="7"
-    mapId="DEMO_MAP_ID"
-    mapKey="firstMap"
+    map-id="DEMO_MAP_ID"
+    map-key="firstMap"
   >
     <!-- <GmvInfoWindow
       :content="'<strong style=\'color:black\'>Marker 1</strong>'"
@@ -30,7 +30,7 @@
     class="map"
     :center="center"
     :zoom="7"
-    mapId="DEMO_MAP_ID"
+    map-id="DEMO_MAP_ID"
     :options="{ recycle: 'secondMap' }"
   >
     <!-- <GmvInfoWindow
@@ -49,16 +49,22 @@
   </GmvMap>
 </template>
 <script setup lang="ts">
-import type { MapLayer, Marker } from '@gmap-vue/v3/components';
+import { MapLayer, Marker } from '@gmap-vue/v3/components';
 import { useMapPromise } from '@gmap-vue/v3/composables';
-import { ComponentInstance, onMounted, ref } from 'vue';
+import { ComponentInstance } from 'vue';
+import { onMounted, ref } from 'vue';
 
-const mapRef = ref<ComponentInstance<typeof MapLayer> | null>(null);
-const mapRef2 = ref<ComponentInstance<typeof MapLayer> | null>(null);
-const markerRef = ref<ComponentInstance<typeof Marker> | null>(null);
-const markerRef2 = ref<ComponentInstance<typeof Marker> | null>(null);
+const mapRef = ref<ComponentInstance<typeof MapLayer>>();
+
+const mapRef2 = ref<ComponentInstance<typeof MapLayer>>();
+
+const markerRef = ref<ComponentInstance<typeof Marker>>();
+
+const markerRef2 = ref<ComponentInstance<typeof Marker>>();
 const infoWinOpen = ref<boolean>(false);
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
 const mapPromise = useMapPromise('firstMap');
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
 const mapPromise2 = useMapPromise('secondMap');
 const center = {
   lat: 1.32,
@@ -71,20 +77,34 @@ function toggleInfoWindow() {
 }
 
 onMounted(() => {
-  mapPromise?.then((map) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  mapPromise
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    .then((map) => {
+      if (map) {
+        setTimeout(() => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          map.panTo({ lat: 1.0, lng: 100.0 });
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          console.log(mapRef.value?.getRecycleKey());
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          console.log(mapRef2.value?.getRecycleKey());
+        }, 2000);
+      }
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    .catch((error: unknown) => {
+      throw error;
+    });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  mapPromise2.then((map) => {
     if (map) {
       setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         map.panTo({ lat: 1.0, lng: 100.0 });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         console.log(mapRef.value?.getRecycleKey());
-        console.log(mapRef2.value?.getRecycleKey());
-      }, 2000);
-    }
-  });
-  mapPromise2?.then((map) => {
-    if (map) {
-      setTimeout(() => {
-        map.panTo({ lat: 1.0, lng: 100.0 });
-        console.log(mapRef.value?.getRecycleKey());
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         console.log(mapRef2.value?.getRecycleKey());
       }, 2000);
     }

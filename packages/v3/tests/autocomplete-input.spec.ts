@@ -1,5 +1,7 @@
-import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
+import type { VueWrapper } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ComponentInstance } from 'vue';
 import { h } from 'vue';
 import { Autocomplete } from '../src/components';
 import * as composables from '../src/composables';
@@ -12,7 +14,7 @@ import {
 } from './mocks/global.mock';
 
 describe('AutocompleteInput component', () => {
-  let wrapper: VueWrapper<any, any>;
+  let wrapper: VueWrapper<unknown, ComponentInstance<Autocomplete>>;
 
   beforeEach(() => {
     vi.stubGlobal('google', googleMock);
@@ -40,9 +42,10 @@ describe('AutocompleteInput component', () => {
 
   it('should render a correct DOM and export an autocompletePromise', async () => {
     // given
-    const props = { strictBounds: true, autocompleteKey: 'myAutocomplete' };
-    wrapper = mount(Autocomplete, { attrs: { class: 'my-class' } });
-    const { autocompleteKey, ...propsInOptions } = props;
+    wrapper = mount(Autocomplete, {
+      attrs: { class: 'my-class' },
+      props: { slotRef: undefined },
+    });
 
     // when
     await flushPromises();
@@ -54,20 +57,18 @@ describe('AutocompleteInput component', () => {
     expect(wrapper.get('.my-class')).toBeDefined();
     expect(Object.keys(component.slots).length).toEqual(0);
     expect(autocompleteValues.options).toEqual({
-      ...propsInOptions,
       selectFirstOnEnter: true,
-      strictBounds: false,
     });
     expect(component.exposed?.autocompletePromise).instanceOf(Promise);
   });
 
   it('should has the right content in the slot', async () => {
     // given
-    const input = h('input');
+    const input = document.createElement('input');
     wrapper = mount(Autocomplete, {
       attrs: { class: 'my-class' },
-      props: { slotRef: input },
-      slots: { default: input },
+      props: { slotRef: input }, // Pass the real DOM element
+      slots: { default: () => h('input') }, // Keep the slot as a VNode
     });
 
     // when
@@ -80,7 +81,7 @@ describe('AutocompleteInput component', () => {
 
   it('should emit the correct events', async () => {
     // given
-    wrapper = mount(Autocomplete);
+    wrapper = mount(Autocomplete, { props: { slotRef: undefined } });
 
     // when
     await flushPromises();
@@ -110,7 +111,7 @@ describe('AutocompleteInput component', () => {
 
   it('should call useDestroyPromisesOnUnmounted with the custom key when the component is unmounted', async () => {
     // given
-    const props = { autocompleteKey: 'myAutocomplete' };
+    const props = { autocompleteKey: 'myAutocomplete', slotRef: undefined };
     const wrapper = mount(Autocomplete, { props });
 
     // when

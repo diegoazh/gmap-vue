@@ -21,8 +21,18 @@ import {
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { InjectionKey } from 'vue';
 
-const deferredPromisesList = new Map();
-const componentPromisesList = new Map();
+const deferredPromisesList = new Map<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  string | InjectionKey<Promise<any>>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  PromiseDeferred<any>
+>();
+const componentPromisesList = new Map<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  string | InjectionKey<Promise<any>>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Promise<any>
+>();
 
 /**
  * @param  {string|InjectionKey<Promise<T|undefined>>} key
@@ -53,7 +63,7 @@ function usePromise<T>(
     createPromises(key);
   }
 
-  return componentPromisesList.get(key);
+  return componentPromisesList.get(key) as Promise<T | undefined>;
 }
 
 /**
@@ -67,7 +77,7 @@ function usePromiseDeferred<T>(
     createPromises(key);
   }
 
-  return deferredPromisesList.get(key);
+  return deferredPromisesList.get(key) as PromiseDeferred<T>;
 }
 
 /**
@@ -81,7 +91,10 @@ export function useComponentPromiseFactory<T>(
   const promiseDeferred = usePromiseDeferred(key);
   const promise = usePromise(key);
 
-  return { promiseDeferred, promise };
+  return { promiseDeferred, promise } as {
+    promiseDeferred: PromiseDeferred<T>;
+    promise: Promise<T | undefined>;
+  };
 }
 
 /**

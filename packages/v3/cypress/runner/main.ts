@@ -1,17 +1,18 @@
 /// <reference types="vite/client" />
+import '@gmap-vue/v3/dist/style.css';
 import { createApp } from 'vue';
 import { createGmapVuePlugin } from '../../dist/main.es';
 import App from './components/App.vue';
-import '@gmap-vue/v3/dist/style.css';
 
 declare global {
   interface Window {
     google: typeof google;
 
-    [key: string | number | symbol]: any;
+    [key: string | number | symbol]: unknown;
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 window.app = createApp(App)
   .use(
     createGmapVuePlugin({

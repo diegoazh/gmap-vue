@@ -37,7 +37,9 @@ function updatePathOrPaths<
    * An event to detect when a paths change
    * @property {array} paths `this.$polygonObject.getPaths()` |
    */
-  return () => emits(eventName, fn());
+  return () => {
+    emits(eventName, fn());
+  };
 }
 
 /**

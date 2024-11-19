@@ -1,10 +1,10 @@
 import type {
-  PluginComponentConfig,
-  PluginComponentNames,
-  SinglePluginComponentConfig,
+  TPluginComponentConfig,
+  TPluginComponentNames,
+  ISinglePluginComponentConfig,
 } from '@/types';
 
-const componentConfigs: PluginComponentConfig = {
+const componentConfigs: TPluginComponentConfig = {
   GmvMap: {
     noBind: ['resizeBus', 'center', 'zoom', 'options'],
     twoWay: ['heading', 'mapTypeId', 'tilt'],
@@ -316,8 +316,8 @@ const componentConfigs: PluginComponentConfig = {
  * @returns {SinglePluginComponentConfigWithoutEvents}
  */
 export function getComponentPropsConfig(
-  componentName: PluginComponentNames,
-): Omit<SinglePluginComponentConfig, 'events'> {
+  componentName: TPluginComponentNames,
+): Omit<ISinglePluginComponentConfig, 'events'> {
   const { events, ...config } = componentConfigs[componentName];
   return config;
 }
@@ -331,7 +331,7 @@ export function getComponentPropsConfig(
  * @returns {string[]}
  */
 export function getComponentEventsConfig(
-  componentName: PluginComponentNames,
+  componentName: TPluginComponentNames,
   type?: 'auto' | 'manual',
 ): string[] {
   if (type) {
