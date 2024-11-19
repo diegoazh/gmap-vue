@@ -100,7 +100,7 @@
     "test:unit": "vitest --environment jsdom",
     "coverage": "vitest run --coverage",
     "test:e2e": "cypress install && start-server-and-test test:e2e:vite:server http://localhost:4173/ 'pnpm exec cypress open --e2e'",
-    "test:e2e:ci": "start-server-and-test test:e2e:vite:server http://localhost:4173/ 'pnpm exec cypress run --e2e'",
+    "test:e2e:ci": "cypress install && start-server-and-test test:e2e:vite:server http://localhost:4173/ 'pnpm exec cypress run --e2e'",
     "test:e2e:build": "pnpm run build && vite build --config cypress/runner/vite.config.mts",
     "test:e2e:preview": "vite preview --config cypress/runner/vite.config.mts",
     "test:e2e:vite:server": "pnpm run test:e2e:build && pnpm run test:e2e:preview",
