@@ -41,14 +41,14 @@ Explain to us how to get the same problem or provide a small example repository 
 - Node:
 - NPM:
 - Yarn:
+- PNPM:
 
 ## Package manager
 
 - [ ] NPM
 - [ ] Yarn
+- [ ] PNPM
 
 ## Plugin version
 
-- [ ] 1.4.x
-- [ ] 1.2.x
-- [ ] 1.0.x
+- version:

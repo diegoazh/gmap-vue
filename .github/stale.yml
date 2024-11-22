@@ -4,15 +4,13 @@ daysUntilStale: 1095
 daysUntilClose: 183
 # Issues with these labels will never be considered stale
 exemptLabels:
-  - backlog
-  - bugs
+  - "👨🏻‍💻 backlog"
+  - "👨🏻‍💻 bug"
   - help wanted
-  - ready for reviewers
-  - recheck
-  - stand by
-  - under investigation
-  - vulnerability
-  - wip
+  - "🛠️ recheck"
+  - "🛠️ stand by"
+  - "🛠️ under investigation"
+  - "🛟 security:vulnerability"
   # provided by default
   - pinned
   - security

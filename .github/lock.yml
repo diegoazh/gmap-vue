@@ -9,15 +9,13 @@ skipCreatedBefore: false
 
 # Issues and pull requests with these labels will be ignored. Set to `[]` to disable
 exemptLabels:
-  - backlog
-  - bugs
+  - "👨🏻‍💻 backlog"
+  - "👨🏻‍💻 bug"
   - help wanted
-  - ready for reviewers
-  - recheck
-  - stand by
-  - under investigation
-  - vulnerability
-  - wip
+  - "🛠️ recheck"
+  - "🛠️ stand by"
+  - "🛠️ under investigation"
+  - "🛟 security:vulnerability"
 
 # Label to add before locking, such as `outdated`. Set to `false` to disable
 lockLabel: outdated

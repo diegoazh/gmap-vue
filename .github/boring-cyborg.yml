@@ -7,20 +7,14 @@ labelPRBasedOnFilePath:
 
   # Complex: Add 'area/core' label to any change within the 'core' package
   core:
-    - packages/gmap-vue/src/*
-
-  tests:
-    - packages/gmap-vue/test/*
-
-  examples:
-    - packages/gmap-vue/examples/*
-
-  config:
-    - packages/gmap-vue/config/*
+    - packages/v3/src/*
 
   # Add 'test' label to any change to *.spec.js files within the source dir
-  test:
-    - packages/gmap-vue/src/**/*.spec.js
+  test:unit:
+    - packages/v3/tests/*
+
+  test:e2e:
+    - packages/v3/cypress/*
 
 ##### Greetings ########################################################################################################
 # Comment to be posted to welcome users when they open their first PR
@@ -38,7 +32,7 @@ labelPRBasedOnFilePath:
 ###### IssueLink Adder #################################################################################################
 # Insert Issue (Jira/Github etc) link in PR description based on the Issue ID in PR title.
 insertIssueLinkInPrDescription:
-   # specify the placeholder for the issue link that should be present in the description
+  # specify the placeholder for the issue link that should be present in the description
   descriptionIssuePlaceholderRegexp: "^Issue link: (.*)$"
   matchers:
     # you can have several matches - for different types of issues
@@ -83,9 +77,9 @@ checkUpToDate:
   # The default branch is "master", change the branch if you want to check against a different target branch
   targetBranch: master
   files:
-  # File paths that you want to check for
-  # In this example, it checks if the branch is up to date when alembic migrations are modified in the PR.
-  # It helps avoid multiple heads in alembic migrations in a collaborative development project.
+    # File paths that you want to check for
+    # In this example, it checks if the branch is up to date when alembic migrations are modified in the PR.
+    # It helps avoid multiple heads in alembic migrations in a collaborative development project.
     - airflow/migrations/*
     - airflow/migrations/**/*
     - airflow/alembic.ini
