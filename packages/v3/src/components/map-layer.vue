@@ -1,6 +1,6 @@
 <template>
   <div class="gmv-map-container">
-    <div ref="gmvMap" class="gmv-map" />
+    <div ref="gmvMapRef" class="gmv-map" />
     <div class="gmv-map-hidden">
       <!-- @slot The default slot is wrapped in a class that sets display: none; so by default any component you add to your map will be invisible. This is ok for most of the supplied components that interact directly with the Google map object, but it's not good if you want to bring up things like toolboxes, etc. -->
       <slot />
@@ -139,7 +139,7 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES AND EMITTERS
  ******************************************************************************/
-const gmvMap = useTemplateRef<HTMLElement | null>('gmvMap');
+const gmvMap = useTemplateRef<HTMLElement | null>('gmvMapRef');
 const emits = defineEmits<{
   bounds_changed: [value: google.maps.LatLngBounds | undefined];
   center_changed: [value: google.maps.LatLng | undefined];
