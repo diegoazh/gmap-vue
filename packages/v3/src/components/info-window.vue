@@ -1,6 +1,6 @@
 <template>
   <div class="info-window-container">
-    <div ref="gmvInfoWindow" class="info-window-content">
+    <div ref="gmvInfoWindowRef" class="info-window-content">
       <!-- so named because it will fly away to another component -->
       <!-- @slot Used to set your info window.  -->
       <slot />
@@ -82,7 +82,7 @@ const props = withDefaults(
 /*******************************************************************************
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
-const gmvInfoWindow = useTemplateRef<HTMLElement | null>('gmvInfoWindow');
+const gmvInfoWindow = useTemplateRef<HTMLElement | null>('gmvInfoWindowRef');
 const emits = defineEmits<{
   close: [];
   closeclick: [];

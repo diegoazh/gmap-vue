@@ -1,6 +1,6 @@
 <template>
   <div class="gmv-street-view-panorama-container">
-    <div ref="gmvStreetViewPanorama" class="gmv-street-view-panorama" />
+    <div ref="gmvStreetViewPanoramaRef" class="gmv-street-view-panorama" />
     <!-- @slot A default slot to render the street view panorama -->
     <slot></slot>
   </div>
@@ -100,7 +100,7 @@ const props = withDefaults(
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
 const gmvStreetViewPanorama = useTemplateRef<HTMLDivElement | null>(
-  'gmvStreetViewPanorama',
+  'gmvStreetViewPanoramaRef',
 );
 const emits = defineEmits<{
   closeclick: [value: Event];
