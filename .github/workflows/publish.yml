@@ -57,7 +57,7 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
         node-version: [18.x, 20.x, 22.x]
-        test-plan: [test, test:e2e]
+        test-plan: [test, "test:e2e"]
 
     steps:
       - uses: actions/checkout@v4
