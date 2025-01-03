@@ -8,13 +8,54 @@ on:
     branches: "*"
 
 jobs:
+  cache-and-install:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
   build:
+    name: Build Project
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Build package
+        working-directory: ./packages/v3
+        run: pnpm run build
+
+    outputs:
+      dist-folder: ./packages/v3/dist
+
+  test:
+    name: Build project
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
         node-version: [18.x, 20.x, 22.x]
-        os: [ubuntu-latest, windows-latest]
+        test-plan: [test, test:e2e]
 
     steps:
       - uses: actions/checkout@v4
@@ -30,16 +71,14 @@ jobs:
         run: |
           touch ./packages/v3/cypress/runner/.env
           echo VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }} >> ./packages/v3/cypress/runner/.env
-      - name: Run tests
-        run: pnpm run test
-      - name: Run e2e tests
-        run: pnpm run test:e2e
+      - name: Run Test Plan
+        run: pnpm run ${{ matrix.test-plan }}
 
   publish:
-    name: npm publish
-    runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master'}}
+    name: NPM publish
+    runs-on: macos-latest
     needs: [build]
+    if: ${{ github.ref == 'refs/heads/master'}}
 
     steps:
       - uses: actions/checkout@v4
@@ -47,13 +86,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22.x"
-      - name: Install pnpm
-        run: npm install --location=global pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Build package
-        working-directory: ./packages/v3
-        run: pnpm run build
       - name: Configure git credentials
         uses: OleksiyRudenko/gha-git-credentials@v2-latest
         with:

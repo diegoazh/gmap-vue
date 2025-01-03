@@ -5,7 +5,7 @@ on:
       - master
 
 jobs:
-  publish:
+  publish-docs:
     name: github pages
     runs-on: ubuntu-latest
 
