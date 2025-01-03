@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.3...gmv3_v2.1.4) (2025-01-03)
+
+
+### Bug Fixes
+
+* **v3:** update 'useTemplateRef' key ([#342](https://github.com/diegoazh/gmap-vue/issues/342)) ([b55f623](https://github.com/diegoazh/gmap-vue/commit/b55f623432650420942f11808959471d9f6481b2))
+
 ## [2.1.3](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.2...gmv3_v2.1.3) (2024-11-15)
 
 

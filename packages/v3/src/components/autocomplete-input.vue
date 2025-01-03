@@ -6,7 +6,7 @@
         - `attrs`, it's type is `object`, it's all attributes passed to the component ([vm.$attrs](https://vuejs.org/v2/api/?#vm-attrs))<br>
 			-->
     <slot :attrs="$attrs">
-      <input ref="gmvAutoCompleteInput" v-bind="$attrs" />
+      <input ref="gmvAutoCompleteInputRef" v-bind="$attrs" />
     </slot>
   </div>
 </template>
@@ -86,7 +86,7 @@ const props = withDefaults(
  * TEMPLATE REF, ATTRIBUTES, EMITTERS AND SLOTS
  ******************************************************************************/
 const gmvAutoCompleteInput = useTemplateRef<HTMLInputElement | null>(
-  'gmvAutoCompleteInput',
+  'gmvAutoCompleteInputRef',
 );
 const emits = defineEmits<{
   place_changed: [value: google.maps.places.PlaceResult];
