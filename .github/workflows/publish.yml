@@ -28,6 +28,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+    outputs:
+      lock-file: ./pnpm-lock.yaml
+
   build:
     name: Build Project
     runs-on: macos-latest
@@ -44,7 +47,6 @@ jobs:
       - name: Build package
         working-directory: ./packages/v3
         run: pnpm run build
-
     outputs:
       dist-folder: ./packages/v3/dist
 
