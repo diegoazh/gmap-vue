@@ -68,7 +68,7 @@ jobs:
   test:
     name: Test project on mac and linux
     runs-on: ${{ matrix.os }}
-    needs: [cache-and-install, build]
+    needs: [install-and-cache, build]
 
     strategy:
       matrix:
@@ -98,7 +98,7 @@ jobs:
   publish:
     name: NPM publish
     runs-on: linux-latest
-    needs: [cache-and-install, build, test]
+    needs: [install-and-cache, build, test]
     if: ${{ github.ref == 'refs/heads/master'}}
 
     steps:
