@@ -40,10 +40,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
+          cache: 'pnpm'
       - name: Download pnpm-lock.yaml artifact
         uses: actions/download-artifact@v3
         with:
@@ -72,12 +77,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      # - name: Install pnpm
-      #   run: npm install -g pnpm@9.15.2
       - name: Install dependencies
         run: pnpm install
       - name: Create env file
@@ -95,10 +102,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: 22.x
+          cache: 'pnpm'
       - name: Download pnpm-lock.yaml artifact
         uses: actions/download-artifact@v3
         with:
