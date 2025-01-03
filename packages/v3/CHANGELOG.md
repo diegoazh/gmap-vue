@@ -1,3 +1,11 @@
+## [2.1.5](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.4...gmv3_v2.1.5) (2025-01-03)
+
+
+### Bug Fixes
+
+* upgrade @docusaurus/core from 3.6.2 to 3.6.3 ([#343](https://github.com/diegoazh/gmap-vue/issues/343)) ([d5ca7ea](https://github.com/diegoazh/gmap-vue/commit/d5ca7ea8e72baf933ada171c1c1fef731fcc8429))
+* upgrade @docusaurus/preset-classic from 3.6.2 to 3.6.3 ([#344](https://github.com/diegoazh/gmap-vue/issues/344)) ([10b60e5](https://github.com/diegoazh/gmap-vue/commit/10b60e53ae2c75a2410f3a4107ba5799d8d761af))
+
 ## [2.1.4](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.3...gmv3_v2.1.4) (2025-01-03)
 
 
