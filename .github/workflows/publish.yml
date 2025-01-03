@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install pnpm
-        run: npm install -g pnpm@9.13.2
+        run: npm install -g pnpm@9.15.2
       - name: Install dependencies
         run: pnpm install
       - name: Create env file
