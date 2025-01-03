@@ -9,7 +9,7 @@ on:
 
 jobs:
   cache-and-install:
-    runs-on: macos-latest
+    runs-on: linux-latest
 
     steps:
       - name: Checkout
@@ -35,7 +35,7 @@ jobs:
 
   build:
     name: Build Project
-    runs-on: macos-latest
+    runs-on: linux-latest
     needs: [cache-and-install]
 
     steps:
@@ -71,36 +71,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
-        node-version: [18.x, 20.x, 22.x]
-        test-plan: [test, "test:e2e"]
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: pnpm install
-      - name: Create env file
-        run: |
-          touch ./packages/v3/cypress/runner/.env
-          echo VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }} >> ./packages/v3/cypress/runner/.env
-      - name: Run Test Plan
-        run: pnpm run ${{ matrix.test-plan }}
-
-  test-for-windows:
-    name: Test project on windows
-    runs-on: windows-latest
-    needs: [cache-and-install, build]
-
-    strategy:
-      matrix:
+        os: [ubuntu-latest, windows-latest]
         node-version: [18.x, 20.x, 22.x]
         test-plan: [test, "test:e2e"]
 
@@ -125,7 +96,7 @@ jobs:
 
   publish:
     name: NPM publish
-    runs-on: macos-latest
+    runs-on: linux-latest
     needs: [cache-and-install, build, test]
     if: ${{ github.ref == 'refs/heads/master'}}
 
