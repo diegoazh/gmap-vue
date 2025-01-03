@@ -8,7 +8,8 @@ on:
     branches: "*"
 
 jobs:
-  cache-and-install:
+  install-and-cache:
+    name: Install dependencies
     runs-on: linux-latest
 
     steps:
@@ -36,7 +37,7 @@ jobs:
   build:
     name: Build Project
     runs-on: linux-latest
-    needs: [cache-and-install]
+    needs: [install-and-cache]
 
     steps:
       - uses: actions/checkout@v4
