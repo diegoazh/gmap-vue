@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-vue-2-version/changelog/changelog" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.6.3">
+<title data-rh="true">Changelog | GmapVue Docs</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://diegoazh.github.io/gmap-vue/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://diegoazh.github.io/gmap-vue/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://diegoazh.github.io/gmap-vue/docs/vue-2-version/changelog/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Changelog | GmapVue Docs"><meta data-rh="true" name="description" content="3.5.2 (2022-03-12)"><meta data-rh="true" property="og:description" content="3.5.2 (2022-03-12)"><link data-rh="true" rel="icon" href="/gmap-vue/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://diegoazh.github.io/gmap-vue/docs/vue-2-version/changelog/"><link data-rh="true" rel="alternate" href="https://diegoazh.github.io/gmap-vue/docs/vue-2-version/changelog/" hreflang="en"><link data-rh="true" rel="alternate" href="https://diegoazh.github.io/gmap-vue/docs/vue-2-version/changelog/" hreflang="x-default"><link rel="alternate" type="application/rss+xml" href="/gmap-vue/blog/rss.xml" title="GmapVue Docs RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/gmap-vue/blog/atom.xml" title="GmapVue Docs Atom Feed"><link rel="stylesheet" href="/gmap-vue/assets/css/styles.dbc5a6e6.css">
+<script src="/gmap-vue/assets/js/runtime~main.d963ee6e.js" defer="defer"></script>
+<script src="/gmap-vue/assets/js/main.3ec1eb05.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const n=new URLSearchParams(window.location.search).entries();for(var[t,e]of n)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_UUVY" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/gmap-vue/"><div class="navbar__logo"><img src="/gmap-vue/img/logo.svg" alt="GmapVue Logo" class="themedComponent_AJeu themedComponent--light_Oynl"><img src="/gmap-vue/img/logo.svg" alt="GmapVue Logo" class="themedComponent_AJeu themedComponent--dark_sZ10"></div><b class="navbar__title text--truncate">GmapVue Docs</b></a><a class="navbar__item navbar__link" href="/gmap-vue/docs/vue-3-version/">version for Vue@3</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/gmap-vue/docs/vue-2-version/">version for Vue@2</a><a class="navbar__item navbar__link" href="/gmap-vue/blog">Blog</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/diegoazh/gmap-vue" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_Hok0"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_hAoF colorModeToggle_bIZN"><button class="clean-btn toggleButton_Ijkc toggleButtonDisabled_qWUS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite" aria-pressed="false"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_ruk7"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_M0fL"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_uRa5"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_b_ku"><div class="docsWrapper_NB8r"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_h6nG" type="button"></button><div class="docRoot_p4pA"><aside class="theme-doc-sidebar-container docSidebarContainer_St5s"><div class="sidebarViewport_XSlH"><div class="sidebar_liwM"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_QrDI"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/gmap-vue/docs/vue-2-version/">Introduction</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/gmap-vue/docs/category/guide">Guide</a><button aria-label="Expand sidebar category &#x27;Guide&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/gmap-vue/docs/category/api">API</a><button aria-label="Expand sidebar category &#x27;API&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/gmap-vue/docs/category/developers">Developers</a><button aria-label="Expand sidebar category &#x27;Developers&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/gmap-vue/docs/vue-2-version/changelog/">Changelog</a></li></ul></nav></div></div></aside><main class="docMainContainer_Nk8L"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_k9GV"><div class="docItemContainer_Irqb"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_RY8A" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/gmap-vue/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_BOLC"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">Changelog</span><meta itemprop="position" content="1"></li></ul></nav><div class="tocCollapsible_CCh9 theme-doc-toc-mobile tocMobile_eI9X"><button type="button" class="clean-btn tocCollapsibleButton_ouf_">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Changelog</h1></header><h2 class="anchor anchorWithStickyNavbar_FOpQ" id="352-2022-03-12"><a href="https://github.com/diegoazh/gmap-vue/compare/v3.5.1...v3.5.2" target="_blank" rel="noopener noreferrer">3.5.2</a> (2022-03-12)<a href="#352-2022-03-12" class="hash-link" aria-label="Direct link to 352-2022-03-12" title="Direct link to 352-2022-03-12">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes">Bug Fixes<a href="#bug-fixes" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> fix mapped props and kml-layer component (<a href="https://github.com/diegoazh/gmap-vue/commit/2cc7157fd506555789d167b0327e9f40dc80e742" target="_blank" rel="noopener noreferrer">2cc7157</a>)</li>
+<li><strong>gmap-vue:</strong> move from webpack to rollup and make differente builds (<a href="https://github.com/diegoazh/gmap-vue/commit/dbafc845a9b38389f773e20d666ac2b89de0a875" target="_blank" rel="noopener noreferrer">dbafc84</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/231" target="_blank" rel="noopener noreferrer">#231</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="351-2022-03-03"><a href="https://github.com/diegoazh/gmap-vue/compare/v3.5.0...v3.5.1" target="_blank" rel="noopener noreferrer">3.5.1</a> (2022-03-03)<a href="#351-2022-03-03" class="hash-link" aria-label="Direct link to 351-2022-03-03" title="Direct link to 351-2022-03-03">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-1">Bug Fixes<a href="#bug-fixes-1" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add mapped props to cluster-icon component (<a href="https://github.com/diegoazh/gmap-vue/commit/f008a35595c92fc075286400af4c80d47b389113" target="_blank" rel="noopener noreferrer">f008a35</a>)</li>
+</ul>
+<h1><a href="https://github.com/diegoazh/gmap-vue/compare/v3.4.5...v3.5.0" target="_blank" rel="noopener noreferrer">3.5.0</a> (2022-03-03)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features">Features<a href="#features" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add render, on-cluster-click and options props to cluster component (<a href="https://github.com/diegoazh/gmap-vue/commit/8552070f43395ac138601405a3aa2906a5004fe9" target="_blank" rel="noopener noreferrer">8552070</a>)</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="345-2022-03-03"><a href="https://github.com/diegoazh/gmap-vue/compare/v3.4.4...v3.4.5" target="_blank" rel="noopener noreferrer">3.4.5</a> (2022-03-03)<a href="#345-2022-03-03" class="hash-link" aria-label="Direct link to 345-2022-03-03" title="Direct link to 345-2022-03-03">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-2">Bug Fixes<a href="#bug-fixes-2" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add missing options on marker-clusterer constructor (<a href="https://github.com/diegoazh/gmap-vue/commit/7b4d5739b01c2db38a9e028309a33f46da282ffb" target="_blank" rel="noopener noreferrer">7b4d573</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/255" target="_blank" rel="noopener noreferrer">#255</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="344-2022-03-02"><a href="https://github.com/diegoazh/gmap-vue/compare/v3.4.3...v3.4.4" target="_blank" rel="noopener noreferrer">3.4.4</a> (2022-03-02)<a href="#344-2022-03-02" class="hash-link" aria-label="Direct link to 344-2022-03-02" title="Direct link to 344-2022-03-02">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-3">Bug Fixes<a href="#bug-fixes-3" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> set default vallue of contentn prop to undefined (<a href="https://github.com/diegoazh/gmap-vue/commit/bee86ad6d5537b271676262df18b868356306b12" target="_blank" rel="noopener noreferrer">bee86ad</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/254" target="_blank" rel="noopener noreferrer">#254</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="343-2022-02-21"><a href="https://github.com/diegoazh/gmap-vue/compare/v3.4.2...v3.4.3" target="_blank" rel="noopener noreferrer">3.4.3</a> (2022-02-21)<a href="#343-2022-02-21" class="hash-link" aria-label="Direct link to 343-2022-02-21" title="Direct link to 343-2022-02-21">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-4">Bug Fixes<a href="#bug-fixes-4" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add prop content to info-window component (<a href="https://github.com/diegoazh/gmap-vue/commit/29dfacee6526ea5e5754f62306ff2d82f363553a" target="_blank" rel="noopener noreferrer">29dface</a>)</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="342-2022-02-19"><a href="https://github.com/diegoazh/gmap-vue/compare/v3.4.1...v3.4.2" target="_blank" rel="noopener noreferrer">3.4.2</a> (2022-02-19)<a href="#342-2022-02-19" class="hash-link" aria-label="Direct link to 342-2022-02-19" title="Direct link to 342-2022-02-19">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-5">Bug Fixes<a href="#bug-fixes-5" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add missing props to all shapes for drawing over the map (<a href="https://github.com/diegoazh/gmap-vue/commit/c39c50048ebbdc1411701bebd4f37e9718c0ed6e" target="_blank" rel="noopener noreferrer">c39c500</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/138" target="_blank" rel="noopener noreferrer">#138</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="341-2022-02-18"><a href="https://github.com/diegoazh/gmap-vue/compare/v3.4.0...v3.4.1" target="_blank" rel="noopener noreferrer">3.4.1</a> (2022-02-18)<a href="#341-2022-02-18" class="hash-link" aria-label="Direct link to 341-2022-02-18" title="Direct link to 341-2022-02-18">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-6">Bug Fixes<a href="#bug-fixes-6" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> change repaint method by render (<a href="https://github.com/diegoazh/gmap-vue/commit/4d7b7c93de0ed517395e2c18fa52b0aafb565450" target="_blank" rel="noopener noreferrer">4d7b7c9</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/247" target="_blank" rel="noopener noreferrer">#247</a></li>
+<li><strong>gmap-vue:</strong> clear interval when callback was successfully called (<a href="https://github.com/diegoazh/gmap-vue/commit/302c6e1efba0976fb5e13f44dabdfd2a24bb6ed5" target="_blank" rel="noopener noreferrer">302c6e1</a>)</li>
+</ul>
+<h1><a href="https://github.com/diegoazh/gmap-vue/compare/v3.3.0...v3.4.0" target="_blank" rel="noopener noreferrer">3.4.0</a> (2022-02-16)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-1">Features<a href="#features-1" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> update kml-layer adding all options as props (<a href="https://github.com/diegoazh/gmap-vue/commit/d8cb91fa6acb3c7d28d717705c1a81206016cf22" target="_blank" rel="noopener noreferrer">d8cb91f</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/148" target="_blank" rel="noopener noreferrer">#148</a></li>
+</ul>
+<h1><a href="https://github.com/diegoazh/gmap-vue/compare/v3.2.0...v3.3.0" target="_blank" rel="noopener noreferrer">3.3.0</a> (2022-02-16)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-2">Features<a href="#features-2" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add dynamic loading for google maps api (<a href="https://github.com/diegoazh/gmap-vue/commit/7825dbabd16cbe6181d2a6f33fc04d4830d3c4fb" target="_blank" rel="noopener noreferrer">7825dba</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/239" target="_blank" rel="noopener noreferrer">#239</a></li>
+</ul>
+<h1><a href="https://github.com/diegoazh/gmap-vue/compare/v3.1.0...v3.2.0" target="_blank" rel="noopener noreferrer">3.2.0</a> (2022-02-15)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-3">Features<a href="#features-3" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> auto detect when google maps api is loaded (<a href="https://github.com/diegoazh/gmap-vue/commit/93a9eccbe4729e26d83d773805bc11c59e91891b" target="_blank" rel="noopener noreferrer">93a9ecc</a>)</li>
+</ul>
+<h1><a href="https://github.com/diegoazh/gmap-vue/compare/v3.0.0...v3.1.0" target="_blank" rel="noopener noreferrer">3.1.0</a> (2022-02-15)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-4">Features<a href="#features-4" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> emit update<!-- -->:position<!-- --> event on markers (<a href="https://github.com/diegoazh/gmap-vue/commit/6a34bb765d76822e7b5ada2875955a8ce48cf923" target="_blank" rel="noopener noreferrer">6a34bb7</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/14" target="_blank" rel="noopener noreferrer">#14</a></li>
+</ul>
+<h1><a href="https://github.com/diegoazh/gmap-vue/compare/v2.0.4...v3.0.0" target="_blank" rel="noopener noreferrer">3.0.0</a> (2022-02-13)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-5">Features<a href="#features-5" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add custom callback option to config (<a href="https://github.com/diegoazh/gmap-vue/commit/b8409e39702114e6b1b4f18923ca6840ee3a2207" target="_blank" rel="noopener noreferrer">b8409e3</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/143" target="_blank" rel="noopener noreferrer">#143</a></li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="breaking-changes">BREAKING CHANGES<a href="#breaking-changes" class="hash-link" aria-label="Direct link to BREAKING CHANGES" title="Direct link to BREAKING CHANGES">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> reuse existing google maps api and rename functions</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="204-2022-02-11"><a href="https://github.com/diegoazh/gmap-vue/compare/v2.0.3...v2.0.4" target="_blank" rel="noopener noreferrer">2.0.4</a> (2022-02-11)<a href="#204-2022-02-11" class="hash-link" aria-label="Direct link to 204-2022-02-11" title="Direct link to 204-2022-02-11">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-7">Bug Fixes<a href="#bug-fixes-7" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> fix fields error on autocomplete component (<a href="https://github.com/diegoazh/gmap-vue/commit/a6b8712097b863894a7839ab17f1640abc993f85" target="_blank" rel="noopener noreferrer">a6b8712</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/118" target="_blank" rel="noopener noreferrer">#118</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="203-2022-02-09"><a href="https://github.com/diegoazh/gmap-vue/compare/v2.0.2...v2.0.3" target="_blank" rel="noopener noreferrer">2.0.3</a> (2022-02-09)<a href="#203-2022-02-09" class="hash-link" aria-label="Direct link to 203-2022-02-09" title="Direct link to 203-2022-02-09">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-8">Bug Fixes<a href="#bug-fixes-8" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> fix error loading cluster (<a href="https://github.com/diegoazh/gmap-vue/commit/a2cb9badf2e1e155b4622dd0e2273abe6d5852e3" target="_blank" rel="noopener noreferrer">a2cb9ba</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/234" target="_blank" rel="noopener noreferrer">#234</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="202-2021-11-27"><a href="https://github.com/diegoazh/gmap-vue/compare/v2.0.1...v2.0.2" target="_blank" rel="noopener noreferrer">2.0.2</a> (2021-11-27)<a href="#202-2021-11-27" class="hash-link" aria-label="Direct link to 202-2021-11-27" title="Direct link to 202-2021-11-27">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-9">Bug Fixes<a href="#bug-fixes-9" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>docs:</strong> fix documentation issues with webpack config and build (<a href="https://github.com/diegoazh/gmap-vue/commit/1dfed1377becab61e547a0586f6437ee43cad1e8" target="_blank" rel="noopener noreferrer">1dfed13</a>)</li>
+<li><strong>docs:</strong> fix vuepress alert on main readme (<a href="https://github.com/diegoazh/gmap-vue/commit/ad57f6422be91e0b89b5a8e08a03af23688a2e7a" target="_blank" rel="noopener noreferrer">ad57f64</a>)</li>
+</ul>
+<h1>Change Log</h1>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="201-2021-11-27"><a href="https://github.com/diegoazh/gmap-vue/compare/v2.0.0...v2.0.1" target="_blank" rel="noopener noreferrer">2.0.1</a> (2021-11-27)<a href="#201-2021-11-27" class="hash-link" aria-label="Direct link to 201-2021-11-27" title="Direct link to 201-2021-11-27">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-10">Bug Fixes<a href="#bug-fixes-10" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>docs:</strong> update documentation with the last changes (<a href="https://github.com/diegoazh/gmap-vue/commit/1caf43f2cea081ab7c7f56fc8737fd331acb2412" target="_blank" rel="noopener noreferrer">1caf43f</a>)</li>
+<li><strong>gmap-vue:</strong> fix build errors on the plugin (<a href="https://github.com/diegoazh/gmap-vue/commit/dc70306a6d871abbeccec9346e73a5d21b01a035" target="_blank" rel="noopener noreferrer">dc70306</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/226" target="_blank" rel="noopener noreferrer">#226</a></li>
+<li><strong>gmap-vue:</strong> remove semantic-release-monorepo (<a href="https://github.com/diegoazh/gmap-vue/commit/854ebd2bb108fc97b81a239b51d0f06fd2523e79" target="_blank" rel="noopener noreferrer">854ebd2</a>)</li>
+</ul>
+<h1><a href="https://github.com/diegoazh/gmap-vue/compare/v1.2.2...v2.0.0" target="_blank" rel="noopener noreferrer">2.0.0</a> (2021-11-24) [<strong>DEPRECATED</strong>]</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-11">Bug Fixes<a href="#bug-fixes-11" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li>
+<p><strong>all:</strong> split build process in two steps and remove lerna (<a href="https://github.com/diegoazh/gmap-vue/commit/6d7f779e483a5737a4b5d34260ed82e7420bf4ba" target="_blank" rel="noopener noreferrer">6d7f779</a>)</p>
+</li>
+<li>
+<p><strong>all:</strong> update vuejs version to the latest one (<a href="https://github.com/diegoazh/gmap-vue/commit/e22b2764a2a1ee4052288f520e74c2ae84516e7b" target="_blank" rel="noopener noreferrer">e22b276</a>)</p>
+</li>
+<li>
+<p><strong>docs:</strong> add exact webpack 4 to docs to avoid vuepress build errors (<a href="https://github.com/diegoazh/gmap-vue/commit/797d92ee2f65ed6a08bf99b8c56b872c822fc701" target="_blank" rel="noopener noreferrer">797d92e</a>)</p>
+</li>
+<li>
+<p><strong>docs:</strong> add webpack 4 to documentation to solve vuepress build errors (<a href="https://github.com/diegoazh/gmap-vue/commit/0ade630bf37ce708b105d1dea9efb09dc37ae5ae" target="_blank" rel="noopener noreferrer">0ade630</a>)</p>
+</li>
+<li>
+<p><strong>docs:</strong> wip on documentation and gmap vue (<a href="https://github.com/diegoazh/gmap-vue/commit/eb777dcbb57a395220285857ff74d04b6407a3a0" target="_blank" rel="noopener noreferrer">eb777dc</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> add to way events for circle component (<a href="https://github.com/diegoazh/gmap-vue/commit/774f287bfd0bd695c4fae964af0d5973503df1f6" target="_blank" rel="noopener noreferrer">774f287</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> change guide menu order (<a href="https://github.com/diegoazh/gmap-vue/commit/6e2bbfbd06cefd8607e517ef84cdd8fcb29e4059" target="_blank" rel="noopener noreferrer">6e2bbfb</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> fix documentation for autocomplete and circle (<a href="https://github.com/diegoazh/gmap-vue/commit/a289c12f4a21038d4f99698642285779f684bbdc" target="_blank" rel="noopener noreferrer">a289c12</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> remove unused file (<a href="https://github.com/diegoazh/gmap-vue/commit/d15ebd8166b6b2692790a2a8e036f2e8ebc3d839" target="_blank" rel="noopener noreferrer">d15ebd8</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> update documentation for GmapCircle component (<a href="https://github.com/diegoazh/gmap-vue/commit/405abd677728539cfcd9a596be46a0dadfc186a4" target="_blank" rel="noopener noreferrer">405abd6</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> update documentation of GmapCluster (<a href="https://github.com/diegoazh/gmap-vue/commit/b06464c689d453183fb013460ee5296a5a725c14" target="_blank" rel="noopener noreferrer">b06464c</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> upgrade snyk from 1.370.1 to 1.372.0 (<a href="https://github.com/diegoazh/gmap-vue/issues/85" target="_blank" rel="noopener noreferrer">#85</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/916cb2bb7f08d1487d665fd255ac74954cfe3f77" target="_blank" rel="noopener noreferrer">916cb2b</a>)</p>
+</li>
+<li>
+<p><strong>documentation:</strong> upgrade vuepress from 1.5.4 to 1.6.0 (<a href="https://github.com/diegoazh/gmap-vue/issues/108" target="_blank" rel="noopener noreferrer">#108</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/dac60ada3e1e8321f92f6e6ee01b746b2b5e16ed" target="_blank" rel="noopener noreferrer">dac60ad</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> add core-js and regenerator-runtime to use new features (<a href="https://github.com/diegoazh/gmap-vue/commit/fd59848e4305efe4e1d04c8df7f59a581a34a914" target="_blank" rel="noopener noreferrer">fd59848</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> add description for props (<a href="https://github.com/diegoazh/gmap-vue/commit/63e18f4b0d238ea906e39be5c510f12c281d741d" target="_blank" rel="noopener noreferrer">63e18f4</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> fix linter errors (<a href="https://github.com/diegoazh/gmap-vue/commit/640000acbc61997bed689de0d3970e8b0e81b02e" target="_blank" rel="noopener noreferrer">640000a</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> fix linter errors on test and examples folder (<a href="https://github.com/diegoazh/gmap-vue/commit/44794042d45db51d797c706b911b271305cd7de8" target="_blank" rel="noopener noreferrer">4479404</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> fix ref conflict on autocomplete component (<a href="https://github.com/diegoazh/gmap-vue/issues/101" target="_blank" rel="noopener noreferrer">#101</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/0471e329f9c0be4d0a9e8866579dd3c50f615adc" target="_blank" rel="noopener noreferrer">0471e32</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> fix some code styles and linter rules (<a href="https://github.com/diegoazh/gmap-vue/commit/03540f743def3f83b37ff295bdbfacc9f6ce51f5" target="_blank" rel="noopener noreferrer">03540f7</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> fix tests and styles (<a href="https://github.com/diegoazh/gmap-vue/commit/b06aa81360877132ed9f47a12c15c62d4983965c" target="_blank" rel="noopener noreferrer">b06aa81</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> remove independen helper function files (<a href="https://github.com/diegoazh/gmap-vue/commit/c08cbb8b51a286cf39602a44ff239834bb4802fb" target="_blank" rel="noopener noreferrer">c08cbb8</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> remove unnecesary async/await (<a href="https://github.com/diegoazh/gmap-vue/commit/1fba907dd4f1e3b6f9943d9ee6736b31261f6e59" target="_blank" rel="noopener noreferrer">1fba907</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> remove unnecesary style block (<a href="https://github.com/diegoazh/gmap-vue/commit/3b2b87aeffb35e91e076a3e49b64793856481531" target="_blank" rel="noopener noreferrer">3b2b87a</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> replace deprecated uglyfy plugin for terser plugin (<a href="https://github.com/diegoazh/gmap-vue/commit/ac7477711d095b95d6c2d5f23ae8d5068ea9227f" target="_blank" rel="noopener noreferrer">ac74777</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> update link to source code (<a href="https://github.com/diegoazh/gmap-vue/commit/f4c3dce7cb3c3d6778ea37d01d56edfe35aa0116" target="_blank" rel="noopener noreferrer">f4c3dce</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> update mappedProps name (<a href="https://github.com/diegoazh/gmap-vue/commit/f439eab9773f5cfa4ce9e763b07e11e722b4840b" target="_blank" rel="noopener noreferrer">f439eab</a>)</p>
+</li>
+<li>
+<p><strong>gmap-vue:</strong> use async instead promise (<a href="https://github.com/diegoazh/gmap-vue/commit/af5da48f27c82199c8969e86e59cb3b3e14167e4" target="_blank" rel="noopener noreferrer">af5da48</a>)</p>
+</li>
+<li>
+<p>packages/documentation/package.json &amp; packages/documentation/package-lock.json to reduce vulnerabilities (<a href="https://github.com/diegoazh/gmap-vue/commit/c2a8b0ac291fa84a76f58c817ae4978d27a3b183" target="_blank" rel="noopener noreferrer">c2a8b0a</a>)</p>
+</li>
+<li>
+<p><strong>root:</strong> add content for need helps and vulnerability issue templates (<a href="https://github.com/diegoazh/gmap-vue/commit/aed11bcd948721791f443489481a514684b568ea" target="_blank" rel="noopener noreferrer">aed11bc</a>)</p>
+</li>
+<li>
+<p><strong>root:</strong> moving to semantic-release instead of using lerna version (<a href="https://github.com/diegoazh/gmap-vue/commit/9dae26f11738201dce82e4a73238f2e82891eddc" target="_blank" rel="noopener noreferrer">9dae26f</a>)</p>
+</li>
+<li>
+<p><strong>tmp:</strong> add incomplete work to the branch (<a href="https://github.com/diegoazh/gmap-vue/commit/db4d4b0e387adba14e4ff05866c141369fc6af93" target="_blank" rel="noopener noreferrer">db4d4b0</a>)</p>
+</li>
+<li>
+<p>upgrade @google/markerclustererplus from 5.1.0 to 5.1.3 (<a href="https://github.com/diegoazh/gmap-vue/commit/909eca95dd2205e6b55a900b03156d4c4798b3de" target="_blank" rel="noopener noreferrer">909eca9</a>)</p>
+</li>
+<li>
+<p>upgrade snyk from 1.372.0 to 1.373.1 (<a href="https://github.com/diegoazh/gmap-vue/issues/87" target="_blank" rel="noopener noreferrer">#87</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/0431d1b1facb118aa73a3f2f17195b72e0695226" target="_blank" rel="noopener noreferrer">0431d1b</a>)</p>
+</li>
+<li>
+<p>upgrade snyk from 1.373.1 to 1.401.0 (<a href="https://github.com/diegoazh/gmap-vue/commit/deb8c7249849adf3140e35d7b245d8466522483a" target="_blank" rel="noopener noreferrer">deb8c72</a>)</p>
+</li>
+<li>
+<p>upgrade vuepress from 1.5.3 to 1.5.4 (<a href="https://github.com/diegoazh/gmap-vue/issues/91" target="_blank" rel="noopener noreferrer">#91</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/0125598bc8009a210d43dc9cc6708ce5729de26e" target="_blank" rel="noopener noreferrer">0125598</a>)</p>
+</li>
+<li>
+<p>fix(gmap-vue)!: change to use default slot and fallback content (<a href="https://github.com/diegoazh/gmap-vue/commit/d53cbbe5406507df106566da8fac82de8ef285fe" target="_blank" rel="noopener noreferrer">d53cbbe</a>)</p>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-6">Features<a href="#features-6" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>all:</strong> remove unnecesary files and upgrade dependcies (<a href="https://github.com/diegoazh/gmap-vue/commit/1efc34edbc01973579785a692fb4949c90f019be" target="_blank" rel="noopener noreferrer">1efc34e</a>)</li>
+<li><strong>all:</strong> update marker component and its documentation (<a href="https://github.com/diegoazh/gmap-vue/commit/4ee095c67052d82dda611ea05980efe2dbd5367a" target="_blank" rel="noopener noreferrer">4ee095c</a>)</li>
+<li><strong>docs:</strong> add link to github repo in the header menu (<a href="https://github.com/diegoazh/gmap-vue/commit/d906345a11b18a2a06b41f9c779f108f66d6979b" target="_blank" rel="noopener noreferrer">d906345</a>)</li>
+<li><strong>docs:</strong> update and improve documentation (<a href="https://github.com/diegoazh/gmap-vue/commit/f3f999dec678542791b28752d25369d0d5c081bc" target="_blank" rel="noopener noreferrer">f3f999d</a>)</li>
+<li><strong>documentation:</strong> add documentation for circle component (<a href="https://github.com/diegoazh/gmap-vue/commit/01986fa65f2610ffb2b25589d1c6c2a8b4696fc9" target="_blank" rel="noopener noreferrer">01986fa</a>)</li>
+<li><strong>documentation:</strong> add documentation for cluster component (<a href="https://github.com/diegoazh/gmap-vue/commit/c6b93ab65dce2e53b4666402260e6715583c9ce8" target="_blank" rel="noopener noreferrer">c6b93ab</a>)</li>
+<li><strong>documentation:</strong> update and unify docs for autocomplete component (<a href="https://github.com/diegoazh/gmap-vue/commit/41702bd8615a4e174cc0b143748c81dfda182e49" target="_blank" rel="noopener noreferrer">41702bd</a>)</li>
+<li><strong>gmap-vue:</strong> add cluster.vue component and remove cluster.js (<a href="https://github.com/diegoazh/gmap-vue/commit/3398d5f28448ce3150b2d9fe4e3fefc13dc0c8f1" target="_blank" rel="noopener noreferrer">3398d5f</a>)</li>
+<li><strong>gmap-vue:</strong> move drawing-manager,heatmap and info-window to vue files (<a href="https://github.com/diegoazh/gmap-vue/commit/66d80643dfae26e1284f693f8b8949407e0ef495" target="_blank" rel="noopener noreferrer">66d8064</a>)</li>
+<li><strong>gmap-vue:</strong> rename all components to follow vue linter rules (<a href="https://github.com/diegoazh/gmap-vue/commit/c2df328acf8c3b4653feeab8a3ca6246d9969f7d" target="_blank" rel="noopener noreferrer">c2df328</a>)</li>
+<li><strong>gmap-vue:</strong> update kml-layer component to a vue file (<a href="https://github.com/diegoazh/gmap-vue/commit/ca4056af1b1f8b55012afd8854c1fab1a5f81f4b" target="_blank" rel="noopener noreferrer">ca4056a</a>)</li>
+<li><strong>gmap-vue:</strong> upgrade map.vue (<a href="https://github.com/diegoazh/gmap-vue/commit/38fe7c48602e7ae1dbb2367738220c63155e4ed8" target="_blank" rel="noopener noreferrer">38fe7c4</a>)</li>
+<li><strong>gmap-vue:</strong> upgrade markerclustererplus (<a href="https://github.com/diegoazh/gmap-vue/commit/e2aebb31977857489e04b82001820ffee5640d52" target="_blank" rel="noopener noreferrer">e2aebb3</a>)</li>
+<li><strong>gmap-vue:</strong> upgrade markerclustererplus (<a href="https://github.com/diegoazh/gmap-vue/commit/e64eafad74dd3c250cbb376250a669901f78fad6" target="_blank" rel="noopener noreferrer">e64eafa</a>)</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="breaking-changes-1">BREAKING CHANGES<a href="#breaking-changes-1" class="hash-link" aria-label="Direct link to BREAKING CHANGES" title="Direct link to BREAKING CHANGES">​</a></h3>
+<ul>
+<li>we remove the slot input and use the default one</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="150-2020-10-31"><a href="https://github.com/diegoazh/gmap-vue/compare/gmap-vue@1.4.1...gmap-vue@1.5.0" target="_blank" rel="noopener noreferrer">1.5.0</a> (2020-10-31)<a href="#150-2020-10-31" class="hash-link" aria-label="Direct link to 150-2020-10-31" title="Direct link to 150-2020-10-31">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="141-2020-10-30"><a href="https://github.com/diegoazh/gmap-vue/compare/gmap-vue@1.4.0...gmap-vue@1.4.1" target="_blank" rel="noopener noreferrer">1.4.1</a> (2020-10-30)<a href="#141-2020-10-30" class="hash-link" aria-label="Direct link to 141-2020-10-30" title="Direct link to 141-2020-10-30">​</a></h2>
+<p><strong>Note:</strong> Version bump only for package gmap-vue</p>
+<h1>1.4.0 (2020-08-09)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-12">Bug Fixes<a href="#bug-fixes-12" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>all:</strong> update vuejs version to the latest one (<a href="https://github.com/diegoazh/gmap-vue/commit/e22b2764a2a1ee4052288f520e74c2ae84516e7b" target="_blank" rel="noopener noreferrer">e22b276</a>)</li>
+<li><strong>gmap-vue:</strong> fix hit and drawer map components and examples (<a href="https://github.com/diegoazh/gmap-vue/issues/56" target="_blank" rel="noopener noreferrer">#56</a>) (<a href="https://github.com/diegoazh/gmap-vue/issues/57" target="_blank" rel="noopener noreferrer">#57</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/778a927318ca27373d64abd33f1675ed7fa0cee8" target="_blank" rel="noopener noreferrer">778a927</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/44" target="_blank" rel="noopener noreferrer">#44</a> <a href="https://github.com/diegoazh/gmap-vue/issues/44" target="_blank" rel="noopener noreferrer">#44</a></li>
+<li><strong>gmap-vue:</strong> fix tests and styles (<a href="https://github.com/diegoazh/gmap-vue/commit/b06aa81360877132ed9f47a12c15c62d4983965c" target="_blank" rel="noopener noreferrer">b06aa81</a>)</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="121-2020-08-03">1.2.1 (2020-08-03)<a href="#121-2020-08-03" class="hash-link" aria-label="Direct link to 1.2.1 (2020-08-03)" title="Direct link to 1.2.1 (2020-08-03)">​</a></h2>
+<h1>1.2.0 (2020-08-03)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-7">Features<a href="#features-7" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add a drawing manager component (<a href="https://github.com/diegoazh/gmap-vue/issues/19" target="_blank" rel="noopener noreferrer">#19</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/d7afa940ca1f81e4241c058e99c5abb154170840" target="_blank" rel="noopener noreferrer">d7afa94</a>)</li>
+<li><strong>gmap-vue:</strong> add a heatmap layer component  (<a href="https://github.com/diegoazh/gmap-vue/issues/8" target="_blank" rel="noopener noreferrer">#8</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/5d7d9c0885e430948af7510ade9607577a5bac73" target="_blank" rel="noopener noreferrer">5d7d9c0</a>)</li>
+</ul>
+<h1>1.3.0 (2020-08-08)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="bug-fixes-13">Bug Fixes<a href="#bug-fixes-13" class="hash-link" aria-label="Direct link to Bug Fixes" title="Direct link to Bug Fixes">​</a></h3>
+<ul>
+<li><strong>all:</strong> update vuejs version to the latest one (<a href="https://github.com/diegoazh/gmap-vue/commit/50ffde7f8794cfe4c04462edb817f832f801c173" target="_blank" rel="noopener noreferrer">50ffde7</a>)</li>
+<li><strong>gmap-vue:</strong> fix hit and drawer map components and examples (<a href="https://github.com/diegoazh/gmap-vue/issues/56" target="_blank" rel="noopener noreferrer">#56</a>) (<a href="https://github.com/diegoazh/gmap-vue/issues/57" target="_blank" rel="noopener noreferrer">#57</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/778a927318ca27373d64abd33f1675ed7fa0cee8" target="_blank" rel="noopener noreferrer">778a927</a>), closes <a href="https://github.com/diegoazh/gmap-vue/issues/44" target="_blank" rel="noopener noreferrer">#44</a> <a href="https://github.com/diegoazh/gmap-vue/issues/44" target="_blank" rel="noopener noreferrer">#44</a></li>
+<li><strong>gmap-vue:</strong> fix tests and styles (<a href="https://github.com/diegoazh/gmap-vue/commit/d014f189f1ba7ec7183a36710463f16acf574106" target="_blank" rel="noopener noreferrer">d014f18</a>)</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_FOpQ" id="121-2020-08-03-1">1.2.1 (2020-08-03)<a href="#121-2020-08-03-1" class="hash-link" aria-label="Direct link to 1.2.1 (2020-08-03)" title="Direct link to 1.2.1 (2020-08-03)">​</a></h2>
+<h1>1.2.0 (2020-08-03)</h1>
+<h3 class="anchor anchorWithStickyNavbar_FOpQ" id="features-8">Features<a href="#features-8" class="hash-link" aria-label="Direct link to Features" title="Direct link to Features">​</a></h3>
+<ul>
+<li><strong>gmap-vue:</strong> add a drawing manager component (<a href="https://github.com/diegoazh/gmap-vue/issues/19" target="_blank" rel="noopener noreferrer">#19</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/d7afa940ca1f81e4241c058e99c5abb154170840" target="_blank" rel="noopener noreferrer">d7afa94</a>)</li>
+<li><strong>gmap-vue:</strong> add a heatmap layer component  (<a href="https://github.com/diegoazh/gmap-vue/issues/8" target="_blank" rel="noopener noreferrer">#8</a>) (<a href="https://github.com/diegoazh/gmap-vue/commit/5d7d9c0885e430948af7510ade9607577a5bac73" target="_blank" rel="noopener noreferrer">5d7d9c0</a>)</li>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/diegoazh/gmap-vue/docs/vue-2-version/changelog/changelog.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_A2_w" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_mhxB"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/gmap-vue/docs/vue-2-version/developers/license"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">MIT License</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_Hgz0 thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#352-2022-03-12" class="table-of-contents__link toc-highlight">3.5.2 (2022-03-12)</a><ul><li><a href="#bug-fixes" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#351-2022-03-03" class="table-of-contents__link toc-highlight">3.5.1 (2022-03-03)</a><ul><li><a href="#bug-fixes-1" class="table-of-contents__link toc-highlight">Bug Fixes</a></li><li><a href="#features" class="table-of-contents__link toc-highlight">Features</a></li></ul></li><li><a href="#345-2022-03-03" class="table-of-contents__link toc-highlight">3.4.5 (2022-03-03)</a><ul><li><a href="#bug-fixes-2" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#344-2022-03-02" class="table-of-contents__link toc-highlight">3.4.4 (2022-03-02)</a><ul><li><a href="#bug-fixes-3" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#343-2022-02-21" class="table-of-contents__link toc-highlight">3.4.3 (2022-02-21)</a><ul><li><a href="#bug-fixes-4" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#342-2022-02-19" class="table-of-contents__link toc-highlight">3.4.2 (2022-02-19)</a><ul><li><a href="#bug-fixes-5" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#341-2022-02-18" class="table-of-contents__link toc-highlight">3.4.1 (2022-02-18)</a><ul><li><a href="#bug-fixes-6" class="table-of-contents__link toc-highlight">Bug Fixes</a></li><li><a href="#features-1" class="table-of-contents__link toc-highlight">Features</a></li><li><a href="#features-2" class="table-of-contents__link toc-highlight">Features</a></li><li><a href="#features-3" class="table-of-contents__link toc-highlight">Features</a></li><li><a href="#features-4" class="table-of-contents__link toc-highlight">Features</a></li><li><a href="#features-5" class="table-of-contents__link toc-highlight">Features</a></li><li><a href="#breaking-changes" class="table-of-contents__link toc-highlight">BREAKING CHANGES</a></li></ul></li><li><a href="#204-2022-02-11" class="table-of-contents__link toc-highlight">2.0.4 (2022-02-11)</a><ul><li><a href="#bug-fixes-7" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#203-2022-02-09" class="table-of-contents__link toc-highlight">2.0.3 (2022-02-09)</a><ul><li><a href="#bug-fixes-8" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#202-2021-11-27" class="table-of-contents__link toc-highlight">2.0.2 (2021-11-27)</a><ul><li><a href="#bug-fixes-9" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#201-2021-11-27" class="table-of-contents__link toc-highlight">2.0.1 (2021-11-27)</a><ul><li><a href="#bug-fixes-10" class="table-of-contents__link toc-highlight">Bug Fixes</a></li><li><a href="#bug-fixes-11" class="table-of-contents__link toc-highlight">Bug Fixes</a></li><li><a href="#features-6" class="table-of-contents__link toc-highlight">Features</a></li><li><a href="#breaking-changes-1" class="table-of-contents__link toc-highlight">BREAKING CHANGES</a></li></ul></li><li><a href="#150-2020-10-31" class="table-of-contents__link toc-highlight">1.5.0 (2020-10-31)</a></li><li><a href="#141-2020-10-30" class="table-of-contents__link toc-highlight">1.4.1 (2020-10-30)</a><ul><li><a href="#bug-fixes-12" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#121-2020-08-03" class="table-of-contents__link toc-highlight">1.2.1 (2020-08-03)</a><ul><li><a href="#features-7" class="table-of-contents__link toc-highlight">Features</a></li><li><a href="#bug-fixes-13" class="table-of-contents__link toc-highlight">Bug Fixes</a></li></ul></li><li><a href="#121-2020-08-03-1" class="table-of-contents__link toc-highlight">1.2.1 (2020-08-03)</a><ul><li><a href="#features-8" class="table-of-contents__link toc-highlight">Features</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/gmap-vue/docs/vue-3-version/">version for Vue@3</a></li><li class="footer__item"><a class="footer__link-item" href="/gmap-vue/docs/vue-2-version/">version for Vue@2</a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://stackoverflow.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_Hok0"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://discordapp.com/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_Hok0"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_Hok0"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/gmap-vue/blog">Blog</a></li><li class="footer__item"><a href="https://github.com/diegoazh/gmap-vue" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_Hok0"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Diego A. Zapata Häntsch. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
