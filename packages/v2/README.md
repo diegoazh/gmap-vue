@@ -1,4 +1,4 @@
-# GmapVue fro Vue v2
+# GmapVue for Vue v2
 
 [![Build Status](https://travis-ci.org/diegoazh/gmap-vue.svg?branch=master)](https://travis-ci.org/diegoazh/gmap-vue)
 [![jsdelivr CDN](https://data.jsdelivr.com/v1/package/npm/gmap-vue/badge)](https://www.jsdelivr.com/package/npm/gmap-vue)
