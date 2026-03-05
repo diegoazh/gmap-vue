@@ -12,7 +12,7 @@ import type {
   TLazyValueGetterFn,
   TOldHtmlInputElement,
 } from '@/types';
-import isEqual from 'lodash.isequal';
+import equal from 'fast-deep-equal';
 import {
   getCurrentInstance,
   nextTick,
@@ -346,7 +346,7 @@ export function watchPrimitivePropertiesOnSetup(
 
       void nextTick(() => {
         isHandled = false;
-        if (value && !isEqual(value, oldValue)) {
+        if (value && !equal(value, oldValue)) {
           handler();
         }
       });
@@ -476,7 +476,7 @@ export function bindProps(
 
             if (
               value &&
-              !isEqual(value, (vueInst.$props as Record<string, any>)[propKey])
+              !equal(value, (vueInst.$props as Record<string, any>)[propKey])
             ) {
               vueInst.$emit(
                 eventName,
@@ -578,7 +578,7 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
             );
             const value = cbk();
 
-            if (value && !isEqual(value, props[propKey])) {
+            if (value && !equal(value, props[propKey])) {
               emits(eventName, value);
             }
           });
@@ -656,7 +656,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
       watch(
         () => props[propKey],
         (value, oldValue) => {
-          if (value != null && !isEqual(value, oldValue)) {
+          if (value != null && !equal(value, oldValue)) {
             const cbk = (
               (AnyGoogleMapsClassInstance as any)[setMethodName] as (
                 value: unknown,

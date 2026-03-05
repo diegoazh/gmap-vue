@@ -23,7 +23,7 @@ import {
 } from '@/composables';
 import type { IStreetViewPanoramaVueComponentProps } from '@/interfaces';
 import { $streetViewPanoramaPromise } from '@/keys';
-import isEqual from 'lodash.isequal';
+import equal from 'fast-deep-equal';
 import {
   computed,
   onMounted,
@@ -208,7 +208,7 @@ watch(
   async (newValue, oldValue) => {
     const streetViewPanorama = await promise;
 
-    if (streetViewPanorama && newValue && !isEqual(newValue, oldValue)) {
+    if (streetViewPanorama && newValue && !equal(newValue, oldValue)) {
       streetViewPanorama.setZoom(newValue);
     }
   },
@@ -219,7 +219,7 @@ watch(
   async (newValue, oldValue) => {
     const streetViewPanorama = await promise;
 
-    if (streetViewPanorama && newValue && !isEqual(newValue, oldValue)) {
+    if (streetViewPanorama && newValue && !equal(newValue, oldValue)) {
       streetViewPanorama.setPov(newValue);
     }
   },
@@ -230,7 +230,7 @@ watch(
   async (newValue, oldValue) => {
     const streetViewPanorama = await promise;
 
-    if (streetViewPanorama && newValue && !isEqual(newValue, oldValue)) {
+    if (streetViewPanorama && newValue && !equal(newValue, oldValue)) {
       streetViewPanorama.setPano(newValue);
     }
   },
