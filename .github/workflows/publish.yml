@@ -72,9 +72,40 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        node-version: [18.x, 20.x, 22.x]
-        test-plan: [test, "test:e2e"]
+        include:
+          # Previous LTS (20.x) - amd64 on Ubuntu
+          - os: ubuntu-latest
+            node-version: 20.x
+            test-plan: test
+          - os: ubuntu-latest
+            node-version: 20.x
+            test-plan: "test:e2e"
+          # Current LTS (22.x) - full coverage
+          - os: ubuntu-latest
+            node-version: 22.x
+            test-plan: test
+          - os: ubuntu-latest
+            node-version: 22.x
+            test-plan: "test:e2e"
+          - os: windows-latest
+            node-version: 22.x
+            test-plan: test
+          - os: windows-latest
+            node-version: 22.x
+            test-plan: "test:e2e"
+          - os: macos-14-arm64
+            node-version: 22.x
+            test-plan: test
+          - os: macos-14-arm64
+            node-version: 22.x
+            test-plan: "test:e2e"
+          # Incoming LTS (24.x) - amd64 on Ubuntu
+          - os: ubuntu-latest
+            node-version: 24.x
+            test-plan: test
+          - os: ubuntu-latest
+            node-version: 24.x
+            test-plan: "test:e2e"
 
     steps:
       - uses: actions/checkout@v6
