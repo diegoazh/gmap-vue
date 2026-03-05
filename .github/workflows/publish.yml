@@ -14,20 +14,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           run_install: false
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Install dependencies
         run: pnpm install
       - name: Upload pnpm-lock.yaml as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: pnpm-lock
           path: pnpm-lock.yaml
@@ -40,18 +40,18 @@ jobs:
     needs: [install-and-cache]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           run_install: false
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Download pnpm-lock.yaml artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v8
         with:
           name: pnpm-lock
       - name: Install dependencies
@@ -60,7 +60,7 @@ jobs:
         working-directory: ./packages/v3
         run: pnpm run build
       - name: Upload dist as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: ./packages/v3/dist
@@ -77,13 +77,13 @@ jobs:
         test-plan: [test, "test:e2e"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           run_install: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
@@ -102,28 +102,28 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master'}}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           run_install: false
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Download pnpm-lock.yaml artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v8
         with:
           name: pnpm-lock
       - name: Download dist artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v8
         with:
           name: dist
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Configure git credentials
-        uses: OleksiyRudenko/gha-git-credentials@v2-latest
+        uses: OleksiyRudenko/gha-git-credentials@v2.1.2
         with:
           global: true
           name: "${{ secrets.GH_USER }}"
@@ -142,7 +142,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           CI: true
       - name: Publish new version to npm
-        uses: JS-DevTools/npm-publish@v3
+        uses: JS-DevTools/npm-publish@v4.1.5
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/v3/package.json
