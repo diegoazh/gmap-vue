@@ -123,8 +123,42 @@ jobs:
         run: |
           touch ./packages/v3/cypress/runner/.env
           echo VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }} >> ./packages/v3/cypress/runner/.env
-      - name: Run Test Plan
-        run: pnpm run ${{ matrix.test-plan }}
+      - name: Run unit tests
+        if: matrix.test-plan == 'test'
+        run: pnpm run test
+      # start-server-and-test@2.0.8 → ps-tree@1.2.0 → wmic.exe, which was
+      # removed from Windows Server 2025 (windows-latest). Tests complete
+      # successfully but the post-test cleanup crashes with ENOENT, causing
+      # exit code 1. Work around by managing the server lifecycle directly
+      # with bash (available on all runners via Git Bash), so process teardown
+      # uses bash's built-in kill instead of wmic.exe.
+      - name: Build and run e2e tests
+        if: matrix.test-plan == 'test:e2e'
+        shell: bash
+        working-directory: ./packages/v3
+        run: |
+          pnpm run test:e2e:build
+          pnpm exec cypress install
+          # Start vite preview in the background
+          pnpm exec vite preview --config cypress/runner/vite.config.mts &
+          SERVER_PID=$!
+          # Wait up to 60 s for the server using Node.js built-in http
+          # (no extra runtime dependencies required)
+          node -e "
+            const http = require('http');
+            const check = (n) => {
+              http.get('http://localhost:4173/', () => process.exit(0))
+                  .on('error', () => n > 0 ? setTimeout(() => check(n - 1), 1000)
+                                           : process.exit(1));
+            };
+            check(60);
+          "
+          # Run Cypress; capture exit code so we can forward it after cleanup
+          pnpm exec cypress run --e2e
+          CYPRESS_EXIT=$?
+          # Shut down the preview server with bash kill — no wmic.exe involved
+          kill $SERVER_PID 2>/dev/null || true
+          exit $CYPRESS_EXIT
 
   publish:
     name: NPM publish
