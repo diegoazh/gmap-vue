@@ -31,22 +31,28 @@ export const mapValues: {
   centerChanged?: () => void;
   zoomChanged?: () => void;
   boundsChanged?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapInstance?: any;
 } = {
   input: undefined,
   options: undefined,
   centerChanged: undefined,
   zoomChanged: undefined,
   boundsChanged: undefined,
+  mapInstance: undefined,
 };
 
 export const markerValues: {
   input?: unknown;
   options?: Record<string, unknown>;
   updatePosition?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  markerInstance?: any;
 } = {
   input: undefined,
   options: undefined,
   updatePosition: undefined,
+  markerInstance: undefined,
 };
 
 export const circleValues: {
@@ -137,9 +143,12 @@ export const googleMock = {
         mapValues.input = html;
         mapValues.options = options;
         this.getCenter = vi.fn().mockReturnValue(valueMocks.center);
+        this.setCenter = vi.fn();
         this.getZoom = vi.fn().mockReturnValue(valueMocks.zoom);
+        this.setZoom = vi.fn();
         this.getBounds = vi.fn().mockReturnValue(valueMocks.bounds);
         this.getDiv = vi.fn();
+        mapValues.mapInstance = this;
         this.addListener = (name: string, cbk: () => void) => {
           if (name === 'center_changed') {
             mapValues.centerChanged = cbk;
@@ -154,6 +163,8 @@ export const googleMock = {
       },
       AdvancedMarkerElement: function (options?: Record<string, unknown>) {
         markerValues.options = options;
+        this.position = options?.position ?? null;
+        markerValues.markerInstance = this;
         this.addListener = (name: string, cbk: () => void) => {
           if (name === 'dragend') {
             markerValues.updatePosition = cbk;

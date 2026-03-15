@@ -187,4 +187,24 @@ describe('MarkerIcon component', () => {
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(props.markerKey);
   });
+
+  it('should update marker.position directly when the position prop changes', async () => {
+    // given
+    const template = `<div></div>`;
+    const initialPosition = { lat: 1, lng: 1 };
+    const wrapper = mount(
+      { ...Marker, template },
+      { props: { position: initialPosition } },
+    );
+    await flushPromises();
+
+    // when
+    const newPosition = { lat: 5, lng: 10 };
+    await wrapper.setProps({ position: newPosition });
+    await flushPromises();
+
+    // then
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    expect(markerValues.markerInstance?.position).toEqual(newPosition);
+  });
 });

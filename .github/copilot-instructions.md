@@ -443,6 +443,18 @@ Several TODOs exist in v2 codebase:
 
 **When working on v2:** Check inline comments for context before modifying related code.
 
+## Mandatory Post-Change Validation
+
+**CRITICAL: After EVERY code change, always run these three commands from the repository root in this order and fix any errors before considering the task done:**
+
+```bash
+pnpm run lint      # Must exit 0 — fix all ESLint/Prettier errors before proceeding
+pnpm run test      # Must exit 0 — fix all failing unit tests before proceeding
+pnpm run test:e2e  # Must exit 0 — fix all failing e2e tests before proceeding
+```
+
+Do not skip any of these steps. Do not proceed to commit or hand back to the user if any of them fails.
+
 ## Validation Checklist
 
 Before submitting a PR, ensure:
@@ -450,12 +462,11 @@ Before submitting a PR, ensure:
 1. ✅ Code builds: `pnpm run build:all` succeeds
 2. ✅ Tests pass: `pnpm run test` succeeds (v3 only)
 3. ✅ Linting passes: `pnpm run lint` succeeds
-4. ✅ Commits follow conventional format (enforced by commitlint)
-5. ✅ Documentation builds: `cd packages/documentation && pnpm run build` succeeds
-6. ✅ Type checking (v3): `cd packages/v3 && pnpm run type-check` succeeds
-7. ✅ No new ESLint errors or TypeScript errors introduced
-
-**For v3 changes:** 8. ✅ E2E tests pass (if available): `cd packages/v3 && pnpm run test:e2e:ci` (requires API key)
+4. ✅ E2E tests pass: `pnpm run test:e2e` succeeds
+5. ✅ Commits follow conventional format (enforced by commitlint)
+6. ✅ Documentation builds: `cd packages/documentation && pnpm run build` succeeds
+7. ✅ Type checking (v3): `cd packages/v3 && pnpm run type-check` succeeds
+8. ✅ No new ESLint errors or TypeScript errors introduced
 
 **For documentation changes:** 9. ✅ Preview locally: `pnpm run serve:docs` and verify changes
 
