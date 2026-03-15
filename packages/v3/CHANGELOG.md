@@ -1,3 +1,10 @@
+## [2.1.7](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.6...gmv3_v2.1.7) (2026-03-15)
+
+
+### Bug Fixes
+
+* **v3:** change map center or marker position reactivity ([#359](https://github.com/diegoazh/gmap-vue/issues/359)) ([94ee0f7](https://github.com/diegoazh/gmap-vue/commit/94ee0f71ab0fc1faa028d3cdae69bb2774e7939b)), closes [#350](https://github.com/diegoazh/gmap-vue/issues/350)
+
 ## [2.1.6](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.5...gmv3_v2.1.6) (2026-03-15)
 
 
