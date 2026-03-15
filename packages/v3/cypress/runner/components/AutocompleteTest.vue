@@ -25,14 +25,19 @@
       <gmv-marker
         v-for="(marker, index) in markers"
         :key="index"
+        :marker-key="`autocomplete-marker-${index}`"
         :position="marker.position"
       />
     </gmv-map>
   </div>
 </template>
 <script setup lang="ts">
-import { useMapPromise } from '../../../dist/composables.es';
-import { onMounted, ref, toRaw } from 'vue';
+import { useMapPromise, useMarkerPromise } from '../../../dist/composables.es';
+import { nextTick, onMounted, ref, toRaw, watch } from 'vue';
+
+type MapMarkersWindow = Window & {
+  __mapMarkers__?: google.maps.marker.AdvancedMarkerElement[];
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const mapPromise = useMapPromise();
@@ -41,6 +46,25 @@ const map = ref<google.maps.Map | undefined>();
 const center = ref<google.maps.LatLngLiteral>({ lat: 0, lng: 0 });
 const markers = ref<{ position: { lat: number; lng: number } }[]>([]);
 const place = ref<google.maps.places.PlaceResult | null>(null);
+
+/**
+ * Resolves all currently-mounted marker promises and writes live
+ * AdvancedMarkerElement instances to window.__mapMarkers__ so that Cypress
+ * tests can assert marker counts without relying on internal Google Maps CSS
+ * class names (e.g. GMAMP-maps-pin-view) that change without notice.
+ */
+async function updateWindowMarkers(): Promise<void> {
+  await nextTick();
+  const instances = await Promise.all(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/restrict-template-expressions
+    markers.value.map((_, i) => useMarkerPromise(`autocomplete-marker-${i}`)),
+  );
+  (window as MapMarkersWindow).__mapMarkers__ = instances.filter(
+    (m): m is google.maps.marker.AdvancedMarkerElement => m != null,
+  );
+}
+
+watch(markers, updateWindowMarkers, { deep: true });
 
 function setPlace(p: google.maps.places.PlaceResult) {
   place.value = p;
