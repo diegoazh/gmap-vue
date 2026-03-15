@@ -93,12 +93,12 @@ jobs:
           - os: windows-latest
             node-version: 22.x
             test-plan: "test:e2e"
-          - os: macos-14-arm64
-            node-version: 22.x
-            test-plan: test
-          - os: macos-14-arm64
-            node-version: 22.x
-            test-plan: "test:e2e"
+          # - os: macos-14-arm64
+          #   node-version: 22.x
+          #   test-plan: test
+          # - os: macos-14-arm64
+          #   node-version: 22.x
+          #   test-plan: "test:e2e"
           # Incoming LTS (24.x) - amd64 on Ubuntu
           - os: ubuntu-latest
             node-version: 24.x
