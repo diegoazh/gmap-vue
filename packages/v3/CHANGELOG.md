@@ -1,3 +1,10 @@
+## [2.1.6](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.5...gmv3_v2.1.6) (2026-03-15)
+
+
+### Bug Fixes
+
+* **v3:** lodash.isEqual deprecation warning ([#358](https://github.com/diegoazh/gmap-vue/issues/358)) ([bbe6864](https://github.com/diegoazh/gmap-vue/commit/bbe6864344d706f40104642a65904113f1e7ac89)), closes [#353](https://github.com/diegoazh/gmap-vue/issues/353)
+
 ## [2.1.5](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.4...gmv3_v2.1.5) (2025-01-03)
 
 
