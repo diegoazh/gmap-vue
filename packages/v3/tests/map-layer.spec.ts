@@ -134,4 +134,24 @@ describe('MapLayer component', () => {
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(props.mapKey);
   });
+
+  it('should call setCenter on the map instance when the center prop changes', async () => {
+    // given
+    vi.stubGlobal('window', { __gmc__: undefined });
+    const wrapper = mount(MapLayer, {
+      props: { center: { lat: 1, lng: 1 } },
+    });
+    await flushPromises();
+
+    // when
+    await wrapper.setProps({ center: { lat: 5, lng: 10 } });
+    await flushPromises();
+
+    // then
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    expect(mapValues.mapInstance?.setCenter).toHaveBeenCalledWith({
+      lat: 5,
+      lng: 10,
+    });
+  });
 });

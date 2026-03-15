@@ -25,7 +25,6 @@ import {
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
   useResizeBus,
-  watchPrimitivePropertiesOnSetup,
 } from '@/composables';
 import type { IMapLayerVueComponentProps } from '@/interfaces';
 import { $mapPromise, $recyclePrefix } from '@/keys';
@@ -452,11 +451,7 @@ onMounted(() => {
             mapInstance.setCenter(finalLatLng.value);
           };
 
-          watchPrimitivePropertiesOnSetup(
-            ['finalLat', 'finalLng'],
-            updateCenter,
-            { finalLat, finalLng },
-          );
+          watch([finalLat, finalLng], updateCenter);
         },
       );
 

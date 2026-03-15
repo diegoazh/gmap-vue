@@ -6,6 +6,36 @@ sidebar_label: Map Reference
 
 # Getting a map reference
 
+## Reactive props
+
+The `:center` prop on `GmvMap` and the `:position` prop on `GmvMarker` are **fully reactive**. Binding them to a reactive variable is all you need — updating the variable will automatically pan the map and move the marker with no imperative code required.
+
+```html title="Composition API — reactive center & marker position" showLineNumbers
+<template>
+  <GmvMap :center="center" :zoom="14">
+    <GmvMarker :position="center" />
+  </GmvMap>
+  <button @click="moveTo">Move to new location</button>
+</template>
+
+<script setup lang="ts">
+  import { ref } from "vue";
+
+  const center = ref({ lat: 1.32, lng: 103.8 });
+
+  function moveTo() {
+    center.value = { lat: 1.38, lng: 103.8 };
+    // The map and marker update automatically — no panTo() or markerPromise needed
+  }
+</script>
+```
+
+:::note
+Only use `panTo()` / `markerPromise` for **programmatic animations** (e.g. smooth pan without updating the bound state). For data-driven position changes, always use reactive props.
+:::
+
+## Accessing the map instance imperatively
+
 If you need to gain access to the `Map` instance (e.g. to call `panToBounds`, `panTo`)
 
 ```html title="Options API" showLineNumbers {2,22,26}

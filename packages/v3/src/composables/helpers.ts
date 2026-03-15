@@ -563,20 +563,25 @@ export function bindPropsWithGoogleMapsSettersAndGettersOnSetup(
         );
 
       if (propsComponentConfig.twoWay.includes(propKey)) {
-        if (
-          instance[getMethodName] &&
-          typeof instance[getMethodName] === 'function'
-        ) {
+        const hasGetter =
+          !!instance[getMethodName] &&
+          typeof instance[getMethodName] === 'function';
+        // Fall back to direct property read for APIs that don't expose getX() methods
+        // (e.g. AdvancedMarkerElement uses `marker.position` instead of `getPosition()`)
+        const canGetDirectly = !hasGetter && propKey in instance;
+
+        if (hasGetter || canGetDirectly) {
+          const getValue = hasGetter
+            ? () => (instance[getMethodName] as () => unknown).call(instance)
+            : () => instance[propKey] as unknown;
+
           (
             AnyGoogleMapsClassInstance.addListener as (
               e: string,
               cbk: () => void,
             ) => void
           )(eventName, () => {
-            const cbk = (instance[getMethodName] as () => unknown).bind(
-              instance,
-            );
-            const value = cbk();
+            const value = getValue();
 
             if (value && !equal(value, props[propKey])) {
               emits(eventName, value);
@@ -640,11 +645,28 @@ function bindVuePropsWithGoogleMapsPropsSetters(
   const setMethodName = `set${capitalizeFirstLetter(propKey)}`;
   const getMethodName = `get${capitalizeFirstLetter(propKey)}`;
   const eventName = `${propKey.toLowerCase()}_changed`;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const instanceAny = AnyGoogleMapsClassInstance as any;
 
-  if (
-    (AnyGoogleMapsClassInstance as any)?.[setMethodName] &&
-    typeof (AnyGoogleMapsClassInstance as any)?.[setMethodName] === 'function'
-  ) {
+  const hasSetter =
+    !!instanceAny?.[setMethodName] &&
+    typeof instanceAny?.[setMethodName] === 'function';
+  // Fall back to direct property assignment for APIs that don't expose setX() methods
+  // (e.g. AdvancedMarkerElement uses `marker.position = value` instead of `setPosition()`)
+  const canSetDirectly = !hasSetter && propKey in instanceAny;
+
+  if (hasSetter || canSetDirectly) {
+    const applyValue = hasSetter
+      ? (value: unknown) => {
+          (instanceAny[setMethodName] as (value: unknown) => void).call(
+            AnyGoogleMapsClassInstance,
+            value,
+          );
+        }
+      : (value: unknown) => {
+          instanceAny[propKey] = value;
+        };
+
     // We need to avoid an endless
     // propChanged -> event emitted -> propChanged -> event emitted loop
     // although this may really be the user's responsibility
@@ -657,12 +679,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
         () => props[propKey],
         (value, oldValue) => {
           if (value != null && !equal(value, oldValue)) {
-            const cbk = (
-              (AnyGoogleMapsClassInstance as any)[setMethodName] as (
-                value: unknown,
-              ) => void
-            ).bind(AnyGoogleMapsClassInstance);
-            cbk(value);
+            applyValue(value);
           }
         },
         {
@@ -676,12 +693,7 @@ function bindVuePropsWithGoogleMapsPropsSetters(
       watchPrimitivePropertiesOnSetup(
         trackProperties.map((prop) => `${propKey}.${prop}`),
         () => {
-          const cbk = (
-            (AnyGoogleMapsClassInstance as any)[setMethodName] as (
-              p: any,
-            ) => void
-          ).bind(AnyGoogleMapsClassInstance);
-          cbk(props[propKey]);
+          applyValue(props[propKey]);
         },
         props,
         props[propKey] != undefined,

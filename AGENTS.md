@@ -715,12 +715,23 @@ pnpm install           # Fresh install
 
 ### After Making Changes
 
+**CRITICAL: Always run these three commands from the repository root in this exact order and fix any errors before considering the task done:**
+
+```bash
+pnpm run lint      # Must exit 0 — fix all ESLint/Prettier errors before proceeding
+pnpm run test      # Must exit 0 — fix all failing unit tests before proceeding
+pnpm run test:e2e  # Must exit 0 — fix all failing e2e tests before proceeding
+```
+
+Do not skip any of these steps. Do not proceed to commit or hand back to the user if any of them fails.
+
 1. Run package-specific build: `cd packages/<name> && pnpm run build`
-2. Run package-specific tests: `pnpm run test`
-3. Run linting: `pnpm run lint`
-4. Verify types (v3): `pnpm run type-check`
-5. Write commit with proper conventional format
-6. Ensure commit message follows rules (scope required!)
+2. Run linting from root: `pnpm run lint`
+3. Run unit tests from root: `pnpm run test`
+4. Run e2e tests from root: `pnpm run test:e2e`
+5. Verify types (v3): `pnpm run type-check`
+6. Write commit with proper conventional format
+7. Ensure commit message follows rules (scope required!)
 
 ### Getting Help
 
