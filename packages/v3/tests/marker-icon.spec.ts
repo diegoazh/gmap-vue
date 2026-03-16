@@ -109,6 +109,7 @@ describe('MarkerIcon component', () => {
     expect(wrapper.getCurrentComponent().exposed?.markerPromise).toBeInstanceOf(
       Promise,
     );
+    wrapper.unmount();
   });
 
   it('should emit events successfully', async () => {

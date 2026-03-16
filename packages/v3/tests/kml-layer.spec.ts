@@ -72,6 +72,7 @@ describe('KmlLayer component', () => {
     expect(
       wrapper.getCurrentComponent().exposed.kmlLayerPromise,
     ).toBeInstanceOf(Promise);
+    wrapper.unmount();
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {

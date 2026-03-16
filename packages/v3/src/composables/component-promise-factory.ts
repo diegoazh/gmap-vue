@@ -35,6 +35,12 @@ const componentPromisesList = new Map<
 >();
 
 /**
+ * Tracks which user-defined string keys are currently in use by a mounted
+ * component. Used to detect — and warn about — duplicate key registrations.
+ */
+const activeStringKeys = new Set<string>();
+
+/**
  * @param  {string|InjectionKey<Promise<T|undefined>>} key
  *
  * @internal
@@ -88,6 +94,17 @@ function usePromiseDeferred<T>(
 export function useComponentPromiseFactory<T>(
   key: string | InjectionKey<Promise<T | undefined>>,
 ): { promiseDeferred: PromiseDeferred<T>; promise: Promise<T | undefined> } {
+  if (typeof key === 'string') {
+    if (activeStringKeys.has(key)) {
+      console.warn(
+        `[GmapVue] A component with the key "${key}" is already mounted. ` +
+          'Multiple components sharing the same key will use the same Google Maps instance. ' +
+          'Use unique keys if you need independent instances.',
+      );
+    }
+    activeStringKeys.add(key);
+  }
+
   const promiseDeferred = usePromiseDeferred(key);
   const promise = usePromise(key);
 
@@ -104,6 +121,9 @@ export function useComponentPromiseFactory<T>(
 export function useDestroyPromisesOnUnmounted<T>(
   key: string | InjectionKey<Promise<T | undefined>>,
 ): void {
+  if (typeof key === 'string') {
+    activeStringKeys.delete(key);
+  }
   componentPromisesList.delete(key);
   deferredPromisesList.delete(key);
 }

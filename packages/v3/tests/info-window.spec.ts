@@ -68,6 +68,7 @@ describe('InfoWindow component', () => {
     expect(
       wrapper.getCurrentComponent().exposed?.infoWindowPromise,
     ).toBeInstanceOf(Promise);
+    wrapper.unmount();
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {

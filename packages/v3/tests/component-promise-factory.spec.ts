@@ -15,7 +15,7 @@ import {
   useStreetViewPanoramaPromise,
 } from '../src/composables/component-promise-factory';
 
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   $circleShapePromise,
   $clusterPromise,
@@ -32,6 +32,10 @@ import {
 } from '../src/keys/index';
 
 describe('component-promise-factory.ts', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should create and return a map promise with the default key', () => {
     // act
     const promise = useMapPromise();
@@ -241,5 +245,46 @@ describe('component-promise-factory.ts', () => {
 
     // assert
     expect(value).toBe(result);
+
+    // cleanup
+    useDestroyPromisesOnUnmounted('deferredKey');
+  });
+
+  it('should warn when the same string key is registered twice simultaneously', () => {
+    // arrange
+    const key = 'duplicateKey';
+    const warnSpy = vi.spyOn(console, 'warn');
+
+    // act — first registration (no warning expected)
+    useComponentPromiseFactory<string>(key);
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    // act — second registration with the same key (warning expected)
+    useComponentPromiseFactory<string>(key);
+    expect(warnSpy).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(`"${key}"`));
+
+    // cleanup
+    useDestroyPromisesOnUnmounted(key);
+  });
+
+  it('should not warn after a key is destroyed and re-registered', () => {
+    // arrange
+    const key = 'recycledKey';
+    const warnSpy = vi.spyOn(console, 'warn');
+
+    // act — first registration
+    useComponentPromiseFactory<string>(key);
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    // act — destroy (simulates component unmount)
+    useDestroyPromisesOnUnmounted(key);
+
+    // act — re-registration (no warning expected)
+    useComponentPromiseFactory<string>(key);
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    // cleanup
+    useDestroyPromisesOnUnmounted(key);
   });
 });
