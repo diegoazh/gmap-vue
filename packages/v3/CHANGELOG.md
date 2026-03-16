@@ -1,3 +1,10 @@
+## [2.1.8](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.7...gmv3_v2.1.8) (2026-03-16)
+
+
+### Bug Fixes
+
+* **v3:** replace the broken call with a direct watch on the two computed-ref sources ([#360](https://github.com/diegoazh/gmap-vue/issues/360)) ([8ce5345](https://github.com/diegoazh/gmap-vue/commit/8ce5345fa578c8247a93fdceeb175a8adb2735bb)), closes [#348](https://github.com/diegoazh/gmap-vue/issues/348)
+
 ## [2.1.7](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.6...gmv3_v2.1.7) (2026-03-15)
 
 
