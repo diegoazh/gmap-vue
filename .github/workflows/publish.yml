@@ -165,13 +165,15 @@ jobs:
     runs-on: ubuntu-latest
     environment: NPM Publish
     permissions:
-      contents: read
+      contents: write
       id-token: write
     needs: [install-and-cache, build, test]
     if: ${{ github.ref == 'refs/heads/master'}}
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
