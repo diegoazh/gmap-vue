@@ -1,6 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentInstance } from 'vue';
+import { nextTick } from 'vue';
 import { StreetViewPanorama } from '../src/components';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
@@ -122,5 +123,25 @@ describe('StreetViewPanorama component', () => {
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(
       props.streetViewKey,
     );
+  });
+
+  it('should call setPosition on the panorama instance when the position prop changes', async () => {
+    // given
+    const wrapper = mount(StreetViewPanorama, {
+      props: { position: { lat: 40, lng: -73 } },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    // when
+    await wrapper.setProps({ position: { lat: 41, lng: -74 } });
+    await flushPromises();
+    await nextTick();
+
+    // then
+    expect(streetViewValues.setPosition).toHaveBeenCalledWith({
+      lat: 41,
+      lng: -74,
+    });
   });
 });

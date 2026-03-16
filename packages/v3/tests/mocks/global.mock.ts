@@ -106,9 +106,11 @@ export const polylineValues: {
 export const streetViewValues: {
   html?: HTMLElement;
   options?: Record<string, unknown>;
+  setPosition?: ReturnType<typeof vi.fn>;
 } = {
   html: undefined,
   options: undefined,
+  setPosition: undefined,
 };
 
 export const googleMock = {
@@ -227,6 +229,8 @@ export const googleMock = {
       ) {
         streetViewValues.html = html;
         streetViewValues.options = options;
+        streetViewValues.setPosition = vi.fn();
+        this.setPosition = streetViewValues.setPosition;
         this.addListener = () => {
           return undefined;
         };
