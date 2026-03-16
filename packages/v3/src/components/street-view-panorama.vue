@@ -19,7 +19,6 @@ import {
   useGoogleMapsApiPromiseLazy,
   usePluginOptions,
   useResizeBus,
-  watchPrimitivePropertiesOnSetup,
 } from '@/composables';
 import type { IStreetViewPanoramaVueComponentProps } from '@/interfaces';
 import { $streetViewPanoramaPromise } from '@/keys';
@@ -321,11 +320,14 @@ onMounted(() => {
           streetViewPanorama.setPosition(finalLatLng.value);
         };
 
-        watchPrimitivePropertiesOnSetup(
-          ['finalLat', 'finalLng'],
-          updateCenter,
-          { finalLat, finalLng },
-        );
+        watch([finalLat, finalLng], ([newLat, newLng], [oldLat, oldLng]) => {
+          if (
+            (newLat != null || newLng != null) &&
+            (!equal(newLat, oldLat) || !equal(newLng, oldLng))
+          ) {
+            updateCenter();
+          }
+        });
       });
 
       if (!streetViewPanoramaPromiseDeferred.resolve) {
