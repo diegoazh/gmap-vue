@@ -112,7 +112,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/diegoazh/gmap-vue.git"
+    "url": "git+https://github.com/diegoazh/gmap-vue.git"
   },
   "bugs": {
     "url": "https://github.com/diegoazh/gmap-vue/issues"
