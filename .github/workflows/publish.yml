@@ -163,6 +163,10 @@ jobs:
   publish:
     name: NPM publish
     runs-on: ubuntu-latest
+    environment: NPM Publish
+    permissions:
+      contents: read
+      id-token: write
     needs: [install-and-cache, build, test]
     if: ${{ github.ref == 'refs/heads/master'}}
 
