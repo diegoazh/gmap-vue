@@ -75,6 +75,7 @@ describe('PolygonShape component', () => {
     expect(
       wrapper.getCurrentComponent().exposed.polygonShapePromise,
     ).toBeInstanceOf(Promise);
+    wrapper.unmount();
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {

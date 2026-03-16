@@ -87,6 +87,7 @@ describe('DrawingManager component', () => {
     expect(
       wrapper.getCurrentComponent().exposed.drawingManagerPromise,
     ).toBeInstanceOf(Promise);
+    wrapper.unmount();
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {

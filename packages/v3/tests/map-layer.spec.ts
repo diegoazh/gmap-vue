@@ -67,6 +67,7 @@ describe('MapLayer component', () => {
       zoomControl: true,
     });
     expect(component.exposed?.mapPromise).instanceOf(Promise);
+    wrapper.unmount();
   });
 
   it('should emit the correct events', async () => {

@@ -87,6 +87,7 @@ describe('StreetViewPanorama component', () => {
     expect(
       wrapper.getCurrentComponent().exposed?.streetViewPanoramaPromise,
     ).toBeInstanceOf(Promise);
+    wrapper.unmount();
   });
 
   it('should call useDestroyPromisesOnUnmounted with the default key when the component is unmounted', async () => {
