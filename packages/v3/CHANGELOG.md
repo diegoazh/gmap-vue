@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.8...gmv3_v2.2.0) (2026-03-16)
+
+
+### Features
+
+* **v3:** add duplicate key detection and warning for component promise factory ([#361](https://github.com/diegoazh/gmap-vue/issues/361)) ([2724a84](https://github.com/diegoazh/gmap-vue/commit/2724a845e8a9d3cb70f44389cb4de55794236f6c)), closes [#321](https://github.com/diegoazh/gmap-vue/issues/321)
+
 ## [2.1.8](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.7...gmv3_v2.1.8) (2026-03-16)
 
 
