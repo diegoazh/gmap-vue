@@ -37,6 +37,10 @@ import { nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
 type MapMarkersWindow = Window & {
   __mapMarkers__?: google.maps.marker.AdvancedMarkerElement[];
+  __gmvAutocompleteDebug__?: {
+    hasPlaceSelection: boolean;
+    markerSyncReady: boolean;
+  };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -54,14 +58,24 @@ const place = ref<google.maps.places.PlaceResult | null>(null);
  * class names (e.g. GMAMP-maps-pin-view) that change without notice.
  */
 async function updateWindowMarkers(): Promise<void> {
+  const markerWindow = window as MapMarkersWindow;
+  markerWindow.__gmvAutocompleteDebug__ = {
+    hasPlaceSelection: place.value != null,
+    markerSyncReady: false,
+  };
+
   await nextTick();
   const instances = await Promise.all(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/restrict-template-expressions
     markers.value.map((_, i) => useMarkerPromise(`autocomplete-marker-${i}`)),
   );
-  (window as MapMarkersWindow).__mapMarkers__ = instances.filter(
+  markerWindow.__mapMarkers__ = instances.filter(
     (m): m is google.maps.marker.AdvancedMarkerElement => m != null,
   );
+  markerWindow.__gmvAutocompleteDebug__ = {
+    hasPlaceSelection: place.value != null,
+    markerSyncReady: true,
+  };
 }
 
 watch(markers, updateWindowMarkers, { deep: true });
@@ -90,11 +104,19 @@ function usePlace() {
 
       map.value?.panTo({ lat, lng });
       place.value = null;
+      void updateWindowMarkers();
     }
   }
 }
 
 onMounted(() => {
+  const markerWindow = window as MapMarkersWindow;
+  markerWindow.__mapMarkers__ = [];
+  markerWindow.__gmvAutocompleteDebug__ = {
+    hasPlaceSelection: false,
+    markerSyncReady: true,
+  };
+
   console.log(mapPromise);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   mapPromise.then((map) => {
