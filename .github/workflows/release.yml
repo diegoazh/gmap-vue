@@ -1,0 +1,79 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package to release
+        required: true
+        default: v3
+        type: choice
+        options:
+          - v3
+      dry_run:
+        description: Run semantic-release without publishing
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  release:
+    name: Release ${{ inputs.package }}
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Build package
+        working-directory: ./packages/v3
+        run: pnpm run build
+      - name: Run unit tests
+        run: pnpm run test
+      - name: Configure git credentials
+        if: ${{ !inputs.dry_run }}
+        uses: OleksiyRudenko/gha-git-credentials@v2.1.2
+        with:
+          global: true
+          name: "${{ secrets.GH_USER }}"
+          email: "${{ secrets.GH_EMAIL }}"
+          actor: "${{ secrets.GH_FULL_NAME }}"
+          token: "${{ secrets.GH_TOKEN_REPO }}"
+      - name: Update origin push URI
+        if: ${{ !inputs.dry_run }}
+        run: |
+          git remote set-url origin "https://${{ secrets.GH_TOKEN_REPO }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
+          git checkout master
+      - name: Prepare release dry run
+        if: ${{ inputs.dry_run }}
+        working-directory: ./packages/v3
+        run: pnpm exec semantic-release --dry-run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CI: true
+      - name: Prepare release
+        if: ${{ !inputs.dry_run }}
+        working-directory: ./packages/v3
+        run: pnpm exec semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CI: true
