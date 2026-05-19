@@ -19,11 +19,11 @@ import {
 } from '@/composables';
 import type { IMarkerClusterVueComponentProps } from '@/interfaces';
 import { $clusterPromise } from '@/keys';
-import {
-  MarkerClusterer,
-  type Algorithm,
-  type Renderer,
-  type onClusterClickHandler,
+import * as MarkerClustererNamespace from '@googlemaps/markerclusterer';
+import type {
+  Algorithm,
+  Renderer,
+  onClusterClickHandler,
 } from '@googlemaps/markerclusterer';
 import { inject, onBeforeUnmount, onUnmounted, onUpdated, provide } from 'vue';
 
@@ -103,6 +103,16 @@ provide(props.clusterKey ?? $clusterPromise, promise);
 // eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'cluster-icon' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
+type MarkerClusterConstructor =
+  typeof import('@googlemaps/markerclusterer').MarkerClusterer;
+
+const markerClustererNamespace = MarkerClustererNamespace as unknown as {
+  MarkerClusterer?: MarkerClusterConstructor;
+  default?: MarkerClusterConstructor;
+};
+
+const MarkerClusterer =
+  markerClustererNamespace.MarkerClusterer ?? markerClustererNamespace.default;
 mapPromise
   .then((mapInstance) => {
     if (!mapInstance) {
@@ -120,8 +130,7 @@ mapPromise
     };
     const { markers, onClusterClick, renderer, algorithm } = initialOptions;
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!MarkerClusterer && typeof MarkerClusterer !== 'function') {
+    if (!MarkerClusterer || typeof MarkerClusterer !== 'function') {
       throw new Error(
         'MarkerClusterer is not installed! Import it or include it from https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js',
       );
