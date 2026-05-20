@@ -10,6 +10,13 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 
 const envs = loadEnv('production', process.cwd(), 'VITE');
 
+const LIBRARY_ENTRIES = {
+  main: resolve(__dirname, './src/main.ts'),
+  components: resolve(__dirname, './src/components/index.ts'),
+  composables: resolve(__dirname, './src/composables/index.ts'),
+  keys: resolve(__dirname, './src/keys/index.ts'),
+};
+
 // https://vitejs.dev/config/
 export default defineConfig({
   root: '.',
@@ -31,14 +38,15 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     lib: {
-      entry: {
-        main: resolve(__dirname, './src/main.ts'),
-        components: resolve(__dirname, './src/components/index.ts'),
-        composables: resolve(__dirname, './src/composables/index.ts'),
-        keys: resolve(__dirname, './src/keys/index.ts'),
-      },
+      entry: LIBRARY_ENTRIES,
       name: 'GmapVue',
-      fileName: (format, entryName) => `${entryName}.${format}.js`,
+      fileName: (format, entryName) => {
+        if (format === 'cjs') {
+          return `${entryName}.cjs`;
+        }
+
+        return `${entryName}.es.js`;
+      },
       formats: ['cjs', 'es'],
     },
     rollupOptions: {

@@ -1,3 +1,11 @@
+type CypressAutocompleteWindow = Window & {
+  __mapMarkers__?: unknown[];
+  __gmvAutocompleteDebug__?: {
+    hasPlaceSelection: boolean;
+    markerSyncReady: boolean;
+  };
+};
+
 describe('AutocompleteInput component', () => {
   it('should set a marker on the selected place', function () {
     const search = 'la serranita';
@@ -26,10 +34,15 @@ describe('AutocompleteInput component', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);
     cy.get('#use-place-btn').click();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cy.window().should((win: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      expect(win.__mapMarkers__).to.have.length(1);
+    cy.window().should((win) => {
+      const autocompleteWindow = win as CypressAutocompleteWindow;
+      expect(
+        autocompleteWindow.__gmvAutocompleteDebug__?.hasPlaceSelection,
+      ).to.eq(false);
+      expect(
+        autocompleteWindow.__gmvAutocompleteDebug__?.markerSyncReady,
+      ).to.eq(true);
+      expect(autocompleteWindow.__mapMarkers__).to.have.length(1);
     });
   });
 });

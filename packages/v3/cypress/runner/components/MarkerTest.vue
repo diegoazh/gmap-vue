@@ -43,11 +43,14 @@
 </template>
 
 <script setup lang="ts">
-import { useMarkerPromise } from '../../../dist/composables.es';
 import { computed, nextTick, onMounted, ref } from 'vue';
 
 type MapMarkersWindow = Window & {
-  __mapMarkers__?: google.maps.marker.AdvancedMarkerElement[];
+  __mapMarkers__?: string[];
+  __gmvMarkerDebug__?: {
+    expectedCount: number;
+    isReady: boolean;
+  };
 };
 
 const visible2 = ref(true);
@@ -74,17 +77,7 @@ const markers = computed(() => {
   ];
 });
 
-/**
- * Resolves all currently-mounted marker promises and stores the live
- * AdvancedMarkerElement instances on window.__mapMarkers__ so that Cypress
- * tests can assert marker counts without relying on internal Google Maps CSS
- * class names (e.g. GMAMP-maps-pin-view) that change without notice.
- */
-async function updateWindowMarkers(): Promise<void> {
-  // Wait for Vue to finish rendering the current reactive state so that marker
-  // components have run their setup and registered their promises.
-  await nextTick();
-
+function getVisibleMarkerKeys(): string[] {
   const keys: string[] = [];
   if (!empty.value) {
     keys.push('marker-0', 'marker-1');
@@ -93,14 +86,26 @@ async function updateWindowMarkers(): Promise<void> {
     keys.push('marker-2', 'marker-3');
   }
 
-  // useMarkerPromise resolves once the AdvancedMarkerElement is fully
-  // initialised inside the marker-icon component.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  const instances = await Promise.all(keys.map((key) => useMarkerPromise(key)));
+  return keys;
+}
 
-  (window as MapMarkersWindow).__mapMarkers__ = instances.filter(
-    (m): m is google.maps.marker.AdvancedMarkerElement => m != null,
-  );
+async function updateWindowMarkers(): Promise<void> {
+  const markerWindow = window as MapMarkersWindow;
+  markerWindow.__gmvMarkerDebug__ = {
+    expectedCount: 0,
+    isReady: false,
+  };
+
+  // Wait for Vue to finish rendering this reactive transition before exposing
+  // marker counts to Cypress.
+  await nextTick();
+
+  const visibleMarkerKeys = getVisibleMarkerKeys();
+  markerWindow.__mapMarkers__ = visibleMarkerKeys;
+  markerWindow.__gmvMarkerDebug__ = {
+    expectedCount: visibleMarkerKeys.length,
+    isReady: true,
+  };
 }
 
 async function toggleVisible2(): Promise<void> {
