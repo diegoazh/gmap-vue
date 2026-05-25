@@ -87,7 +87,7 @@ export type TLazyValueGetterFn<T> = () => Promise<T>;
 /** @internal */
 export type TPromiseLazyCreatorFn = (
   options: IGmapVuePluginOptions,
-) => TLazyValueGetterFn<TGlobalGoogleObject>;
+) => TLazyValueGetterFn<TGlobalGoogleObject | undefined>;
 
 /** @internal */
 export type TOldHtmlInputElement = HTMLInputElement & {
@@ -120,11 +120,13 @@ export interface IGmvSharedComposables {
     _resizeCallback: () => void;
     _delayedResizeCallback: () => Promise<void>;
   };
-  useGoogleMapsApiPromiseLazy: () => Promise<unknown>;
+  useGoogleMapsApiPromiseLazy: () =>
+    | Promise<TGlobalGoogleObject | undefined>
+    | undefined;
   useStreetViewPanoramaPromise: () => Promise<
     google.maps.StreetViewPanorama | undefined
   >;
-  usePluginOptions: () => IGmapVuePluginOptions;
+  usePluginOptions: () => IGmapVuePluginOptions | undefined;
 }
 
 export interface IGmvUtilities {

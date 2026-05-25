@@ -1,6 +1,7 @@
 import type { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { InjectionKey } from 'vue';
 import type { IGmapVuePluginOptions } from '../interfaces';
+import type { TGlobalGoogleObject, TLazyValueGetterFn } from '../types';
 
 export const $recyclePrefix = '__gmc__';
 export const $autocompletePromise = Symbol(
@@ -44,4 +45,7 @@ export const $drawingManagerPromise = Symbol(
 ) as InjectionKey<Promise<google.maps.drawing.DrawingManager | undefined>>;
 export const $gmapOptions = Symbol('gmapOptions') as InjectionKey<
   IGmapVuePluginOptions | undefined
+>;
+export const $gmapApiPromiseLazy = Symbol('gmapApiPromiseLazy') as InjectionKey<
+  TLazyValueGetterFn<TGlobalGoogleObject | undefined>
 >;

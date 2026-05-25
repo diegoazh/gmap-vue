@@ -87,18 +87,18 @@ export interface IGoogleMapProp {
   trackProperties?: string[];
 }
 
+export type TGoogleMapsConstructor = new (...args: unknown[]) => unknown;
+
 export interface IGmapVueElementOptions {
   mappedProps: Omit<ISinglePluginComponentConfig, 'events'>;
   props: Record<string, IVueProp>;
   events: string[];
   name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ctr: () => (...args: any[]) => InstanceType<any>;
+  ctr: () => TGoogleMapsConstructor;
   ctrArgs?: (
     options: Record<string, unknown>,
     props: Record<string, IVueProp | undefined>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) => Record<string, any>[];
+  ) => unknown[];
   beforeCreate?: (options: Record<string, unknown>) => unknown;
   afterCreate?: (mapElementInstance: Record<string, unknown>) => unknown;
 }

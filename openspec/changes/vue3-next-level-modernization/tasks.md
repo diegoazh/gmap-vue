@@ -24,6 +24,7 @@ Chain strategy: pending
 | 2 | Harden loader/global lifecycle safety | PR 2 | Base PR 1 or main; SSR/no-window + multi-app isolation |
 | 3 | Relaunch Vue 3 docs as primary | PR 3 | Base PR 2 or main; Vue 2 legacy messaging kept reachable |
 | 4 | Add/align CI quality gates | PR 4 | Base PR 3 or main; workflow checks only |
+| 5 | Harden npm supply-chain posture | PR 5 | Final careful slice; apply `lirantal/npm-security-best-practices` selectively for pnpm 10 |
 
 ## Phase 1: Package Surface Contract (TDD-first)
 
@@ -34,11 +35,11 @@ Chain strategy: pending
 
 ## Phase 2: Runtime Quality Hardening (TDD-first)
 
-- [ ] 2.1 RED: Add failing tests for SSR/no-window safety and no `window`/`document` requirement on import/install paths.
-- [ ] 2.2 RED: Add failing tests for multi-app isolation and cross-app global leakage.
-- [ ] 2.3 GREEN: Implement typed loader/state boundary in `packages/v3/src/main.ts` and relevant composables without changing public API names.
-- [ ] 2.4 GREEN: Add lifecycle cleanup behavior and keep deprecated behavior functional within policy.
-- [ ] 2.5 REFACTOR: Tighten targeted public typings in `packages/v3/src/interfaces/*` and `packages/v3/src/types/*`.
+- [x] 2.1 RED: Add failing tests for SSR/no-window safety and no `window`/`document` requirement on import/install paths.
+- [x] 2.2 RED: Add failing tests for multi-app isolation and cross-app global leakage.
+- [x] 2.3 GREEN: Implement typed loader/state boundary in `packages/v3/src/main.ts` and relevant composables without changing public API names.
+- [x] 2.4 GREEN: Add lifecycle cleanup behavior and keep deprecated behavior functional within policy.
+- [x] 2.5 REFACTOR: Tighten targeted public typings in `packages/v3/src/interfaces/*` and `packages/v3/src/types/*`.
 
 ## Phase 3: Vue 3 Docs Relaunch
 
@@ -51,3 +52,13 @@ Chain strategy: pending
 - [ ] 4.1 Add/adjust `.github/workflows/*` gates for v3 build, `test:ci`, type-check, and package smoke-test checks.
 - [ ] 4.2 Add/adjust docs workflow gates for `pnpm run --filter docs build` and `pnpm run --filter docs typecheck`.
 - [ ] 4.3 Define pre-apply verification checklist in change notes (root lint/test/e2e deferred until user confirmation).
+
+## Phase 5: npm Supply-Chain Security Hardening (careful final slice)
+
+Reference: https://github.com/lirantal/npm-security-best-practices
+
+- [ ] 5.1 RED/DISCOVERY: Audit current pnpm install/build-script behavior and identify dependencies that require lifecycle scripts.
+- [ ] 5.2 GREEN: Add compatible pnpm 10 supply-chain settings to `pnpm-workspace.yaml`, including publish cooldown and exotic/git subdependency blocking where safe.
+- [ ] 5.3 GREEN: Define explicit build-script allowlist with `allowBuilds` and enable `strictDepBuilds` only after required exceptions are known.
+- [ ] 5.4 GREEN: Document security rationale, exceptions, and local/CI install workflow impact.
+- [ ] 5.5 VERIFY: Run install/lockfile validation and CI-equivalent package checks to prove the hardening does not break contributors or releases.

@@ -1,16 +1,30 @@
 import type { IGmapVuePluginOptions, IGoogleMapsApiObject } from '@/interfaces';
+import { $gmapApiPromiseLazy, $gmapOptions } from '@/keys';
 import type {
   TGlobalGoogleObject,
   TGoogleMapsAPIInitializerFn,
   TLazyValueGetterFn,
   TPromiseLazyCreatorFn,
 } from '@/types';
+import { getCurrentInstance, inject } from 'vue';
 import { getLazyValue } from './helpers';
 
 let $finalOptions: IGmapVuePluginOptions | undefined;
 let $googleMapsApiPromiseLazy:
-  | TLazyValueGetterFn<TGlobalGoogleObject>
+  | TLazyValueGetterFn<TGlobalGoogleObject | undefined>
   | undefined;
+
+const googleMapsReadyCallbacks = new Set<() => void>();
+
+function dispatchGoogleMapsReadyCallbacks(): void {
+  for (const callback of Array.from(googleMapsReadyCallbacks)) {
+    callback();
+  }
+}
+
+function ensureGlobalGoogleMapsCallback(): void {
+  globalThis.GoogleMapsCallback = dispatchGoogleMapsReadyCallbacks;
+}
 
 /**
  * This function is a factory of the promise lazy creator
@@ -29,20 +43,26 @@ export function usePromiseLazyBuilderFn(
 ): TPromiseLazyCreatorFn {
   return (
     options: IGmapVuePluginOptions,
-  ): TLazyValueGetterFn<TGlobalGoogleObject> => {
+  ): TLazyValueGetterFn<TGlobalGoogleObject | undefined> => {
     /**
      * Things to do once the API is loaded
      *
      * @returns {Object} the Google Maps API object
      */
-    function onMapsReady(): TGlobalGoogleObject {
+    function onMapsReady(): TGlobalGoogleObject | undefined {
       GoogleMapsApi.isReady = true;
       return globalThis.google;
     }
 
-    return getLazyValue(() =>
-      createFinalPromise(options, googleMapsApiInitializer, onMapsReady),
-    );
+    return getLazyValue(() => {
+      if (typeof window === 'undefined') {
+        return Promise.resolve(undefined);
+      }
+
+      return createFinalPromise(options, googleMapsApiInitializer).then(
+        onMapsReady,
+      );
+    });
   };
 }
 
@@ -54,36 +74,48 @@ export function usePromiseLazyBuilderFn(
  *
  * @internal
  */
-function createCallbackAndChecksIfMapIsLoaded(
-  resolveFn: (value?: unknown) => void,
-): void {
+function createCallbackAndChecksIfMapIsLoaded(resolveFn: () => void): void {
   let callbackExecuted = false;
+  let timeoutId: number | undefined;
+  let intervalId: number | undefined;
 
-  globalThis.GoogleMapsCallback = (): void => {
+  function cleanupTimers(): void {
+    if (timeoutId !== undefined) {
+      globalThis.clearTimeout(timeoutId);
+      timeoutId = undefined;
+    }
+
+    if (intervalId !== undefined) {
+      globalThis.clearInterval(intervalId);
+      intervalId = undefined;
+    }
+  }
+
+  function resolveCurrentCallback(): void {
+    if (callbackExecuted) {
+      return;
+    }
+
     try {
       resolveFn();
     } catch (error) {
       globalThis.console.error('Error executing the GoogleMapsCallback', error);
     } finally {
       callbackExecuted = true;
+      cleanupTimers();
+      googleMapsReadyCallbacks.delete(resolveCurrentCallback);
     }
-  };
+  }
 
-  let timeoutId: number | undefined = window.setTimeout(() => {
-    let intervalId: number | undefined = window.setInterval(() => {
-      if (timeoutId) {
-        globalThis.clearTimeout(timeoutId);
-        timeoutId = undefined;
-      }
+  googleMapsReadyCallbacks.add(resolveCurrentCallback);
+  ensureGlobalGoogleMapsCallback();
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (window.google.maps != null && !callbackExecuted) {
-        globalThis.GoogleMapsCallback();
-      }
+  timeoutId = window.setTimeout(() => {
+    const runtimeWindow = window as Window & { google?: TGlobalGoogleObject };
 
-      if (callbackExecuted) {
-        clearInterval(intervalId);
-        intervalId = undefined;
+    intervalId = window.setInterval(() => {
+      if (runtimeWindow.google?.maps != null) {
+        resolveCurrentCallback();
       }
     }, 500);
   }, 1000);
@@ -96,21 +128,13 @@ function createCallbackAndChecksIfMapIsLoaded(
  *
  * @param  {IGmapVuePluginOptions} options
  * @param  {TGoogleMapsAPIInitializerFn} googleMapsApiInitializer
- * @param  {()=>TGlobalGoogleObject} onMapsReady
- *
  * @internal
  */
 function createFinalPromise(
   options: IGmapVuePluginOptions,
   googleMapsApiInitializer: TGoogleMapsAPIInitializerFn,
-  onMapsReady: () => TGlobalGoogleObject,
-): Promise<TGlobalGoogleObject> {
+): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (typeof window === 'undefined') {
-      // Do nothing if run from server-side
-      return undefined;
-    }
-
     try {
       createCallbackAndChecksIfMapIsLoaded(resolve);
 
@@ -128,7 +152,7 @@ function createFinalPromise(
         reject(error);
       }
     }
-  }).then(onMapsReady);
+  });
 }
 
 /**
@@ -144,15 +168,28 @@ function createFinalPromise(
  */
 export function saveLazyPromiseAndFinalOptions(
   finalOptions: IGmapVuePluginOptions,
-  googleMapsApiPromiseLazy: TLazyValueGetterFn<TGlobalGoogleObject>,
+  googleMapsApiPromiseLazy: TLazyValueGetterFn<TGlobalGoogleObject | undefined>,
 ): void {
-  if (!$finalOptions) {
-    $finalOptions = finalOptions;
+  $finalOptions = finalOptions;
+  $googleMapsApiPromiseLazy = googleMapsApiPromiseLazy;
+}
+
+function useInjectedGoogleMapsApiPromiseLazy():
+  | TLazyValueGetterFn<TGlobalGoogleObject | undefined>
+  | undefined {
+  if (!getCurrentInstance()) {
+    return undefined;
   }
 
-  if (!$googleMapsApiPromiseLazy) {
-    $googleMapsApiPromiseLazy = googleMapsApiPromiseLazy;
+  return inject($gmapApiPromiseLazy, undefined);
+}
+
+function useInjectedPluginOptions(): IGmapVuePluginOptions | undefined {
+  if (!getCurrentInstance()) {
+    return undefined;
   }
+
+  return inject($gmapOptions, undefined);
 }
 
 /**
@@ -166,11 +203,14 @@ export function saveLazyPromiseAndFinalOptions(
 export function useGoogleMapsApiPromiseLazy():
   | Promise<TGlobalGoogleObject | undefined>
   | undefined {
-  if (!$googleMapsApiPromiseLazy) {
+  const googleMapsApiPromiseLazy =
+    useInjectedGoogleMapsApiPromiseLazy() ?? $googleMapsApiPromiseLazy;
+
+  if (!googleMapsApiPromiseLazy) {
     globalThis.console.warn('$googleMapsApiPromiseLazy was not created yet...');
   }
 
-  return $googleMapsApiPromiseLazy?.();
+  return googleMapsApiPromiseLazy?.();
 }
 
 /**
@@ -180,9 +220,11 @@ export function useGoogleMapsApiPromiseLazy():
  * @returns IPluginOptions
  */
 export function usePluginOptions(): IGmapVuePluginOptions | undefined {
-  if (!$finalOptions) {
+  const finalOptions = useInjectedPluginOptions() ?? $finalOptions;
+
+  if (!finalOptions) {
     globalThis.console.warn('$finalOptions was not defined yet...');
   }
 
-  return $finalOptions;
+  return finalOptions;
 }

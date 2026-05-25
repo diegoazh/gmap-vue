@@ -19,10 +19,14 @@ import {
   usePromiseLazyBuilderFn,
 } from '@/composables';
 import type { IGmapVuePluginOptions, IGoogleMapsApiObject } from '@/interfaces';
-import type { TGlobalGoogleObject, IGmvUtilities } from '@/types';
+import type {
+  TGlobalGoogleObject,
+  IGmvUtilities,
+  TLazyValueGetterFn,
+} from '@/types';
 import type { Emitter, EventType } from 'mitt';
 import { defineAsyncComponent, type App, type FunctionPlugin } from 'vue';
-import { $gmapOptions } from './keys';
+import { $gmapApiPromiseLazy, $gmapOptions } from './keys';
 
 /**
  * Vue augmentations
@@ -30,7 +34,7 @@ import { $gmapOptions } from './keys';
 declare module 'vue' {
   interface ComponentCustomProperties {
     $gmapDefaultResizeBus: Emitter<Record<EventType, unknown>>;
-    $gmapApiPromiseLazy: () => Promise<unknown>;
+    $gmapApiPromiseLazy: TLazyValueGetterFn<TGlobalGoogleObject | undefined>;
     $gmapOptions: IGmapVuePluginOptions;
   }
   interface GlobalComponents {
@@ -51,12 +55,12 @@ declare module 'vue' {
 
 declare global {
   // eslint-disable-next-line no-var
-  var GoogleMapsApi: IGoogleMapsApiObject;
+  var GoogleMapsApi: IGoogleMapsApiObject | undefined;
   // eslint-disable-next-line no-var
   var GoogleMapsCallback: () => void;
 
   interface Window {
-    GoogleMapsApi: IGoogleMapsApiObject;
+    GoogleMapsApi?: IGoogleMapsApiObject;
     GoogleMapsCallback: () => unknown;
     google?: TGlobalGoogleObject;
 
@@ -65,20 +69,42 @@ declare global {
 }
 
 /**
- * @var
- * @type {Object|undefined}
- *
- * An independent Vue instance that helps us to know when the Google Maps API is loaded.
- */
-globalThis.GoogleMapsApi = { isReady: false };
-
-/**
  * This function helps you to get the Google Maps API
- * when its ready on the window object
+ * when its ready on the window object.
+ *
+ * Runtime state is intentionally created during plugin install instead of module
+ * import so SSR imports do not mutate global objects.
  * @function
  */
+const installedGoogleMapsApiStates = new Set<IGoogleMapsApiObject>();
+
 function getGoogleMapsAPI(): false | TGlobalGoogleObject {
-  return globalThis.GoogleMapsApi.isReady && globalThis.google;
+  const googleObject = (globalThis as Record<string, unknown>).google;
+
+  if (typeof googleObject !== 'object' || googleObject === null) {
+    return false;
+  }
+
+  const runtimeStateIsReady = Array.from(installedGoogleMapsApiStates).some(
+    (state) => state.isReady,
+  );
+  const legacyStateIsReady =
+    (globalThis as { GoogleMapsApi?: IGoogleMapsApiObject }).GoogleMapsApi
+      ?.isReady === true;
+  const globalMapsIsReady = 'maps' in googleObject;
+
+  if (!runtimeStateIsReady && !legacyStateIsReady && !globalMapsIsReady) {
+    return false;
+  }
+
+  return googleObject as TGlobalGoogleObject;
+}
+
+function createGoogleMapsApiState(): IGoogleMapsApiObject {
+  const googleMapsApiState = { isReady: false };
+  installedGoogleMapsApiStates.add(googleMapsApiState);
+
+  return googleMapsApiState;
 }
 
 /**
@@ -127,9 +153,10 @@ const createGmapVuePlugin = (
      * @constant
      * @type {Function} the promise lazy creator function
      */
+    const googleMapsApiState = createGoogleMapsApiState();
     const promiseLazyCreator = usePromiseLazyBuilderFn(
       googleMapsApiInitializer,
-      globalThis.GoogleMapsApi,
+      googleMapsApiState,
     );
     /**
      * The googleMapsApiPromiseLazy function to can wait until Google Maps API is ready
@@ -150,6 +177,7 @@ const createGmapVuePlugin = (
      */
     app.config.globalProperties.$gmapApiPromiseLazy = googleMapsApiPromiseLazy;
     app.config.globalProperties.$gmapOptions = finalOptions;
+    app.provide($gmapApiPromiseLazy, googleMapsApiPromiseLazy);
     app.provide($gmapOptions, finalOptions);
 
     app
