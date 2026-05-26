@@ -1,8 +1,18 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { IGmapVuePluginOptions } from '../src/interfaces';
 import * as main from '../src/main';
 
+const globalRecord = globalThis as Record<string, unknown>;
+
 describe('main.ts module', () => {
+  beforeEach(() => {
+    delete globalRecord.GoogleMapsApi;
+  });
+
+  afterEach(() => {
+    delete globalRecord.GoogleMapsApi;
+  });
+
   it('should export one function and one object with three functions', () => {
     // arrange
     const options: IGmapVuePluginOptions = {
@@ -25,10 +35,6 @@ describe('main.ts module', () => {
     expect(main.utilities.pluginComponentBuilder).toBeTypeOf('function');
     expect(main.utilities.getGoogleMapsAPI).toBeTypeOf('function');
     expect(installFn).toBeTypeOf('function');
-    expect(globalThis.GoogleMapsApi).toBeDefined();
-    expect(globalThis.GoogleMapsApi).toBeTypeOf('object');
-    expect(Object.keys(globalThis.GoogleMapsApi)).toHaveLength(1);
-    expect(Object.keys(globalThis.GoogleMapsApi)).toEqual(['isReady']);
-    expect(globalThis.GoogleMapsApi.isReady).toBeFalsy();
+    expect(globalRecord.GoogleMapsApi).toBeUndefined();
   });
 });

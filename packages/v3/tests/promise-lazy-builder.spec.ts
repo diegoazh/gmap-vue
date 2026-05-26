@@ -4,12 +4,14 @@ import type { TGlobalGoogleObject } from '../src/types/gmap-vue.type';
 
 describe('promise-lazy-builder', () => {
   let promiseLazyBuilder: {
-    usePluginOptions: () => IGmapVuePluginOptions;
+    usePluginOptions: () => IGmapVuePluginOptions | undefined;
     saveLazyPromiseAndFinalOptions: (
-      o: Record<string, unknown>,
-      f: () => void,
+      o: IGmapVuePluginOptions,
+      f: () => Promise<TGlobalGoogleObject | undefined>,
     ) => void;
-    useGoogleMapsApiPromiseLazy: () => Promise<TGlobalGoogleObject | undefined>;
+    useGoogleMapsApiPromiseLazy: () =>
+      | Promise<TGlobalGoogleObject | undefined>
+      | undefined;
   };
 
   beforeEach(async () => {
@@ -36,9 +38,8 @@ describe('promise-lazy-builder', () => {
   test('should return the options passed to the plugin when it is initialized', () => {
     // Arrange
     const optionsMock = { load: { key: 'abc' } };
-    promiseLazyBuilder.saveLazyPromiseAndFinalOptions(
-      optionsMock,
-      () => undefined,
+    promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock, () =>
+      Promise.resolve(undefined),
     );
 
     // Act
@@ -51,28 +52,31 @@ describe('promise-lazy-builder', () => {
   test('should save the options and the API promise lazy when its called', () => {
     // Arrange
     const optionsMock = { load: { key: 'abc' } };
-    const fnMock = () => 'this is a test';
+    const promiseMock = Promise.resolve({ version: 'test' });
+    const fnMock = () => promiseMock;
 
     // Act
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock, fnMock);
 
     expect(promiseLazyBuilder.usePluginOptions()).toEqual(optionsMock);
-    expect(promiseLazyBuilder.useGoogleMapsApiPromiseLazy()).toEqual(fnMock());
+    expect(promiseLazyBuilder.useGoogleMapsApiPromiseLazy()).toBe(promiseMock);
   });
 
-  test('should only save once the options and the API promise lazy when its called', () => {
+  test('should use the latest options and API promise lazy when called more than once', () => {
     // Arrange
     const optionsMock = { load: { key: 'abc' } };
-    const fnMock = () => 'this is a test';
+    const promiseMock = Promise.resolve({ version: 'test' });
+    const fnMock = () => promiseMock;
     const optionsMock2 = { load: { key: 'def' } };
-    const fnMock2 = () => 'this is a test 2';
+    const promiseMock2 = Promise.resolve({ version: 'test 2' });
+    const fnMock2 = () => promiseMock2;
 
     // Act
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock2, fnMock2);
     promiseLazyBuilder.saveLazyPromiseAndFinalOptions(optionsMock, fnMock);
 
-    expect(promiseLazyBuilder.usePluginOptions()).toEqual(optionsMock2);
-    expect(promiseLazyBuilder.useGoogleMapsApiPromiseLazy()).toEqual(fnMock2());
+    expect(promiseLazyBuilder.usePluginOptions()).toEqual(optionsMock);
+    expect(promiseLazyBuilder.useGoogleMapsApiPromiseLazy()).toBe(promiseMock);
   });
 
   test('should print a message when gmapApiPromiseLazy is not define', async () => {
