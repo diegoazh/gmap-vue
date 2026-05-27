@@ -5,45 +5,50 @@ sidebar_position: 1
 sidebar_label: Introduction
 ---
 
-This plugin is a Vue wrapper over the Google Maps API.
+# Vue 3 guide
 
-## TypeScript support
+GmapVue is a Vue 3 wrapper around the Google Maps JavaScript API. Start here for new applications.
 
-This plugin was re-built entirely to has a full TypeScript support. Many things on it changed from the plugin built to use with Vue 2.
+## What you get
 
-## JSDoc comments
+- Vue 3 components such as `GmvMap`, `GmvMarker`, and `GmvAutocomplete`.
+- Composition API helpers from `@gmap-vue/v3/composables`.
+- TypeScript declarations for documented package entrypoints.
 
-All files in the source code are entirely self documented with **jsdoc** comments. You can refer to this comments with confidence to learn how this new version of the plugin works.
+## Get a Google Maps API key
 
-## Get an API key from Google
+Create a key in Google Cloud Console by following the [Google Maps JavaScript API key guide](https://developers.google.com/maps/documentation/javascript/get-api-key).
 
-[Generating an Google Maps API key](https://developers.google.com/maps/documentation/javascript/get-api-key).
+:::warning
+Browser keys are visible to users. Restrict your key by HTTP referrer, enable only the APIs you need, and rotate any unrestricted key that was committed or shared.
+:::
 
-## How to use it
+## Install the plugin
 
-The `GmapVuePlugin` exposed in the package is an object that contains the `install` function required for Vue to add plugins to your app.
-
-```ts title="main.ts" showLineNumbers {1,3,8-12}
-import { createGmapVuePlugin } from '@gmap-vue/v3';
-import App from './App.vue';
-import '@gmap-vue/v3/dist/style.css';
+```ts title="main.ts" showLineNumbers {1-4,9-13}
+import { createGmapVuePlugin } from "@gmap-vue/v3";
+import "@gmap-vue/v3/dist/style.css";
+import { createApp } from "vue";
+import App from "./App.vue";
 
 const app = createApp(App);
 
 app.use(
   createGmapVuePlugin({
     load: {
-      key: 'DlSzZaMeStOJndmvuPsSUcPBjxUNCpqd3BNYlZ1sWdMrOT5XrxrcvMNVllLH2nwINsFo8kyXVGStqKci',
+      key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+      libraries: "places",
     },
-  })
+  }),
 );
-app.mount('#app');
+
+app.mount("#app");
 ```
 
-:::info
-To know the available options of the plugin go to the [api documentation](/docs/vue-3-version/api/gmap-vue-plugin) to check it.
-:::
+`VITE_GOOGLE_MAPS_API_KEY` is a convenient Vite configuration value, not a secret. Vite exposes `VITE_*` variables to browser code.
 
-:::info
-To know more about the `components` object check the [api documentation](/docs/vue-3-version/api/components) to check it.
-:::
+## Next steps
+
+- Review the [plugin options API](/docs/vue-3-version/api/gmap-vue-plugin#plugin-options).
+- Review the [component API](/docs/vue-3-version/api/components).
+- Use only the [supported package entrypoints](../api/#supported-entrypoints).

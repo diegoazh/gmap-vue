@@ -1,8 +1,8 @@
-label: Documentation
+label: Vue 3
 position: 1
 collapsible: true
-collapsed: true
+collapsed: false
 link:
   type: generated-index
-  title: Vue 3 plugin documentation
-  description: Documentation for the plugin version used in Vue 3
+  title: Vue 3 documentation
+  description: Start here for new Vue applications using @gmap-vue/v3.

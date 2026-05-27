@@ -6,54 +6,71 @@ sidebar_label: Dynamic load
 
 # Dynamic load
 
-If you need to initialize the Google Maps API in a dynamic way you can use the `dynamicLoad` option of the plugin
-configuration, this option start the plugin but **it doesn't load the Google Maps API**, **you need to load it manually** using
-the `googleMapsApiInitializer` function from the `utilities` object exposed by the plugin as we show below
+Use `dynamicLoad` when your app must decide when to load the Google Maps JavaScript API. The plugin installs normally, but it does not inject the Google Maps script until you call `utilities.googleMapsApiInitializer`.
+
+## Configure the plugin
 
 ```ts title="main.ts" showLineNumbers
-//...
+import { createGmapVuePlugin } from "@gmap-vue/v3";
+import { createApp } from "vue";
+import App from "./App.vue";
 
 createApp(App)
-  .use(router)
-  .use(createGmapVuePlugin({ dynamicLoad: true }))
+  .use(
+    createGmapVuePlugin({
+      dynamicLoad: true,
+      load: {
+        key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+      },
+    }),
+  )
   .mount("#app");
-
-//...
 ```
 
-In setup script
+## Load from a component
 
-```ts title="[your-component].vue - Composition API" showLineNumbers {5,6,9}
-import { onMounted } from "vue";
+```ts title="[your-component].vue - Composition API" showLineNumbers
 import { utilities } from "@gmap-vue/v3";
 import { usePluginOptions } from "@gmap-vue/v3/composables";
+import { onMounted } from "vue";
 
 const { googleMapsApiInitializer } = utilities;
 const options = usePluginOptions();
 
 onMounted(() => {
-  googleMapsApiInitializer(options);
+  if (!options?.load) {
+    return;
+  }
+
+  googleMapsApiInitializer(options.load);
 });
 ```
 
-or in options API
+## Options API
 
-```ts title="[your-component].vue - Options API" showLineNumbers {4,8}
-import { onMounted } from "vue";
+```ts title="[your-component].vue - Options API" showLineNumbers
 import { utilities } from "@gmap-vue/v3";
 
 const { googleMapsApiInitializer } = utilities;
 
 export default {
   mounted() {
-    googleMapsApiInitializer(this.$gmapOptions);
+    if (!this.$gmapOptions?.load) {
+      return;
+    }
+
+    googleMapsApiInitializer(this.$gmapOptions.load);
   },
 };
 ```
 
+:::warning
+The key still runs in the browser. Restrict it by HTTP referrer and only enable the APIs you need.
+:::
+
 :::info
 
-- If you want to know the **`googleMapsApiInitializer` API** please check it [here](/wip).
-- Check the plugin **options** interface [here](/docs/vue-3-version/api/gmap-vue-plugin#plugin-options)
+- Check the `googleMapsApiInitializer` API [here](/docs/vue-3-version/api/utilities#googlemapsapiinitializer).
+- Check the plugin options interface [here](/docs/vue-3-version/api/gmap-vue-plugin#plugin-options).
 
 :::

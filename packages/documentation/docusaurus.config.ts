@@ -1,41 +1,41 @@
-import { themes as prismThemes } from 'prism-react-renderer';
-import type { Config } from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
-import { GITHUB_URI, PROJECT_NAME } from './constants';
+import { themes as prismThemes } from "prism-react-renderer";
+import type { Config } from "@docusaurus/types";
+import type * as Preset from "@docusaurus/preset-classic";
+import { GITHUB_URI, PROJECT_NAME } from "./constants";
 
 const config: Config = {
-  title: 'GmapVue Docs',
-  tagline: 'Documentation about GmapVue plugin',
-  favicon: 'img/favicon.ico',
+  title: "GmapVue Docs",
+  tagline: "Documentation about GmapVue plugin",
+  favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: 'https://diegoazh.github.io/',
+  url: "https://diegoazh.github.io/",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/gmap-vue/',
+  baseUrl: "/gmap-vue/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: GITHUB_URI, // Usually your GitHub org/user name.
   projectName: PROJECT_NAME, // Usually your repo name.
 
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: "warn",
+  onBrokenMarkdownLinks: "warn",
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
 
   presets: [
     [
-      'classic',
+      "classic",
       {
         docs: {
-          sidebarPath: './sidebars.ts',
+          sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: GITHUB_URI,
@@ -47,7 +47,7 @@ const config: Config = {
           editUrl: GITHUB_URI,
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: "./src/css/custom.css",
         },
       } satisfies Preset.Options,
     ],
@@ -55,76 +55,76 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: 'GmapVue Docs',
+      title: "GmapVue Docs",
       logo: {
-        alt: 'GmapVue Logo',
-        src: 'img/logo.svg',
+        alt: "GmapVue Logo",
+        src: "img/logo.svg",
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'vue3Version',
-          position: 'left',
-          label: 'version for Vue@3',
+          type: "docSidebar",
+          sidebarId: "vue3Version",
+          position: "left",
+          label: "Vue 3",
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'vue2Version',
-          position: 'left',
-          label: 'version for Vue@2',
+          type: "docSidebar",
+          sidebarId: "vue2Version",
+          position: "left",
+          label: "Vue 2 Legacy",
         },
-        { to: '/blog', label: 'Blog', position: 'left' },
+        { to: "/blog", label: "Blog", position: "left" },
         {
           href: GITHUB_URI,
-          label: 'GitHub',
-          position: 'right',
+          label: "GitHub",
+          position: "right",
         },
       ],
     },
     footer: {
-      style: 'dark',
+      style: "dark",
       links: [
         {
-          title: 'Docs',
+          title: "Docs",
           items: [
             {
-              label: 'version for Vue@3',
-              to: '/docs/vue-3-version/',
+              label: "Vue 3 documentation",
+              to: "/docs/vue-3-version/",
             },
             {
-              label: 'version for Vue@2',
-              to: '/docs/vue-2-version/',
+              label: "Vue 2 legacy documentation",
+              to: "/docs/vue-2-version/",
             },
           ],
         },
         {
-          title: 'Community',
+          title: "Community",
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com',
+              label: "Stack Overflow",
+              href: "https://stackoverflow.com",
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/',
+              label: "Discord",
+              href: "https://discordapp.com/",
             },
             {
-              label: 'Twitter',
-              href: 'https://twitter.com/',
+              label: "Twitter",
+              href: "https://twitter.com/",
             },
           ],
         },
         {
-          title: 'More',
+          title: "More",
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
+              label: "Blog",
+              to: "/blog",
             },
             {
-              label: 'GitHub',
+              label: "GitHub",
               href: GITHUB_URI,
             },
           ],

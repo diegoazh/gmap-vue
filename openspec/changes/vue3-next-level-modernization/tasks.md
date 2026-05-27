@@ -43,14 +43,14 @@ Chain strategy: pending
 
 ## Phase 3: Vue 3 Docs Relaunch
 
-- [ ] 3.1 Update `packages/documentation/docusaurus.config.ts` and `sidebars.ts` so Vue 3 guide/API/recipes are first and Vue 2 is labeled legacy.
-- [ ] 3.2 Update `packages/documentation/docs/vue-3-version/**` with secure API-key guidance, Composition API examples, and supported entrypoint imports.
-- [ ] 3.3 Add Vue 2 migration/deprecation messaging in legacy docs navigation without removing access.
+- [x] 3.1 Update `packages/documentation/docusaurus.config.ts` and `sidebars.ts` so Vue 3 guide/API/recipes are first and Vue 2 is labeled legacy.
+- [x] 3.2 Update `packages/documentation/docs/vue-3-version/**` with secure API-key guidance, Composition API examples, and supported entrypoint imports.
+- [x] 3.3 Add Vue 2 migration/deprecation messaging in legacy docs navigation without removing access.
 
 ## Phase 4: CI Gates and Verification Wiring
 
 - [ ] 4.1 Add/adjust `.github/workflows/*` gates for v3 build, `test:ci`, type-check, and package smoke-test checks.
-- [ ] 4.2 Add/adjust docs workflow gates for `pnpm run --filter docs build` and `pnpm run --filter docs typecheck`.
+- [ ] 4.2 Add/adjust docs workflow gates for `pnpm run --filter docs build` and `pnpm run --filter docs typecheck`, keeping the temporary `webpackbar` override visible until Docusaurus includes the webpack 5.106+ compatibility fix.
 - [ ] 4.3 Define pre-apply verification checklist in change notes (root lint/test/e2e deferred until user confirmation).
 
 ## Phase 5: npm Supply-Chain Security Hardening (careful final slice)
