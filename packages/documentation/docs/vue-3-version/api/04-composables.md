@@ -3,6 +3,7 @@ id: composables
 sidebar_position: 4
 sidebar_label: composables
 ---
+
 # The exposed composables
 
 :::info
@@ -20,9 +21,9 @@ import {
   useGoogleMapsApiPromiseLazy,
   useStreetViewPanoramaPromise,
   usePluginOptions,
-} from '@gmap-vue/v3/composables';
+} from "@gmap-vue/v3/composables";
 
-const promise = useMapPromise('yourMapKey');
+const promise = useMapPromise("yourMapKey");
 // ...
 ```
 
@@ -33,7 +34,7 @@ This composable return the a promise that when it is resolved return the global 
 You can use it in the following way
 
 ```ts showLineNumbers
-import { useGoogleMapsApiPromiseLazy } from '@gmap-vue/v3/composables';
+import { useGoogleMapsApiPromiseLazy } from "@gmap-vue/v3/composables";
 
 const googlePromise = useGoogleMapsApiPromiseLazy();
 
@@ -49,79 +50,23 @@ If the Google API was not loaded yet you will see a warning message in the conso
 ### `useGoogleMapsApiPromiseLazy` API
 
 ```ts showLineNumbers
-let $googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>;
-
-/**
- * This function helps to save the final options passed to the plugin and
- * the function to get the promise useful to wait until the Google Maps API
- * is loaded and ready to use it
- *
- * @param  {IPluginOptions} finalOptions
- * @param  {LazyValueGetterFn} googleMapsApiPromiseLazy
- * @returns void
- *
- * @internal
- */
-export function saveLazyPromiseAndFinalOptions(
-  finalOptions: IPluginOptions,
-  googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>
-): void {
-  if (!$finalOptions) {
-    $finalOptions = finalOptions;
-  }
-
+export function useGoogleMapsApiPromiseLazy():
+  | Promise<GlobalGoogleObject | undefined>
+  | undefined {
   if (!$googleMapsApiPromiseLazy) {
-    $googleMapsApiPromiseLazy = googleMapsApiPromiseLazy;
-  }
-}
-
-/**
- * This function returns a promise when is resolved returns the original Google
- * Maps API. With this promise you can wait until the Google Maps API is fully
- * loaded.
- *
- * @public
- * @returns {Promise<any>}
- */
-export function useGoogleMapsApiPromiseLazy(): Promise<
-  GlobalGoogleObject | undefined
-> {
-  if (!$googleMapsApiPromiseLazy) {
-    globalThis.console.warn('$googleMapsApiPromiseLazy was not created yet...');
+    globalThis.console.warn("$googleMapsApiPromiseLazy was not created yet...");
   }
 
   return $googleMapsApiPromiseLazy?.();
 }
 ```
 
-Like the plugin options this lazy promise is saved when the plugin is loaded
-
-```ts title="main.ts" showLineNumbers
-  /**
-   * Use a lazy to only load the API when
-   * a GMap component is loaded
-   *
-   * @constant
-   * @type {Function} the promise lazy creator function
-   */
-  const promiseLazyCreator = usePromiseLazyBuilderFn(
-    googleMapsApiInitializer,
-    globalThis.GoogleMapsApi
-  );
-  /**
-   * The googleMapsApiPromiseLazy function to can wait until Google Maps API is ready
-   *
-   * @constant
-   * @type {Function}
-   */
-  const googleMapsApiPromiseLazy = promiseLazyCreator(finalOptions);
-  saveLazyPromiseAndFinalOptions(finalOptions, googleMapsApiPromiseLazy);
-```
+The plugin creates this promise during install and provides it through Vue app context. Components should call the composable from setup/lifecycle code so the app-scoped value is used. Deprecated module-level fallback behavior remains for compatibility, but it can return `undefined` before the plugin is installed.
 
 :::info
 
 - Check the `LazyValueGetterFn` type [here](/docs/vue-3-version/api/types#lazyvaluegetterfn)
-- Check the `GlobalGoogleObject` type [here](/docs/vue-3-version/api/types#GlobalGoogleObject)
+- Check the `GlobalGoogleObject` type [here](/docs/vue-3-version/api/types#globalgoogleobject)
 
 :::
 
@@ -132,7 +77,7 @@ This composable return the final options object used by the plugin when it was i
 How to use it
 
 ```ts showLineNumbers
-import { usePluginOptions } from '@gmap-vue/v3/composables';
+import { usePluginOptions } from "@gmap-vue/v3/composables";
 
 const options = usePluginOptions();
 
@@ -143,70 +88,19 @@ const options = usePluginOptions();
 
 - Check the [**Options Interface**](/docs/vue-3-version/api/gmap-vue-plugin#plugin-options)
 
-- The options are saved when the plugin is load as we show below
+- The plugin options are provided through Vue app context during install. Outside app context, the deprecated module-level fallback can return `undefined` before the plugin is installed.
 
-```ts title="main.ts" showLineNumbers
-  /**
-   * Use a lazy to only load the API when
-   * a GMap component is loaded
-   *
-   * @constant
-   * @type {Function} the promise lazy creator function
-   */
-  const promiseLazyCreator = usePromiseLazyBuilderFn(
-    googleMapsApiInitializer,
-    globalThis.GoogleMapsApi
-  );
-  /**
-   * The googleMapsApiPromiseLazy function to can wait until Google Maps API is ready
-   *
-   * @constant
-   * @type {Function}
-   */
-  const googleMapsApiPromiseLazy = promiseLazyCreator(finalOptions);
-  saveLazyPromiseAndFinalOptions(finalOptions, googleMapsApiPromiseLazy);
-```
-
-- The core API of this composable
+- The core public shape of this composable is:
 
 ```ts showLineNumbers
-let $finalOptions: IPluginOptions;
+export function usePluginOptions(): IGmapVuePluginOptions | undefined {
+  const finalOptions = useInjectedPluginOptions() ?? $finalOptions;
 
-/**
- * This function helps to save the final options passed to the plugin and
- * the function to get the promise useful to wait until the Google Maps API
- * is loaded and ready to use it
- *
- * @param  {IPluginOptions} finalOptions
- * @param  {LazyValueGetterFn} googleMapsApiPromiseLazy
- * @returns void
- *
- * @internal
- */
-export function saveLazyPromiseAndFinalOptions(
-  finalOptions: IPluginOptions,
-  googleMapsApiPromiseLazy: LazyValueGetterFn<GlobalGoogleObject>
-): void {
-  if (!$finalOptions) {
-    $finalOptions = finalOptions;
+  if (!finalOptions) {
+    globalThis.console.warn("$finalOptions was not defined yet...");
   }
 
-  if (!$googleMapsApiPromiseLazy) {
-    $googleMapsApiPromiseLazy = googleMapsApiPromiseLazy;
-  }
-}
-
-/**
- * This function returns the configuration passed to the plugin
- *
- * @returns IPluginOptions
- */
-export function usePluginOptions(): IPluginOptions {
-  if (!$finalOptions) {
-    globalThis.console.warn('$finalOptions was not defined yet...');
-  }
-
-  return $finalOptions;
+  return finalOptions;
 }
 ```
 
@@ -221,11 +115,12 @@ This composable returns the `currentResizeBus`, `_resizeCallback`, `_delayedResi
 You can use it in the following way
 
 ```ts showLineNumbers
-import { useResizeBus } from '@gmap-vue/v3/composables';
+import { useResizeBus } from "@gmap-vue/v3/composables";
 
-const { currentResizeBus, _resizeCallback, _delayedResizeCallback } = useResizeBus();
+const { currentResizeBus, _resizeCallback, _delayedResizeCallback } =
+  useResizeBus();
 
-currentResizeBus.emit('foo', { a: 'b' });
+currentResizeBus.emit("foo", { a: "b" });
 ```
 
 The `_resizeCallback` is a function used to preserve the map center when it is resized. The `_delayedResizeCallback` use the `nextTick` function to call the `_resizeCallback` in the next change.

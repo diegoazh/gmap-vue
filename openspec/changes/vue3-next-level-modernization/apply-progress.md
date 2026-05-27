@@ -63,3 +63,41 @@ passed
 
 - Script injection remains a global loader singleton by design; app options/lazy runtime state are scoped per install with a latest-install deprecated fallback.
 - Root `pnpm run lint`, root `pnpm run test`, and root `pnpm run test:e2e` were not run in this worker; e2e may require `packages/v3/cypress/runner/.env` with a Google API key.
+
+## Phase 3 — Vue 3 Docs Relaunch
+
+Status: complete
+Mode: docs-only apply
+
+### Summary
+
+- Updated Docusaurus navigation/footer labels so Vue 3 is the primary path and Vue 2 is labeled legacy.
+- Reordered sidebar config to list Vue 3 before Vue 2 and updated category metadata for Vue 3 and Vue 2 legacy docs.
+- Reworked Vue 3 landing and quickstart docs around the happy path: install, stylesheet import, secure browser API-key setup, and supported package entrypoints.
+- Replaced high-risk stale Vue 2 examples in the Vue 3 docs, including Nuxt, `pluginComponentBuilder`, `GmvMap`, global properties, dynamic loading, and region/language examples.
+- Strengthened Vue 2 legacy messaging without removing routes or pages.
+
+### Validation
+
+```text
+$ pnpm run --filter docs typecheck
+passed
+
+$ pnpm run --filter docs build
+passed after adding a temporary pnpm `webpackbar: 7.0.0` override for the Docusaurus 3.9.0 / webpack 5.106+ ProgressPlugin compatibility issue.
+```
+
+### Review blocker follow-up
+
+A fresh review found incorrect docs examples after the first Phase 3 pass. The follow-up fix:
+
+- Updated Composition API examples to treat `useGoogleMapsApiPromiseLazy()` as the promise-returning composable API instead of calling the returned promise as a lazy function.
+- Updated dynamic-load examples to pass `options.load` / `this.$gmapOptions.load` into `googleMapsApiInitializer`, matching the `ILoadPluginOptions` contract.
+- Replaced malformed one-line install command fences with normal fenced shell blocks.
+- Added a CDN caveat that browser-only ESM usage may require an import map or CDN endpoint that rewrites externals.
+- Corrected the `pluginComponentBuilder` guide so Vue prop definitions live in `props` and `mappedProps` uses the public binding config shape (`noBind`, `twoWay`, `trackProperties`).
+
+### Notes / risks
+
+- The docs build still emits known legacy warnings for deprecated `onBrokenMarkdownLinks`, existing blog author metadata, missing blog truncation markers, Vue 2 broken links/anchors, and two pre-existing developer-page `regexr.com` links.
+- The `webpackbar` override should be removed when Docusaurus is upgraded to a release that includes the webpack 5.106+ compatibility fix.

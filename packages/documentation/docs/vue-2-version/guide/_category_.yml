@@ -1,8 +1,8 @@
-label: Guide
+label: Legacy guide
 position: 2
 collapsible: true
 collapsed: true
 link:
   type: generated-index
-  title: Guide
-  description: How to use the plugin
+  title: Vue 2 legacy guide
+  description: Maintenance guidance for existing Vue 2 applications. Use the Vue 3 docs for new work.

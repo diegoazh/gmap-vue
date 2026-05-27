@@ -17,21 +17,25 @@ Use the region and language options to localize your map.
 :::
 
 ```ts title="main.ts" showLineNumbers {12,13}
-import { createGmapVuePlugin } from '@gmap-vue/v3';
-import '@gmap-vue/v3/dist/style.css';
-import { createApp } from 'vue';
-import App from './App.vue';
-import './style.css';
+import { createGmapVuePlugin } from "@gmap-vue/v3";
+import "@gmap-vue/v3/dist/style.css";
+import { createApp } from "vue";
+import App from "./App.vue";
+import "./style.css";
 
 createApp(App)
   .use(
     createGmapVuePlugin({
       load: {
-        key: '...',
-        region: 'VI',
-        language: 'vi',
+        key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+        region: "VI",
+        language: "vi",
       },
-    })
+    }),
   )
-  .mount('#app');
+  .mount("#app");
 ```
+
+:::warning
+The API key is still bundled into browser code. Restrict it by HTTP referrer and enable only the APIs your application needs.
+:::

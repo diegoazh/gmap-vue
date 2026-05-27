@@ -1,5 +1,11 @@
 packages:
   # all packages in subdirs of packages/ and components/
-  - 'packages/**'
+  - "packages/**"
   # exclude packages that are inside test directories
-  - '!packages/**/dist/**'
+  - "!packages/**/dist/**"
+
+overrides:
+  # Docusaurus 3.9.0's bundled webpackbar 6 calls webpack.ProgressPlugin
+  # with options rejected by webpack 5.106+. Keep docs build working until
+  # Docusaurus is upgraded to a release that includes this compatibility fix.
+  webpackbar: 7.0.0

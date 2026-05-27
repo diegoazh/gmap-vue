@@ -3,6 +3,7 @@ id: gmv-map-slots
 sidebar_position: 6
 sidebar_label: GmvMap Slots
 ---
+
 # GmvMap Slots
 
 :::note
@@ -17,7 +18,7 @@ This is ok for most of the supplied components that interact directly with the G
 you want to bring up things like toolboxes, etc.
 
 There is a **second slot** named **"visible"** that must be used if you want to display content within the responsive
-wrapper for the map, hence that's why you'll see this in the [drawing manager with slot example](/wip). It's actually
-not required in the [first example](/wip) because the default toolbox is part of the Google map object.
+wrapper for the map. It is useful for custom controls or toolboxes that should be visible above the map instead of hidden
+inside the default slot. It is not required for map components whose UI is rendered by the Google Maps API itself.
 
 > Thanks to [@davydnorris](https://github.com/davydnorris) to document this part of the plugin.

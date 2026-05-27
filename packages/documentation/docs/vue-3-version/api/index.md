@@ -3,28 +3,29 @@ id: main.ts
 sidebar_position: 1
 sidebar_label: main.ts
 ---
+
 # `main.ts`
 
-The `main.ts` file expose four objects.
-
-- `createGmapVuePlugin`: The main factory function, used to install the plugin. It returns the install function required by Vue.
-- `utilities`: An object with util functions.
+The root entrypoint exposes the Vue plugin factory and runtime utilities.
 
 ```ts
-export { createGmapVuePlugin, utilities };
+export { createGmapVuePlugin, utilities } from "@gmap-vue/v3";
 ```
 
-## Other exposed APIs
+## Supported entrypoints
 
-This plugin also exports:
+Import only from the documented package entrypoints. Deep imports into `src/`, generated `dist/` internals other than the stylesheet, or component implementation files are unsupported.
 
-- `keys`: keys to use with the Vue `inject` function
-  - path: `@gmap-vue/v3/keys`
-- `types`: types possible needed to type things when using TypeScript
-  - path: `@gmap-vue/v3/types`
-- `interfaces`: interfaces possible needed to type things when using TypeScript
-  - path: `@gmap-vue/v3/interfaces`
-- `composables`: useful composables to access different things of the plugin
-  - path: `@gmap-vue/v3/composables`
-- `components`: components **types** of the plugin
-  - path: `@gmap-vue/v3/components`
+| Purpose                      | Entrypoint                    | Example                                                                 |
+| ---------------------------- | ----------------------------- | ----------------------------------------------------------------------- |
+| Plugin factory and utilities | `@gmap-vue/v3`                | `import { createGmapVuePlugin, utilities } from '@gmap-vue/v3';`        |
+| Components                   | `@gmap-vue/v3/components`     | `import { MapLayer } from '@gmap-vue/v3/components';`                   |
+| Composables                  | `@gmap-vue/v3/composables`    | `import { usePluginOptions } from '@gmap-vue/v3/composables';`          |
+| Injection keys               | `@gmap-vue/v3/keys`           | `import { $gmapOptions } from '@gmap-vue/v3/keys';`                     |
+| Interfaces                   | `@gmap-vue/v3/interfaces`     | `import type { IGmapVuePluginOptions } from '@gmap-vue/v3/interfaces';` |
+| Types                        | `@gmap-vue/v3/types`          | `import type { TGlobalGoogleObject } from '@gmap-vue/v3/types';`        |
+| Styles                       | `@gmap-vue/v3/dist/style.css` | `import '@gmap-vue/v3/dist/style.css';`                                 |
+
+## Compatibility policy
+
+These entrypoints are the public package surface for Vue 3. Undocumented deep imports can change without notice.

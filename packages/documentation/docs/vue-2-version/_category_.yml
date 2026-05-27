@@ -1,9 +1,9 @@
-label: Documentation
-position: 1
+label: Vue 2 Legacy
+position: 2
 collapsible: true
 collapsed: true
 link:
   slug: vue-2-docs
   type: generated-index
-  title: Vue 2 plugin documentation
-  description: Documentation for the plugin version used in Vue 2
+  title: Vue 2 legacy documentation
+  description: Legacy documentation for existing Vue 2 applications. New applications should use the Vue 3 plugin.
