@@ -23,7 +23,8 @@ jobs:
       - name: Install dependencies
         # Keep the root workspace visible so the temporary webpackbar override
         # applies until Docusaurus includes the webpack 5.106+ compatibility fix.
-        run: pnpm install --frozen-lockfile
+        # Ignore workspace lifecycle hooks; docs validation does not need them.
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Typecheck docs
         run: pnpm run --filter docs typecheck
       - name: Build docs
