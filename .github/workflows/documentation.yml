@@ -11,20 +11,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
       - name: Use Node.js 22
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-      - name: Install pnpm
-        run: npm install --location=global pnpm@9.15.2
-      - name: Remove pnpm-workspace.yaml
-        run: rm -rf ./pnpm-workspace.yaml
+          cache: "pnpm"
       - name: Install dependencies
-        working-directory: ./packages/documentation
-        run: pnpm install
+        # Keep the root workspace visible so the temporary webpackbar override
+        # applies until Docusaurus includes the webpack 5.106+ compatibility fix.
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck docs
+        run: pnpm run --filter docs typecheck
       - name: Build docs
-        working-directory: ./packages/documentation
-        run: pnpm run build
+        run: pnpm run --filter docs build
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v5
         with:

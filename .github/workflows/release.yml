@@ -43,10 +43,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Build package
-        working-directory: ./packages/v3
-        run: pnpm run build
-      - name: Run unit tests
-        run: pnpm run test
+        run: pnpm run --filter @gmap-vue/v3 build
+      - name: Typecheck package
+        run: pnpm run --filter @gmap-vue/v3 type-check
+      - name: Run unit and package smoke tests
+        run: pnpm run --filter @gmap-vue/v3 test:ci
       - name: Configure git credentials
         if: ${{ !inputs.dry_run }}
         uses: OleksiyRudenko/gha-git-credentials@v2.1.2

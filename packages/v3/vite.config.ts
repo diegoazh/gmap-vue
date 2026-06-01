@@ -47,6 +47,7 @@ export default defineConfig({
 
         return `${entryName}.es.js`;
       },
+      cssFileName: 'style',
       formats: ['cjs', 'es'],
     },
     rollupOptions: {

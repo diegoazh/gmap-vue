@@ -101,3 +101,74 @@ A fresh review found incorrect docs examples after the first Phase 3 pass. The f
 
 - The docs build still emits known legacy warnings for deprecated `onBrokenMarkdownLinks`, existing blog author metadata, missing blog truncation markers, Vue 2 broken links/anchors, and two pre-existing developer-page `regexr.com` links.
 - The `webpackbar` override should be removed when Docusaurus is upgraded to a release that includes the webpack 5.106+ compatibility fix.
+
+## Phase 4 — CI Gates and Verification Wiring
+
+Status: complete
+Mode: workflow-only apply
+
+### Summary
+
+- Updated CI build gates to run explicit v3 package build and type-check commands with workspace filters.
+- Updated CI unit-test matrix to build `@gmap-vue/v3` in the same fresh job before running `test:ci`, so package-surface smoke tests have `packages/v3/dist` available.
+- Kept e2e matrix behavior, but limited Cypress `.env` creation to the e2e path.
+- Updated documentation publishing workflow to install dependencies from the repository root and run docs `typecheck` plus docs `build` via filters, preserving the root `webpackbar: 7.0.0` override.
+- Updated manual release workflow to build, type-check, and run v3 `test:ci` explicitly before semantic-release.
+
+### Pre-apply verification checklist
+
+Required CI-equivalent checks for this slice:
+
+```text
+pnpm install --frozen-lockfile
+pnpm run --filter @gmap-vue/v3 build
+pnpm run --filter @gmap-vue/v3 type-check
+pnpm run --filter @gmap-vue/v3 test:ci
+pnpm run --filter docs typecheck
+pnpm run --filter docs build
+```
+
+Full root validation remains available but deferred until user confirmation because e2e depends on `packages/v3/cypress/runner/.env` with `VITE_GOOGLE_API_KEY`:
+
+```text
+pnpm run lint
+pnpm run test
+pnpm run test:e2e
+```
+
+### Validation
+
+```text
+$ pnpm install --frozen-lockfile
+passed
+
+$ pnpm run --filter @gmap-vue/v3 build
+passed; emits dist/style.css for the documented stylesheet export
+
+$ pnpm run --filter @gmap-vue/v3 type-check
+passed
+
+$ pnpm run --filter @gmap-vue/v3 test:ci
+passed; 23 files, 105 tests
+
+$ pnpm run --filter docs typecheck
+passed
+
+$ pnpm run --filter docs build
+passed with known legacy Docusaurus warnings
+
+$ pnpm run lint
+passed
+
+$ pnpm run test
+passed
+
+$ pnpm run test:e2e
+passed; 11 specs, 15 tests
+```
+
+### Notes / risks
+
+- Documentation CI failed because it removed `pnpm-workspace.yaml`, bypassing the root `webpackbar: 7.0.0` override and reinstalling the incompatible Docusaurus 3.9.0 / webpackbar 6 / webpack 5.106+ combination.
+- The workflow fix intentionally keeps the root workspace visible and documents why the temporary override must remain until the Docusaurus compatibility issue is resolved upstream.
+- CI still runs e2e only in the existing matrix path; local full e2e validation should be run only with a valid Google Maps API key.
