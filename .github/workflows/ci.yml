@@ -2,7 +2,8 @@ name: ci
 
 on:
   pull_request:
-    branches: "*"
+    branches:
+      - "*"
   push:
     branches:
       - master
@@ -59,8 +60,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Build package
-        working-directory: ./packages/v3
-        run: pnpm run build
+        run: pnpm run --filter @gmap-vue/v3 build
+      - name: Typecheck package
+        run: pnpm run --filter @gmap-vue/v3 type-check
       - name: Upload dist as artifact
         uses: actions/upload-artifact@v7
         with:
@@ -116,12 +118,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Create env file
+        if: matrix.test-plan == 'test:e2e'
         run: |
           touch ./packages/v3/cypress/runner/.env
           echo VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }} >> ./packages/v3/cypress/runner/.env
-      - name: Run unit tests
+      - name: Build package for smoke tests
         if: matrix.test-plan == 'test'
-        run: pnpm run test
+        run: pnpm run --filter @gmap-vue/v3 build
+      - name: Run unit and package smoke tests
+        if: matrix.test-plan == 'test'
+        run: pnpm run --filter @gmap-vue/v3 test:ci
       # start-server-and-test@2.0.8 → ps-tree@1.2.0 → wmic.exe, which was
       # removed from Windows Server 2025 (windows-latest). Tests complete
       # successfully but the post-test cleanup crashes with ENOENT, causing
