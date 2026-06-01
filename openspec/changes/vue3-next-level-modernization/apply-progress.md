@@ -172,3 +172,90 @@ passed; 11 specs, 15 tests
 - Documentation CI failed because it removed `pnpm-workspace.yaml`, bypassing the root `webpackbar: 7.0.0` override and reinstalling the incompatible Docusaurus 3.9.0 / webpackbar 6 / webpack 5.106+ combination.
 - The workflow fix intentionally keeps the root workspace visible and documents why the temporary override must remain until the Docusaurus compatibility issue is resolved upstream.
 - CI still runs e2e only in the existing matrix path; local full e2e validation should be run only with a valid Google Maps API key.
+
+## Phase 5 — npm Supply-Chain Security Hardening
+
+Status: complete
+Mode: audit-first hardening
+
+### Discovery summary
+
+- Plain workspace installs ran package lifecycle hooks, including root `prepare -> husky install` and legacy `packages/old-documentation prepare -> snyk protect`.
+- pnpm dependency build-script approval does not suppress workspace package lifecycle hooks; CI must use `--ignore-scripts` for install steps that only need dependency materialization.
+- Initial pnpm 10 build-script audit surfaced `core-js`, `core-js-pure`, `cypress`, `fsevents`, `highlight.js`, `snyk`, `vuepress`, and `esbuild` as dependencies with install-time hooks requiring classification.
+- Cypress does not need postinstall because e2e commands call `cypress install` explicitly.
+- `esbuild` is the only audited dependency allowed to run build scripts for cross-platform build compatibility; the rest are explicitly ignored.
+
+### Summary
+
+- Added pnpm 10 supply-chain policy in `pnpm-workspace.yaml`:
+  - `minimumReleaseAge: 1440` to delay newly published versions during future dependency resolution.
+  - `ignoredBuiltDependencies` for known unnecessary or legacy transitive lifecycle hooks.
+  - `onlyBuiltDependencies` allowing only `esbuild`.
+  - `strictDepBuilds: true` so future unclassified dependency build scripts fail loudly.
+- Updated CI and documentation workflow installs to use `pnpm install --frozen-lockfile --ignore-scripts` where lifecycle hooks are not needed.
+- Kept explicit runtime commands (`pnpm exec cypress install`, builds, tests, docs build) outside install-time scripts.
+
+### Validation
+
+```text
+$ pnpm install --lockfile-only --ignore-scripts
+passed; no lockfile changes required
+
+$ pnpm config get minimumReleaseAge
+1440
+
+$ pnpm config get ignoredBuiltDependencies
+core-js,core-js-pure,cypress,fsevents,highlight.js,snyk,vuepress
+
+$ pnpm config get onlyBuiltDependencies
+esbuild
+
+$ pnpm config get strictDepBuilds
+true
+
+$ pnpm install --frozen-lockfile --ignore-scripts
+passed
+
+$ pnpm ignored-builds
+reported no identifiable ignored builds in the current node_modules state
+
+$ pnpm run --filter @gmap-vue/v3 build
+passed
+
+$ pnpm run --filter @gmap-vue/v3 type-check
+passed
+
+$ pnpm run --filter @gmap-vue/v3 test:ci
+passed; 23 files, 105 tests
+
+$ pnpm run --filter @gmap-vue/v3 test:e2e:build
+passed
+
+$ pnpm run --filter docs typecheck
+passed
+
+$ pnpm run --filter docs build
+passed with known legacy Docusaurus warnings
+
+$ pnpm run lint
+passed
+
+$ pnpm run test
+passed
+
+$ pnpm run test:e2e
+passed; 11 specs, 15 tests
+```
+
+Full e2e remains available with a valid `packages/v3/cypress/runner/.env`:
+
+```text
+pnpm run --filter @gmap-vue/v3 test:e2e:ci
+```
+
+### Notes / risks
+
+- `minimumReleaseAge` affects future dependency resolution, not frozen-lockfile CI installs.
+- Avoided global `.npmrc ignore-scripts=true` because it would be too disruptive for contributors and hides intent; CI install flags are explicit instead.
+- Did not change peer dependency policy or remove the legacy `old-documentation` Snyk prepare hook in this slice; the CI hardening prevents that hook from running in CI installs.

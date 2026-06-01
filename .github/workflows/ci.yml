@@ -28,7 +28,7 @@ jobs:
           node-version: 22.x
           cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Upload pnpm-lock.yaml as artifact
         uses: actions/upload-artifact@v7
         with:
@@ -116,7 +116,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Create env file
         if: matrix.test-plan == 'test:e2e'
         run: |

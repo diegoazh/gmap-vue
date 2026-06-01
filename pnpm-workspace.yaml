@@ -9,3 +9,25 @@ overrides:
   # with options rejected by webpack 5.106+. Keep docs build working until
   # Docusaurus is upgraded to a release that includes this compatibility fix.
   webpackbar: 7.0.0
+
+# Supply-chain hardening: delay newly published versions during future
+# dependency resolution. Frozen-lockfile CI installs are unaffected.
+minimumReleaseAge: 1440
+
+# Dependency lifecycle/build-script policy for pnpm 10. Cypress is installed
+# explicitly by e2e scripts; the others are legacy/noisy transitive hooks that
+# are not required for build, test, or docs validation.
+ignoredBuiltDependencies:
+  - core-js
+  - core-js-pure
+  - cypress
+  - fsevents
+  - highlight.js
+  - snyk
+  - vuepress
+
+# esbuild is the only currently audited dependency allowed to run build scripts.
+onlyBuiltDependencies:
+  - esbuild
+
+strictDepBuilds: true

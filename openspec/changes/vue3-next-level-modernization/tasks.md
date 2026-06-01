@@ -57,8 +57,8 @@ Chain strategy: pending
 
 Reference: https://github.com/lirantal/npm-security-best-practices
 
-- [ ] 5.1 RED/DISCOVERY: Audit current pnpm install/build-script behavior and identify dependencies that require lifecycle scripts.
-- [ ] 5.2 GREEN: Add compatible pnpm 10 supply-chain settings to `pnpm-workspace.yaml`, including publish cooldown and exotic/git subdependency blocking where safe.
-- [ ] 5.3 GREEN: Define explicit build-script allowlist with `allowBuilds` and enable `strictDepBuilds` only after required exceptions are known.
-- [ ] 5.4 GREEN: Document security rationale, exceptions, and local/CI install workflow impact.
-- [ ] 5.5 VERIFY: Run install/lockfile validation and CI-equivalent package checks to prove the hardening does not break contributors or releases.
+- [x] 5.1 RED/DISCOVERY: Audit current pnpm install/build-script behavior and identify dependencies that require lifecycle scripts.
+- [x] 5.2 GREEN: Add compatible pnpm 10 supply-chain settings to `pnpm-workspace.yaml`, including publish cooldown and exotic/git subdependency blocking where safe.
+- [x] 5.3 GREEN: Define explicit build-script allowlist with `onlyBuiltDependencies` and enable `strictDepBuilds` only after required exceptions are known.
+- [x] 5.4 GREEN: Document security rationale, exceptions, and local/CI install workflow impact.
+- [x] 5.5 VERIFY: Run install/lockfile validation and CI-equivalent package checks to prove the hardening does not break contributors or releases.
