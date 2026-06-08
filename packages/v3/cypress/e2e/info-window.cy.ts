@@ -23,16 +23,14 @@ describe('InfoWindow component', () => {
     cy.get('[aria-label="Marker 1"]', { timeout: 8000 }).click({
       force: true,
     });
-    cy.contains('strong', 'Marker 1').should('be.visible');
-    cy.get('.gm-style-iw')
+    cy.contains('strong', 'Marker 1')
       .should('be.visible')
-      .then(($infoWindow) => {
-        const firstRect = $infoWindow[0].getBoundingClientRect();
+      .then(($markerContent) => {
+        const firstRect = $markerContent[0].getBoundingClientRect();
 
         cy.get('[aria-label="Marker 2"]').click({ force: true });
-        cy.contains('strong', 'Marker 2').should('be.visible');
-        cy.get('.gm-style-iw').should(($movedInfoWindow) => {
-          const movedRect = $movedInfoWindow[0].getBoundingClientRect();
+        cy.contains('strong', 'Marker 2').should(($movedMarkerContent) => {
+          const movedRect = $movedMarkerContent[0].getBoundingClientRect();
 
           const movedHorizontally =
             Math.round(movedRect.left) !== Math.round(firstRect.left);
@@ -41,7 +39,7 @@ describe('InfoWindow component', () => {
 
           expect(
             movedHorizontally || movedVertically,
-            'info-window screen position changed',
+            'info-window content screen position changed',
           ).to.be.true;
         });
       });
