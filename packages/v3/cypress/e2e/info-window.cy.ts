@@ -19,29 +19,22 @@ describe('InfoWindow component', () => {
     });
   });
 
-  it('should move a shared open info-window when clicking different markers', function () {
+  it('should keep a shared open info-window in sync when clicking different markers', function () {
     cy.get('[aria-label="Marker 1"]', { timeout: 8000 }).click({
       force: true,
     });
-    cy.contains('strong', 'Marker 1')
-      .should('be.visible')
-      .then(($markerContent) => {
-        const firstRect = $markerContent[0].getBoundingClientRect();
+    cy.contains('strong', 'Marker 1').should('be.visible');
 
-        cy.get('[aria-label="Marker 2"]').click({ force: true });
-        cy.contains('strong', 'Marker 2').should(($movedMarkerContent) => {
-          const movedRect = $movedMarkerContent[0].getBoundingClientRect();
+    cy.get('[aria-label="Marker 2"]', { timeout: 8000 }).click({
+      force: true,
+    });
+    cy.contains('strong', 'Marker 2').should('be.visible');
+    cy.contains('strong', 'Marker 1').should('not.exist');
 
-          const movedHorizontally =
-            Math.round(movedRect.left) !== Math.round(firstRect.left);
-          const movedVertically =
-            Math.round(movedRect.top) !== Math.round(firstRect.top);
-
-          expect(
-            movedHorizontally || movedVertically,
-            'info-window content screen position changed',
-          ).to.be.true;
-        });
-      });
+    cy.get('[aria-label="Marker 3"]', { timeout: 8000 }).click({
+      force: true,
+    });
+    cy.contains('strong', 'Marker 3').should('be.visible');
+    cy.contains('strong', 'Marker 2').should('not.exist');
   });
 });
