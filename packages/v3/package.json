@@ -1,6 +1,6 @@
 {
   "name": "@gmap-vue/v3",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Google Maps components and composables for Vue 3",
   "type": "module",
   "main": "dist/main.cjs",

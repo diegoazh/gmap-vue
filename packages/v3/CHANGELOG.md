@@ -1,3 +1,12 @@
+## [2.2.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.2.0...gmv3_v2.2.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* **all:** handle removed drawing library ([#375](https://github.com/diegoazh/gmap-vue/issues/375)) ([753170e](https://github.com/diegoazh/gmap-vue/commit/753170e283ad785bccceb114bb364cd6c17725ee)), closes [#374](https://github.com/diegoazh/gmap-vue/issues/374) [#374](https://github.com/diegoazh/gmap-vue/issues/374)
+* **docs:** publish docusaurus output root ([#370](https://github.com/diegoazh/gmap-vue/issues/370)) ([f2e5e87](https://github.com/diegoazh/gmap-vue/commit/f2e5e87266bbeed9faa968ca479e153507dde8c5))
+* **v3:** update info window position ([#376](https://github.com/diegoazh/gmap-vue/issues/376)) ([65fa261](https://github.com/diegoazh/gmap-vue/commit/65fa26136c26579a0f97c2de8706658e3e7a0a53)), closes [#367](https://github.com/diegoazh/gmap-vue/issues/367) [#367](https://github.com/diegoazh/gmap-vue/issues/367) [#367](https://github.com/diegoazh/gmap-vue/issues/367)
+
 # [2.2.0](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.8...gmv3_v2.2.0) (2026-03-16)
 
 
