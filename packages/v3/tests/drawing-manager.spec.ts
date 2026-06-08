@@ -1,6 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentInstance } from 'vue';
+// @ts-expect-error Vue SFC imports are handled by Vite/Vitest.
 import DrawingManager from '../src/components/drawing-manager.vue';
 import * as composables from '../src/composables';
 import { useDestroyPromisesOnUnmounted } from '../src/composables';
@@ -14,6 +15,9 @@ import {
 describe('DrawingManager component', () => {
   let Map: MockComponentConstructorWithHTML;
 
+  const createMapMock = () =>
+    new (Map as unknown as new () => MockComponentConstructorWithHTML)();
+
   beforeEach(() => {
     ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
@@ -24,7 +28,7 @@ describe('DrawingManager component', () => {
       () =>
         ({
           exposed: {
-            mapPromise: Promise.resolve(new Map()),
+            mapPromise: Promise.resolve(createMapMock()),
           },
         }) as unknown as ComponentInstance<unknown>,
     );
@@ -32,7 +36,8 @@ describe('DrawingManager component', () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('should be mounted successfully', async () => {
@@ -76,7 +81,7 @@ describe('DrawingManager component', () => {
     });
     expect(JSON.stringify(drawingValues.options)).toEqual(
       JSON.stringify({
-        map: new Map() as MockComponentConstructorWithHTML,
+        map: createMapMock(),
         ...propsInOptions,
         drawingControlOptions: {
           drawingModes: ['MARKER', 'CIRCLE', 'POLYGON', undefined, undefined],
@@ -84,9 +89,9 @@ describe('DrawingManager component', () => {
         },
       }),
     );
-    expect(
-      wrapper.getCurrentComponent().exposed.drawingManagerPromise,
-    ).toBeInstanceOf(Promise);
+    const exposed = wrapper.getCurrentComponent().exposed;
+    expect(exposed).not.toBeNull();
+    expect(exposed?.drawingManagerPromise).toBeInstanceOf(Promise);
     wrapper.unmount();
   });
 
@@ -120,6 +125,43 @@ describe('DrawingManager component', () => {
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledOnce();
     expect(useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(
       props.drawingKey,
+    );
+  });
+
+  it('should reject the drawing manager promise with an actionable error when the drawing library is unavailable', async () => {
+    // given
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {
+      return undefined;
+    });
+    const googleWithoutDrawingLibrary = {
+      ...googleMock,
+      maps: {
+        ...googleMock.maps,
+        importLibrary: vi.fn((library?: string) => {
+          if (library === 'drawing') {
+            return {};
+          }
+
+          return googleMock.maps.importLibrary();
+        }),
+        drawing: undefined,
+      },
+    };
+    vi.stubGlobal('google', googleWithoutDrawingLibrary);
+    const wrapper = mount(DrawingManager);
+    const exposed = wrapper.getCurrentComponent().exposed;
+    expect(exposed).not.toBeNull();
+    const rejectionExpectation = expect(
+      exposed?.drawingManagerPromise,
+    ).rejects.toThrow('DrawingManager in Maps JavaScript API v3.65+');
+
+    // when
+    await flushPromises();
+
+    // then
+    await rejectionExpectation;
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining('Drawing Library is unavailable'),
     );
   });
 });

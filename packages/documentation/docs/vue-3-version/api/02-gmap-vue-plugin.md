@@ -35,16 +35,20 @@ export interface IGmapVuePluginOptions {
 }
 ```
 
-| Option                          | Purpose                                                                        |
-| ------------------------------- | ------------------------------------------------------------------------------ |
-| `dynamicLoad`                   | Install the plugin without immediately loading the Google Maps JavaScript API. |
-| `load.key`                      | Browser Google Maps API key. Restrict it by HTTP referrer.                     |
-| `load.libraries`                | Extra Google Maps libraries such as `places`, `drawing`, or `visualization`.   |
-| `load.language` / `load.region` | Localize Google Maps controls and service responses.                           |
-| `excludeEventsOnAllComponents`  | Prevent selected Google Maps events from being emitted by all components.      |
+| Option                          | Purpose                                                                                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dynamicLoad`                   | Install the plugin without immediately loading the Google Maps JavaScript API.                                                              |
+| `load.key`                      | Browser Google Maps API key. Restrict it by HTTP referrer.                                                                                  |
+| `load.libraries`                | Extra Google Maps libraries such as `places` or `visualization`. The `drawing` library was removed by Google in Maps JavaScript API v3.65+. |
+| `load.language` / `load.region` | Localize Google Maps controls and service responses.                                                                                        |
+| `excludeEventsOnAllComponents`  | Prevent selected Google Maps events from being emitted by all components.                                                                   |
 
 :::warning
 The browser API key is public. Do not commit unrestricted keys; use environment configuration for convenience and enforce restrictions in Google Cloud Console.
+:::
+
+:::warning Drawing Library removal
+Google deprecated the Maps JavaScript API Drawing Library and removed `google.maps.drawing.DrawingManager` in Maps JavaScript API v3.65+. `GmvDrawingManager` is kept only for legacy API versions where Google still serves the Drawing Library. For current Maps API versions, build drawing workflows with editable shapes, the Data layer/GeoJSON, or a third-party drawing library such as Terra Draw.
 :::
 
 ## Install example

@@ -124,8 +124,24 @@ provide(props.drawingKey ?? $drawingManagerPromise, promise);
 // eslint-disable-next-line vue/component-definition-name-casing
 defineOptions({ name: 'drawing-manager' });
 const excludedEvents = usePluginOptions()?.excludeEventsOnAllComponents?.();
+const drawingLibraryUnavailableMessage =
+  '[GmapVue] The Google Maps JavaScript API Drawing Library is unavailable. ' +
+  'Google removed DrawingManager in Maps JavaScript API v3.65+. ' +
+  'Use editable Maps shapes, the Data layer/GeoJSON, or a third-party drawing library such as Terra Draw instead.';
 let map: google.maps.Map | undefined;
 let selectedShape: google.maps.drawing.OverlayCompleteEvent | undefined;
+
+const createDrawingLibraryUnavailableError = (cause?: unknown) => {
+  const error = new Error(drawingLibraryUnavailableMessage);
+  error.name = 'GmapVueDrawingLibraryUnavailableError';
+
+  if (cause) {
+    (error as Error & { cause?: unknown }).cause = cause;
+  }
+
+  return error;
+};
+
 mapPromise
   .then(async (mapInstance) => {
     if (!mapInstance) {
@@ -134,13 +150,34 @@ mapPromise
 
     map = mapInstance;
 
+    let drawingLibrary: Partial<google.maps.DrawingLibrary>;
+    try {
+      drawingLibrary = (await google.maps.importLibrary(
+        'drawing',
+      )) as Partial<google.maps.DrawingLibrary>;
+    } catch (error: unknown) {
+      throw createDrawingLibraryUnavailableError(error);
+    }
+    const { DrawingManager } = drawingLibrary;
+    const OverlayType =
+      drawingLibrary.OverlayType ??
+      (
+        google.maps as unknown as {
+          drawing?: { OverlayType?: typeof google.maps.drawing.OverlayType };
+        }
+      ).drawing?.OverlayType;
+
+    if (!DrawingManager || !OverlayType) {
+      throw createDrawingLibraryUnavailableError();
+    }
+
     const defaultDrawingControlOptions = {
       drawingModes: [
-        google.maps.drawing.OverlayType.MARKER,
-        google.maps.drawing.OverlayType.CIRCLE,
-        google.maps.drawing.OverlayType.POLYGON,
-        google.maps.drawing.OverlayType.POLYLINE,
-        google.maps.drawing.OverlayType.RECTANGLE,
+        OverlayType.MARKER,
+        OverlayType.CIRCLE,
+        OverlayType.POLYGON,
+        OverlayType.POLYLINE,
+        OverlayType.RECTANGLE,
       ],
       position: google.maps.ControlPosition.TOP_CENTER,
     };
@@ -154,9 +191,6 @@ mapPromise
       ...props.options,
     };
 
-    const { DrawingManager } = (await google.maps.importLibrary(
-      'drawing',
-    )) as google.maps.DrawingLibrary;
     const drawingManager = new DrawingManager({
       ...drawingManagerOptions,
       drawingControlOptions: {
@@ -207,7 +241,12 @@ mapPromise
     drawingPromiseDeferred.resolve(drawingManager);
   })
   .catch((error: unknown) => {
-    throw error;
+    const drawingError =
+      error instanceof Error
+        ? error
+        : createDrawingLibraryUnavailableError(error);
+    console.error(drawingError.message);
+    drawingPromiseDeferred.reject?.(drawingError);
   });
 
 /*******************************************************************************
@@ -469,7 +508,8 @@ watch(
  * HOOKS
  ******************************************************************************/
 onUnmounted(async () => {
-  (await promise)?.setMap(null);
+  const drawingManager = await promise.catch(() => undefined);
+  drawingManager?.setMap(null);
   useDestroyPromisesOnUnmounted(props.drawingKey ?? $drawingManagerPromise);
 });
 
