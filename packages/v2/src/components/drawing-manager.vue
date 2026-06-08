@@ -13,6 +13,11 @@ import MapElementMixin from '../mixins/map-element';
 import { drawingManagerMappedProps } from '../utils/mapped-props-by-map-element';
 import { bindProps, getPropsValues } from '../utils/helpers';
 
+const drawingLibraryUnavailableMessage =
+  '[GmapVue] The Google Maps JavaScript API Drawing Library is unavailable. ' +
+  'Google removed DrawingManager in Maps JavaScript API v3.65+. ' +
+  'Use editable Maps shapes, the Data layer/GeoJSON, or a third-party drawing library such as Terra Draw instead.';
+
 /**
  * DrawingManager component
  * @displayName GmapDrawingManager
@@ -61,6 +66,10 @@ export default {
           position,
         };
 
+        if (!google.maps.drawing || !google.maps.drawing.DrawingManager) {
+          throw new Error(drawingLibraryUnavailableMessage);
+        }
+
         // https://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible
         this.$drawingManagerObject = new google.maps.drawing.DrawingManager(
           finalOptions
@@ -81,6 +90,7 @@ export default {
         return this.$drawingManagerObject;
       })
       .catch((error) => {
+        console.error(error.message || error);
         throw error;
       });
 

@@ -2,6 +2,10 @@
 
 This component helps you to drawing shapes on over the map.
 
+:::warning Drawing Library removal
+Google deprecated the Maps JavaScript API Drawing Library and removed `google.maps.drawing.DrawingManager` in Maps JavaScript API v3.65+. `GmapDrawingManager` is kept only for legacy API versions where Google still serves the Drawing Library. For current Maps API versions, build drawing workflows with editable shapes, the Data layer/GeoJSON, or a third-party drawing library such as Terra Draw.
+:::
+
 For more information read the Google Maps documentation
 for [drawing manager](https://developers.google.com/maps/documentation/javascript/drawinglayer).
 
