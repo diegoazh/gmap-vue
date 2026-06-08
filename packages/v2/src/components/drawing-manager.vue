@@ -90,7 +90,6 @@ export default {
         return this.$drawingManagerObject;
       })
       .catch((error) => {
-        console.error(error.message || error);
         throw error;
       });
 
