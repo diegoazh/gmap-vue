@@ -140,8 +140,12 @@ mapPromise
     };
 
     markerPromise
-      .then((markerInstance) => {
+      .then(async (markerInstance) => {
         rawMarkerOwner = markerInstance;
+
+        if (props.opened) {
+          await openInfoWindow();
+        }
       })
       .catch((error: unknown) => {
         console.error(error);
@@ -205,11 +209,11 @@ const openInfoWindow = async (): Promise<void> => {
 
   if (props.opened) {
     if (markerOwner.value) {
-      infoWindow.open(map.value, markerOwner.value);
+      infoWindow.open({ map: map.value, anchor: markerOwner.value });
     } else if (props.marker) {
-      infoWindow.open(map.value, props.marker);
+      infoWindow.open({ map: map.value, anchor: props.marker });
     } else {
-      infoWindow.open(map.value);
+      infoWindow.open({ map: map.value });
     }
   } else {
     infoWindow.close();
@@ -238,9 +242,23 @@ watch(
 
     if (value && value !== oldValue) {
       infoWindow.setPosition(value);
+
+      if (props.opened) {
+        await openInfoWindow();
+      }
     }
   },
 );
+
+watch(
+  () => props.marker,
+  async (value, oldValue) => {
+    if (value !== oldValue && props.opened) {
+      await openInfoWindow();
+    }
+  },
+);
+
 watch(
   () => props.content,
   async (value, oldValue) => {

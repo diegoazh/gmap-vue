@@ -23,6 +23,7 @@
         :ref="`marker${i}`"
         :clickable="true"
         :position="m.position"
+        :title="m.infoText.replace(/<[^>]*>/g, '')"
         @click="toggleInfoWindow(m, i, $refs[`marker${i}`][0].markerInstance)"
       />
     </gmv-map>
