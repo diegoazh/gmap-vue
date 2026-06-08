@@ -13,6 +13,9 @@ import {
 describe('InfoWindow component', () => {
   let Map: MockComponentConstructorWithHTML;
 
+  const createMapMock = () =>
+    new (Map as unknown as new () => MockComponentConstructorWithHTML)();
+
   beforeEach(() => {
     ({ Map } = googleMock.maps.importLibrary());
     vi.stubGlobal('google', googleMock);
@@ -23,7 +26,7 @@ describe('InfoWindow component', () => {
       () =>
         ({
           exposed: {
-            mapPromise: Promise.resolve(new Map()),
+            mapPromise: Promise.resolve(createMapMock()),
           },
         }) as unknown as ComponentInstance<unknown>,
     );
@@ -59,7 +62,7 @@ describe('InfoWindow component', () => {
     expect(wrapper.html()).toBe('<div class="info-window-container"></div>');
     expect(JSON.stringify(infoWindowValues.options)).toEqual(
       JSON.stringify({
-        map: new Map() as MockComponentConstructorWithHTML,
+        map: createMapMock(),
         ...propsInOptions,
         disableAutoPan: true,
         content: {},
@@ -102,5 +105,61 @@ describe('InfoWindow component', () => {
     expect(composables.useDestroyPromisesOnUnmounted).toHaveBeenCalledWith(
       props.infoWindowKey,
     );
+  });
+
+  it('should move an already open info window when the position prop changes', async () => {
+    // give
+    const initialPosition = { lat: 47.376332, lng: 8.547511 };
+    const nextPosition = { lat: 47.374592, lng: 8.548867 };
+    const wrapper = mount(InfoWindow, {
+      props: {
+        opened: true,
+        position: initialPosition,
+      },
+    });
+    await flushPromises();
+    infoWindowValues.open?.mockClear();
+    infoWindowValues.setPosition?.mockClear();
+
+    // when
+    await wrapper.setProps({ position: nextPosition });
+    await flushPromises();
+
+    // then
+    expect(infoWindowValues.setPosition).toHaveBeenCalledWith(nextPosition);
+    expect(infoWindowValues.open).toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
+  it('should reopen an already open info window when the marker prop changes', async () => {
+    // give
+    const marker = {
+      position: { lat: 47.376332, lng: 8.547511 },
+    } as google.maps.marker.AdvancedMarkerElement;
+    const nextMarker = {
+      position: { lat: 47.374592, lng: 8.548867 },
+    } as google.maps.marker.AdvancedMarkerElement;
+    const wrapper = mount(InfoWindow, {
+      props: {
+        marker,
+        opened: true,
+      },
+    });
+    await flushPromises();
+    infoWindowValues.open?.mockClear();
+
+    // when
+    await wrapper.setProps({ marker: nextMarker });
+    await flushPromises();
+
+    // then
+    const openCalls = infoWindowValues.open?.mock.calls as
+      | [[{ map?: unknown; anchor?: unknown }], ...unknown[][]]
+      | undefined;
+    expect(openCalls?.at(-1)?.[0]).toMatchObject({
+      map: expect.anything() as unknown,
+      anchor: nextMarker,
+    });
+    wrapper.unmount();
   });
 });

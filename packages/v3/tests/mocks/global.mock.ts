@@ -81,8 +81,16 @@ export const heatmapValues: {
 
 export const infoWindowValues: {
   options?: Record<string, unknown>;
+  close?: ReturnType<typeof vi.fn>;
+  open?: ReturnType<typeof vi.fn>;
+  setContent?: ReturnType<typeof vi.fn>;
+  setPosition?: ReturnType<typeof vi.fn>;
 } = {
   options: undefined,
+  close: undefined,
+  open: undefined,
+  setContent: undefined,
+  setPosition: undefined,
 };
 
 export const kmlLayerValues: {
@@ -196,11 +204,18 @@ export const googleMock = {
       },
       InfoWindow: function (options?: Record<string, unknown>) {
         infoWindowValues.options = options;
+        infoWindowValues.close = vi.fn();
+        infoWindowValues.open = vi.fn();
+        infoWindowValues.setContent = vi.fn();
+        infoWindowValues.setPosition = vi.fn();
         this.addListener = () => {
           return undefined;
         };
         this.setMap = vi.fn();
-        this.close = vi.fn();
+        this.close = infoWindowValues.close;
+        this.open = infoWindowValues.open;
+        this.setContent = infoWindowValues.setContent;
+        this.setPosition = infoWindowValues.setPosition;
       },
       KmlLayer: function (options?: Record<string, unknown>) {
         kmlLayerValues.options = options;
