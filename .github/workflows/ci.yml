@@ -119,6 +119,7 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Create env file
         if: matrix.test-plan == 'test:e2e'
+        shell: bash
         env:
           VITE_GOOGLE_API_KEY: ${{ secrets.VITE_GOOGLE_API_KEY }}
         run: |
