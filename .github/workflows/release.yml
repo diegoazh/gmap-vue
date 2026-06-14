@@ -11,10 +11,20 @@ on:
         options:
           - v3
       dry_run:
-        description: Run semantic-release without publishing
+        description: Run release without publishing
         required: true
         default: false
         type: boolean
+      publish_prepared_version:
+        description: Publish the current package.json version without semantic-release
+        required: true
+        default: false
+        type: boolean
+      expected_version:
+        description: Required guard when publishing a prepared version
+        required: false
+        default: ""
+        type: string
 
 jobs:
   release:
@@ -38,8 +48,10 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24.x
           cache: "pnpm"
+      - name: Upgrade npm for trusted publishing
+        run: npm install --global npm@11
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Build package
@@ -49,7 +61,7 @@ jobs:
       - name: Run unit and package smoke tests
         run: pnpm run --filter @gmap-vue/v3 test:ci
       - name: Configure git credentials
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !inputs.dry_run && !inputs.publish_prepared_version }}
         uses: OleksiyRudenko/gha-git-credentials@v2.1.2
         with:
           global: true
@@ -58,23 +70,59 @@ jobs:
           actor: "${{ secrets.GH_FULL_NAME }}"
           token: "${{ secrets.GH_TOKEN_REPO }}"
       - name: Update origin push URI
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !inputs.dry_run && !inputs.publish_prepared_version }}
         run: |
           git remote set-url origin "https://${{ secrets.GH_TOKEN_REPO }}@github.com/${{ secrets.GH_USER }}/${{ secrets.GH_REPOSITORY }}.git" > /dev/null 2>&1
           git checkout master
       - name: Prepare release dry run
-        if: ${{ inputs.dry_run }}
+        if: ${{ inputs.dry_run && !inputs.publish_prepared_version }}
         working-directory: ./packages/v3
         run: pnpm exec semantic-release --dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CI: true
+      - name: Validate prepared version publish
+        if: ${{ inputs.publish_prepared_version }}
+        working-directory: ./packages/v3
+        env:
+          EXPECTED_VERSION: ${{ inputs.expected_version }}
+        run: |
+          if [ -z "$EXPECTED_VERSION" ]; then
+            echo "expected_version is required when publish_prepared_version=true" >&2
+            exit 1
+          fi
+
+          if ! echo "$EXPECTED_VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "expected_version must be a valid semver version" >&2
+            exit 1
+          fi
+
+          package_version="$(node -p "require('./package.json').version")"
+          if [ "$package_version" != "$EXPECTED_VERSION" ]; then
+            echo "package.json version $package_version does not match expected_version $EXPECTED_VERSION" >&2
+            exit 1
+          fi
+
+          if npm view "@gmap-vue/v3@$package_version" version >/dev/null 2>&1; then
+            echo "@gmap-vue/v3@$package_version is already published on npm" >&2
+            exit 1
+          fi
+      - name: Publish prepared version dry run
+        if: ${{ inputs.dry_run && inputs.publish_prepared_version }}
+        working-directory: ./packages/v3
+        run: npm publish --dry-run
+        env:
+          CI: true
+      - name: Publish prepared version
+        if: ${{ !inputs.dry_run && inputs.publish_prepared_version }}
+        working-directory: ./packages/v3
+        run: npm publish
+        env:
           CI: true
       - name: Prepare release
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !inputs.dry_run && !inputs.publish_prepared_version }}
         working-directory: ./packages/v3
         run: pnpm exec semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           CI: true

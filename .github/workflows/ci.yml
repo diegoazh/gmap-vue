@@ -119,9 +119,17 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Create env file
         if: matrix.test-plan == 'test:e2e'
+        shell: bash
+        env:
+          VITE_GOOGLE_API_KEY: ${{ secrets.VITE_GOOGLE_API_KEY }}
         run: |
+          if [ -z "$VITE_GOOGLE_API_KEY" ]; then
+            echo "VITE_GOOGLE_API_KEY secret is required for e2e tests" >&2
+            exit 1
+          fi
+
           touch ./packages/v3/cypress/runner/.env
-          echo VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }} >> ./packages/v3/cypress/runner/.env
+          echo VITE_GOOGLE_API_KEY=$VITE_GOOGLE_API_KEY >> ./packages/v3/cypress/runner/.env
       - name: Build package for smoke tests
         if: matrix.test-plan == 'test'
         run: pnpm run --filter @gmap-vue/v3 build
