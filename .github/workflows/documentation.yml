@@ -1,8 +1,5 @@
 name: documentation
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 on:
   push:
     branches:
@@ -18,15 +15,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
       - name: Use Node.js 22
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: "pnpm"
+      - name: Enable pnpm with Corepack
+        run: corepack enable
       - name: Install dependencies
         # Keep the root workspace visible so workspace-level pnpm policy applies.
         # Ignore workspace lifecycle hooks; docs validation does not need them.

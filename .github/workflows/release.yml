@@ -1,8 +1,5 @@
 name: release
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 on:
   workflow_dispatch:
     inputs:
@@ -44,15 +41,12 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24.x
-          cache: "pnpm"
+      - name: Enable pnpm with Corepack
+        run: corepack enable
       - name: Upgrade npm for trusted publishing
         run: npm install --global npm@11
       - name: Install dependencies
