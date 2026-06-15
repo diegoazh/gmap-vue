@@ -33,8 +33,8 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v5
         with:
           target_branch: gh-pages
-          # Docusaurus emits into build/gmap-vue for this GitHub Pages project.
-          # Publish that directory's contents so /gmap-vue/ has an index.html.
-          build_dir: ./packages/documentation/build/gmap-vue
+          # Docusaurus emits into build/ with URLs scoped by baseUrl=/gmap-vue/.
+          # GitHub project pages serve the branch root at /gmap-vue/.
+          build_dir: ./packages/documentation/build
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}

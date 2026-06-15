@@ -109,4 +109,4 @@ Be aware that if you use this method, you cannot use TitleCase for your componen
 That is, instead of writing `<GmapMap>`, you need to write `<gmap-map>`.
 :::
 
-[Live example](https://diegoazh.github.io/gmap-vue/guide/).
+[Live example](/docs/vue-2-version/guide/).

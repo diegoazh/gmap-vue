@@ -115,7 +115,7 @@ mapped props definitions
 
 <a name="downArrowSimulator"></a>
 
-## downArrowSimulator(input) ⇒ <code>void</code>
+## downArrowSimulator(input) ⇒ <code>void</code> {#downArrowSimulator}
 
 This function simulates a down arrow key event when user
 hits return (enter) on the autocomplete component selection
@@ -198,7 +198,7 @@ Let's say DrawingRecognitionCanvas is a deep-learning backed canvas
 
 <a name="watchPrimitiveProperties"></a>
 
-## watchPrimitiveProperties(vueInst, propertiesToTrack, handler, immediate) ⇒ <code>void</code>
+## watchPrimitiveProperties(vueInst, propertiesToTrack, handler, immediate) ⇒ <code>void</code> {#watchPrimitiveProperties}
 
 Watch the individual properties of a PoD object, instead of the object
 per se. This is different from a deep watch where both the reference

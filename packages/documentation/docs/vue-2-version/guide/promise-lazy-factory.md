@@ -2,7 +2,7 @@
 
 The current code of the `promizeLazy` factory function.
 
-You can find the API documentation [here](/code/utils/factories/promise-lazy.html).
+You can find the API documentation [here](/docs/vue-2-version/code/utils/factories/promise-lazy).
 
 ```js
 import { getLazyValue } from '../helpers';

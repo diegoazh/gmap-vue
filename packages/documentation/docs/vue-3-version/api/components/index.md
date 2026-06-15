@@ -4,29 +4,12 @@ sidebar_position: 1
 sidebar_label: Introduction
 ---
 
-# The `components` of the plugin
+# Components entrypoint
 
-This plugin expose all **components types** from the following path `@gmap-vue/v3/components`.
+Import Vue component objects from `@gmap-vue/v3/components` when you want to register only the components your app needs.
 
 ```ts showLineNumbers
-/**
- * Export all components
- * @property  {Object}  HeatmapLayer - Vue component HeatmapLayer
- * @property  {Object}  KmlLayer - Vue component KmlLayer
- * @property  {Object}  Marker - Vue component Marker
- * @property  {Object}  Polyline - Vue component Polyline
- * @property  {Object}  Polygon - Vue component Polygon
- * @property  {Object}  Circle - Vue component Circle
- * @property  {Object}  Cluster - Vue component Cluster
- * @property  {Object}  Rectangle - Vue component Rectangle
- * @property  {Object}  DrawingManager - Vue component DrawingManager
- * @property  {Object}  InfoWindow - Vue component InfoWindow
- * @property  {Object}  MapLayer - Vue component MapLayer
- * @property  {Object}  PlaceInput - Vue component PlaceInput
- * @property  {Object}  Autocomplete - Vue component Autocomplete
- * @property  {Object}  StreetViewPanorama - Vue component StreetViewPanorama
- */
-export {
+import {
   Autocomplete,
   Circle,
   Cluster,
@@ -36,24 +19,40 @@ export {
   KmlLayer,
   MapLayer,
   Marker,
-  Polyline,
   Polygon,
+  Polyline,
   Rectangle,
   StreetViewPanorama,
-};
+} from '@gmap-vue/v3/components';
 ```
 
-## How to use it
+## Exported components
 
-This object is useful to install only the components that you need, for example
+| Export | Global plugin name | Purpose |
+| --- | --- | --- |
+| `MapLayer` | `GmvMap` | Base Google Map component. |
+| `Marker` | `GmvMarker` | Marker or advanced marker on the map. |
+| `InfoWindow` | `GmvInfoWindow` | Info window anchored to a marker or position. |
+| `Autocomplete` | `GmvAutocomplete` | Places autocomplete input wrapper. |
+| `Circle` | `GmvCircle` | Circle overlay. |
+| `Polygon` | `GmvPolygon` | Polygon overlay. |
+| `Polyline` | `GmvPolyline` | Polyline overlay. |
+| `Rectangle` | `GmvRectangle` | Rectangle overlay. |
+| `KmlLayer` | `GmvKmlLayer` | KML layer. |
+| `HeatmapLayer` | `GmvHeatmapLayer` | Heatmap layer. |
+| `StreetViewPanorama` | `GmvStreetViewPanorama` | Street View panorama. |
+| `Cluster` | `GmvCluster` | Marker clustering component. |
+| `DrawingManager` | `GmvDrawingManager` | Legacy Drawing Library wrapper. |
+
+## Typing component refs
+
+These exports are Vue components, not Google Maps classes. When you need a component ref in TypeScript, use Vue component typing.
 
 ```ts showLineNumbers
-import { ref, ComponentInstance } from 'vue';
-import type { MapLayer } from '@gmap-vue/v3/components';
+import { ref } from 'vue';
+import { MapLayer } from '@gmap-vue/v3/components';
 
-const mapRef = ref<ComponentInstance<typeof MapLayer> | null>(null);
+const mapRef = ref<InstanceType<typeof MapLayer> | null>(null);
 ```
 
-:::warning
-Remember this path export component **types** not classes. This exports are only types not the final components classes.
-:::
+For direct Google Maps instances, prefer the composables from `@gmap-vue/v3/composables`, such as `useMapPromise` and `useMarkerPromise`.

@@ -1,41 +1,40 @@
-# Website
+# GmapVue documentation site
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This package contains the Docusaurus documentation site published at `https://diegoazh.github.io/gmap-vue/`.
 
-### Installation
+## Local development
 
-```
-$ yarn
-```
+From the repository root:
 
-### Local Development
-
-```
-$ yarn start
+```bash
+pnpm run serve:docs
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Or from this package:
 
-### Build
-
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
+```bash
+cd packages/documentation
+pnpm run start
 ```
 
-Not using SSH:
+## Validate docs changes
 
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
+Run these before opening a documentation PR:
+
+```bash
+pnpm run --filter docs typecheck
+pnpm run --filter docs build
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+The build output is generated under `packages/documentation/build/` and should not be edited manually.
+
+## Content direction
+
+Vue 3 is the primary documentation path for new users. Vue 2 remains available as legacy documentation.
+
+When adding or changing docs:
+
+1. Start with the user task and happy path.
+2. Keep API reference pages behind guide pages.
+3. Avoid Docusaurus starter content, placeholder examples, or generic community links.
+4. Prefer working Vue 3 examples with documented package entrypoints.

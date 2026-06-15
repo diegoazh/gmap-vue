@@ -6,7 +6,7 @@ title: google-maps-api-initializer
 
 <a name="createGoogleMapsAPIInitializer"></a>
 
-## createGoogleMapsAPIInitializer() ⇒ <code>function</code>
+## createGoogleMapsAPIInitializer() ⇒ <code>function</code> {#createGoogleMapsAPIInitializer}
 This function returns the initializer function, it is exported
 in that way because we need to generate a closure to define a
 private property called `isApiSetUp` to detect if the Google Maps

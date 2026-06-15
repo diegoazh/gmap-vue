@@ -10,7 +10,7 @@ It is exported with the name `GmapAutocomplete`.
 
 From `v2.x.x` we change the slot used in this component until `v1.5.0` and below it was named `input` from `v2.x.x` we use the `default` slot and its fallback content if you don't provide a slot content.
 
-For more information please read the [Vue.js documentation for slots](https://vuejs.org/v2/guide/components-slots.html).
+For more information please read the [Vue.js documentation for slots](https://vuejs.org/v2/guide/components-slots).
 
 :::
 
@@ -147,7 +147,7 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this application [here](/docs/vue-2-version/code/utils/mapped-props-by-map-element#autocompletemappedprops).
 
 :::note Mapped Props of <code>GmapAutocomplete</code> component
 
@@ -193,7 +193,7 @@ export const autocompleteMappedProps = {
 </template>
 ```
 
-If you need to know the **API of this component** please read it [here](/code/components/autocomplete-input.html).
+If you need to know the **API of this component** please read it [here](/docs/vue-2-version/code/components/autocomplete-input).
 
 ## HTML examples
 

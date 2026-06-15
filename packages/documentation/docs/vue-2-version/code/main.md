@@ -2,7 +2,7 @@
 title: main
 ---
 
-# main
+# main {#main}
 
 ## Members
 
@@ -89,7 +89,7 @@ when its ready on the window object
 **Kind**: global function  
 <a name="gmapVuePluginInstallFn"></a>
 
-## gmapVuePluginInstallFn(Vue, options)
+## gmapVuePluginInstallFn(Vue, options) {#gmapVuePluginInstallFn}
 
 GmapVue install function
 
@@ -109,18 +109,17 @@ GmapVue install function
 | options.load.callback       | <code>string</code> \| <code>undefined</code> | <code>&quot;GoogleMapsCallback&quot;</code> | This must be ignored if have another callback that you need to run when Google Maps API is ready please use the `customCallback` option.                                                                                                                                                                                                                                 |
 | options.load.customCallback | <code>string</code> \| <code>undefined</code> |                                             | This option was added on v3.0.0 but will be removed in the next major release. If you already have an script tag that loads Google Maps API and you want to use it set you callback in the `customCallback` option and our `GoogleMapsCallback` callback will execute your custom callback at the end; it must attached to the `window` object, is the only requirement. |
 
-- [main](#main)
-  - [Members](#members)
-  - [Constants](#constants)
-  - [Functions](#functions)
-  - [GoogleMapsApi : Object | undefined](#googlemapsapi--object--undefined)
-  - [components : Object](#components--object)
-  - [helpers : Object](#helpers--object)
-  - [getGoogleMapsAPI()](#getgooglemapsapi)
-  - [gmapVuePluginInstallFn(Vue, options)](#gmapvueplugininstallfnvue-options)
-    - [gmapVuePluginInstallFn~GoogleMapsApi](#gmapvueplugininstallfngooglemapsapi)
-    - [gmapVuePluginInstallFn~promiseLazyCreator : function](#gmapvueplugininstallfnpromiselazycreator--function)
-    - [gmapVuePluginInstallFn~gmapApiPromiseLazy : function](#gmapvueplugininstallfngmapapipromiselazy--function)
+- [Members](#members)
+- [Constants](#constants)
+- [Functions](#functions)
+- [GoogleMapsApi : Object | undefined](#googlemapsapi--object--undefined)
+- [components : Object](#components--object)
+- [helpers : Object](#helpers--object)
+- [getGoogleMapsAPI()](#getgooglemapsapi)
+- [gmapVuePluginInstallFn(Vue, options)](#gmapVuePluginInstallFn)
+  - [gmapVuePluginInstallFn~GoogleMapsApi](#gmapvueplugininstallfngooglemapsapi)
+  - [gmapVuePluginInstallFn~promiseLazyCreator : function](#gmapvueplugininstallfnpromiselazycreator--function)
+  - [gmapVuePluginInstallFn~gmapApiPromiseLazy : function](#gmapvueplugininstallfngmapapipromiselazy--function)
 
 <a name="gmapVuePluginInstallFn..GoogleMapsApi"></a>
 
