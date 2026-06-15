@@ -1,159 +1,128 @@
 ---
 id: map-reference
 sidebar_position: 2
-sidebar_label: Map Reference
+sidebar_label: Map reference
 ---
 
 # Getting a map reference
 
+Most map updates should use Vue state. Reach for the underlying `google.maps.Map` instance only when you need an imperative Google Maps method.
+
 ## Reactive props
 
-The `:center` prop on `GmvMap` and the `:position` prop on `GmvMarker` are **fully reactive**. Binding them to a reactive variable is all you need — updating the variable will automatically pan the map and move the marker with no imperative code required.
+The `:center` prop on `GmvMap` and the `:position` prop on `GmvMarker` are reactive. Binding them to reactive values is enough for normal data-driven updates.
 
-```html title="Composition API — reactive center & marker position" showLineNumbers
+```vue title="ReactiveMap.vue" showLineNumbers
+<script setup lang="ts">
+import { ref } from "vue";
+
+const center = ref({ lat: 1.32, lng: 103.8 });
+
+function moveToNewLocation() {
+  center.value = { lat: 1.38, lng: 103.8 };
+}
+</script>
+
 <template>
-  <GmvMap :center="center" :zoom="14">
+  <GmvMap :center="center" :zoom="14" style="width: 100%; height: 400px">
     <GmvMarker :position="center" />
   </GmvMap>
-  <button @click="moveTo">Move to new location</button>
+  <button @click="moveToNewLocation">Move to new location</button>
 </template>
-
-<script setup lang="ts">
-  import { ref } from "vue";
-
-  const center = ref({ lat: 1.32, lng: 103.8 });
-
-  function moveTo() {
-    center.value = { lat: 1.38, lng: 103.8 };
-    // The map and marker update automatically — no panTo() or markerPromise needed
-  }
-</script>
 ```
 
 :::note
-Only use `panTo()` / `markerPromise` for **programmatic animations** (e.g. smooth pan without updating the bound state). For data-driven position changes, always use reactive props.
+Use `panTo()` or other instance methods for programmatic interactions. For data-driven changes, prefer reactive props.
 :::
 
-## Accessing the map instance imperatively
+## Access the map with `map-key`
 
-If you need to gain access to the `Map` instance (e.g. to call `panToBounds`, `panTo`)
+Use `map-key` plus `useMapPromise()` when the parent component needs the map instance.
 
-```html title="Options API" showLineNumbers {2,22,26}
-<template>
-  <GmvMap ref="mapRef" class="map" :center="center" :zoom="7"></GmvMap>
-</template>
-<script lang="ts">
-  // import { type IMapLayerVueComponentExpose } from '@gmap-vue/v3/interfaces';
-
-  export default {
-    data() {
-      return {
-        center: {
-          lat: 1.32,
-          lng: 103.8,
-        },
-      };
-    },
-    mounted() {
-      // At this point, the child GmapMap has been mounted, but
-      // its map has not been initialized.
-      // Therefore we need to write mapRef.$mapPromise.then(() => ...)
-
-      // (this.$refs.mapRef as (typeof MapLayer & IMapLayerVueComponentExpose)).mapPromise // - useful to type the exposed method
-      this.$refs.mapRef.mapPromise?.then((map) => {
-        if (map) {
-          setTimeout(() => {
-            map.panTo({ lat: 1.0, lng: 100.0 });
-            console.log(this.$refs.mapRef);
-          }, 2000);
-        }
-      });
-    },
-  };
-</script>
-<style scoped>
-  .map {
-    height: 50vh;
-    width: 50vw;
-  }
-</style>
-```
-
-```html title="Composition API" showLineNumbers {2,10,11,17-24}
-<template>
-  <GmvMap ref="mapRef" class="map" :center="center" :zoom="7"></GmvMap>
-</template>
-
+```vue title="MapPromiseExample.vue" showLineNumbers
 <script setup lang="ts">
-  import { useMapPromise } from "@gmap-vue/v3/composables";
-  import { onMounted, ref } from "vue";
-  import { MapLayer } from "@gmap-vue/v3/components";
+import { useMapPromise } from "@gmap-vue/v3/composables";
+import { ref } from "vue";
 
-  const mapRef = ref<typeof MapLayer | null>(null);
-  const mapPromise = useMapPromise();
-  const center = {
-    lat: 1.32,
-    lng: 103.8,
-  };
-  onMounted(() => {
-    mapPromise?.then((map) => {
-      if (map) {
-        setTimeout(() => {
-          map.panTo({ lat: 1.0, lng: 100.0 });
-          console.log(mapRef.value);
-        }, 2000);
-      }
-    });
-  });
+const center = ref({ lat: 1.32, lng: 103.8 });
+const mapKey = "main-map";
+const mapPromise = useMapPromise(mapKey);
+
+async function panToLocation() {
+  const map = await mapPromise;
+  map?.panTo({ lat: 1.0, lng: 100.0 });
+}
 </script>
 
-<style scoped>
-  .map {
-    height: 50vh;
-    width: 50vw;
-  }
-</style>
+<template>
+  <GmvMap
+    :map-key="mapKey"
+    :center="center"
+    :zoom="7"
+    style="width: 100%; height: 400px"
+  />
+  <button @click="panToLocation">Pan map</button>
+</template>
 ```
 
-## Typing a component ref
+The string passed to `useMapPromise(mapKey)` must match the `map-key` prop. Use stable, unique keys when a page renders multiple maps.
 
-:::info
-To safety type a ref of one of the plugin components is to add the following to your `main.ts` file
+## Access the map with a component ref
 
-```ts title="main.ts" showLineNumbers {11}
-import { ComponentInstance } from "vue";
+`GmvMap` also exposes `mapPromise` through the component instance. This is useful when you already need a template ref.
+
+```vue title="MapRefExample.vue" showLineNumbers
+<script setup lang="ts">
 import { MapLayer } from "@gmap-vue/v3/components";
-import { type IMapLayerVueComponentExpose } from "@gmap-vue/v3/interfaces";
+import { onMounted, ref } from "vue";
 
-/**
- * Vue augmentations
- */
+const center = ref({ lat: 1.32, lng: 103.8 });
+const mapRef = ref<InstanceType<typeof MapLayer> | null>(null);
+
+onMounted(async () => {
+  const map = await mapRef.value?.mapPromise;
+  map?.panTo({ lat: 1.0, lng: 100.0 });
+});
+</script>
+
+<template>
+  <GmvMap ref="mapRef" :center="center" :zoom="7" style="width: 100%; height: 400px" />
+</template>
+```
+
+## Typing a component ref globally
+
+If you use Options API refs heavily, you can augment Vue's `$refs` typing. Most Composition API code can use the local `InstanceType<typeof MapLayer>` pattern shown above instead.
+
+```ts title="main.ts" showLineNumbers
+import { MapLayer } from "@gmap-vue/v3/components";
+
 declare module "vue" {
   interface ComponentCustomProperties {
     $refs: {
-      mapRef: ComponentInstance<typeof MapLayer & IMapLayerVueComponentExpose>;
+      mapRef: InstanceType<typeof MapLayer>;
     };
   }
 }
 ```
 
-:::
+## Why parent components should not inject the map promise
 
-## The `inject` issue
+`GmvMap` provides the default map promise to its descendants. A parent component cannot inject something that is provided by its child, because the child has not executed `provide()` yet.
 
-:::warning
-
-In this example you can not use the `inject` method to get the mapPromise as we show below
-
-```ts title="Composition API" showLineNumbers
+```ts title="This only works in descendants of GmvMap" showLineNumbers
 import { inject } from "vue";
 import { $mapPromise } from "@gmap-vue/v3/keys";
 
 const mapPromise = inject($mapPromise);
 ```
 
-Why not? because you can use `inject` in a child component, that means in any component that you put between `<GmvMap ref="mapRef" class="map" :center="center" :zoom="7"> ... </GmvMap>`.
+For parent components, use one of these instead:
 
-In the examples above our component is the parent of the `GmvMap` component and the `provide` function was not executed yet, and we can not `inject` something that is not `provided` yet. Simple but tricky in a simple overview.
+- `useMapPromise(mapKey)` with a matching `<GmvMap :map-key="mapKey" />`
+- a template ref and `mapRef.value?.mapPromise`
 
-:::
+## Related pages
+
+- [`GmvMap` guide](../components/map.md)
+- [Supported composables](/docs/vue-3-version/api/composables)
