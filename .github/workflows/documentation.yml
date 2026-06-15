@@ -8,6 +8,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   publish-docs:
     name: github pages
@@ -40,4 +43,4 @@ jobs:
           # GitHub project pages serve the branch root at /gmap-vue/.
           build_dir: ./packages/documentation/build
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_REPO }}
+          GITHUB_TOKEN: ${{ github.token }}
