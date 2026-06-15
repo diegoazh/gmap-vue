@@ -1,5 +1,11 @@
 name: ci
 
+env:
+  # Keep JavaScript actions on the upcoming GitHub Actions runtime. This avoids
+  # Node 20 action-runtime deprecation noise while the project itself tests the
+  # Node versions declared in the matrix below.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   pull_request:
     branches:
@@ -75,16 +81,12 @@ jobs:
     needs: [install-and-cache, build]
 
     strategy:
+      fail-fast: false
       matrix:
         include:
-          # Previous LTS (20.x) - amd64 on Ubuntu
-          - os: ubuntu-latest
-            node-version: 20.x
-            test-plan: test
-          - os: ubuntu-latest
-            node-version: 20.x
-            test-plan: "test:e2e"
-          # Current LTS (22.x) - full coverage
+          # pnpm 11 requires Node.js >=22.13, so the CI matrix starts at the
+          # current LTS. Future packageManager upgrades should update this
+          # matrix together with package.json.
           - os: ubuntu-latest
             node-version: 22.x
             test-plan: test

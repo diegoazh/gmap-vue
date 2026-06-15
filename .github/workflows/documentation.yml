@@ -1,4 +1,8 @@
 name: documentation
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches:
@@ -21,8 +25,7 @@ jobs:
           node-version: 22.x
           cache: "pnpm"
       - name: Install dependencies
-        # Keep the root workspace visible so the temporary webpackbar override
-        # applies until Docusaurus includes the webpack 5.106+ compatibility fix.
+        # Keep the root workspace visible so workspace-level pnpm policy applies.
         # Ignore workspace lifecycle hooks; docs validation does not need them.
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Typecheck docs
