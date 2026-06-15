@@ -32,7 +32,7 @@ or load it dynamically from our component.
 
 <a name="getPromiseLazyCreatorFn"></a>
 
-## getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) ⇒ <code>function</code>
+## getPromiseLazyCreatorFn(googleMapsApiInitializer, GoogleMapsApi) ⇒ <code>function</code> {#getPromiseLazyCreatorFn}
 
 This function is a factory of the promise lazy creator
 it helps you creating the function that will call the
@@ -51,7 +51,7 @@ Google Maps API in an async way
 
 <a name="getPromiseLazyCreatorFn..promiseLazyCreator"></a>
 
-### getPromiseLazyCreatorFn~promiseLazyCreator(options)
+### getPromiseLazyCreatorFn~promiseLazyCreator(options) {#getPromiseLazyCreatorFn..promiseLazyCreator}
 
 The creator of the lazy promise
 
@@ -72,7 +72,7 @@ The creator of the lazy promise
 
 <a name="getPromiseLazyCreatorFn..promiseLazyCreator..onMapsReady"></a>
 
-#### promiseLazyCreator~onMapsReady() ⇒ <code>Object</code>
+#### promiseLazyCreator~onMapsReady() ⇒ <code>Object</code> {#getPromiseLazyCreatorFn..promiseLazyCreator..onMapsReady}
 
 Things to do once the API is loaded
 

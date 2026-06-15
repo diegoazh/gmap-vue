@@ -2,7 +2,7 @@
 
 The current code of the `mapElement` factory function.
 
-You can find the API documentation [here](/code/utils/factories/map-element.html).
+You can find the API documentation [here](/docs/vue-2-version/code/utils/factories/map-element).
 
 ```js
 import MapElementMixin from '../../mixins/map-element';

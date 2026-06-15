@@ -1,11 +1,11 @@
 ## Description
 
 :::danger
-DEPRECATED, use [autocomplete](/examples/autocomplete.html) component instead.
+DEPRECATED, use [autocomplete](/docs/vue-2-version/guide/autocomplete) component instead.
 :::
 
 This component helps you to create a place input it use the auto-complete API but was the first implementation of that API.
-We encourage to use [autocomplete](/examples/autocomplete.html) component instead of this component, because it will be removed in the next major release.
+We encourage to use [autocomplete](/docs/vue-2-version/guide/autocomplete) component instead of this component, because it will be removed in the next major release.
 
 For more information read the Google Maps documentation for [autocomplete](https://developers.google.com/maps/documentation/javascript/places-autocomplete).
 
@@ -137,7 +137,7 @@ export default {
 
 :::
 
-If you need to know what are `mappedProps` please read the general concepts of this application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+If you need to know what are `mappedProps` please read the general concepts of this application [here](/docs/vue-2-version/code/utils/mapped-props-by-map-element#autocompletemappedprops).
 
 :::note Mapped Props of <code>GmapAutocomplete</code> component
 
@@ -155,7 +155,7 @@ This component does not has mapped props.
 </template>
 ```
 
-If you need to know the **API of this component** please read it [here](/code/components/place-input.html).
+If you need to know the **API of this component** please read it [here](/docs/vue-2-version/code/components/place-input).
 
 
 ## HTML examples
@@ -265,7 +265,7 @@ If you need to know the **API of this component** please read it [here](/code/co
 ## Test the component
 
 :::danger
-DEPRECATED, use [autocomplete](/examples/autocomplete.html) component instead.
+DEPRECATED, use [autocomplete](/docs/vue-2-version/guide/autocomplete) component instead.
 :::
 
 :::note Basic Place Input example

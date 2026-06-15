@@ -4,12 +4,6 @@ packages:
   # exclude packages that are inside test directories
   - "!packages/**/dist/**"
 
-overrides:
-  # Docusaurus 3.9.0's bundled webpackbar 6 calls webpack.ProgressPlugin
-  # with options rejected by webpack 5.106+. Keep docs build working until
-  # Docusaurus is upgraded to a release that includes this compatibility fix.
-  webpackbar: 7.0.0
-
 # Supply-chain hardening: delay newly published versions during future
 # dependency resolution. Frozen-lockfile CI installs are unaffected.
 minimumReleaseAge: 1440
@@ -31,3 +25,13 @@ onlyBuiltDependencies:
   - esbuild
 
 strictDepBuilds: true
+
+allowBuilds:
+  core-js: false
+  core-js-pure: false
+  cypress: false
+  esbuild: true
+  fsevents: false
+  highlight.js: false
+  snyk: false
+  vuepress: false

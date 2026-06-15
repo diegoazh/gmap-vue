@@ -89,7 +89,7 @@ After ensuring that all changes in your branch works as expected we will merge i
 /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\()(deps|root|all|gmap-vue|documentation)(\))(:)(\s{1}[\.\/\-\_a-z0-9\s]+)$/gm
 ```
 
-~~You can test this regex expression following this link [regexr.com/59fn0](regexr.com/59fn0).~~
+~~You can test this regex expression following this link [regexr.com/59fn0](https://regexr.com/59fn0).~~
 
 ## Code style
 

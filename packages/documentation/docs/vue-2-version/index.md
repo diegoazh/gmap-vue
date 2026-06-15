@@ -112,7 +112,7 @@ Be aware that if you use this method, you cannot use TitleCase for your componen
 That is, instead of writing `<GmapMap>`, you need to write `<gmap-map>`.
 :::
 
-[Live example](https://diegoazh.github.io/gmap-vue/guide/).
+[Live example](/docs/vue-2-version/guide/).
 
 :::warning
 
@@ -291,8 +291,8 @@ export default {
 ```
 
 If you want to know the **`googleMapsApiInitializer` API** please check
-it [here](https://diegoazh.github.io/gmap-vue/code/utils/initializer/google-maps-api-initializer.html#creategooglemapsapiinitializer-googlemapsapiinitializer-options-loadcn)
-.
+it [here](/docs/vue-2-version/code/utils/initializer/google-maps-api-initializer#createGoogleMapsAPIInitializer).
+
 
 ### The three main utilities
 
@@ -463,8 +463,8 @@ you want to bring up things like toolboxes, etc.
 
 There is a second slot named **"visible"** that must be used if you want to display content within the responsive
 wrapper for the map, hence that's why you'll see this in
-the [drawing manager with slot example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html). It's actually
-not required in the [first example](https://diegoazh.github.io/gmap-vue/guide/drawing-manager.html#html-examples)
+the [drawing manager with slot example](/docs/vue-2-version/guide/drawing-manager). It's actually
+not required in the [first example](/docs/vue-2-version/guide/drawing-manager#html-examples)
 because the default toolbox is part of the Google map object.
 
 > Thanks to [@davydnorris](https://github.com/davydnorris) to document this part of GmapVue.
@@ -543,7 +543,7 @@ The list of officially support components are:
 - Heat map
 - Drawing map: rectangle, circle, polygon, line
 
-Check our [documentation guide](https://diegoazh.github.io/gmap-vue/guide/) to see examples of every component.
+Check our [documentation guide](/docs/vue-2-version/guide/) to see examples of every component.
 
 For `Cluster`, you **must** import the class specifically, e.g.
 

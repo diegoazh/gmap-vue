@@ -266,7 +266,7 @@ export default {
 :::
 
 If you need to know what are `mappedProps` please read the general concepts of this
-application [here](/code/utils/mapped-props-by-map-element.html#autocompletemappedprops).
+application [here](/docs/vue-2-version/code/utils/mapped-props-by-map-element#autocompletemappedprops).
 
 :::note Mapped Props of <code>GmapMap</code> component
 
@@ -464,7 +464,7 @@ export default {
 </template>
 ```
 
-If you need to know the **API of this component** please read it [here](/code/components/map-layer.html).
+If you need to know the **API of this component** please read it [here](/docs/vue-2-version/code/components/map-layer).
 
 ## HTML examples
 
