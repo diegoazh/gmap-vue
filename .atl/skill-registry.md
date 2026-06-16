@@ -36,10 +36,10 @@ Generated during SDD init on 2026-05-17.
 
 **Trigger**: Work in `packages/documentation/`, Docusaurus docs, guides, API reference, blog, release notes.
 
-- Docusaurus 3.6.3 site lives under `packages/documentation` with base URL `/gmap-vue/`.
+- Docusaurus 3.10.1 site lives under `packages/documentation` with base URL `/gmap-vue/`.
 - Use `docs/vue-2-version/` and `docs/vue-3-version/` for versioned user docs.
 - Validate docs with `pnpm run --filter docs build` and `pnpm run --filter docs typecheck` when relevant.
-- Expected docs warnings include missing blog author/truncation markers and known broken anchors.
+- Docs build should pass without new broken links or anchors; legacy warnings must be called out when unavoidable.
 - Use commit scope `(docs)` for docs-only commits.
 
 ### TestingExpert
@@ -69,7 +69,7 @@ Generated during SDD init on 2026-05-17.
 - Commits MUST use `type(scope): subject`; scope is required and limited to `v2`, `v3`, `next`, `docs`, `root`, `all`.
 - Subject must be lowercase and at least 15 characters.
 - v3 release tags use `gmv3_v${version}` and v2 release tags use `gmv2_v${version}`.
-- Main publish workflow builds/tests/publishes v3; documentation deploys through a separate workflow.
+- CI validates v3 build/test/e2e; manual `release.yml` publishes v3 with semantic-release or guarded prepared-version publishing.
 - Never add AI attribution or `Co-Authored-By` trailers.
 
 ### MonorepoArchitect
@@ -77,10 +77,10 @@ Generated during SDD init on 2026-05-17.
 **Trigger**: Workspace scripts, dependency management, package coordination, root-level validation.
 
 - Repo is a pnpm workspace over `packages/**`, excluding `packages/**/dist/**`.
-- Real root package manager currently declares `pnpm@10.32.1`.
+- Real root package manager currently declares `pnpm@11.7.0`.
 - Root scripts: `build:all`, `test`, `test:e2e`, `lint`, `serve:docs`, `clean`.
 - After code changes, project instructions require root `pnpm run lint`, `pnpm run test`, then `pnpm run test:e2e` in that order.
-- `.node-version` is `24`; CI currently uses Node 20, 22, and 24 for tests.
+- CI uses Node 22 and 24; pnpm 11 requires Node >=22.13.
 
 ## User skills selected for this repository
 

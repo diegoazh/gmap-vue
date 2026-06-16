@@ -1,42 +1,92 @@
-# GmapVue for Vue 3
+# @gmap-vue/v3
 
-[![Publish](https://github.com/diegoazh/gmap-vue/workflows/publish/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Apublish)
-[![Documentation](https://github.com/diegoazh/gmap-vue/workflows/documentation/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Adocumentation)
-[![](https://data.jsdelivr.com/v1/package/npm/@gmap-vue/v3/badge)](https://www.jsdelivr.com/package/npm/@gmap-vue/v3)
+[![CI](https://github.com/diegoazh/gmap-vue/actions/workflows/ci.yml/badge.svg)](https://github.com/diegoazh/gmap-vue/actions/workflows/ci.yml)
+[![Documentation](https://github.com/diegoazh/gmap-vue/actions/workflows/documentation.yml/badge.svg)](https://github.com/diegoazh/gmap-vue/actions/workflows/documentation.yml)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@gmap-vue/v3/badge)](https://www.jsdelivr.com/package/npm/@gmap-vue/v3)
+
+Vue 3 components and composables for the Google Maps JavaScript API.
+
+`@gmap-vue/v3` is the actively developed GmapVue package. It provides Vue wrappers for maps, markers, info windows, shapes, clusters, layers, autocomplete, and Street View, plus composables for accessing the underlying Google Maps instances.
+
+## Documentation
+
+- [Vue 3 guide](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/)
+- [Component API reference](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/api/components/)
+- [Composables API](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/api/composables/)
 
 ## Installation
 
-### npm
-
-```shell
+```bash
 npm install @gmap-vue/v3
 ```
 
-### pnpm
-
-```shell
+```bash
 pnpm add @gmap-vue/v3
 ```
 
-### yarn
-
-```shell
+```bash
 yarn add @gmap-vue/v3
 ```
 
-## [Documentation](https://diegoazh.github.io/gmap-vue/)
+## Quick start
 
-You can find the documentation following the [link](https://diegoazh.github.io/gmap-vue/).
+Register the plugin once in your Vue app:
 
-## Migrating from version for Vue 2
+```ts
+import { createApp } from 'vue';
+import { createGmapVuePlugin } from '@gmap-vue/v3';
+import '@gmap-vue/v3/dist/style.css';
+import App from './App.vue';
 
-In the new version of this plugin for Vue v3 we introduce many changes on the structure and also we tried to improve some names to be more intuitive. Please for more detail refer to our [documentation](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/#migrating-from-version-for-vue-2).
+createApp(App)
+  .use(
+    createGmapVuePlugin({
+      load: {
+        key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+      },
+    }),
+  )
+  .mount('#app');
+```
 
-## CONTRIBUTORS ARE WELCOME
+Then use the public components in your templates:
 
-If you have time to contribute to a rather frequently used library, feel free to make a PR!, but first please read our [contributing guide](https://github.com/diegoazh/gmap-vue/blob/master/CONTRIBUTING.md).
+```vue
+<template>
+  <GmvMap
+    :center="{ lat: -34.6037, lng: -58.3816 }"
+    :zoom="12"
+    style="width: 100%; height: 500px"
+  >
+    <GmvMarker :position="{ lat: -34.6037, lng: -58.3816 }" />
+  </GmvMap>
+</template>
+```
 
-What's urgently needed are:
+## Google Maps API key
 
-1. Better unit tests (we use Vitest).
-2. Better integration tests (we use Cypress)
+You need a browser API key for the Google Maps JavaScript API. For production applications:
+
+- restrict the key by HTTP referrer,
+- enable only the APIs and libraries your app uses,
+- monitor billing and quota in Google Cloud Console,
+- avoid calling paid APIs from high-frequency map events.
+
+## Public entrypoints
+
+Use the package entrypoints instead of deep imports:
+
+```ts
+import { createGmapVuePlugin, GmvMap } from '@gmap-vue/v3';
+import { useMapPromise } from '@gmap-vue/v3/composables';
+import { mapPromiseKey } from '@gmap-vue/v3/keys';
+import type { IMapLayerVueComponentExpose } from '@gmap-vue/v3/interfaces';
+```
+
+## Migrating from Vue 2
+
+The Vue 3 package changes the plugin structure, component names, and instance-access patterns. See the [Vue 3 migration guide](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/#migrating-from-version-for-vue-2) before migrating from `@gmap-vue/v2`.
+
+## Contributing
+
+Contributions are welcome. Please read the repository-level [`README.md`](https://github.com/diegoazh/gmap-vue#readme), [`AGENTS.md`](https://github.com/diegoazh/gmap-vue/blob/master/AGENTS.md), and [Copilot instructions](https://github.com/diegoazh/gmap-vue/blob/master/.github/copilot-instructions.md) before opening a PR.

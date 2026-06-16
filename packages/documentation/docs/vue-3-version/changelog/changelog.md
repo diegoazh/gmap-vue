@@ -4,6 +4,68 @@ title: Changelog
 sidebar_position: 5
 sidebar_label: Changelog
 ---
+## [2.2.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.2.0...gmv3_v2.2.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* **all:** handle removed drawing library ([#375](https://github.com/diegoazh/gmap-vue/issues/375)) ([753170e](https://github.com/diegoazh/gmap-vue/commit/753170e283ad785bccceb114bb364cd6c17725ee)), closes [#374](https://github.com/diegoazh/gmap-vue/issues/374) [#374](https://github.com/diegoazh/gmap-vue/issues/374)
+* **docs:** publish docusaurus output root ([#370](https://github.com/diegoazh/gmap-vue/issues/370)) ([f2e5e87](https://github.com/diegoazh/gmap-vue/commit/f2e5e87266bbeed9faa968ca479e153507dde8c5))
+* **v3:** update info window position ([#376](https://github.com/diegoazh/gmap-vue/issues/376)) ([65fa261](https://github.com/diegoazh/gmap-vue/commit/65fa26136c26579a0f97c2de8706658e3e7a0a53)), closes [#367](https://github.com/diegoazh/gmap-vue/issues/367) [#367](https://github.com/diegoazh/gmap-vue/issues/367) [#367](https://github.com/diegoazh/gmap-vue/issues/367)
+
+# [2.2.0](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.8...gmv3_v2.2.0) (2026-03-16)
+
+
+### Features
+
+* **v3:** add duplicate key detection and warning for component promise factory ([#361](https://github.com/diegoazh/gmap-vue/issues/361)) ([2724a84](https://github.com/diegoazh/gmap-vue/commit/2724a845e8a9d3cb70f44389cb4de55794236f6c)), closes [#321](https://github.com/diegoazh/gmap-vue/issues/321)
+
+## [2.1.8](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.7...gmv3_v2.1.8) (2026-03-16)
+
+
+### Bug Fixes
+
+* **v3:** replace the broken call with a direct watch on the two computed-ref sources ([#360](https://github.com/diegoazh/gmap-vue/issues/360)) ([8ce5345](https://github.com/diegoazh/gmap-vue/commit/8ce5345fa578c8247a93fdceeb175a8adb2735bb)), closes [#348](https://github.com/diegoazh/gmap-vue/issues/348)
+
+## [2.1.7](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.6...gmv3_v2.1.7) (2026-03-15)
+
+
+### Bug Fixes
+
+* **v3:** change map center or marker position reactivity ([#359](https://github.com/diegoazh/gmap-vue/issues/359)) ([94ee0f7](https://github.com/diegoazh/gmap-vue/commit/94ee0f71ab0fc1faa028d3cdae69bb2774e7939b)), closes [#350](https://github.com/diegoazh/gmap-vue/issues/350)
+
+## [2.1.6](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.5...gmv3_v2.1.6) (2026-03-15)
+
+
+### Bug Fixes
+
+* **v3:** lodash.isEqual deprecation warning ([#358](https://github.com/diegoazh/gmap-vue/issues/358)) ([bbe6864](https://github.com/diegoazh/gmap-vue/commit/bbe6864344d706f40104642a65904113f1e7ac89)), closes [#353](https://github.com/diegoazh/gmap-vue/issues/353)
+
+## [2.1.5](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.4...gmv3_v2.1.5) (2025-01-03)
+
+
+### Bug Fixes
+
+* upgrade @docusaurus/core from 3.6.2 to 3.6.3 ([#343](https://github.com/diegoazh/gmap-vue/issues/343)) ([d5ca7ea](https://github.com/diegoazh/gmap-vue/commit/d5ca7ea8e72baf933ada171c1c1fef731fcc8429))
+* upgrade @docusaurus/preset-classic from 3.6.2 to 3.6.3 ([#344](https://github.com/diegoazh/gmap-vue/issues/344)) ([10b60e5](https://github.com/diegoazh/gmap-vue/commit/10b60e53ae2c75a2410f3a4107ba5799d8d761af))
+
+## [2.1.4](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.3...gmv3_v2.1.4) (2025-01-03)
+
+
+### Bug Fixes
+
+* **v3:** update 'useTemplateRef' key ([#342](https://github.com/diegoazh/gmap-vue/issues/342)) ([b55f623](https://github.com/diegoazh/gmap-vue/commit/b55f623432650420942f11808959471d9f6481b2))
+
+## [2.1.3](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.2...gmv3_v2.1.3) (2024-11-15)
+
+
+### Bug Fixes
+
+* packages/documentation/package.json to reduce vulnerabilities ([#330](https://github.com/diegoazh/gmap-vue/issues/330)) ([2e2046f](https://github.com/diegoazh/gmap-vue/commit/2e2046fcfc4f7e88e86f39dcd72cc514781175fe))
+* packages/documentation/package.json to reduce vulnerabilities ([#332](https://github.com/diegoazh/gmap-vue/issues/332)) ([4b7b524](https://github.com/diegoazh/gmap-vue/commit/4b7b5244bc208c6495c6b5c4733d7fb84a38c099))
+* upgrade @docusaurus/core from 3.2.0 to 3.2.1 ([#326](https://github.com/diegoazh/gmap-vue/issues/326)) ([955c35b](https://github.com/diegoazh/gmap-vue/commit/955c35bca5913eebb80c3f96c519f582656d6bbb))
+* upgrade @docusaurus/preset-classic from 3.2.0 to 3.2.1 ([#325](https://github.com/diegoazh/gmap-vue/issues/325)) ([dc6ed1b](https://github.com/diegoazh/gmap-vue/commit/dc6ed1bc1f9cb411f955f98f6a6e03498d4e46af))
+
 ## [2.1.2](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.1.1...gmv3_v2.1.2) (2024-04-24)
 
 

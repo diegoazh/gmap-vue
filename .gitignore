@@ -1,5 +1,8 @@
 .DS_Store
 .idea
+.claude/
+.codex/
+.pi/
 
 node_modules
 packages/**/dist

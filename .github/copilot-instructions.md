@@ -5,15 +5,14 @@
 **GmapVue** is a Vue plugin that wraps the Google Maps JavaScript API into Vue components. This is a **pnpm workspace monorepo** forked from vue2-google-maps, containing:
 
 - **Vue 2 plugin** (`packages/v2`) - Version 3.5.4 published as `@gmap-vue/v2`
-- **Vue 3 plugin** (`packages/v3`) - Version 2.1.5 published as `@gmap-vue/v3` (primary package)
+- **Vue 3 plugin** (`packages/v3`) - Version 2.2.1 published as `@gmap-vue/v3` (primary package)
 - **Docusaurus documentation** (`packages/documentation`) - Published to GitHub Pages
-- **Legacy documentation** (`packages/old-documentation`) - Archived v1 docs
 
 **Key Technologies:**
 
-- Package Manager: **pnpm 9.13.2** (specified in `packageManager` field)
+- Package Manager: **pnpm 11.7.0** (specified in `packageManager` field)
 - Node Version: **LTS (latest)** - specified in `.node-version` as `24`
-- CI uses: **Node 18.x, 20.x, 22.x** on **ubuntu-latest and windows-latest**
+- CI uses: **Node 22.x and 24.x**. pnpm 11 requires Node >=22.13.
 - Build Tools: Vite (v3), Rollup (v2), TypeScript, Vue SFC compiler
 - Testing: Vitest (unit tests), Cypress (e2e tests)
 - Linting: ESLint (flat config), Prettier
@@ -40,7 +39,6 @@
    Expected warnings (safe to ignore):
    - `DeprecationWarning: url.parse() behavior is not standardized` - From pnpm itself
    - `husky - install command is DEPRECATED` - Still functional
-   - `Snyk protect was removed at 31 March 2022` - From old-documentation package
    - Installation takes approximately **6-10 seconds**
 
 ### Building
@@ -52,7 +50,7 @@ pnpm run build:all
 ```
 
 - Builds v2, v3, and documentation packages
-- Takes approximately **15-20 seconds**
+- Takes approximately **15-30 seconds**
 - Outputs to `packages/*/dist/` directories
 
 **Build individual packages:**
@@ -72,8 +70,7 @@ cd packages/documentation && pnpm run build
 
 - `Browserslist: browsers data (caniuse-lite) is 17 months old` - Ignore or update with `npx update-browserslist-db@latest`
 - v2 rollup warning: "Mixing named and default exports" - Known issue, doesn't affect functionality
-- Documentation warnings about blog authors and truncation markers - Cosmetic only
-- Documentation warnings about broken anchors - Known issues in legacy docs
+- Documentation builds should not introduce new broken links or anchors; investigate warnings when they appear
 
 ### Testing
 
@@ -85,7 +82,7 @@ pnpm run test
 
 - Runs unit tests across all packages using `test:ci` script
 - Takes approximately **3-5 seconds**
-- Currently only v3 has tests (21 test files, 86 tests)
+- Currently only v3 has substantive tests
 - v2 has placeholder: `echo 'not implemented yet'`
 
 **Run v3 tests directly:**
@@ -139,8 +136,8 @@ pnpm run serve:docs
 ```
 
 - Starts Docusaurus dev server at http://localhost:3000/gmap-vue/
-- Takes approximately **15-20 seconds** to compile
-- Expected warnings: Docusaurus update available, blog authors, truncation markers
+- Takes approximately **15-30 seconds** to compile
+- Investigate new Docusaurus warnings instead of treating them as expected noise
 
 ### Pre-commit Validation
 
@@ -180,7 +177,7 @@ type(scope): subject
 feat(v3): add polygon editing support
 fix(v2): resolve marker clustering memory leak
 docs(docs): update installation guide
-chore(root): update pnpm to 9.13.2
+chore(root): update pnpm to 11.7.0
 ```
 
 ## Project Layout & Architecture
@@ -191,8 +188,9 @@ chore(root): update pnpm to 9.13.2
 .
 ├── .github/                    # CI/CD workflows and GitHub config
 │   ├── workflows/
-│   │   ├── publish.yml        # Main CI: build, test, publish (Node 18/20/22)
-│   │   └── documentation.yml  # Docs deployment to gh-pages
+│   │   ├── ci.yml            # Main CI: build, test, e2e matrix
+│   │   ├── release.yml       # Manual v3 release workflow
+│   │   └── documentation.yml # Docs deployment to gh-pages
 │   └── [other github configs]
 ├── packages/                   # Monorepo packages
 │   ├── v2/                    # Vue 2 plugin (@gmap-vue/v2)
@@ -297,15 +295,15 @@ packages/documentation/
 **Documentation-specific notes:**
 
 - Build output goes to `build/` directory
-- Uses Docusaurus 3.6.3 (update available to 3.9.2)
+- Uses Docusaurus 3.10.1
 - Published to `gh-pages` branch via documentation.yml workflow
-- **HACK:** documentation.yml removes `pnpm-workspace.yaml` before build to isolate docs dependencies
+- documentation.yml keeps the root workspace visible, installs with `--ignore-scripts`, then runs docs typecheck/build
 
 ## CI/CD Pipeline & Validation
 
-### Publish Workflow (.github/workflows/publish.yml)
+### CI Workflow (.github/workflows/ci.yml)
 
-Runs on: **push to master** and **all PRs**
+Runs on: **push to master/next** and **all PRs**
 
 **Jobs:**
 
@@ -313,16 +311,15 @@ Runs on: **push to master** and **all PRs**
 2. **build** - Builds v3 package only (artifacts uploaded)
 3. **test** - Matrix strategy:
    - OS: ubuntu-latest, windows-latest
-   - Node: 18.x, 20.x, 22.x
+   - Node: 22.x on Ubuntu/Windows, plus 24.x on Ubuntu
    - Test plans: `test`, `test:e2e`
    - Requires `.env` file creation with `VITE_GOOGLE_API_KEY`
-4. **publish** - Only on master, uses semantic-release
 
 **Important:**
 
-- Only v3 is tested and published via CI
-- v2 relies on separate semantic-release setup
-- Tests run on 12 combinations (2 OS × 3 Node versions × 2 test plans)
+- CI validates v3 build/test/e2e plans on the configured Node 22/24 matrix.
+- Publishing is handled by `.github/workflows/release.yml`, which is manually dispatched on `master` and uses npm Trusted Publishing for v3.
+- v2 has package-level release configuration but is not part of the current manual release workflow package choices.
 
 ### Documentation Workflow (.github/workflows/documentation.yml)
 
@@ -330,10 +327,10 @@ Runs on: **push to master only**
 
 **Steps:**
 
-- Installs pnpm globally (version 9.15.2)
-- **CRITICAL WORKAROUND:** Removes `pnpm-workspace.yaml` before install to prevent workspace resolution issues
-- Builds in `packages/documentation` directory
-- Deploys to `gh-pages` branch using crazy-max/ghaction-github-pages@v4
+- Uses Node 22 and Corepack for pnpm
+- Installs from the root workspace with `--ignore-scripts`
+- Runs `pnpm run --filter docs typecheck` and `pnpm run --filter docs build`
+- Deploys `packages/documentation/build` to `gh-pages` with crazy-max/ghaction-github-pages@v5
 
 ## Configuration Files
 
@@ -384,16 +381,17 @@ Runs on: **push to master only**
 
 ### 2. Documentation Build in Monorepo
 
-**Issue:** pnpm workspace resolution conflicts with Docusaurus dependencies.
+**Status:** No workspace workaround is required.
 
-**CI Workaround:** Remove `pnpm-workspace.yaml` before building docs:
+Use the root workspace install so pnpm policy stays consistent, then run docs validation through workspace filters:
 
 ```bash
-rm -rf ./pnpm-workspace.yaml
-cd packages/documentation && pnpm install && pnpm run build
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm run --filter docs typecheck
+pnpm run --filter docs build
 ```
 
-**Local Development:** No workaround needed, `pnpm run serve:docs` works from root.
+**Local Development:** `pnpm run serve:docs` works from root.
 
 ### 3. Husky Deprecation Warning
 
@@ -413,7 +411,7 @@ cd packages/documentation && pnpm install && pnpm run build
 
 **Tags:**
 
-- v3: `gmv3_v${version}` (e.g., gmv3_v2.1.5)
+- v3: `gmv3_v${version}` (e.g., gmv3_v2.2.1)
 - v2: `gmv2_v${version}` (e.g., gmv2_v3.5.4)
 
 **Release Rules:**
