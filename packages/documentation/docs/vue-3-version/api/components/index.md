@@ -40,7 +40,7 @@ import {
 | [`Rectangle`](./rectangle.md) | `GmvRectangle` | Rectangle overlay. |
 | `KmlLayer` | `GmvKmlLayer` | KML layer. |
 | `HeatmapLayer` | `GmvHeatmapLayer` | Heatmap layer. |
-| `StreetViewPanorama` | `GmvStreetViewPanorama` | Street View panorama. |
+| [`StreetViewPanorama`](./street-view-panorama.md) | `GmvStreetViewPanorama` | Standalone Street View panorama. |
 | [`Cluster`](./cluster.md) | `GmvCluster` | Marker clustering component. |
 | `DrawingManager` | `GmvDrawingManager` | Legacy Drawing Library wrapper. |
 
