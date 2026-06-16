@@ -6,7 +6,7 @@ import { GITHUB_URI, PROJECT_NAME } from "./constants";
 const config: Config = {
 	title: "GmapVue Docs",
 	tagline: "Google Maps components and composables for Vue",
-	favicon: "img/favicon.ico",
+	favicon: "img/favicon.svg",
 
 	// Set the production url of your site here
 	url: "https://diegoazh.github.io/",

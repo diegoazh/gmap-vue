@@ -1,15 +1,19 @@
 import clsx from "clsx";
 import Link from "@docusaurus/Link";
 import Layout from "@theme/Layout";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
 import Heading from "@theme/Heading";
 
 import styles from "./index.module.css";
 
 function HomepageHeader() {
+	const logoUrl = useBaseUrl("img/logo.svg");
+
 	return (
 		<header className={clsx("hero hero--primary", styles.heroBanner)}>
 			<div className="container">
+				<img className={styles.heroLogo} src={logoUrl} alt="gmap-vue logo" />
 				<Heading as="h1" className="hero__title">
 					Google Maps components for Vue
 				</Heading>

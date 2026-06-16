@@ -1,5 +1,9 @@
 # GmapVue
 
+<p align="center">
+  <img src="packages/documentation/static/img/logo.svg" alt="gmap-vue logo" width="260" />
+</p>
+
 [![Publish](https://github.com/diegoazh/gmap-vue/workflows/publish/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Apublish)
 [![Documentation](https://github.com/diegoazh/gmap-vue/workflows/documentation/badge.svg)](https://github.com/diegoazh/gmap-vue/actions?query=workflow%3Adocumentation)
 
