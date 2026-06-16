@@ -367,7 +367,7 @@ This composable is similar to the previous above, the only difference is that it
  * @public
  */
 export function useClusterPromise(
-  key: string | InjectionKey<Promise<MarkerClusterer | undefined>>,
+  key: string | InjectionKey<Promise<MarkerClusterer | undefined>> = $clusterPromise,
 ): Promise<MarkerClusterer | undefined> {
   return usePromise<MarkerClusterer>(key);
 }
