@@ -197,7 +197,7 @@ You can use it to be sure that the `GmvMap` component is ready.
  * @public
  */
 export function useMapPromise(
-  key: string | InjectionKey<Promise<google.maps.Map | undefined>>,
+  key: string | InjectionKey<Promise<google.maps.Map | undefined>> = $mapPromise,
 ): Promise<google.maps.Map | undefined> {
   return usePromise<google.maps.Map>(key);
 }
@@ -208,8 +208,11 @@ When the GmvMap component is initialized and the map is ready this promise is re
 ```ts title="map-layer.vue" showLineNumbers
 //...
 
-const mapPromiseDeferred = usePromiseDeferred(props.mapKey || $mapPromise);
-promiseDeferred.resolve(mapInstance);
+const { promiseDeferred: mapPromiseDeferred, promise } =
+  useComponentPromiseFactory(defineMapKey() || $mapPromise);
+provide(defineMapKey() || $mapPromise, promise);
+
+mapPromiseDeferred.resolve(mapInstance);
 
 // ...
 ```
@@ -317,7 +320,7 @@ export function useMarkerPromise(
     | string
     | InjectionKey<
         Promise<google.maps.marker.AdvancedMarkerElement | undefined>
-      >,
+      > = $markerPromise,
 ): Promise<google.maps.marker.AdvancedMarkerElement | undefined> {
   return usePromise<google.maps.marker.AdvancedMarkerElement>(key);
 }
@@ -453,7 +456,7 @@ This composable is similar to the previous above, the only difference is that it
  * @public
  */
 export function useInfoWindowPromise(
-  key: string | InjectionKey<Promise<google.maps.InfoWindow | undefined>>,
+  key: string | InjectionKey<Promise<google.maps.InfoWindow | undefined>> = $infoWindowPromise,
 ): Promise<google.maps.InfoWindow | undefined> {
   return usePromise<google.maps.InfoWindow>(key);
 }

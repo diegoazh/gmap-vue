@@ -10,9 +10,14 @@ const sidebars: SidebarsConfig = {
 			items: [
 				"vue-3-version/guide/introduction",
 				"vue-3-version/guide/install-function",
+				"vue-3-version/guide/global-properties",
 				"vue-3-version/guide/basic-usage/dynamic-load",
+				"vue-3-version/guide/basic-usage/lazy-loading",
 				"vue-3-version/guide/basic-usage/region-and-language",
 				"vue-3-version/guide/basic-usage/accessing-google-maps-api",
+				"vue-3-version/guide/basic-usage/nuxt",
+				"vue-3-version/guide/basic-usage/gmv-map-slots",
+				"vue-3-version/guide/basic-usage/plugin-component-builder",
 			],
 		},
 		{

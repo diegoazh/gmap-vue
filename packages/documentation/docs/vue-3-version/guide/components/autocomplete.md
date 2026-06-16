@@ -12,7 +12,7 @@ The component is exported as `Autocomplete` from `@gmap-vue/v3/components` and r
 
 ## Enable the Places library
 
-`GmvAutocomplete` calls `google.maps.importLibrary("places")`. The plugin defaults `load.libraries` to `"places"`, but if you override libraries you must keep `places` included.
+`GmvAutocomplete` calls `google.maps.importLibrary("places")`. The plugin defaults `load.libraries` to `"places"`; keeping `places` in your loader config is still useful when you want to make the dependency explicit or preload the library.
 
 ```ts title="main.ts excerpt" showLineNumbers
 createGmapVuePlugin({
@@ -23,7 +23,7 @@ createGmapVuePlugin({
 });
 ```
 
-When combining libraries, use a comma-separated string:
+When preloading multiple libraries, use a comma-separated string:
 
 ```ts title="main.ts excerpt" showLineNumbers
 libraries: "places,visualization";

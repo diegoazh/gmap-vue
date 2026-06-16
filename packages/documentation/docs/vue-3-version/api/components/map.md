@@ -474,7 +474,7 @@ import {
 /**
  * Map component
  * @displayName GmvMap
- * @see [source code](/docs/vue-3-version/guide/components/map#source-code)
+ * @see [source code](https://github.com/diegoazh/gmap-vue/blob/master/packages/v3/src/components/map-layer.vue)
  * @see [Official documentation](https://developers.google.com/maps/documentation/javascript/basics)
  * @see [Official reference](https://developers.google.com/maps/documentation/javascript/reference/map)
  */
