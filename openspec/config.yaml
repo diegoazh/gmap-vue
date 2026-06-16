@@ -1,0 +1,43 @@
+project: gmap-vue
+name: GmapVue
+summary: Vue wrappers, composables, and documentation for the Google Maps JavaScript API.
+
+artifact_store:
+  primary: openspec
+  skill_registry: .atl/skill-registry.md
+
+packages:
+  vue3:
+    path: packages/v3
+    status: active
+    validation:
+      - pnpm run --filter @gmap-vue/v3 build
+      - pnpm run --filter @gmap-vue/v3 test:ci
+      - pnpm run --filter @gmap-vue/v3 type-check
+  vue2:
+    path: packages/v2
+    status: legacy
+    validation:
+      - pnpm run --filter @gmap-vue/v2 build
+      - pnpm run --filter @gmap-vue/v2 lint
+  documentation:
+    path: packages/documentation
+    status: active
+    validation:
+      - pnpm run --filter docs typecheck
+      - pnpm run --filter docs build
+
+quality_gates:
+  broad_changes:
+    - pnpm run lint
+    - pnpm run test
+    - pnpm run test:e2e
+  notes:
+    - E2E tests require packages/v3/cypress/runner/.env with VITE_GOOGLE_API_KEY.
+    - Google Maps billing/API-key configuration can block e2e independently of repository code.
+
+sdd:
+  default_mode: interactive
+  strict_tdd: true
+  review_budget_changed_lines: 400
+  chained_pr_strategy: auto-forecast
