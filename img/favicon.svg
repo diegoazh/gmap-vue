@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 85 280 210" role="img" aria-labelledby="gmap-vue-favicon-title">
+  <title id="gmap-vue-favicon-title">gmap-vue</title>
+  <path d="M 200 100 C 166.863 100, 140 126.863, 140 160 C 140 210, 200 280, 200 280 L 200 100 Z" fill="#1D6BB2" />
+  <path d="M 200 100 C 233.137 100, 260 126.863, 260 160 C 260 210, 200 280, 200 280 L 200 100 Z" fill="#6AB04C" />
+  <circle cx="200" cy="160" r="25" fill="#FFFFFF" />
+  <text x="200" y="161" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="30" font-weight="bold" fill="#1D6BB2" text-anchor="middle" dominant-baseline="central">V</text>
+  <path d="M 110,120 C 95,120 90,130 90,145 L 90,175 C 90,185 82,190 75,190 C 82,190 90,195 90,205 L 90,235 C 90,250 95,260 110,260" fill="none" stroke="#F78822" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 290,120 C 305,120 310,130 310,145 L 310,175 C 310,185 318,190 325,190 C 318,190 310,195 310,205 L 310,235 C 310,250 305,260 290,260" fill="none" stroke="#F78822" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
