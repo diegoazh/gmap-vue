@@ -337,7 +337,7 @@ This composable is similar to the previous above, the only difference is that it
  * @public
  */
 export function useCirclePromise(
-  key: string | InjectionKey<Promise<google.maps.Circle | undefined>>,
+  key: string | InjectionKey<Promise<google.maps.Circle | undefined>> = $circleShapePromise,
 ): Promise<google.maps.Circle | undefined> {
   return usePromise<google.maps.Circle>(key);
 }
@@ -521,7 +521,7 @@ This composable is similar to the previous above, the only difference is that it
  * @public
  */
 export function usePolygonPromise(
-  key: string | InjectionKey<Promise<google.maps.Polygon | undefined>>,
+  key: string | InjectionKey<Promise<google.maps.Polygon | undefined>> = $polygonShapePromise,
 ): Promise<google.maps.Polygon | undefined> {
   return usePromise<google.maps.Polygon>(key);
 }
@@ -551,7 +551,7 @@ This composable is similar to the previous above, the only difference is that it
  * @public
  */
 export function usePolylinePromise(
-  key: string | InjectionKey<Promise<google.maps.Polyline | undefined>>,
+  key: string | InjectionKey<Promise<google.maps.Polyline | undefined>> = $polylineShapePromise,
 ): Promise<google.maps.Polyline | undefined> {
   return usePromise<google.maps.Polyline>(key);
 }
@@ -581,7 +581,7 @@ This composable is similar to the previous above, the only difference is that it
  * @public
  */
 export function useRectanglePromise(
-  key: string | InjectionKey<Promise<google.maps.Rectangle | undefined>>,
+  key: string | InjectionKey<Promise<google.maps.Rectangle | undefined>> = $rectangleShapePromise,
 ): Promise<google.maps.Rectangle | undefined> {
   return usePromise<google.maps.Rectangle>(key);
 }
