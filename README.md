@@ -18,7 +18,7 @@
 GmapVue is a pnpm monorepo that provides Vue wrappers for the Google Maps JavaScript API.
 
 - **Vue 3 package:** `@gmap-vue/v3`, the actively developed package.
-- **Vue 2 package:** `@gmap-vue/v2`, frozen and no longer actively maintained. Existing Vue 2 apps can keep using it, but migration to Vue 3 is recommended.
+- **Vue 2 package:** `gmap-vue`, frozen and no longer actively maintained. Existing Vue 2 apps can keep using it, but migration to Vue 3 is recommended.
 - **Documentation:** Docusaurus site published at <https://diegoazh.github.io/gmap-vue/>.
 
 The project is a maintained fork of `vue2-google-maps`, updated to support modern Vue, typed package entrypoints, and component-level access to Google Maps instances.
@@ -36,7 +36,7 @@ Start with the published docs:
 | Package | Location | Status | Purpose |
 | --- | --- | --- | --- |
 | `@gmap-vue/v3` | `packages/v3` | Active | Vue 3 plugin, components, composables, keys, interfaces, and types. |
-| `@gmap-vue/v2` | `packages/v2` | Frozen legacy | Vue 2 plugin kept for existing applications. No active maintenance; migrate to `@gmap-vue/v3` when possible. |
+| `gmap-vue` | `packages/v2` | Frozen legacy | Vue 2 plugin kept for existing applications. No active maintenance; migrate to `@gmap-vue/v3` when possible. |
 | `docs` | `packages/documentation` | Active | Docusaurus documentation site. |
 
 ## Install

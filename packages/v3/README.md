@@ -85,7 +85,7 @@ import type { IMapLayerVueComponentExpose } from '@gmap-vue/v3/interfaces';
 
 ## Migrating from Vue 2
 
-The Vue 3 package changes the plugin structure, component names, and instance-access patterns. See the [Vue 3 migration guide](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/#migrating-from-version-for-vue-2) before migrating from `@gmap-vue/v2`.
+The Vue 3 package changes the plugin structure, component names, and instance-access patterns. See the [Vue 3 migration guide](https://diegoazh.github.io/gmap-vue/docs/vue-3-version/#migrating-from-version-for-vue-2) before migrating from the legacy `gmap-vue` package.
 
 ## Contributing
 

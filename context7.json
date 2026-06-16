@@ -29,7 +29,7 @@
   ],
   "rules": [
     "Use @gmap-vue/v3 for new Vue applications.",
-    "Treat @gmap-vue/v2 as frozen legacy documentation only. Do not recommend it for new projects.",
+    "Treat the legacy gmap-vue Vue 2 package as frozen documentation only. Do not recommend it for new projects.",
     "Use documented package entrypoints instead of deep imports.",
     "When showing Google Maps examples, mention API key restrictions, enabled APIs, billing, and optional library loading.",
     "Avoid examples that call paid Google Maps or Places APIs from high-frequency events."
