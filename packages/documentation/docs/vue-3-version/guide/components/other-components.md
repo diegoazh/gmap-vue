@@ -25,9 +25,9 @@ Start with `GmvMap`, then add only the Google Maps features your screen needs. T
 | `GmvStreetViewPanorama` | You need an embedded standalone Street View panorama. | Read the [Street View Panorama guide](./street-view-panorama.md). |
 | `GmvDrawingManager` | You maintain an app that still depends on the old Drawing Library. | Read the [Drawing Manager legacy guide](./drawing-manager.md). |
 
-## Loading required Google Maps libraries
+## Optional Google Maps library preloading
 
-Some components use optional Google Maps libraries. Keep those libraries available in your loader configuration when your app depends on them.
+Some components use optional Google Maps libraries. The wrappers import those libraries internally, but you can still list them in your loader configuration when you want to make dependencies explicit or preload them.
 
 ```ts title="main.ts"
 createGmapVuePlugin({
@@ -42,7 +42,7 @@ createGmapVuePlugin({
 | --- | --- |
 | `GmvAutocomplete` | `places` |
 | `GmvHeatmapLayer` | `visualization` |
-| `GmvDrawingManager` | `drawing`, only for environments where the removed Drawing Library is still available |
+| `GmvDrawingManager` | `drawing`, only for legacy environments where Google still serves the removed Drawing Library |
 
 `GmvMarker` imports the Google Maps `marker` library internally. `GmvInfoWindow`, `GmvKmlLayer`, and the shape components (`GmvCircle`, `GmvPolygon`, `GmvPolyline`, and `GmvRectangle`) import the Google Maps `maps` library internally. `GmvHeatmapLayer` imports the Google Maps `visualization` library internally. `GmvStreetViewPanorama` imports the Google Maps `streetView` library internally. `GmvCluster` uses the package dependency `@googlemaps/markerclusterer`.
 
