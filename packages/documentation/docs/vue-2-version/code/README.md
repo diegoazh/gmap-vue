@@ -4,36 +4,19 @@ id: introduction
 sidebar_position: 1
 sidebar_label: Introduction
 ---
-# GmapVue
+# GmapVue Vue 2 API notes
 
-[![](https://data.jsdelivr.com/v1/package/npm/gmap-vue/badge)](https://www.jsdelivr.com/package/npm/gmap-vue)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@gmap-vue/v2/badge)](https://www.jsdelivr.com/package/npm/@gmap-vue/v2)
 
-## Documentation
+:::danger
+The Vue 2 package is frozen and no longer actively maintained because Vue 2 reached EOL.
+:::
 
-The new documentation page is ready and it contains all examples for any component in the plugin.
+Use this API documentation only for existing Vue 2 applications that cannot migrate yet. New applications should use [`@gmap-vue/v3`](/docs/vue-3-version/).
 
-You can use your own gmap key in order to test it in the live example section.
+## Vue 2 port history
 
-We have planed improve and grow all required documentation about the plugin.
-
-Please follow next link to our [documentation](https://diegoazh.github.io/gmap-vue/).
-
-## Vue-2 port of vue-google-maps
-
-This is a fork of the popular vue2-google-maps. As the author of the library no longer commit to maintain the project, we forked it to develop and maintain the project.
-
-## CONTRIBUTORS NEEDED!
-
-If you have time to contribute to a rather frequently used library, feel free to make a PR!
-For more background, please refer to [this issue](https://github.com/xkjyeah/vue-google-maps/issues/514).
-
-What's urgently needed are:
-
-1. Better automated tests
-2. Better integration tests with the popular frameworks, especially Nuxt and Vue template
-3. ~Better documentation (examples, recommendations)~
-
-The above three will go a long way to keeping the project maintainable and contributable, and will address many of the open issues.
+GmapVue started as a fork of the popular `vue2-google-maps` project so community fixes could continue after the original project slowed down. That history is preserved here for existing Vue 2 users, but new feature development now belongs in the Vue 3 package.
 
 ## Breaking changes
 
