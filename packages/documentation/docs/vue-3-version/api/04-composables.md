@@ -253,35 +253,45 @@ export function useAutocompletePromise(
 
 ## `useStreetViewPanoramaPromise`
 
-:::warning
+This composable returns a promise that resolves to the underlying `google.maps.StreetViewPanorama` instance for a `GmvStreetViewPanorama` component.
 
-- From **v2.0.1 and below** we only use one instance of street view panorama, because in the previous implementation we always use the same promise to return the same street view panorama or we overwrite that promise with a new street view panorama instance. **From versions above v2.0.1** every street view panorama and component is saved in its own promise and is independent to other components.
-- **We strongly recommend to set the `streetViewKey` prop on each street view panorama**, we use this key to get the correct street view panorama instance.
+For one panorama, you can call it without arguments. For multiple simultaneously mounted panoramas, always use a unique key for each instance and pass the same key to the component's `street-view-key` prop.
 
-:::
+```vue title="StreetViewPanoramaPromiseExample.vue" showLineNumbers
+<script setup lang="ts">
+import { useStreetViewPanoramaPromise } from "@gmap-vue/v3/composables";
 
-This composable is similar to the previous above, the only difference is that it return the street view panorama object from the Google Maps API.
+const streetViewKey = "main-street-view";
+const streetViewPanoramaPromise = useStreetViewPanoramaPromise(streetViewKey);
+
+async function readPov() {
+  const panorama = await streetViewPanoramaPromise;
+  console.log(panorama?.getPov());
+}
+</script>
+
+<template>
+  <GmvStreetViewPanorama
+    style="position: relative; width: 100%; height: 500px"
+    :street-view-key="streetViewKey"
+    :position="{ lat: 40.758, lng: -73.9855 }"
+  />
+
+  <button @click="readPov">Read POV</button>
+</template>
+```
 
 ```ts title="How to use it" showLineNumbers
-/**
- * This function returns a promise, when it is resolved returns the Google Map StreetViewPanorama component instance
- *
- * @param  {string} key - the streetViewKey prop of the StreetViewPanorama
- * @returns {Promise}
- * @public
- */
 export function useStreetViewPanoramaPromise(
   key:
     | string
-    | InjectionKey<Promise<google.maps.StreetViewPanorama | undefined>>,
+    | InjectionKey<
+        Promise<google.maps.StreetViewPanorama | undefined>
+      > = $streetViewPanoramaPromise,
 ): Promise<google.maps.StreetViewPanorama | undefined> {
   return usePromise<google.maps.StreetViewPanorama>(key);
 }
 ```
-
-:::warning
-If the Street View Panorama object was not loaded yet the composable function returns `undefined`.
-:::
 
 ## `useMarkerPromise`
 
