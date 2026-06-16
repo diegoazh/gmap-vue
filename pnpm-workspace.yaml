@@ -35,3 +35,7 @@ allowBuilds:
   highlight.js: false
   snyk: false
   vuepress: false
+# Pin the newest browserslist transitive to the latest version that satisfies
+# the minimum-release-age policy while dependency CI catches up.
+overrides:
+  electron-to-chromium: 1.5.372
