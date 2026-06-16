@@ -42,7 +42,7 @@ import {
 | [`HeatmapLayer`](./heatmap-layer.md) | `GmvHeatmapLayer` | Heatmap layer. |
 | [`StreetViewPanorama`](./street-view-panorama.md) | `GmvStreetViewPanorama` | Standalone Street View panorama. |
 | [`Cluster`](./cluster.md) | `GmvCluster` | Marker clustering component. |
-| `DrawingManager` | `GmvDrawingManager` | Legacy Drawing Library wrapper. |
+| [`DrawingManager`](./drawing-manager.md) | `GmvDrawingManager` | Legacy Drawing Library wrapper. |
 
 ## Typing component refs
 
