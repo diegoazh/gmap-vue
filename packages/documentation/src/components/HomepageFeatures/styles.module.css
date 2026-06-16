@@ -1,6 +1,47 @@
 .features {
 	display: flex;
-	align-items: center;
-	padding: 3rem 0;
+	align-items: stretch;
+	padding: 3.5rem 0;
 	width: 100%;
+	background: #ffffff;
+}
+
+.featureCard {
+	height: 100%;
+	padding: 1.5rem;
+	border: 1px solid rgba(29, 107, 178, 0.12);
+	border-radius: 1rem;
+	background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+	box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.featureCard h3 {
+	color: #17324d;
+}
+
+.featureCard p {
+	margin-bottom: 0;
+	color: #334155;
+}
+
+.featureCard code {
+	white-space: nowrap;
+}
+
+:global([data-theme="dark"]) .features {
+	background: #0b1120;
+}
+
+:global([data-theme="dark"]) .featureCard {
+	border-color: rgba(148, 163, 184, 0.18);
+	background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+:global([data-theme="dark"]) .featureCard h3 {
+	color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .featureCard p {
+	color: #cbd5e1;
 }

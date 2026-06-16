@@ -11,7 +11,7 @@ function HomepageHeader() {
 	const logoUrl = useBaseUrl("img/logo.svg");
 
 	return (
-		<header className={clsx("hero hero--primary", styles.heroBanner)}>
+		<header className={clsx("hero", styles.heroBanner)}>
 			<div className="container">
 				<img className={styles.heroLogo} src={logoUrl} alt="gmap-vue logo" />
 				<Heading as="h1" className="hero__title">
@@ -23,13 +23,13 @@ function HomepageHeader() {
 				</p>
 				<div className={styles.buttons}>
 					<Link
-						className="button button--secondary button--lg"
+						className={clsx("button button--lg", styles.primaryButton)}
 						to="/docs/vue-3-version/"
 					>
 						Start with Vue 3
 					</Link>
 					<Link
-						className="button button--outline button--secondary button--lg"
+						className={clsx("button button--lg", styles.secondaryButton)}
 						to="/docs/vue-2-version/"
 					>
 						Vue 2 legacy docs
