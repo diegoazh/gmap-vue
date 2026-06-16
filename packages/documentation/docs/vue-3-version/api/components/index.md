@@ -34,10 +34,10 @@ import {
 | [`Marker`](./marker.md) | `GmvMarker` | Advanced Marker on the map. |
 | [`InfoWindow`](./info-window.md) | `GmvInfoWindow` | Info window anchored to a marker or position. |
 | [`Autocomplete`](./autocomplete.md) | `GmvAutocomplete` | Places autocomplete input wrapper. |
-| `Circle` | `GmvCircle` | Circle overlay. |
-| `Polygon` | `GmvPolygon` | Polygon overlay. |
-| `Polyline` | `GmvPolyline` | Polyline overlay. |
-| `Rectangle` | `GmvRectangle` | Rectangle overlay. |
+| [`Circle`](./circle.md) | `GmvCircle` | Circle overlay. |
+| [`Polygon`](./polygon.md) | `GmvPolygon` | Polygon overlay. |
+| [`Polyline`](./polyline.md) | `GmvPolyline` | Polyline overlay. |
+| [`Rectangle`](./rectangle.md) | `GmvRectangle` | Rectangle overlay. |
 | `KmlLayer` | `GmvKmlLayer` | KML layer. |
 | `HeatmapLayer` | `GmvHeatmapLayer` | Heatmap layer. |
 | `StreetViewPanorama` | `GmvStreetViewPanorama` | Street View panorama. |

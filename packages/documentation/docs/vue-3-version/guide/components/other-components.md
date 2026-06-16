@@ -15,10 +15,10 @@ Start with `GmvMap`, then add only the Google Maps features your screen needs. T
 | `GmvMarker` | You need an Advanced Marker point on the map that can react to clicks, drag, join clusters, or anchor an info window. | Read the [Marker guide](./marker.md). |
 | `GmvInfoWindow` | You need contextual content anchored to a marker or position. | Read the [InfoWindow guide](./info-window.md). |
 | `GmvAutocomplete` | You need a Places-powered search input. | Read the [Autocomplete guide](./autocomplete.md). |
-| `GmvCircle` | You need a radius around a point. | Useful for coverage, distance, or search areas. |
-| `GmvPolygon` | You need a filled area with one or more paths. | Use for regions, zones, or custom boundaries. |
-| `GmvPolyline` | You need a path without a filled area. | Use for routes, tracks, or measured lines. |
-| `GmvRectangle` | You need a rectangular bounds overlay. | Use when your data is naturally represented as north, south, east, and west bounds. |
+| `GmvCircle` | You need a radius around a point. | Read the [Circle guide](./circle.md). |
+| `GmvPolygon` | You need a filled area with one or more paths. | Read the [Polygon guide](./polygon.md). |
+| `GmvPolyline` | You need a path without a filled area. | Read the [Polyline guide](./polyline.md). |
+| `GmvRectangle` | You need a rectangular bounds overlay. | Read the [Rectangle guide](./rectangle.md). |
 | `GmvKmlLayer` | You need to render a KML source supported by Google Maps. | The source must be publicly reachable by Google. |
 | `GmvHeatmapLayer` | You need density visualization over a set of weighted points. | Requires the `visualization` library in the Google Maps loader options. |
 | `GmvCluster` | You need to group many markers visually. | Uses `@googlemaps/markerclusterer` under the hood. |
@@ -44,7 +44,7 @@ createGmapVuePlugin({
 | `GmvHeatmapLayer` | `visualization` |
 | `GmvDrawingManager` | `drawing`, only for environments where the removed Drawing Library is still available |
 
-`GmvMarker` and `GmvInfoWindow` import their Google Maps libraries internally with `google.maps.importLibrary("marker")` and `google.maps.importLibrary("maps")`.
+`GmvMarker` imports the Google Maps `marker` library internally. `GmvInfoWindow` and the shape components (`GmvCircle`, `GmvPolygon`, `GmvPolyline`, and `GmvRectangle`) import the Google Maps `maps` library internally.
 
 ## Access component instances
 
@@ -92,5 +92,6 @@ Prefer component props and events for normal Vue state updates. Reach for `use*P
 - Use the [map guide](./map.md) for the base map setup.
 - Use the [Marker guide](./marker.md) when you need points, draggable markers, or direct marker access.
 - Use the [InfoWindow guide](./info-window.md) when you need contextual content anchored to a marker or position.
+- Use the shape guides for overlays: [Circle](./circle.md), [Polygon](./polygon.md), [Polyline](./polyline.md), and [Rectangle](./rectangle.md).
 - Use the [map reference guide](../basic-usage/map-reference.md) when you need direct map instance access.
 - Use the [API reference](/docs/vue-3-version/api/components) when you need supported component exports.
