@@ -6,14 +6,15 @@ sidebar_label: Other components
 
 # Other Vue 3 components
 
-Start with `GmvMap`, then add only the Google Maps features your screen needs. This page gives you the practical role of each component before you jump into API details.
+Start with `GmvMap`, then add only the Google Maps features your screen needs. This page gives you the practical role of each component before you jump into dedicated guides or API details.
 
 ## Component overview
 
-| Component | Use it when | Notes |
+| Component | Use it when | Next step |
 | --- | --- | --- |
-| `GmvMarker` | You need a point on the map that can react to clicks or show an info window. | Use a stable `marker-key` when you need access through `useMarkerPromise`. |
-| `GmvInfoWindow` | You need contextual content anchored to a marker or position. | Updating `position` or `marker` while open is supported in `@gmap-vue/v3@2.2.1` and newer. |
+| `GmvMarker` | You need an Advanced Marker point on the map that can react to clicks, drag, join clusters, or anchor an info window. | Read the [Marker guide](./marker.md). |
+| `GmvInfoWindow` | You need contextual content anchored to a marker or position. | Read the [InfoWindow guide](./info-window.md). |
+| `GmvAutocomplete` | You need a Places-powered search input. | Read the [Autocomplete guide](./autocomplete.md). |
 | `GmvCircle` | You need a radius around a point. | Useful for coverage, distance, or search areas. |
 | `GmvPolygon` | You need a filled area with one or more paths. | Use for regions, zones, or custom boundaries. |
 | `GmvPolyline` | You need a path without a filled area. | Use for routes, tracks, or measured lines. |
@@ -32,7 +33,7 @@ Some components require optional Google Maps libraries. Add them to the plugin `
 createGmapVuePlugin({
   load: {
     key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: 'places,visualization',
+    libraries: "places,visualization",
   },
 });
 ```
@@ -43,22 +44,43 @@ createGmapVuePlugin({
 | `GmvHeatmapLayer` | `visualization` |
 | `GmvDrawingManager` | `drawing`, only for environments where the removed Drawing Library is still available |
 
+`GmvMarker` and `GmvInfoWindow` import their Google Maps libraries internally with `google.maps.importLibrary("marker")` and `google.maps.importLibrary("maps")`.
+
 ## Access component instances
 
 Use composables when you need the underlying Google Maps object after a component is mounted.
 
-```vue title="MarkerExample.vue"
+```vue title="MarkerExample.vue" showLineNumbers
 <script setup lang="ts">
-import { useMarkerPromise } from '@gmap-vue/v3/composables';
+import { useMapPromise, useMarkerPromise } from "@gmap-vue/v3/composables";
+
+const mapKey = "main-map";
+const markerKey = "office-marker";
+const mapPromise = useMapPromise(mapKey);
+const markerPromise = useMarkerPromise(markerKey);
 
 async function focusMarker() {
-  const marker = await useMarkerPromise('office-marker');
-  marker?.map?.panTo(marker.position!);
+  const [map, marker] = await Promise.all([mapPromise, markerPromise]);
+  if (!map || !marker?.position) return;
+
+  map.panTo(marker.position);
 }
 </script>
 
 <template>
-  <GmvMarker marker-key="office-marker" :position="{ lat: 47.3763, lng: 8.5475 }" />
+  <GmvMap
+    :map-key="mapKey"
+    :center="{ lat: 47.3763, lng: 8.5475 }"
+    :zoom="13"
+    style="width: 100%; height: 500px"
+  >
+    <GmvMarker
+      :marker-key="markerKey"
+      :position="{ lat: 47.3763, lng: 8.5475 }"
+      title="Office"
+    />
+  </GmvMap>
+
   <button @click="focusMarker">Focus marker</button>
 </template>
 ```
@@ -68,5 +90,7 @@ Prefer component props and events for normal Vue state updates. Reach for `use*P
 ## Next steps
 
 - Use the [map guide](./map.md) for the base map setup.
+- Use the [Marker guide](./marker.md) when you need points, draggable markers, or direct marker access.
+- Use the [InfoWindow guide](./info-window.md) when you need contextual content anchored to a marker or position.
 - Use the [map reference guide](../basic-usage/map-reference.md) when you need direct map instance access.
 - Use the [API reference](/docs/vue-3-version/api/components) when you need supported component exports.

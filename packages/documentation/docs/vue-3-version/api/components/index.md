@@ -30,10 +30,10 @@ import {
 
 | Export | Global plugin name | Purpose |
 | --- | --- | --- |
-| `MapLayer` | `GmvMap` | Base Google Map component. |
-| `Marker` | `GmvMarker` | Marker or advanced marker on the map. |
-| `InfoWindow` | `GmvInfoWindow` | Info window anchored to a marker or position. |
-| `Autocomplete` | `GmvAutocomplete` | Places autocomplete input wrapper. |
+| [`MapLayer`](./map.md) | `GmvMap` | Base Google Map component. |
+| [`Marker`](./marker.md) | `GmvMarker` | Advanced Marker on the map. |
+| [`InfoWindow`](./info-window.md) | `GmvInfoWindow` | Info window anchored to a marker or position. |
+| [`Autocomplete`](./autocomplete.md) | `GmvAutocomplete` | Places autocomplete input wrapper. |
 | `Circle` | `GmvCircle` | Circle overlay. |
 | `Polygon` | `GmvPolygon` | Polygon overlay. |
 | `Polyline` | `GmvPolyline` | Polyline overlay. |
