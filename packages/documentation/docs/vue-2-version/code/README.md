@@ -6,7 +6,7 @@ sidebar_label: Introduction
 ---
 # GmapVue Vue 2 API notes
 
-[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@gmap-vue/v2/badge)](https://www.jsdelivr.com/package/npm/@gmap-vue/v2)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/gmap-vue/badge)](https://www.jsdelivr.com/package/npm/gmap-vue)
 
 :::danger
 The Vue 2 package is frozen and no longer actively maintained because Vue 2 reached EOL.

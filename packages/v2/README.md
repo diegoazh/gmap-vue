@@ -1,12 +1,12 @@
-# @gmap-vue/v2
+# gmap-vue
 
 [![CI](https://github.com/diegoazh/gmap-vue/actions/workflows/ci.yml/badge.svg)](https://github.com/diegoazh/gmap-vue/actions/workflows/ci.yml)
 [![Documentation](https://github.com/diegoazh/gmap-vue/actions/workflows/documentation.yml/badge.svg)](https://github.com/diegoazh/gmap-vue/actions/workflows/documentation.yml)
-[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@gmap-vue/v2/badge)](https://www.jsdelivr.com/package/npm/@gmap-vue/v2)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/gmap-vue/badge)](https://www.jsdelivr.com/package/npm/gmap-vue)
 
 Legacy Vue 2 package for GmapVue.
 
-`@gmap-vue/v2` wraps the Google Maps JavaScript API in Vue 2 components. This package is frozen and kept only for existing Vue 2 applications; new applications should use [`@gmap-vue/v3`](https://www.npmjs.com/package/@gmap-vue/v3).
+`gmap-vue` wraps the Google Maps JavaScript API in Vue 2 components. This package is frozen and kept only for existing Vue 2 applications; new applications should use [`@gmap-vue/v3`](https://www.npmjs.com/package/@gmap-vue/v3).
 
 ## Status
 
@@ -21,22 +21,22 @@ Vue 2 support is frozen because Vue 2 reached EOL. There is no active maintenanc
 ## Installation
 
 ```bash
-npm install @gmap-vue/v2
+npm install gmap-vue
 ```
 
 ```bash
-pnpm add @gmap-vue/v2
+pnpm add gmap-vue
 ```
 
 ```bash
-yarn add @gmap-vue/v2
+yarn add gmap-vue
 ```
 
 ## Quick start
 
 ```js
 import Vue from 'vue';
-import GmapVue from '@gmap-vue/v2';
+import GmapVue from 'gmap-vue';
 
 Vue.use(GmapVue, {
   load: {
@@ -63,7 +63,7 @@ Vue.use(GmapVue, {
 The package publishes UMD/IIFE bundles for legacy browser usage. Prefer npm/pnpm/yarn package installation for application builds.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@gmap-vue/v2@3.5.4/dist/gmap-vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gmap-vue@3.5.4/dist/gmap-vue.min.js"></script>
 ```
 
 When using browser builds, use kebab-case component names in in-DOM templates, for example `<gmap-map>` instead of `<GmapMap>`.
@@ -118,7 +118,7 @@ The Vue 3 package changes the package name, component names, TypeScript support,
 - The default export is the plugin install object, so consumers should use:
 
   ```js
-  import GmapVue from '@gmap-vue/v2';
+  import GmapVue from 'gmap-vue';
   ```
 
 ## Contributing
