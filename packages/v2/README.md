@@ -6,11 +6,11 @@
 
 Legacy Vue 2 package for GmapVue.
 
-`@gmap-vue/v2` wraps the Google Maps JavaScript API in Vue 2 components. It is maintained for existing Vue 2 applications, while new applications should use [`@gmap-vue/v3`](https://www.npmjs.com/package/@gmap-vue/v3).
+`@gmap-vue/v2` wraps the Google Maps JavaScript API in Vue 2 components. This package is frozen and kept only for existing Vue 2 applications; new applications should use [`@gmap-vue/v3`](https://www.npmjs.com/package/@gmap-vue/v3).
 
 ## Status
 
-Vue 2 support is legacy maintenance only. Expect compatibility fixes and documentation corrections, not new feature development. If you are starting a new project, use Vue 3 and `@gmap-vue/v3`.
+Vue 2 support is frozen because Vue 2 reached EOL. There is no active maintenance for this package. If you are starting a new project, use Vue 3 and `@gmap-vue/v3`; if you already depend on Vue 2, plan a migration when possible.
 
 ## Documentation
 
@@ -123,4 +123,4 @@ The Vue 3 package changes the package name, component names, TypeScript support,
 
 ## Contributing
 
-Contributions are welcome for compatibility fixes, documentation, and validation improvements. Please read the repository-level [`README.md`](https://github.com/diegoazh/gmap-vue#readme), [`AGENTS.md`](https://github.com/diegoazh/gmap-vue/blob/master/AGENTS.md), and [Copilot instructions](https://github.com/diegoazh/gmap-vue/blob/master/.github/copilot-instructions.md) before opening a PR.
+This package is not actively maintained. If you need new work, target `@gmap-vue/v3` instead. For repository contributions, read the repository-level [`README.md`](https://github.com/diegoazh/gmap-vue#readme), [`AGENTS.md`](https://github.com/diegoazh/gmap-vue/blob/master/AGENTS.md), and [Copilot instructions](https://github.com/diegoazh/gmap-vue/blob/master/.github/copilot-instructions.md) before opening a PR.

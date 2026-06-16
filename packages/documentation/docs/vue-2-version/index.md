@@ -28,14 +28,13 @@ to [v0.10.8](https://github.com/xkjyeah/vue-google-maps/releases/tag/v0.10.8), b
 the last features** added to `vue2-google-maps` repository by the community developers in many PRs, that they can't
 landed in a new version of that project, for different reasons.
 
-Because of that we fork the project and plain to continue working and adding new features to this great plugin.
+That history explains why this package exists, but the Vue 2 package is now frozen. Use this documentation only for existing Vue 2 applications that cannot migrate yet.
 
 ## Breaking changes
 
 :::warning
 
-We have planned to change all components names and file names to the same way that they are registered for the next
-major release (v4.0.0).
+This legacy Vue 2 package is frozen and no v4 line is planned here. Use the Vue 3 package for current component names and new work.
 
 :::
 
