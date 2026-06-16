@@ -22,6 +22,8 @@ const sidebars: SidebarsConfig = {
 			items: [
 				"vue-3-version/guide/components/map",
 				"vue-3-version/guide/basic-usage/map-reference",
+				"vue-3-version/guide/components/marker",
+				"vue-3-version/guide/components/info-window",
 				"vue-3-version/guide/components/autocomplete",
 				"vue-3-version/guide/components/other-components",
 			],
@@ -35,6 +37,8 @@ const sidebars: SidebarsConfig = {
 				"vue-3-version/api/gmap-vue-plugin",
 				"vue-3-version/api/components/introduction",
 				"vue-3-version/api/components/map",
+				"vue-3-version/api/components/marker",
+				"vue-3-version/api/components/info-window",
 				"vue-3-version/api/components/autocomplete",
 				"vue-3-version/api/composables",
 				"vue-3-version/api/utilities",
