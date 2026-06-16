@@ -218,6 +218,39 @@ promiseDeferred.resolve(mapInstance);
 If the Map object was not loaded yet the composable function returns `undefined`.
 :::
 
+## `useAutocompletePromise`
+
+This composable returns a promise that resolves to the underlying `google.maps.places.Autocomplete` instance for a `GmvAutocomplete` component.
+
+For one autocomplete instance, you can call it without arguments. When coordinating multiple instances, use the same key that you pass to the component's `autocomplete-key` prop.
+
+```vue title="AutocompletePromiseExample.vue" showLineNumbers
+<script setup lang="ts">
+import { useAutocompletePromise } from "@gmap-vue/v3/composables";
+
+const autocompleteKey = "header-search";
+const autocompletePromise = useAutocompletePromise(autocompleteKey);
+
+async function readBounds() {
+  const autocomplete = await autocompletePromise;
+  console.log(autocomplete?.getBounds());
+}
+</script>
+
+<template>
+  <GmvAutocomplete :autocomplete-key="autocompleteKey" placeholder="Search" />
+  <button @click="readBounds">Read bounds</button>
+</template>
+```
+
+```ts title="How to use it" showLineNumbers
+export function useAutocompletePromise(
+  key: string | InjectionKey<Promise<google.maps.places.Autocomplete | undefined>> = $autocompletePromise,
+): Promise<google.maps.places.Autocomplete | undefined> {
+  return usePromise<google.maps.places.Autocomplete>(key);
+}
+```
+
 ## `useStreetViewPanoramaPromise`
 
 :::warning
