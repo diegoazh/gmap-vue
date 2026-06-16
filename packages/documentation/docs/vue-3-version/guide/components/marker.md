@@ -132,7 +132,7 @@ For most cases, start with the default Google pin plus `title`, `position`, and 
 
 `GmvMarker` can join a `GmvCluster` through a parent cluster component or a matching `cluster-key`. When clustered, the marker is created without a map and added to the clusterer.
 
-Full clustering examples will live in dedicated cluster documentation. For now, use a stable `marker-key` for markers you need to access individually.
+See the [Cluster guide](/docs/vue-3-version/guide/components/cluster) for complete clustering examples. Use a stable `marker-key` for markers you need to access individually.
 
 ## Gotchas
 

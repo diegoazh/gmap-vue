@@ -21,7 +21,7 @@ Start with `GmvMap`, then add only the Google Maps features your screen needs. T
 | `GmvRectangle` | You need a rectangular bounds overlay. | Read the [Rectangle guide](./rectangle.md). |
 | `GmvKmlLayer` | You need to render a KML source supported by Google Maps. | The source must be publicly reachable by Google. |
 | `GmvHeatmapLayer` | You need density visualization over a set of weighted points. | Requires the `visualization` library in the Google Maps loader options. |
-| `GmvCluster` | You need to group many markers visually. | Uses `@googlemaps/markerclusterer` under the hood. |
+| `GmvCluster` | You need to group many markers visually. | Read the [Cluster guide](./cluster.md). |
 | `GmvStreetViewPanorama` | You need an embedded Street View panorama. | Use when Street View is the primary UI, not only a map control. |
 | `GmvDrawingManager` | You maintain an app that still depends on the old Drawing Library. | The Google Maps Drawing Library was removed in Maps JavaScript API v3.65, prefer custom drawing UX for new work. |
 
@@ -44,7 +44,7 @@ createGmapVuePlugin({
 | `GmvHeatmapLayer` | `visualization` |
 | `GmvDrawingManager` | `drawing`, only for environments where the removed Drawing Library is still available |
 
-`GmvMarker` imports the Google Maps `marker` library internally. `GmvInfoWindow` and the shape components (`GmvCircle`, `GmvPolygon`, `GmvPolyline`, and `GmvRectangle`) import the Google Maps `maps` library internally.
+`GmvMarker` imports the Google Maps `marker` library internally. `GmvInfoWindow` and the shape components (`GmvCircle`, `GmvPolygon`, `GmvPolyline`, and `GmvRectangle`) import the Google Maps `maps` library internally. `GmvCluster` uses the package dependency `@googlemaps/markerclusterer`.
 
 ## Access component instances
 
@@ -91,6 +91,7 @@ Prefer component props and events for normal Vue state updates. Reach for `use*P
 
 - Use the [map guide](./map.md) for the base map setup.
 - Use the [Marker guide](./marker.md) when you need points, draggable markers, or direct marker access.
+- Use the [Cluster guide](./cluster.md) when you need to group many markers visually.
 - Use the [InfoWindow guide](./info-window.md) when you need contextual content anchored to a marker or position.
 - Use the shape guides for overlays: [Circle](./circle.md), [Polygon](./polygon.md), [Polyline](./polyline.md), and [Rectangle](./rectangle.md).
 - Use the [map reference guide](../basic-usage/map-reference.md) when you need direct map instance access.

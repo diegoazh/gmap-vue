@@ -41,7 +41,7 @@ import {
 | `KmlLayer` | `GmvKmlLayer` | KML layer. |
 | `HeatmapLayer` | `GmvHeatmapLayer` | Heatmap layer. |
 | `StreetViewPanorama` | `GmvStreetViewPanorama` | Street View panorama. |
-| `Cluster` | `GmvCluster` | Marker clustering component. |
+| [`Cluster`](./cluster.md) | `GmvCluster` | Marker clustering component. |
 | `DrawingManager` | `GmvDrawingManager` | Legacy Drawing Library wrapper. |
 
 ## Typing component refs
