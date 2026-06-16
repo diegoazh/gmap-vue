@@ -1,24 +1,34 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
 .heroBanner {
-	padding: 4rem 0;
+	padding: 5rem 0 4rem;
 	text-align: center;
 	position: relative;
 	overflow: hidden;
+	background:
+		radial-gradient(circle at 50% 0%, rgba(106, 176, 76, 0.16), transparent 34rem),
+		linear-gradient(135deg, #f8fbff 0%, #ffffff 48%, #f4faf2 100%);
+	color: #17324d;
+}
+
+.heroBanner :global(.hero__title) {
+	color: #17324d;
+	font-weight: 800;
+	letter-spacing: -0.03em;
+}
+
+.heroBanner :global(.hero__subtitle) {
+	color: #334155;
 }
 
 .heroLogo {
 	width: min(260px, 72vw);
 	height: auto;
 	margin-bottom: 1.5rem;
+	filter: drop-shadow(0 16px 28px rgba(29, 107, 178, 0.16));
 }
 
 @media screen and (max-width: 996px) {
 	.heroBanner {
-		padding: 2rem;
+		padding: 2.5rem 1rem;
 	}
 }
 
@@ -28,4 +38,28 @@
 	justify-content: center;
 	gap: 1rem;
 	flex-wrap: wrap;
+}
+
+.primaryButton {
+	border-color: #1d6bb2;
+	background: #1d6bb2;
+	color: #ffffff;
+}
+
+.primaryButton:hover {
+	border-color: #15548c;
+	background: #15548c;
+	color: #ffffff;
+}
+
+.secondaryButton {
+	border: 1px solid rgba(29, 107, 178, 0.35);
+	background: #ffffff;
+	color: #1d6bb2;
+}
+
+.secondaryButton:hover {
+	border-color: #6ab04c;
+	background: #f4faf2;
+	color: #17324d;
 }

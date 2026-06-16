@@ -13,8 +13,9 @@ const FeatureList: FeatureItem[] = [
 		title: "Install once, use components",
 		description: (
 			<>
-				Register the Vue 3 plugin, import the stylesheet, and start with
-				`GmvMap`, `GmvMarker`, `GmvInfoWindow`, and other Google Maps wrappers.
+				Register the Vue 3 plugin, import the stylesheet, and start with{" "}
+				<code>GmvMap</code>, <code>GmvMarker</code>, <code>GmvInfoWindow</code>,
+				and other Google Maps wrappers.
 			</>
 		),
 	},
@@ -33,7 +34,7 @@ const FeatureList: FeatureItem[] = [
 		description: (
 			<>
 				Access map, marker, shape, layer, and autocomplete instances from Vue
-				code with key-based `use*Promise` composables.
+				code with key-based <code>use*Promise</code> composables.
 			</>
 		),
 	},
@@ -42,7 +43,7 @@ const FeatureList: FeatureItem[] = [
 function Feature({ title, description }: FeatureItem) {
 	return (
 		<div className={clsx("col col--4")}>
-			<div className="padding-horiz--md">
+			<div className={styles.featureCard}>
 				<Heading as="h3">{title}</Heading>
 				<p>{description}</p>
 			</div>
