@@ -175,7 +175,7 @@
     "vite": "^6.4.2",
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-vue-devtools": "^7.6.4",
-    "vitest": "^2.1.9",
+    "vitest": "^3.2.6",
     "vue-eslint-parser": "^9.4.3",
     "vue-tsc": "^2.1.10"
   },
