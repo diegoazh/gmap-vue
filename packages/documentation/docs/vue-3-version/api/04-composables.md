@@ -421,35 +421,21 @@ If the drawing object was not loaded yet the composable function returns `undefi
 
 ## `useHeatmapLayerPromise`
 
-:::warning
+This composable returns a promise that resolves to the underlying `google.maps.visualization.HeatmapLayer` instance for a `GmvHeatmapLayer` component.
 
-- From **v2.0.1 and below** we only use one instance of heatmap, because in the previous implementation we always use the same promise to return the same heatmap or we overwrite that promise with a new heatmap instance. **From versions above v2.0.1** every heatmap and component is saved in its own promise and is independent to other components.
-- **We strongly recommend to set the `heatmapKey` prop on each heatmap**, we use this key to get the correct heatmap instance.
-
-:::
-
-This composable is similar to the previous above, the only difference is that it return the heatmap object from the Google Maps API.
+For one heatmap layer, you can call it without arguments. For multiple simultaneously mounted heatmap layers, use a unique key for each instance and pass the same key to the component's `heatmap-key` prop.
 
 ```ts title="How to use it" showLineNumbers
-/**
- * This function returns a promise, when it is resolved returns the Google Map Heatmap Layer component instance
- *
- * @param  {string} key - the heatmapKey prop of the Heatmap Layer
- * @returns {Promise}
- * @public
- */
 export function useHeatmapLayerPromise(
   key:
     | string
-    | InjectionKey<Promise<google.maps.visualization.HeatmapLayer | undefined>>,
+    | InjectionKey<
+        Promise<google.maps.visualization.HeatmapLayer | undefined>
+      > = $heatmapLayerPromise,
 ): Promise<google.maps.visualization.HeatmapLayer | undefined> {
   return usePromise<google.maps.visualization.HeatmapLayer>(key);
 }
 ```
-
-:::warning
-If the heatmap object was not loaded yet the composable function returns `undefined`.
-:::
 
 ## `useInfoWindowPromise`
 
@@ -483,33 +469,19 @@ If the Info Window object was not loaded yet the composable function returns `un
 
 ## `useKmlPromise`
 
-:::warning
+This composable returns a promise that resolves to the underlying `google.maps.KmlLayer` instance for a `GmvKmlLayer` component.
 
-- From **v2.0.1 and below** we only use one instance of Kml layer, because in the previous implementation we always use the same promise to return the same Kml layer or we overwrite that promise with a new Kml layer instance. **From versions above v2.0.1** every Kml layer and component is saved in its own promise and is independent to other components.
-- **We strongly recommend to set the `kmlKey` prop on each Kml layer**, we use this key to get the correct Kml layer instance.
-
-:::
-
-This composable is similar to the previous above, the only difference is that it return the Kml layer object from the Google Maps API.
+For one KML layer, you can call it without arguments. For multiple simultaneously mounted KML layers, use a unique key for each instance and pass the same key to the component's `kml-key` prop.
 
 ```ts title="How to use it" showLineNumbers
-/**
- * This function returns a promise, when it is resolved returns the Google Map Kml Layer component instance
- *
- * @param  {string} key - the kmlKey prop of the Kml Layer
- * @returns {Promise}
- * @public
- */
 export function useKmlPromise(
-  key: string | InjectionKey<Promise<google.maps.KmlLayer | undefined>>,
+  key:
+    | string
+    | InjectionKey<Promise<google.maps.KmlLayer | undefined>> = $kmlLayerPromise,
 ): Promise<google.maps.KmlLayer | undefined> {
   return usePromise<google.maps.KmlLayer>(key);
 }
 ```
-
-:::warning
-If the Kml layer object was not loaded yet the composable function returns `undefined`.
-:::
 
 ## `usePolygonPromise`
 
