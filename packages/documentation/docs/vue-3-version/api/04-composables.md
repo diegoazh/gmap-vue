@@ -389,34 +389,30 @@ If the cluster object was not loaded yet the composable function returns `undefi
 
 ## `useDrawingPromise`
 
-:::warning
+:::danger Legacy and version-dependent
 
-- From **v2.0.1 and below** we only use one instance of drawing, because in the previous implementation we always use the same promise to return the same drawing or we overwrite that promise with a new drawing instance. **From versions above v2.0.1** every drawing and component is saved in its own promise and is independent to other components.
-- **We strongly recommend to set the `drawingKey` prop on each drawing**, we use this key to get the correct drawing instance.
+`useDrawingPromise` resolves a `GmvDrawingManager` instance only in environments where Google still serves the removed Drawing Library. Maps JavaScript API v3.65+ no longer provides `DrawingManager`.
 
 :::
 
-This composable is similar to the previous above, the only difference is that it return the drawing object from the Google Maps API.
+This composable returns a promise that resolves to the underlying `google.maps.drawing.DrawingManager` instance for a `GmvDrawingManager` component.
+
+For one drawing manager, you can call it without arguments. For multiple simultaneously mounted drawing managers, use a unique key for each instance and pass the same key to the component's `drawing-key` prop.
 
 ```ts title="How to use it" showLineNumbers
-/**
- * This function returns a promise, when it is resolved returns the Google Map Drawing Manager component instance
- *
- * @param  {string} key - the drawingKey prop of the DrawingManager
- * @returns {Promise}
- * @public
- */
 export function useDrawingPromise(
   key:
     | string
-    | InjectionKey<Promise<google.maps.drawing.DrawingManager | undefined>>,
+    | InjectionKey<
+        Promise<google.maps.drawing.DrawingManager | undefined>
+      > = $drawingManagerPromise,
 ): Promise<google.maps.drawing.DrawingManager | undefined> {
   return usePromise<google.maps.drawing.DrawingManager>(key);
 }
 ```
 
 :::warning
-If the drawing object was not loaded yet the composable function returns `undefined`.
+If the drawing manager was not loaded yet the composable function returns `undefined`. If the Drawing Library is unavailable, the component promise rejects with `GmapVueDrawingLibraryUnavailableError`.
 :::
 
 ## `useHeatmapLayerPromise`

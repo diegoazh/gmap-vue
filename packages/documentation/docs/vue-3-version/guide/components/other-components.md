@@ -23,7 +23,7 @@ Start with `GmvMap`, then add only the Google Maps features your screen needs. T
 | `GmvHeatmapLayer` | You need density visualization over a set of weighted points. | Read the [Heatmap Layer guide](./heatmap-layer.md). |
 | `GmvCluster` | You need to group many markers visually. | Read the [Cluster guide](./cluster.md). |
 | `GmvStreetViewPanorama` | You need an embedded standalone Street View panorama. | Read the [Street View Panorama guide](./street-view-panorama.md). |
-| `GmvDrawingManager` | You maintain an app that still depends on the old Drawing Library. | The Google Maps Drawing Library was removed in Maps JavaScript API v3.65, prefer custom drawing UX for new work. |
+| `GmvDrawingManager` | You maintain an app that still depends on the old Drawing Library. | Read the [Drawing Manager legacy guide](./drawing-manager.md). |
 
 ## Loading required Google Maps libraries
 
@@ -97,5 +97,6 @@ Prefer component props and events for normal Vue state updates. Reach for `use*P
 - Use the [Heatmap Layer guide](./heatmap-layer.md) for density visualizations.
 - Use the [KML Layer guide](./kml-layer.md) for public KML/KMZ/GeoRSS sources.
 - Use the [Street View Panorama guide](./street-view-panorama.md) when Street View is the primary UI.
+- Use the [Drawing Manager legacy guide](./drawing-manager.md) only when maintaining apps that still depend on Google's removed Drawing Library.
 - Use the [map reference guide](../basic-usage/map-reference.md) when you need direct map instance access.
 - Use the [API reference](/docs/vue-3-version/api/components) when you need supported component exports.
