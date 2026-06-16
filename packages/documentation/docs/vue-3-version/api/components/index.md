@@ -38,8 +38,8 @@ import {
 | [`Polygon`](./polygon.md) | `GmvPolygon` | Polygon overlay. |
 | [`Polyline`](./polyline.md) | `GmvPolyline` | Polyline overlay. |
 | [`Rectangle`](./rectangle.md) | `GmvRectangle` | Rectangle overlay. |
-| `KmlLayer` | `GmvKmlLayer` | KML layer. |
-| `HeatmapLayer` | `GmvHeatmapLayer` | Heatmap layer. |
+| [`KmlLayer`](./kml-layer.md) | `GmvKmlLayer` | KML layer. |
+| [`HeatmapLayer`](./heatmap-layer.md) | `GmvHeatmapLayer` | Heatmap layer. |
 | [`StreetViewPanorama`](./street-view-panorama.md) | `GmvStreetViewPanorama` | Standalone Street View panorama. |
 | [`Cluster`](./cluster.md) | `GmvCluster` | Marker clustering component. |
 | `DrawingManager` | `GmvDrawingManager` | Legacy Drawing Library wrapper. |

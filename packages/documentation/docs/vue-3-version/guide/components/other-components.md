@@ -19,15 +19,15 @@ Start with `GmvMap`, then add only the Google Maps features your screen needs. T
 | `GmvPolygon` | You need a filled area with one or more paths. | Read the [Polygon guide](./polygon.md). |
 | `GmvPolyline` | You need a path without a filled area. | Read the [Polyline guide](./polyline.md). |
 | `GmvRectangle` | You need a rectangular bounds overlay. | Read the [Rectangle guide](./rectangle.md). |
-| `GmvKmlLayer` | You need to render a KML source supported by Google Maps. | The source must be publicly reachable by Google. |
-| `GmvHeatmapLayer` | You need density visualization over a set of weighted points. | Requires the `visualization` library in the Google Maps loader options. |
+| `GmvKmlLayer` | You need to render a KML source supported by Google Maps. | Read the [KML Layer guide](./kml-layer.md). |
+| `GmvHeatmapLayer` | You need density visualization over a set of weighted points. | Read the [Heatmap Layer guide](./heatmap-layer.md). |
 | `GmvCluster` | You need to group many markers visually. | Read the [Cluster guide](./cluster.md). |
 | `GmvStreetViewPanorama` | You need an embedded standalone Street View panorama. | Read the [Street View Panorama guide](./street-view-panorama.md). |
 | `GmvDrawingManager` | You maintain an app that still depends on the old Drawing Library. | The Google Maps Drawing Library was removed in Maps JavaScript API v3.65, prefer custom drawing UX for new work. |
 
 ## Loading required Google Maps libraries
 
-Some components require optional Google Maps libraries. Add them to the plugin `load.libraries` option.
+Some components use optional Google Maps libraries. Keep those libraries available in your loader configuration when your app depends on them.
 
 ```ts title="main.ts"
 createGmapVuePlugin({
@@ -38,13 +38,13 @@ createGmapVuePlugin({
 });
 ```
 
-| Feature | Required library |
+| Feature | Library |
 | --- | --- |
 | `GmvAutocomplete` | `places` |
 | `GmvHeatmapLayer` | `visualization` |
 | `GmvDrawingManager` | `drawing`, only for environments where the removed Drawing Library is still available |
 
-`GmvMarker` imports the Google Maps `marker` library internally. `GmvInfoWindow` and the shape components (`GmvCircle`, `GmvPolygon`, `GmvPolyline`, and `GmvRectangle`) import the Google Maps `maps` library internally. `GmvStreetViewPanorama` imports the Google Maps `streetView` library internally. `GmvCluster` uses the package dependency `@googlemaps/markerclusterer`.
+`GmvMarker` imports the Google Maps `marker` library internally. `GmvInfoWindow`, `GmvKmlLayer`, and the shape components (`GmvCircle`, `GmvPolygon`, `GmvPolyline`, and `GmvRectangle`) import the Google Maps `maps` library internally. `GmvHeatmapLayer` imports the Google Maps `visualization` library internally. `GmvStreetViewPanorama` imports the Google Maps `streetView` library internally. `GmvCluster` uses the package dependency `@googlemaps/markerclusterer`.
 
 ## Access component instances
 
@@ -94,6 +94,8 @@ Prefer component props and events for normal Vue state updates. Reach for `use*P
 - Use the [Cluster guide](./cluster.md) when you need to group many markers visually.
 - Use the [InfoWindow guide](./info-window.md) when you need contextual content anchored to a marker or position.
 - Use the shape guides for overlays: [Circle](./circle.md), [Polygon](./polygon.md), [Polyline](./polyline.md), and [Rectangle](./rectangle.md).
+- Use the [Heatmap Layer guide](./heatmap-layer.md) for density visualizations.
+- Use the [KML Layer guide](./kml-layer.md) for public KML/KMZ/GeoRSS sources.
 - Use the [Street View Panorama guide](./street-view-panorama.md) when Street View is the primary UI.
 - Use the [map reference guide](../basic-usage/map-reference.md) when you need direct map instance access.
 - Use the [API reference](/docs/vue-3-version/api/components) when you need supported component exports.
