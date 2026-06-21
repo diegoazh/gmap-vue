@@ -45,7 +45,7 @@ export const mapValues: {
 export const markerValues: {
   input?: unknown;
   options?: Record<string, unknown>;
-  updatePosition?: () => void;
+  updatePosition?: (event?: google.maps.MapMouseEvent) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   markerInstance?: any;
 } = {
@@ -175,7 +175,10 @@ export const googleMock = {
         markerValues.options = options;
         this.position = options?.position ?? null;
         markerValues.markerInstance = this;
-        this.addListener = (name: string, cbk: () => void) => {
+        this.addListener = (
+          name: string,
+          cbk: (event?: google.maps.MapMouseEvent) => void,
+        ) => {
           if (name === 'dragend') {
             markerValues.updatePosition = cbk;
           }
