@@ -163,7 +163,9 @@ mapPromise
       excludedEvents,
     );
 
-    marker.addListener('dragend', () => {
+    marker.addListener('dragend', (event: google.maps.MapMouseEvent) => {
+      emits('dragend', event);
+
       const newPosition = marker.position;
       /**
        * An event to detect when a position changes

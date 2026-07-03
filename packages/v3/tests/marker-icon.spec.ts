@@ -129,9 +129,11 @@ describe('MarkerIcon component', () => {
 
     // when
     await flushPromises();
-    markerValues.updatePosition?.();
+    const dragendEvent = {} as google.maps.MapMouseEvent;
+    markerValues.updatePosition?.(dragendEvent);
 
     // then
+    expect(wrapper.emitted('dragend')).toEqual([[dragendEvent]]);
     expect(wrapper.emitted()).toHaveProperty('update:position');
     expect(wrapper.emitted('update:position')).toEqual([
       [{ lat: undefined, lng: undefined }],
