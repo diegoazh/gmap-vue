@@ -1,6 +1,7 @@
 type CypressMarkerWindow = Window & {
-  __mapMarkers__?: unknown[];
+  __mapMarkers__?: google.maps.marker.AdvancedMarkerElement[];
   __gmvMarkerDebug__?: {
+    dragendCount: number;
     isReady: boolean;
     expectedCount: number;
   };
@@ -13,6 +14,32 @@ function assertMarkerCount(expected: number): void {
     expect(markerWindow.__gmvMarkerDebug__?.expectedCount).to.eq(expected);
     expect(markerWindow.__mapMarkers__).to.have.length(expected);
   });
+}
+
+function assertMarkerDragendCount(expected: number): void {
+  cy.window().should((win) => {
+    const markerWindow = win as CypressMarkerWindow;
+    expect(markerWindow.__gmvMarkerDebug__?.dragendCount).to.eq(expected);
+  });
+}
+
+function triggerFirstMarkerDragend(): void {
+  cy.window()
+    .should((win) => {
+      const markerWindow = win as CypressMarkerWindow;
+      expect(markerWindow.__mapMarkers__?.[0], 'first marker instance').not.to
+        .be.undefined;
+    })
+    .then((win) => {
+      const markerWindow = win as CypressMarkerWindow;
+      const marker = markerWindow.__mapMarkers__?.[0];
+
+      if (!marker) {
+        throw new Error('The first marker instance was not exposed');
+      }
+
+      win.google.maps.event.trigger(marker, 'dragend', {});
+    });
 }
 
 describe('MarkerIcon component', () => {
@@ -68,5 +95,18 @@ describe('MarkerIcon component', () => {
     assertMarkerCount(2);
     cy.get('#empty').click();
     assertMarkerCount(4);
+  });
+
+  it('should emit dragend when the marker fires the Google Maps dragend event', function () {
+    cy.visit('/');
+    cy.get('button[name=marker]').click();
+    cy.get('.gmv-map').should('exist');
+    cy.get('.gm-style').should('be.visible');
+    assertMarkerCount(4);
+    assertMarkerDragendCount(0);
+
+    triggerFirstMarkerDragend();
+
+    assertMarkerDragendCount(1);
   });
 });

@@ -20,6 +20,7 @@
       :position="m.position"
       :marker-key="`marker-${i}`"
       @click="center = m.position"
+      @dragend="onMarkerDragEnd"
     />
     <gmv-marker
       v-if="visible2"
@@ -29,6 +30,7 @@
       :position="markers2[0].position"
       :marker-key="`marker-2`"
       @click="center = markers2[0].position"
+      @dragend="onMarkerDragEnd"
     />
     <gmv-marker
       v-if="visible2"
@@ -38,16 +40,19 @@
       :position="markers2[1].position"
       :marker-key="`marker-3`"
       @click="center = markers2[1].position"
+      @dragend="onMarkerDragEnd"
     />
   </gmv-map>
 </template>
 
 <script setup lang="ts">
+import { useMarkerPromise } from '../../../dist/composables.es';
 import { computed, nextTick, onMounted, ref } from 'vue';
 
 type MapMarkersWindow = Window & {
-  __mapMarkers__?: string[];
+  __mapMarkers__?: google.maps.marker.AdvancedMarkerElement[];
   __gmvMarkerDebug__?: {
+    dragendCount: number;
     expectedCount: number;
     isReady: boolean;
   };
@@ -56,6 +61,7 @@ type MapMarkersWindow = Window & {
 const visible2 = ref(true);
 const empty = ref(false);
 const center = ref<google.maps.LatLngLiteral>({ lat: 10.0, lng: 10.0 });
+const dragendCount = ref(0);
 
 const markers2 = [
   { position: { lat: 12.0, lng: 12.0 } },
@@ -89,23 +95,37 @@ function getVisibleMarkerKeys(): string[] {
   return keys;
 }
 
-async function updateWindowMarkers(): Promise<void> {
+function updateMarkerDebug(isReady: boolean, expectedCount: number): void {
   const markerWindow = window as MapMarkersWindow;
   markerWindow.__gmvMarkerDebug__ = {
-    expectedCount: 0,
-    isReady: false,
+    dragendCount: dragendCount.value,
+    expectedCount,
+    isReady,
   };
+}
+
+async function updateWindowMarkers(): Promise<void> {
+  const markerWindow = window as MapMarkersWindow;
+  updateMarkerDebug(false, 0);
 
   // Wait for Vue to finish rendering this reactive transition before exposing
   // marker counts to Cypress.
   await nextTick();
 
   const visibleMarkerKeys = getVisibleMarkerKeys();
-  markerWindow.__mapMarkers__ = visibleMarkerKeys;
-  markerWindow.__gmvMarkerDebug__ = {
-    expectedCount: visibleMarkerKeys.length,
-    isReady: true,
-  };
+  const markerInstances = await Promise.all(
+    visibleMarkerKeys.map((key) => useMarkerPromise(key)),
+  );
+  markerWindow.__mapMarkers__ = markerInstances.filter(
+    (marker): marker is google.maps.marker.AdvancedMarkerElement =>
+      marker != null,
+  );
+  updateMarkerDebug(true, visibleMarkerKeys.length);
+}
+
+function onMarkerDragEnd(): void {
+  dragendCount.value += 1;
+  updateMarkerDebug(true, getVisibleMarkerKeys().length);
 }
 
 async function toggleVisible2(): Promise<void> {

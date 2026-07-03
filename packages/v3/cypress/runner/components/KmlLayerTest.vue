@@ -11,6 +11,7 @@
         :id="`kml-icon-${i + 1}`"
         :key="i"
         :clickable="true"
+        :kml-key="`kml-layer-${i}`"
         :preserve-viewport="true"
         :url="l.url"
       />
@@ -18,20 +19,40 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      center: {
-        lat: 37.40289194122376,
-        lng: 237.91539350810598,
-      },
-      kmlLayers: [
-        {
-          url: 'https://developers.google.com/maps/documentation/javascript/examples/kml/westcampus.kml',
-        },
-      ],
-    };
-  },
+<script setup lang="ts">
+import { useKmlPromise } from '../../../dist/composables.es';
+import { nextTick, onMounted } from 'vue';
+
+type KmlLayerWindow = Window & {
+  __gmvKmlLayerDebug__?: {
+    isReady: boolean;
+    url?: string;
+  };
 };
+
+const center = {
+  lat: 37.40289194122376,
+  lng: 237.91539350810598,
+};
+
+const kmlLayers = [
+  {
+    url: 'https://developers.google.com/maps/documentation/javascript/examples/kml/westcampus.kml',
+  },
+];
+
+async function updateKmlLayerDebug(): Promise<void> {
+  const kmlWindow = window as KmlLayerWindow;
+  kmlWindow.__gmvKmlLayerDebug__ = { isReady: false };
+
+  await nextTick();
+
+  const kmlLayer = await useKmlPromise('kml-layer-0');
+  kmlWindow.__gmvKmlLayerDebug__ = {
+    isReady: kmlLayer != null,
+    url: kmlLayer?.getUrl(),
+  };
+}
+
+onMounted(updateKmlLayerDebug);
 </script>
