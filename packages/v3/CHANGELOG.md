@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.2.1...gmv3_v2.2.2) (2026-07-15)
+
+
+### Bug Fixes
+
+* **v3:** add gvm marker dragend event 398 ([#399](https://github.com/diegoazh/gmap-vue/issues/399)) ([5bfd189](https://github.com/diegoazh/gmap-vue/commit/5bfd189748169f8e61e4e90e0f47eb659d29a2ea))
+
 ## [2.2.1](https://github.com/diegoazh/gmap-vue/compare/gmv3_v2.2.0...gmv3_v2.2.1) (2026-06-08)
 
 
